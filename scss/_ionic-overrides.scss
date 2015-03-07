@@ -1,0 +1,25 @@
+.list.small {
+  margin-bottom: 10px;
+}
+.item-input.small {
+  padding-top: 3px;
+  padding-bottom: 2px;
+}
+.item-radio.small {
+  .item-content {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .radio-icon {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+}
+.item-divider.small {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.bar-subheader.has-tabs-top {
+  top: 93px;
+}

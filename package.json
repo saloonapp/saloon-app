@@ -1,0 +1,27 @@
+{
+  "name": "saloon",
+  "version": "0.0.1",
+  "description": "Discutez avec le bonnes personnes autours de vous !",
+  "dependencies": {
+    "gulp": "^3.5.6",
+    "gulp-sass": "^0.7.1",
+    "gulp-concat": "^2.2.0",
+    "gulp-minify-css": "^0.3.0",
+    "gulp-rename": "^1.2.0"
+  },
+  "devDependencies": {
+    "bower": "^1.3.3",
+    "gulp-util": "^2.2.14",
+    "shelljs": "^0.3.0"
+  },
+  "cordovaPlugins": [
+    "com.ionic.keyboard",
+    "org.apache.cordova.console",
+    "org.apache.cordova.device",
+    "org.apache.cordova.dialogs",
+    "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin",
+    "org.apache.cordova.inappbrowser",
+    "org.apache.cordova.geolocation",
+    "https://github.com/phonegap-build/PushPlugin"
+  ]
+}

@@ -1,0 +1,31 @@
+<ion-view title="Details">
+  <ion-content>
+    <loading ng-show="!data.user" top="100px"></loading>
+    <div ng-show="data.user">
+      <div class="list card">
+        <div class="item item-avatar">
+          <img ng-src="{{data.user.avatar || 'img/user.jpg'}}">
+          <button class="button button-positive pull-right">Inviter</button>
+          <h2>{{data.user.pseudo}}</h2>
+          <p style="white-space: initial;">{{data.user.actualPurpose}}</p>
+        </div>
+      </div>
+      <div class="list card padding">
+        <h4>Intéressé par :</h4>
+        <ul>
+          <li ng-repeat="interest in data.user.interests" ng-if="interest.interested">{{interest.name}}</li>
+        </ul>
+      </div>
+      <div class="list card padding" ng-if="data.user.linkedin">
+        <h3>{{data.user.linkedin.firstName}} {{data.user.linkedin.lastName}}</h3>
+        <h5>{{data.user.linkedin.headline}}</h5>
+        <p>
+          <pre>{{data.user.linkedin.summary}}</pre>
+        </p>
+        <p>
+          {{data.user.linkedin.connectionsCount}} connexions Linkedin
+        </p>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

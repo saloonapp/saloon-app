@@ -1,0 +1,20 @@
+<ion-view title="Bienvenu sur Saloon !">
+  <ion-content>
+    <form ng-submit="fn.register(data.credentials)">
+      <div class="list">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Ton email</span>
+          <input type="email" name="email" placeholder="ex: hello@saloon.com" ng-model="data.credentials.email">
+        </label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Un mot de passe</span>
+          <input type="password" name="password" placeholder="ex: i-love-saloon-4-ever" ng-model="data.credentials.password">
+        </label>
+      </div>
+      <div class="padding">
+        <div class="alert alert-danger card padding" ng-if="data.error !== null" ng-click="data.error=null;"><strong>Oups !</strong> {{data.error}}</div>
+        <button type="submit" class="button button-block button-positive" ng-disabled="!fn.canSubmit()">S'inscrire</button>
+      </div>
+    </form>
+  </ion-content>
+</ion-view>

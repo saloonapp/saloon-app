@@ -1,0 +1,12 @@
+<ion-view title="Saloon">
+  <ion-content>
+    <div class="padding">
+      <button class="button button-block button-positive" ng-click="fn.loginLinkedin()" ng-disabled="data.loading == true">Se connecter avec LinkedIn</button>
+      <div class="alert alert-danger card padding" ng-if="data.error !== null" ng-click="data.error=null;"><strong>Oups !</strong> {{data.error}}</div>
+    </div>
+    <div class="row">
+      <div class="col"><button class="button button-block button-positive" ui-sref="login_login">Se connecter</button></div>
+      <div class="col"><button class="button button-block button-positive" ui-sref="login_register">S'inscrire</button></div>
+    </div>
+  </ion-content>
+</ion-view>

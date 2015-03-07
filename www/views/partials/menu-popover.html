@@ -1,0 +1,22 @@
+<ion-popover-view>
+  <ion-content>
+    <div class="list">
+      <div class="item item-avatar" ng-click="profileModal.show();menuPopover.hide()">
+        <img ng-src="{{user.avatar || 'img/user.jpg'}}">
+        <h2>{{user.pseudo}}</h2>
+        <p>{{user.actualPurpose}}</p>
+      </div>
+      <!--<div class="item" ng-click="notificationsModal.show();menuPopover.hide()"><i class="icon ion-ios7-bell"></i> Notifications</div>-->
+      <div class="item item-toggle">
+        <i class="icon ion-eye"></i> Actif
+        <label class="toggle toggle-balanced">
+          <input type="checkbox" ng-model="user.active">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
+      </div>
+      <div class="item" ng-click="logout();menuPopover.hide()"><i class="icon ion-log-out"></i> Déconnexion</div>
+    </div>
+  </ion-content>
+</ion-popover-view>

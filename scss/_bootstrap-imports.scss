@@ -1,0 +1,52 @@
+$bsDefaultColor: #777;
+$bsPrimaryColor: #337ab7;
+$bsSuccessColor: #5cb85c;
+$bsInfoColor: #5bc0de;
+$bsWarningColor: #f0ad4e;
+$bsDangerColor: #d9534f;
+
+.label {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+}
+.label-default  { background-color: $bsDefaultColor;  }
+.label-primary  { background-color: $bsPrimaryColor;  }
+.label-success  { background-color: $bsSuccessColor;  }
+.label-info     { background-color: $bsInfoColor;     }
+.label-warning  { background-color: $bsWarningColor;  }
+.label-danger   { background-color: $bsDangerColor;   }
+
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+.alert-success {
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
+.alert-info {
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+.alert-warning {
+  color: #8a6d3b;
+  background-color: #fcf8e3;
+  border-color: #faebcc;
+}
+.alert-danger {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}

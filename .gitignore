@@ -1,0 +1,18 @@
+# Specifies intentionally untracked files to ignore when using Git
+# http://git-scm.com/docs/gitignore
+
+# config file
+www/js/config/_config.js
+
+node_modules/
+platforms/
+plugins/
+
+# when use sass, do not commit css files
+www/css/
+www/lib/
+
+# do not commit generated images
+resources/android
+
+*~
