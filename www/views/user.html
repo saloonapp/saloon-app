@@ -5,7 +5,7 @@
       <div class="list card">
         <div class="item item-avatar">
           <img ng-src="{{data.user.avatar || 'img/user.jpg'}}">
-          <button class="button button-positive pull-right">Inviter</button>
+          <button class="button button-positive pull-right" ng-click="fn.invite(data.user)">Inviter</button>
           <h2>{{data.user.pseudo}}</h2>
           <p style="white-space: initial;">{{data.user.actualPurpose}}</p>
         </div>

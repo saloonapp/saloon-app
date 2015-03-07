@@ -60,7 +60,12 @@ angular.module('app')
       var parseUserHttpConfig = angular.copy(parseHttpConfig);
       parseUserHttpConfig.headers['X-Parse-Session-Token'] = sessionToken;
 
-      var service = CrudRestUtils.createCrud(endpointUrl, parseObjectKey, getParseData, _processBreforeSave, _useCache, parseUserHttpConfig);
+      var _processBreforeSaveReal = function(user){
+        delete user.emailVerified;
+        if(_processBreforeSave){_processBreforeSave(user);}
+      };
+
+      var service = CrudRestUtils.createCrud(endpointUrl, parseObjectKey, getParseData, _processBreforeSaveReal, _useCache, parseUserHttpConfig);
       service.savePartial = function(objectToSave, dataToUpdate){
         var objectId = typeof objectToSave === 'string' ? objectToSave : objectToSave[parseObjectKey];
         var toUpdate = angular.copy(dataToUpdate);

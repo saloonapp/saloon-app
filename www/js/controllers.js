@@ -106,11 +106,12 @@ angular.module('app')
   });
 })
 
-.controller('UserCtrl', function($scope, $state, $stateParams, UsersSrv){
+.controller('UserCtrl', function($scope, $state, $stateParams, UsersSrv, RelationsSrv){
   'use strict';
   var userId = $stateParams.id;
-  var data = {};
+  var data = {}, fn = {};
   $scope.data = data;
+  $scope.fn = fn;
 
   UsersSrv.get(userId).then(function(user){
     if(user){
@@ -119,6 +120,11 @@ angular.module('app')
       $state.go('tabs.users');
     }
   });
+
+  fn.invite = function(user){
+    console.log('invite', user);
+    RelationsSrv.invite(user);
+  };
 })
 
 .controller('ChatsCtrl', function($scope){

@@ -527,7 +527,7 @@ angular.module('app')
 
 
 // for Push plugin : https://github.com/phonegap-build/PushPlugin
-.factory('PushPlugin', function($q, $http, $ionicPlatform, $window, $log, PluginUtils, Config){
+.factory('PushPlugin', function($q, $http, $window, $log, PluginUtils, Config){
   'use strict';
   var pluginName = 'Push';
   var pluginTest = function(){ return $window.plugins && $window.plugins.pushNotification; };
@@ -548,21 +548,16 @@ angular.module('app')
 
   // This function is not part of the plugin, you should implement it here !!!
   function sendPush(recipients, data){
-    if($ionicPlatform.is('android')){
-      return $http.post('https://android.googleapis.com/gcm/send', {
-        registration_ids: recipients, // array of registrationIds
-        data: data // payload, usefull fields: title, message, timestamp, msgcnt
-      }, {
-        headers: {
-          Authorization: 'key='+Config.gcm.apiServerKey
-        }
-      }).then(function(){
-        return true;
-      });
-    } else {
-      $window.alert('Your platform don\'t have push support :(');
-      return $q.when(false);
-    }
+    return $http.post('https://android.googleapis.com/gcm/send', {
+      registration_ids: recipients, // array of registrationIds
+      data: data // payload, usefull fields: title, message, timestamp, msgcnt
+    }, {
+      headers: {
+        Authorization: 'key='+Config.gcm.apiServerKey
+      }
+    }).then(function(){
+      return true;
+    });
   }
 
   function register(projectNumber){

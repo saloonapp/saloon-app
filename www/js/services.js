@@ -53,4 +53,70 @@ angular.module('app')
   }
 
   return service;
+})
+
+.factory('RelationsSrv', function($state, UserSrv, DialogPlugin, ParseUtils, PushPlugin, GeolocationPlugin){
+  'use strict';
+  var relationCrud = ParseUtils.createCrud('Relation');
+  var service = {
+    status: {
+      INVITED: 'invited',
+      REJECTED: 'rejected',
+      ACCEPTED: 'accepted'
+    },
+    invite: invite,
+    onInvitation: onInvitation
+  };
+
+  function invite(user){
+    return UserSrv.getCurrent().then(function(currentUser){
+      return GeolocationPlugin.getCurrentPosition().then(function(pos){
+        var relation = {
+          from: ParseUtils.toPointer('User', currentUser),
+          to: ParseUtils.toPointer('User', user),
+          location: ParseUtils.toGeoPoint(pos.coords.latitude, pos.coords.longitude),
+          locationAccuracy: pos.coords.accuracy,
+          status: service.status.INVITED
+        };
+        return relationCrud.save(relation).then(function(){
+          if(user && user.push && user.push.id && user.push.platform === 'android'){
+            return PushPlugin.sendPush([user.push.id], {
+              type: 'relation_invite',
+              userId: currentUser.objectId,
+              title: 'Invitation reçue',
+              message: currentUser.pseudo+' vous invite à le rencontrer'
+            });
+          } else {
+            console.log('no able to push to user', user);
+          }
+        });
+      });
+    });
+  }
+
+  function onInvitation(notification, data){
+    if(notification.foreground){
+      DialogPlugin.confirmMulti(data.message,data.title, ['Voir profil', 'Ignorer']).then(function(btnIndex){
+        if(btnIndex === 1){ $state.go('tabs.user', {id: data.userId}); }
+        else if(btnIndex === 2){}
+      });
+    } else {
+      $state.go('tabs.user', {id: data.userId});
+    }
+  }
+
+  return service;
+})
+
+.factory('NotificationSrv', function(RelationsSrv){
+  'use strict';
+  var service = {
+    received: received
+  };
+
+  function received(notification){
+    if(notification.payload.type === 'relation_invite'){ RelationsSrv.onInvitation(notification, notification.payload); }
+  }
+
+  return service;
 });
