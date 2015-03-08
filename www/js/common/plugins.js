@@ -576,11 +576,11 @@ angular.module('app')
   }
 
   function onNotification(callback, _type){
-    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
-      var id = callbackCurRef++;
+    var id = callbackCurRef++;
+    PluginUtils.onReady(pluginName, pluginTest).then(function(){
       callbackList[id] = {fn: callback, type: _type || service.type.MESSAGE};
-      return id;
     });
+    return id;
   }
 
   function cancel(id){

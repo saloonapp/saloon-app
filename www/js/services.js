@@ -72,8 +72,8 @@ angular.module('app')
     return UserSrv.getCurrent().then(function(currentUser){
       return GeolocationPlugin.getCurrentPosition().then(function(pos){
         var relation = {
-          from: ParseUtils.toPointer('User', currentUser),
-          to: ParseUtils.toPointer('User', user),
+          from: ParseUtils.toPointer('_User', currentUser),
+          to: ParseUtils.toPointer('_User', user),
           location: ParseUtils.toGeoPoint(pos.coords.latitude, pos.coords.longitude),
           locationAccuracy: pos.coords.accuracy,
           status: service.status.INVITED

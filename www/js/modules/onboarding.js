@@ -137,8 +137,7 @@ angular.module('app')
     password: '',
     pseudo: OnboardingSrv.getSuggestedPseudo(),
     actualPurpose: '',
-    interests: OnboardingSrv.getSuggestedInterests(),
-    active: true
+    interests: OnboardingSrv.getSuggestedInterests()
   };
   data.loading = false;
   data.error = null;
@@ -255,8 +254,7 @@ angular.module('app')
   data.credentials = {
     pseudo: OnboardingSrv.getSuggestedPseudo(),
     actualPurpose: '',
-    interests: OnboardingSrv.getSuggestedInterests(),
-    active: true
+    interests: OnboardingSrv.getSuggestedInterests()
   };
   data.loading = false;
   data.error = null;

@@ -1,6 +1,6 @@
 angular.module('app')
 
-.factory('UserSrv', function($q, AuthSrv, ParseUtils, StorageUtils, LocalStorageUtils, GeolocationPlugin){
+.factory('UserSrv', function($q, AuthSrv, ParseUtils, StorageUtils, LocalStorageUtils, GeolocationPlugin, PushPlugin, Config){
   'use strict';
   var storageKey = 'user';
   var userCrud = ParseUtils.createUserCrud(AuthSrv.getToken());
@@ -69,11 +69,7 @@ angular.module('app')
       credentials.username = credentials.email;
       return ParseUtils.signup(credentials).then(function(user){
         if(_provider && credentials.authData){ AuthSrv.setAuthData(_provider, credentials[_provider].id, credentials.authData, user); }
-        AuthSrv.setToken(user.sessionToken);
-        userCrud = ParseUtils.createUserCrud(user.sessionToken);
-        return StorageUtils.set(storageKey, user).then(function(){
-          return user;
-        });
+        return _initAfterLogin(user);
       }, function(err){
         return err && err.data && err.data.error ? $q.reject({message: err.data.error}) : $q.reject(err);
       });
@@ -85,11 +81,7 @@ angular.module('app')
   function login(credentials){
     if(credentials.email && credentials.password){
       return ParseUtils.login(credentials.email, credentials.password).then(function(user){
-        AuthSrv.setToken(user.sessionToken);
-        userCrud = ParseUtils.createUserCrud(user.sessionToken);
-        return StorageUtils.set(storageKey, user).then(function(){
-          return user;
-        });
+        return _initAfterLogin(user);
       }, function(err){
         return err && err.data && err.data.error ? $q.reject({message: err.data.error}) : $q.reject(err);
       });
@@ -102,17 +94,40 @@ angular.module('app')
     return AuthSrv.getAuthData(provider, profile.id).then(function(authData){
       if(authData){
         return ParseUtils.loginOAuth(authData).then(function(user){
-          AuthSrv.setToken(user.sessionToken);
-          userCrud = ParseUtils.createUserCrud(user.sessionToken);
-          return StorageUtils.set(storageKey, user).then(function(){
-            return user;
-          });
+          return _initAfterLogin(user);
         }, function(err){
-        return err && err.data && err.data.error ? $q.reject({message: err.data.error}) : $q.reject(err);
+          return err && err.data && err.data.error ? $q.reject({message: err.data.error}) : $q.reject(err);
         });
       } else {
         return $q.reject({message: 'No authData found...'});
       }
+    });
+  }
+
+  function _initAfterLogin(user){
+    userCrud = ParseUtils.createUserCrud(user.sessionToken);
+    AuthSrv.setToken(user.sessionToken);
+    delete user.sessionToken;
+
+    return $q.all([
+      PushPlugin.register(Config.gcm.projectNumber),
+      GeolocationPlugin.getCurrentPosition()
+    ]).then(function(results){
+      var registrationId = results[0];
+      var pos = results[1];
+      user.push = {
+        id: registrationId,
+        platform: ionic.Platform.platform()
+      };
+      user.location = ParseUtils.toGeoPoint(pos.coords.latitude, pos.coords.longitude);
+      user.locationAccuracy = pos.coords.accuracy;
+      user.active = true;
+
+      return userCrud.save(user).then(function(){
+        return StorageUtils.set(storageKey, user).then(function(){
+          return user;
+        });
+      });
     });
   }
 
@@ -176,7 +191,7 @@ angular.module('app')
       return authCrud.save({
         provider: provider,
         id: id,
-        user: ParseUtils.toPointer('User', user),
+        user: ParseUtils.toPointer('_User', user),
         data: authData
       });
     }
