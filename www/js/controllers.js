@@ -107,7 +107,7 @@ angular.module('app')
   });
 })
 
-.controller('UserCtrl', function($scope, $state, $stateParams, UserSrv, UsersSrv, RelationsSrv, ChatSrv, ToastPlugin){
+.controller('UserCtrl', function($scope, $state, $stateParams, $ionicScrollDelegate, UserSrv, UsersSrv, RelationsSrv, ChatSrv, ToastPlugin){
   'use strict';
   var userId = $stateParams.id;
   var chatSetupTime = null;
@@ -174,20 +174,30 @@ angular.module('app')
         user: {
           objectId: data.currentUser.objectId,
           pseudo: data.currentUser.pseudo,
-          avatar: data.currentUser.avatar | null
+          avatar: data.currentUser.avatar || null
         },
         content: data.message
       };
       data.chat.$add(chatMessage).then(function(){
         data.message = '';
+        scrollTo('chat');
       });
     }
   };
 
-  function onMessage(event){
-    var message = data.chat.$getRecord(event.key);
-    if(chatSetupTime !== null && message.time > chatSetupTime && message.user.objectId !== data.currentUser.objectId){
-      ToastPlugin.showLongBottom('Nouveau message de '+message.user.pseudo+' : \n'+message.content);
+  function onMessage(infos){
+    if(infos.event === 'child_added'){
+      var message = data.chat.$getRecord(infos.key);
+      if(message && chatSetupTime !== null && message.time > chatSetupTime && message.user.objectId !== data.currentUser.objectId){
+        ToastPlugin.showLongBottom('Nouveau message de '+message.user.pseudo+' : \n'+message.content);
+      }
+    }
+  }
+  function scrollTo(className){
+    var scroll = $ionicScrollDelegate.getScrollPosition();
+    var elt = document.getElementsByClassName(className);
+    if(elt && elt[0] && elt[0].offsetTop){
+      $ionicScrollDelegate.scrollTo(scroll.left, elt[0].offsetTop, true);
     }
   }
 })
@@ -202,29 +212,5 @@ angular.module('app')
 
 .controller('IssuesCtrl', function($scope){
   'use strict';
-})
-
-/*.controller('NotificationsCtrl', function($scope, UserSrv, PushPlugin, ToastPlugin){
-  'use strict';
-  var data = {}, fn = {};
-  $scope.data = data;
-  $scope.fn = fn;
-
-  data.notifications = [];
-  // /!\ To use this, you should add Push plugin : ionic plugin add https://github.com/phonegap-build/PushPlugin
-  PushPlugin.onNotification(function(notification){
-    notification.time = new Date();
-    data.notifications.push(notification);
-  });
-
-  fn.sendPush = function(infos){
-    UserSrv.getCurrent().then(function(user){
-      PushPlugin.sendPush([user.pushId], infos).then(function(sent){
-        if(sent){
-          ToastPlugin.show('Notification posted !');
-        }
-      });
-    });
-  };
-})*/;
+});
 

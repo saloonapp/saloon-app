@@ -9,7 +9,7 @@
         <img class="avatar" ng-src="{{data.user.avatar || 'img/user.jpg'}}">
         <h2 class="title">{{data.user.pseudo}}</h2>
         <p class="profile">{{data.user.actualPurpose}}</p>
-        <p class="level"><i class="fa fa-connectdevelop"></i> Saloon explorer</p>
+        <p class="level"><i class="fa fa-connectdevelop"></i> SalooN explorer</p>
       </div>
       <div class="actions">
         <div class="pull-right" ng-show="data.relation !== null">
@@ -53,7 +53,7 @@
         </ul>
       </div>
 
-      <div class="list" ng-show="fn.isAccepted(data.relation)">
+      <div class="list chat" ng-show="fn.isAccepted(data.relation) && data.chat.length > 0">
         <div class="item item-divider">Messages échangés :</div>
         <div class="item item-avatar" ng-repeat="message in data.chat | orderBy:'time':true">
           <img ng-src="{{message.user.avatar || 'img/user.jpg'}}">
@@ -69,7 +69,7 @@
     <ion-footer-bar class="item-input-inset">
       <label class="item-input-wrapper">
         <i class="icon ion-ios7-search placeholder-icon"></i>
-        <input type="search" placeholder="Message" ng-model="data.message" focus-on-keyboard-open>
+        <input type="search" placeholder="Message" ng-model="data.message">
       </label>
       <button type="submit" class="button button-clear">Envoyer</button>
     </ion-footer-bar>

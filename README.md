@@ -1,4 +1,4 @@
-# Saloon
+# SalooN
 
 Meet interesting people around you !
 
