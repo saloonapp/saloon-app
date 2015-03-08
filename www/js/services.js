@@ -90,16 +90,19 @@ angular.module('app')
           locationAccuracy: pos.coords.accuracy,
           status: service.status.INVITED
         };
-        return relationCrud.save(relation).then(function(){
+        return relationCrud.save(relation).then(function(relationCreated){
           if(user && user.push && user.push.id && user.push.platform === 'android'){
             return PushPlugin.sendPush([user.push.id], {
               type: 'relation_invite',
               userId: currentUser.objectId,
               title: 'Invitation reçue',
               message: currentUser.pseudo+' vous invite à le rencontrer'
+            }).then(function(){
+              return relationCreated;
             });
           } else {
             console.log('no able to push to user', user);
+            return relationCreated;
           }
         });
       });
@@ -111,7 +114,6 @@ angular.module('app')
       var rel = angular.copy(relation); // do not update scope relation
       rel.status = service.status.ACCEPTED;
       return relationCrud.save(rel).then(function(){
-        relation.status = service.status.ACCEPTED; // update scope relation
         return UsersSrv.get(relation.from.objectId);
       }).then(function(user){
         if(user && user.push && user.push.id && user.push.platform === 'android'){
@@ -133,7 +135,6 @@ angular.module('app')
       var rel = angular.copy(relation); // do not update scope relation
       rel.status = service.status.DECLINED;
       return relationCrud.save(rel).then(function(){
-        relation.status = service.status.DECLINED; // update scope relation
         return UsersSrv.get(relation.from.objectId);
       }).then(function(user){
         if(user && user.push && user.push.id && user.push.platform === 'android'){

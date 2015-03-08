@@ -30,7 +30,19 @@ To run the app on your android device :
 
 ## Resources
 
-- Sample image upload : https://github.com/aaronksaunders/dcww
-- Sample chat : https://github.com/gregavola/instachat
-- integrate https://www.fullcontact.com/ API
-- integrate gravatar API
+- Code sample :
+    - image upload : https://github.com/aaronksaunders/dcww
+    - chat (parse+pusher) : https://github.com/gregavola/instachat
+- Data sources :
+    - integrate https://www.fullcontact.com/ API
+    - integrate gravatar API
+- Intesting UI patterns :
+    - consumer quotes : http://bootsnipp.com/snippets/featured/fancy-tabs-responsive, http://bootsnipp.com/snippets/featured/carousel-with-face-indicators
+    - material menu : http://bootsnipp.com/snippets/featured/inbox-by-gmail
+    - timeline : http://bootsnipp.com/snippets/featured/single-column-timeline-collapsed, http://bootsnipp.com/snippets/featured/single-column-timeline-dotted, http://bootsnipp.com/snippets/featured/timeline-single-column, http://bootsnipp.com/snippets/featured/single-column-timeline
+    - two column timeline : http://bootsnipp.com/snippets/featured/timeline-dotted, http://bootsnipp.com/snippets/featured/two-column-timeline-not-responsive, http://bootsnipp.com/snippets/featured/timeline-responsive, http://bootsnipp.com/snippets/featured/timeline
+    - chat : http://bootsnipp.com/snippets/featured/social-network-style-lightbox, http://bootsnipp.com/snippets/featured/like-hangout-chat, http://bootsnipp.com/snippets/featured/collapsible-chat-widget
+- UI resouce inspiration :
+    - http://www.mobile-patterns.com/
+    - http://www.pttrns.com/
+    - http://mycolorscreen.com/

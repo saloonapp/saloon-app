@@ -13,11 +13,12 @@
       </div>
       <div class="list">
         <div class="item item-divider">Tu souhaites discuter de :</div>
-        <label class="item item-radio" ng-repeat="interest in data.credentials.interests">
-          <input type="checkbox" name="{{interest.ref}}" ng-model="interest.interested">
-          <div class="item-content">{{interest.name}}</div>
-          <i class="radio-icon ion-checkmark"></i>
-        </label>
+        <div class="item item-checkbox small" ng-repeat="interest in data.credentials.interests">
+          <label class="checkbox">
+            <input type="checkbox" name="{{interest.ref}}" ng-model="interest.interested">
+          </label>
+          {{interest.name}}
+        </div>
       </div>
       <div class="alert alert-danger card padding" ng-if="data.error !== null" ng-click="data.error=null;"><strong>Oups !</strong> {{data.error}}</div>
       <button type="submit" class="button button-block button-positive" ng-disabled="!fn.canSubmit()">Et voilà !</button>

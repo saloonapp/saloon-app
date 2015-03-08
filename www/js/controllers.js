@@ -107,13 +107,15 @@ angular.module('app')
   });
 })
 
-.controller('UserCtrl', function($scope, $state, $stateParams, UserSrv, UsersSrv, RelationsSrv){
+.controller('UserCtrl', function($scope, $state, $stateParams, UserSrv, UsersSrv, RelationsSrv, ToastPlugin){
   'use strict';
   var userId = $stateParams.id;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
+  data.user = null;
+  data.relation = null;
   UserSrv.getCurrent().then(function(currentUser){
     data.currentUser = currentUser;
   });
@@ -130,18 +132,31 @@ angular.module('app')
     }
   });
 
-  fn.hasRelation = function(relation){ return !!relation; };
-  fn.isInitiator = function(relation, user){ return relation && relation.from && relation.from.objectId === user.objectId; }
-  fn.isPending = function(relation){ return relation && relation.status === RelationsSrv.status.INVITED; }
-  fn.isAccepted = function(relation){ return relation && relation.status === RelationsSrv.status.ACCEPTED; }
-  fn.isDeclined = function(relation){ return relation && relation.status === RelationsSrv.status.DECLINED; }
+  fn.hasNoRelation = function(relation){ return relation !== null && !relation; };
+  fn.hasRelation = function(relation){ return relation !== null && !!relation; };
+  fn.isInitiator = function(relation, user){ return relation && relation.from && relation.from.objectId === user.objectId; };
+  fn.isPending = function(relation){ return relation && relation.status === RelationsSrv.status.INVITED; };
+  fn.isAccepted = function(relation){ return relation && relation.status === RelationsSrv.status.ACCEPTED; };
+  fn.isDeclined = function(relation){ return relation && relation.status === RelationsSrv.status.DECLINED; };
 
   fn.invite = function(user){
-    console.log('invite', user);
-    RelationsSrv.invite(user);
+    RelationsSrv.invite(user).then(function(relationCreated){
+      data.relation = relationCreated;
+      ToastPlugin.show('Invitation envoyée :)');
+    });
   };
-  fn.acceptInvite = function(relation){ RelationsSrv.acceptInvite(relation); };
-  fn.declineInvite = function(relation){ RelationsSrv.declineInvite(relation); };
+  fn.acceptInvite = function(relation){
+    RelationsSrv.acceptInvite(relation).then(function(){
+      data.relation.status = RelationsSrv.status.ACCEPTED;
+      ToastPlugin.show('Invitation acceptée :)');
+    });
+  };
+  fn.declineInvite = function(relation){
+    RelationsSrv.declineInvite(relation).then(function(){
+      data.relation.status = RelationsSrv.status.DECLINED;
+      ToastPlugin.show('Invitation refusée :(');
+    });
+  };
 })
 
 .controller('ChatsCtrl', function($scope){

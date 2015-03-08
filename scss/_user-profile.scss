@@ -1,0 +1,67 @@
+.user-profile {
+  background: $stable;
+  padding-bottom: 20px;
+  .header {
+    color: $light;
+    background: $positive;
+    padding: 20px 0px;
+    position: relative;
+    .social {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      img {
+        height: 25px;
+        margin-left: 10px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+    }
+    .avatar {
+      width: 22%;
+      border-radius: 50%;
+      margin: auto;
+      display: block;
+      border: 3px solid $light;
+    }
+    .title {
+      text-align: center;
+      font-weight: initial;
+      color: $light;
+      margin-top: 10px;
+      margin-bottom: 0px;
+    }
+    .profile {
+      text-align: center;
+      font-weight: bold;
+    }
+    .level {
+      text-align: center;
+      font-weight: bold;
+      opacity: 0.7;
+      margin-top: 15px;
+      margin-bottom: 0px;
+      i {
+        margin-right: 5px;
+      }
+    }
+  }
+  .actions {
+    padding: 10px;
+    background: $light;
+    /*border-bottom: 1px solid #ddd;*/
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    .loader {
+      text-align: center;
+      font-size: 31px;
+      color: $positive;
+    }
+    .button {
+      border-radius: 5px;
+      padding-left: 9px;
+      padding-right: 9px;
+      i {
+        margin-right: 5px;
+      }
+    }
+  }
+}

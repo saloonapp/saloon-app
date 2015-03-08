@@ -1,33 +1,56 @@
-<ion-view title="Details">
+<ion-view title="Profil">
   <ion-content>
     <loading ng-show="!data.user" top="100px"></loading>
-    <div ng-show="data.user">
-      <div class="list card">
-        <div class="item item-avatar">
-          <img ng-src="{{data.user.avatar || 'img/user.jpg'}}">
-          <button class="button button-positive pull-right" ng-if="!fn.hasRelation(data.relation)" ng-click="fn.invite(data.user)">Inviter</button>
-          <button class="button button-balanced pull-right" ng-if="!fn.isInitiator(data.relation, data.currentUser) && fn.isPending(data.relation)" ng-click="fn.acceptInvite(data.relation)">Accepter</button>
-          <button class="button button-assertive pull-right" ng-if="!fn.isInitiator(data.relation, data.currentUser) && fn.isPending(data.relation)" ng-click="fn.declineInvite(data.relation)">Refuser</button>
-          <button class="button button-positive pull-right" ng-if="fn.isInitiator(data.relation, data.currentUser) && fn.isPending(data.relation)" ng-disabled="true">En attente...</button>
-          <h2>{{data.user.pseudo}}</h2>
-          <p style="white-space: initial;">{{data.user.actualPurpose}}</p>
+    <div class="user-profile" ng-show="data.user">
+      <div class="header">
+        <div class="social pull-right">
+          <a href="{{data.user.linkedin.publicUrl}}" ng-if="data.user.linkedin"><img src="img/social/square/linkedin.png"></a>
         </div>
+        <img class="avatar" ng-src="{{data.user.avatar || 'img/user.jpg'}}">
+        <h2 class="title">{{data.user.pseudo}}</h2>
+        <p class="profile">{{data.user.actualPurpose}}</p>
+        <p class="level"><i class="fa fa-connectdevelop"></i> Saloon explorer</p>
       </div>
+      <div class="actions">
+        <div class="pull-right" ng-show="data.relation !== null">
+          <button class="button button-small button-outline button-positive"
+                  ng-show="fn.hasNoRelation(data.relation)" ng-click="fn.invite(data.user)">
+            <i class="icon ion-android-add-contact"></i> Inviter
+          </button>
+          <button class="button button-small button-outline button-positive" disabled
+                  ng-show="fn.isInitiator(data.relation, data.currentUser) && fn.isPending(data.relation)">
+            <i class="icon ion-android-add-contact"></i> En attente...
+          </button>
+          <button class="button button-small button-outline button-assertive"
+                  ng-show="!fn.isInitiator(data.relation, data.currentUser) && fn.isPending(data.relation)" ng-click="fn.declineInvite(data.relation)">
+            <i class="icon ion-android-add-contact"></i> Refuser
+          </button>
+          <button class="button button-small button-outline button-balanced"
+                  ng-show="!fn.isInitiator(data.relation, data.currentUser) && fn.isPending(data.relation)" ng-click="fn.acceptInvite(data.relation)">
+            <i class="icon ion-android-add-contact"></i> Accepter
+          </button>
+          <button class="button button-small button-positive"
+                  ng-show="fn.isAccepted(data.relation)">
+            <i class="icon ion-android-contact"></i> Contact
+          </button>
+          <button class="button button-small button-outline button-stable"
+                  ng-show="fn.isDeclined(data.relation)">
+            <i class="icon ion-android-contact"></i>
+            <span ng-show="fn.isInitiator(data.relation, data.currentUser)">Ce contact vous a ignoré</span>
+            <span ng-show="!fn.isInitiator(data.relation, data.currentUser)">Contact ignoré</span>
+          </button>
+        </div>
+        <div class="loader" ng-show="data.relation === null">
+          <i class="icon ion-loading-c"></i>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+
       <div class="list card padding">
         <h4>Intéressé par :</h4>
         <ul>
-          <li ng-repeat="interest in data.user.interests" ng-if="interest.interested">{{interest.name}}</li>
+          <li ng-repeat="interest in data.user.interests" ng-if="interest.interested">- {{interest.name}}</li>
         </ul>
-      </div>
-      <div class="list card padding" ng-if="data.user.linkedin">
-        <h3>{{data.user.linkedin.firstName}} {{data.user.linkedin.lastName}}</h3>
-        <h5>{{data.user.linkedin.headline}}</h5>
-        <p>
-          <pre>{{data.user.linkedin.summary}}</pre>
-        </p>
-        <p>
-          {{data.user.linkedin.connectionsCount}} connexions Linkedin
-        </p>
       </div>
     </div>
   </ion-content>
