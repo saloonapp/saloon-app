@@ -46,6 +46,15 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
       }
     }
   })
+  .state('tabs.contacts', {
+    url: '/contacts',
+    views: {
+      'users-tab': {
+        templateUrl: 'views/contacts.html',
+        controller: 'ContactsCtrl'
+      }
+    }
+  })
   .state('tabs.user', {
     url: '/user/:id',
     views: {

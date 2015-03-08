@@ -28,6 +28,11 @@ To run the app on your android device :
 
 - slack integration ?
 
+## TODO
+
+- add warning when register (early beta => all data may be deleted)
+- public chat rooms
+
 ## Resources
 
 - Code sample :

@@ -107,6 +107,21 @@ angular.module('app')
   });
 })
 
+.controller('ContactsCtrl', function($scope, RelationsSrv, UsersSrv){
+  'use strict';
+  var data = {};
+  $scope.data = data;
+  data.users = null;
+
+  $scope.$on('$ionicView.enter', function(){
+    RelationsSrv.getContactsIds().then(function(ids){
+      return UsersSrv.getAll(ids);
+    }).then(function(users){
+      data.users = users;
+    });
+  });
+})
+
 .controller('UserCtrl', function($scope, $state, $stateParams, $ionicScrollDelegate, UserSrv, UsersSrv, RelationsSrv, ChatSrv, ToastPlugin){
   'use strict';
   var userId = $stateParams.id;

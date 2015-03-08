@@ -18,7 +18,8 @@ angular.module('app')
   var tmpUsers = null;
   var service = {
     getNearUsers: getNearUsers,
-    get: get
+    get: get,
+    getAll: getAll
   };
   var userCrud = ParseUtils.createUserCrud(null, function(){}, false);
 
@@ -52,6 +53,14 @@ angular.module('app')
     return userCrud.get(id);
   }
 
+  function getAll(ids){
+    return userCrud.find({
+      objectId: {$in: ids}
+    }).then(function(users){
+      return users;
+    });
+  }
+
   return service;
 })
 
@@ -65,6 +74,7 @@ angular.module('app')
       ACCEPTED: 'accepted'
     },
     get: get,
+    getContactsIds: getContactsIds,
     invite: invite,
     acceptInvite: acceptInvite,
     declineInvite: declineInvite,
@@ -76,6 +86,30 @@ angular.module('app')
       return relationCrud.findOne({
         from: {$in: [ParseUtils.toPointer('_User', user), ParseUtils.toPointer('_User', currentUser)]},
         to: {$in: [ParseUtils.toPointer('_User', user), ParseUtils.toPointer('_User', currentUser)]}
+      });
+    });
+  }
+
+  function getContactsIds(){
+    return UserSrv.getCurrent().then(function(currentUser){
+      return relationCrud.find({
+        status: service.status.ACCEPTED,
+        $or: [
+          {from: ParseUtils.toPointer('_User', currentUser)},
+          {to: ParseUtils.toPointer('_User', currentUser)}
+        ]
+      }).then(function(relations){
+        console.log('relations', relations);
+        var ids = [];
+        for(var i in relations){
+          if(relations[i].from.objectId !== currentUser.objectId){
+            ids.push(relations[i].from.objectId);
+          }
+          if(relations[i].to.objectId !== currentUser.objectId){
+            ids.push(relations[i].to.objectId);
+          }
+        }
+        return ids;
       });
     });
   }
