@@ -3,7 +3,9 @@
   "private": "true",
   "version": "0.0.1",
   "homepage": "",
-  "authors": [ "Loïc Knuchel <loicknuchel@gmail.com>" ],
+  "authors": [
+    "Loïc Knuchel <loicknuchel@gmail.com>"
+  ],
   "description": "Discutez avec le bonnes personnes autours de vous !",
   "main": "www/index.html",
   "keywords": [
@@ -24,7 +26,8 @@
     "angular-localforage": "~1.2.2",
     "moment": "~2.9.0",
     "moment-duration-format": "~1.3.0",
-    "lodash": "~3.3.1"
+    "lodash": "~3.3.1",
+    "angularfire": "~1.0.0"
   },
   "devDependencies": {
     "angular-mocks": "1.3.6",

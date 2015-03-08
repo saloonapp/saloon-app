@@ -1,4 +1,4 @@
-angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule'])
+angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
 
 .config(function($stateProvider, $urlRouterProvider, $provide, $httpProvider, AuthSrvProvider, ParseUtilsProvider, Config) {
   'use strict';

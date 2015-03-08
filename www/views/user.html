@@ -52,6 +52,26 @@
           <li ng-repeat="interest in data.user.interests" ng-if="interest.interested">- {{interest.name}}</li>
         </ul>
       </div>
+
+      <div class="list" ng-show="fn.isAccepted(data.relation)">
+        <div class="item item-divider">Messages échangés :</div>
+        <div class="item item-avatar" ng-repeat="message in data.chat | orderBy:'time':true">
+          <img ng-src="{{message.user.avatar || 'img/user.jpg'}}">
+          <small class="pull-right">{{message.time | humanTime}}</small>
+          <h2>{{message.user.pseudo}}</h2>
+          <p>{{message.content}}</p>
+        </div>
+      </div>
     </div>
   </ion-content>
+
+  <form ng-submit="fn.sendMessage()" ng-show="fn.isAccepted(data.relation)">
+    <ion-footer-bar class="item-input-inset">
+      <label class="item-input-wrapper">
+        <i class="icon ion-ios7-search placeholder-icon"></i>
+        <input type="search" placeholder="Message" ng-model="data.message" focus-on-keyboard-open>
+      </label>
+      <button type="submit" class="button button-clear">Envoyer</button>
+    </ion-footer-bar>
+  </form>
 </ion-view>

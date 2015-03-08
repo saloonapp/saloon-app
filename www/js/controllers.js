@@ -107,9 +107,10 @@ angular.module('app')
   });
 })
 
-.controller('UserCtrl', function($scope, $state, $stateParams, UserSrv, UsersSrv, RelationsSrv, ToastPlugin){
+.controller('UserCtrl', function($scope, $state, $stateParams, UserSrv, UsersSrv, RelationsSrv, ChatSrv, ToastPlugin){
   'use strict';
   var userId = $stateParams.id;
+  var chatSetupTime = null;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
@@ -121,11 +122,14 @@ angular.module('app')
   });
   UsersSrv.get(userId).then(function(user){
     if(user){
-      console.log('user', user);
       data.user = user;
       RelationsSrv.get(user).then(function(relation){
-        console.log('relation', relation);
         data.relation = relation;
+        if(relation && relation.objectId){
+          data.chat = ChatSrv.setupRelationChat(relation);
+          data.chat.$watch(onMessage);
+          chatSetupTime = Date.now();
+        }
       });
     } else {
       $state.go('tabs.users');
@@ -142,6 +146,11 @@ angular.module('app')
   fn.invite = function(user){
     RelationsSrv.invite(user).then(function(relationCreated){
       data.relation = relationCreated;
+      if(relationCreated && relationCreated.objectId && !data.chat){
+        data.chat = ChatSrv.setupRelationChat(relationCreated);
+        data.chat.$watch(onMessage);
+        chatSetupTime = Date.now();
+      }
       ToastPlugin.show('Invitation envoyée :)');
     });
   };
@@ -157,6 +166,30 @@ angular.module('app')
       ToastPlugin.show('Invitation refusée :(');
     });
   };
+
+  fn.sendMessage = function(){
+    if(fn.isAccepted(data.relation) && data.chat){
+      var chatMessage = {
+        time: Date.now(),
+        user: {
+          objectId: data.currentUser.objectId,
+          pseudo: data.currentUser.pseudo,
+          avatar: data.currentUser.avatar | null
+        },
+        content: data.message
+      };
+      data.chat.$add(chatMessage).then(function(){
+        data.message = '';
+      });
+    }
+  };
+
+  function onMessage(event){
+    var message = data.chat.$getRecord(event.key);
+    if(chatSetupTime !== null && message.time > chatSetupTime && message.user.objectId !== data.currentUser.objectId){
+      ToastPlugin.showLongBottom('Nouveau message de '+message.user.pseudo+' : \n'+message.content);
+    }
+  }
 })
 
 .controller('ChatsCtrl', function($scope){

@@ -179,4 +179,18 @@ angular.module('app')
   }
 
   return service;
+})
+
+.factory('ChatSrv', function($firebaseArray, Config){
+  'use strict';
+  var service = {
+    setupRelationChat: setupRelationChat
+  };
+
+  function setupRelationChat(relation){
+    var ref = new Firebase(Config.firebase.url+'/oneToOneChat/'+relation.objectId);
+    return $firebaseArray(ref);
+  }
+
+  return service;
 });
