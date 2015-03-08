@@ -125,19 +125,15 @@ angular.module('app')
       data.user = user;
       RelationsSrv.get(user).then(function(relation){
         data.relation = relation;
-        if(relation && relation.objectId){
-          data.chat = ChatSrv.setupRelationChat(relation);
-          data.chat.$watch(onMessage);
-          chatSetupTime = Date.now();
-        }
+        setupChatIfNeeded(relation);
       });
     } else {
       $state.go('tabs.users');
     }
   });
 
-  fn.hasNoRelation = function(relation){ return relation !== null && !relation; };
   fn.hasRelation = function(relation){ return relation !== null && !!relation; };
+  fn.hasNoRelation = function(relation){ return relation !== null && !relation; };
   fn.isInitiator = function(relation, user){ return relation && relation.from && relation.from.objectId === user.objectId; };
   fn.isPending = function(relation){ return relation && relation.status === RelationsSrv.status.INVITED; };
   fn.isAccepted = function(relation){ return relation && relation.status === RelationsSrv.status.ACCEPTED; };
@@ -146,11 +142,7 @@ angular.module('app')
   fn.invite = function(user){
     RelationsSrv.invite(user).then(function(relationCreated){
       data.relation = relationCreated;
-      if(relationCreated && relationCreated.objectId && !data.chat){
-        data.chat = ChatSrv.setupRelationChat(relationCreated);
-        data.chat.$watch(onMessage);
-        chatSetupTime = Date.now();
-      }
+      setupChatIfNeeded(relationCreated);
       ToastPlugin.show('Invitation envoyée :)');
     });
   };
@@ -169,28 +161,25 @@ angular.module('app')
 
   fn.sendMessage = function(){
     if(fn.isAccepted(data.relation) && data.chat){
-      var chatMessage = {
-        time: Date.now(),
-        user: {
-          objectId: data.currentUser.objectId,
-          pseudo: data.currentUser.pseudo,
-          avatar: data.currentUser.avatar || null
-        },
-        content: data.message
-      };
-      data.chat.$add(chatMessage).then(function(){
+      ChatSrv.sendToRelationChat(data.chat, data.message).then(function(){
         data.message = '';
         scrollTo('chat');
       });
     }
   };
 
-  function onMessage(infos){
-    if(infos.event === 'child_added'){
-      var message = data.chat.$getRecord(infos.key);
-      if(message && chatSetupTime !== null && message.time > chatSetupTime && message.user.objectId !== data.currentUser.objectId){
-        ToastPlugin.showLongBottom('Nouveau message de '+message.user.pseudo+' : \n'+message.content);
-      }
+  function setupChatIfNeeded(relation){
+    if(relation && relation.objectId && !data.chat){
+      data.chat = ChatSrv.setupRelationChat(relation);
+      data.chat.$watch(function onMessage(infos){
+        if(infos.event === 'child_added'){
+          var message = data.chat.$getRecord(infos.key);
+          if(message && chatSetupTime !== null && message.time > chatSetupTime && message.user.objectId !== data.currentUser.objectId){
+            ToastPlugin.showLongBottom('Nouveau message de '+message.user.pseudo+' : \n'+message.content);
+          }
+        }
+      });
+      chatSetupTime = Date.now();
     }
   }
   function scrollTo(className){

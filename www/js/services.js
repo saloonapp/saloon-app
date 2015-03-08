@@ -181,15 +181,36 @@ angular.module('app')
   return service;
 })
 
-.factory('ChatSrv', function($firebaseArray, Config){
+.factory('ChatSrv', function($firebaseArray, UserSrv, Config){
   'use strict';
+  var cache = {};
   var service = {
-    setupRelationChat: setupRelationChat
+    setupRelationChat: setupRelationChat,
+    sendToRelationChat: sendToRelationChat
   };
 
   function setupRelationChat(relation){
-    var ref = new Firebase(Config.firebase.url+'/oneToOneChat/'+relation.objectId);
-    return $firebaseArray(ref);
+    var url = Config.firebase.url+'/oneToOneChat/'+relation.objectId;
+    if(!cache[url]){
+      var ref = new Firebase(url);
+      cache[url] = $firebaseArray(ref);
+    }
+    return cache[url];
+  }
+
+  function sendToRelationChat(chat, message){
+    return UserSrv.getCurrent().then(function(currentUser){
+      var chatMessage = {
+        time: Date.now(),
+        user: {
+          objectId: currentUser.objectId,
+          pseudo: currentUser.pseudo,
+          avatar: currentUser.avatar || null
+        },
+        content: message
+      };
+      return chat.$add(chatMessage);
+    });
   }
 
   return service;
