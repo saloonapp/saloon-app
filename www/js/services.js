@@ -13,7 +13,7 @@ angular.module('app')
 
 .factory('UsersSrv', function($q, $timeout, UserSrv, ParseUtils, Utils, GeolocationPlugin){
   'use strict';
-  var matchDistance = 0.1; // 100m
+  var matchDistance = 1; // 1 km
   var matchMaxAge = 60 * 60 * 1000; // 1h
   var tmpUsers = null;
   var service = {
@@ -55,18 +55,30 @@ angular.module('app')
   return service;
 })
 
-.factory('RelationsSrv', function($state, UserSrv, DialogPlugin, ParseUtils, PushPlugin, GeolocationPlugin){
+.factory('RelationsSrv', function($state, UserSrv, UsersSrv, DialogPlugin, ParseUtils, PushPlugin, GeolocationPlugin){
   'use strict';
   var relationCrud = ParseUtils.createCrud('Relation');
   var service = {
     status: {
       INVITED: 'invited',
-      REJECTED: 'rejected',
+      DECLINED: 'declined',
       ACCEPTED: 'accepted'
     },
+    get: get,
     invite: invite,
+    acceptInvite: acceptInvite,
+    declineInvite: declineInvite,
     onInvitation: onInvitation
   };
+
+  function get(user){
+    return UserSrv.getCurrent().then(function(currentUser){
+      return relationCrud.findOne({
+        from: {$in: [ParseUtils.toPointer('_User', user), ParseUtils.toPointer('_User', currentUser)]},
+        to: {$in: [ParseUtils.toPointer('_User', user), ParseUtils.toPointer('_User', currentUser)]}
+      });
+    });
+  }
 
   function invite(user){
     return UserSrv.getCurrent().then(function(currentUser){
@@ -94,6 +106,50 @@ angular.module('app')
     });
   }
 
+  function acceptInvite(relation){
+    return UserSrv.getCurrent().then(function(currentUser){
+      var rel = angular.copy(relation); // do not update scope relation
+      rel.status = service.status.ACCEPTED;
+      return relationCrud.save(rel).then(function(){
+        relation.status = service.status.ACCEPTED; // update scope relation
+        return UsersSrv.get(relation.from.objectId);
+      }).then(function(user){
+        if(user && user.push && user.push.id && user.push.platform === 'android'){
+          return PushPlugin.sendPush([user.push.id], {
+            type: 'relation_accept',
+            userId: currentUser.objectId,
+            title: 'Invitation acceptée',
+            message: currentUser.pseudo+' a accepté votre invitation :)'
+          });
+        } else {
+          console.log('no able to push to user', user);
+        }
+      });
+    });
+  }
+
+  function declineInvite(relation){
+    return UserSrv.getCurrent().then(function(currentUser){
+      var rel = angular.copy(relation); // do not update scope relation
+      rel.status = service.status.DECLINED;
+      return relationCrud.save(rel).then(function(){
+        relation.status = service.status.DECLINED; // update scope relation
+        return UsersSrv.get(relation.from.objectId);
+      }).then(function(user){
+        if(user && user.push && user.push.id && user.push.platform === 'android'){
+          return PushPlugin.sendPush([user.push.id], {
+            type: 'relation_decline',
+            userId: currentUser.objectId,
+            title: 'Invitation ignorée',
+            message: currentUser.pseudo+' a ignorée votre invitation :('
+          });
+        } else {
+          console.log('no able to push to user', user);
+        }
+      });
+    });
+  }
+
   function onInvitation(notification, data){
     if(notification.foreground){
       DialogPlugin.confirmMulti(data.message,data.title, ['Voir profil', 'Ignorer']).then(function(btnIndex){
@@ -116,6 +172,9 @@ angular.module('app')
 
   function received(notification){
     if(notification.payload.type === 'relation_invite'){ RelationsSrv.onInvitation(notification, notification.payload); }
+    else if(notification.payload.type === 'relation_accept'){ RelationsSrv.onInvitation(notification, notification.payload); }
+    else if(notification.payload.type === 'relation_decline'){ RelationsSrv.onInvitation(notification, notification.payload); }
+    else { console.log('Notification received', notification); }
   }
 
   return service;

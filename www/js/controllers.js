@@ -88,6 +88,7 @@ angular.module('app')
           data.users = users;
           $scope.$broadcast('scroll.refreshComplete');
         });
+        UserSrv.updatePosition();
       } else {
         $scope.$broadcast('scroll.refreshComplete');
       }
@@ -106,25 +107,41 @@ angular.module('app')
   });
 })
 
-.controller('UserCtrl', function($scope, $state, $stateParams, UsersSrv, RelationsSrv){
+.controller('UserCtrl', function($scope, $state, $stateParams, UserSrv, UsersSrv, RelationsSrv){
   'use strict';
   var userId = $stateParams.id;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
+  UserSrv.getCurrent().then(function(currentUser){
+    data.currentUser = currentUser;
+  });
   UsersSrv.get(userId).then(function(user){
     if(user){
+      console.log('user', user);
       data.user = user;
+      RelationsSrv.get(user).then(function(relation){
+        console.log('relation', relation);
+        data.relation = relation;
+      });
     } else {
       $state.go('tabs.users');
     }
   });
 
+  fn.hasRelation = function(relation){ return !!relation; };
+  fn.isInitiator = function(relation, user){ return relation && relation.from && relation.from.objectId === user.objectId; }
+  fn.isPending = function(relation){ return relation && relation.status === RelationsSrv.status.INVITED; }
+  fn.isAccepted = function(relation){ return relation && relation.status === RelationsSrv.status.ACCEPTED; }
+  fn.isDeclined = function(relation){ return relation && relation.status === RelationsSrv.status.DECLINED; }
+
   fn.invite = function(user){
     console.log('invite', user);
     RelationsSrv.invite(user);
   };
+  fn.acceptInvite = function(relation){ RelationsSrv.acceptInvite(relation); };
+  fn.declineInvite = function(relation){ RelationsSrv.declineInvite(relation); };
 })
 
 .controller('ChatsCtrl', function($scope){

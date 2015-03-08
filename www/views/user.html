@@ -5,7 +5,10 @@
       <div class="list card">
         <div class="item item-avatar">
           <img ng-src="{{data.user.avatar || 'img/user.jpg'}}">
-          <button class="button button-positive pull-right" ng-click="fn.invite(data.user)">Inviter</button>
+          <button class="button button-positive pull-right" ng-if="!fn.hasRelation(data.relation)" ng-click="fn.invite(data.user)">Inviter</button>
+          <button class="button button-balanced pull-right" ng-if="!fn.isInitiator(data.relation, data.currentUser) && fn.isPending(data.relation)" ng-click="fn.acceptInvite(data.relation)">Accepter</button>
+          <button class="button button-assertive pull-right" ng-if="!fn.isInitiator(data.relation, data.currentUser) && fn.isPending(data.relation)" ng-click="fn.declineInvite(data.relation)">Refuser</button>
+          <button class="button button-positive pull-right" ng-if="fn.isInitiator(data.relation, data.currentUser) && fn.isPending(data.relation)" ng-disabled="true">En attente...</button>
           <h2>{{data.user.pseudo}}</h2>
           <p style="white-space: initial;">{{data.user.actualPurpose}}</p>
         </div>
