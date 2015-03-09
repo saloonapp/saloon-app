@@ -253,11 +253,11 @@ angular.module('app')
 
   function getPublicRooms(){
     return $http.get(Config.firebase.url+'/publicChat.json?shallow=true').then(function(res){
-      var rooms = ['public'];
+      var rooms = [{id: 'public'}];
       if(res && res.data){
         for(var i in res.data){
           if(res.data[i] && rooms.indexOf(i) === -1){
-            rooms.push(i);
+            rooms.push({id: i});
           }
         }
       }

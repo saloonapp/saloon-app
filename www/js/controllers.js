@@ -211,8 +211,8 @@ angular.module('app')
     ChatSrv.getPublicRooms().then(function(rooms){
       if(!data.rooms){ data.rooms = []; }
       for(var i in rooms){
-        if(data.rooms.indexOf(rooms[i]) === -1){
-          data.rooms.push({id: rooms[i]});
+        if(_.find(data.rooms, {id: rooms[i].id}) === undefined){
+          data.rooms.push(rooms[i]);
         }
       }
       $scope.$broadcast('scroll.refreshComplete');
