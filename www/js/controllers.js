@@ -175,7 +175,7 @@ angular.module('app')
   };
 
   fn.sendMessage = function(){
-    if(fn.isAccepted(data.relation) && data.chat){
+    if(fn.isAccepted(data.relation) && data.chat && data.message && data.message.length > 0){
       ChatSrv.sendToRelationChat(data.chat, data.message).then(function(){
         data.message = '';
         scrollTo('chat');
