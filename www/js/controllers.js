@@ -206,8 +206,44 @@ angular.module('app')
   }
 })
 
-.controller('ChatsCtrl', function($scope){
+.controller('ChatsCtrl', function($scope, $ionicPopup, ToastPlugin, KeyboardPlugin){
   'use strict';
+  var data = {}, fn = {};
+  $scope.data = data;
+  $scope.fn = fn;
+
+  fn.createRoom = function(){
+    KeyboardPlugin.onNextShow(function(e){
+      var popupScope = $scope.$new(true);
+      popupScope.data = {};
+      $ionicPopup.show({
+        template: '<input type="text" ng-model="data.newRoomName" autofocus>',
+        title: 'Nom de votre room :',
+        scope: popupScope,
+        buttons: [
+          { text: 'Annuler' },
+          {
+            text: '<b>Créer</b>',
+            type: 'button-positive',
+            onTap: function(e){
+              if(!popupScope.data.newRoomName){
+                e.preventDefault();
+                ToastPlugin.showShortCenter('Vous devez donner un nom à votre room');
+              } else {
+                return popupScope.data.newRoomName;
+              }
+            }
+          },
+        ]
+      }).then(function(res) {
+        KeyboardPlugin.close();
+        if(res){
+          console.log('Tapped!', res);
+        }
+      });
+    });
+    KeyboardPlugin.show();
+  };
 })
 
 .controller('PollsCtrl', function($scope){

@@ -43,6 +43,90 @@ angular.module('app')
   return service;
 })
 
+// for Keyboard plugin : https://github.com/driftyco/ionic-plugins-keyboard
+.factory('KeyboardPlugin', function($window, PluginUtils){
+  'use strict';
+  var pluginName = 'Keyboard';
+  var pluginTest = function(){ return $window.cordova && $window.cordova.plugins && $window.cordova.plugins.Keyboard; };
+  var service = {
+    show: show,
+    onNextShow: onNextShow,
+    onShow: onShow,
+    close: close,
+    onNextHide: onNextHide,
+    onHide: onHide,
+    isVisible: isVisible,
+    hideKeyboardAccessoryBar: hideKeyboardAccessoryBar,
+    disableScroll: disableScroll
+  };
+
+  function show(){
+    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+      return $window.cordova.plugins.Keyboard.show();
+    });
+  }
+
+  function onNextShow(fn){
+    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+      var callback = function(e){
+        $window.removeEventListener('native.keyboardshow', callback);
+        fn(e);
+      };
+      $window.addEventListener('native.keyboardshow', callback);
+    });
+  }
+
+  function onShow(fn){
+    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+      $window.addEventListener('native.keyboardshow', fn);
+    });
+  }
+
+  function close(){
+    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+      return $window.cordova.plugins.Keyboard.close();
+    });
+  }
+
+  function onNextHide(fn){
+    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+      var callback = function(e){
+        $window.removeEventListener('native.keyboardhide', callback);
+        fn(e);
+      };
+      $window.addEventListener('native.keyboardhide', callback);
+    });
+  }
+
+  function onHide(fn){
+    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+      $window.addEventListener('native.keyboardhide', fn);
+    });
+  }
+
+  function isVisible(){
+    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+      return $window.cordova.plugins.Keyboard.isVisible;
+    });
+  }
+
+  // iOS only
+  function hideKeyboardAccessoryBar(shouldHide){
+    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+      return $window.cordova.plugins.Keyboard.hideKeyboardAccessoryBar(shouldHide);
+    });
+  }
+
+  // iOS only
+  function disableScroll(shouldDisable){
+    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+      return $window.cordova.plugins.Keyboard.disableScroll(shouldDisable);
+    });
+  }
+
+  return service;
+})
+
 // for Dialogs plugin : org.apache.cordova.dialogs (https://github.com/apache/cordova-plugin-dialogs)
 .factory('DialogPlugin', function($window, $q, $log, PluginUtils){
   'use strict';

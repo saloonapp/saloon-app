@@ -49,3 +49,9 @@
     font-size: 12px;
   }
 }
+
+.popup-body {
+  input[type=text], input[type=password] {
+    padding-left: 10px;
+  }
+}

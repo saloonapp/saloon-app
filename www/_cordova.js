@@ -12,6 +12,29 @@ ionic.Platform.ready(function(){
     };
 
 
+    // for Keyboard plugin : https://github.com/driftyco/ionic-plugins-keyboard
+    if(!window.cordova){window.cordova = {};}
+    if(!window.cordova.plugins){window.cordova.plugins = {};}
+    window.cordova.plugins.Keyboard = (function(){
+      var plugin = {
+        isVisible: false,
+        show: function(){
+          plugin.isVisible = true;
+          var event = new Event('native.keyboardshow');
+          event.keyboardHeight = 284;
+          window.dispatchEvent(event);
+        },
+        close: function(){
+          plugin.isVisible = false;
+          window.dispatchEvent(new Event('native.keyboardhide'));
+        },
+        hideKeyboardAccessoryBar: function(shouldHide){},
+        disableScroll: function(shouldDisable){}
+      }
+      return plugin;
+    })();
+
+
     // for Dialogs plugin : org.apache.cordova.dialogs (https://github.com/apache/cordova-plugin-dialogs)
     if(!window.navigator){window.navigator = {};}
     window.navigator.notification = (function(){
