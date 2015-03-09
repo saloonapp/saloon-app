@@ -1,0 +1,25 @@
+<ion-view title="/{{data.chatId || 'Chat'}}">
+  <ion-content>
+    <div class="padding" style="text-align: center;" ng-if="data.chat.length === 0">
+      <h3>Aucun message pour le moment...</h3>
+    </div>
+    <div class="list chat" ng-show="data.chat.length > 0">
+      <div class="item item-avatar" ng-repeat="message in data.chat | orderBy:'time':true">
+        <img ng-src="{{message.user.avatar || 'img/user.jpg'}}">
+        <small class="pull-right">{{message.time | humanTime}}</small>
+        <h2>{{message.user.pseudo}}</h2>
+        <p>{{message.content}}</p>
+      </div>
+    </div>
+  </ion-content>
+
+  <form ng-submit="fn.sendMessage()">
+    <ion-footer-bar class="item-input-inset">
+      <label class="item-input-wrapper">
+        <i class="icon ion-ios7-search placeholder-icon"></i>
+        <input type="search" placeholder="Message" ng-model="data.message">
+      </label>
+      <button type="submit" class="button button-clear">Envoyer</button>
+    </ion-footer-bar>
+  </form>
+</ion-view>

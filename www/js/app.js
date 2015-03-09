@@ -73,6 +73,15 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
       }
     }
   })
+  .state('tabs.chat', {
+    url: '/chat/:id',
+    views: {
+      'chats-tab': {
+        templateUrl: 'views/chat.html',
+        controller: 'ChatCtrl'
+      }
+    }
+  })
   .state('tabs.polls', {
     url: '/polls',
     views: {

@@ -31,12 +31,6 @@ angular.module('app')
   }).then(function(modal){
     $scope.profileModal = modal;
   });
-  /*$ionicModal.fromTemplateUrl('views/partials/notifications-modal.html', {
-    scope: $scope,
-    animation: 'slide-in-up'
-  }).then(function(modal){
-    $scope.notificationsModal = modal;
-  });*/
 
   $scope.logout = function(){
     UserSrv.logout().then(function(){
@@ -206,11 +200,29 @@ angular.module('app')
   }
 })
 
-.controller('ChatsCtrl', function($scope, $ionicPopup, ToastPlugin, KeyboardPlugin){
+.controller('ChatsCtrl', function($scope, $state, $ionicPopup, ChatSrv, ToastPlugin, KeyboardPlugin){
   'use strict';
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
+
+  data.rooms = null;
+  function loadRooms(){
+    ChatSrv.getPublicRooms().then(function(rooms){
+      if(!data.rooms){ data.rooms = []; }
+      for(var i in rooms){
+        if(data.rooms.indexOf(rooms[i]) === -1){
+          data.rooms.push({id: rooms[i]});
+        }
+      }
+      $scope.$broadcast('scroll.refreshComplete');
+    });
+  }
+  loadRooms();
+
+  fn.refresh = function(){
+    loadRooms();
+  };
 
   fn.createRoom = function(){
     KeyboardPlugin.onNextShow(function(e){
@@ -235,14 +247,39 @@ angular.module('app')
             }
           },
         ]
-      }).then(function(res) {
+      }).then(function(name) {
         KeyboardPlugin.close();
-        if(res){
-          console.log('Tapped!', res);
+        if(name){
+          if(!data.rooms){ data.rooms = []; }
+          data.rooms.unshift({id: name});
+          $state.go('tabs.chat', {id: name});
         }
       });
     });
     KeyboardPlugin.show();
+  };
+})
+
+.controller('ChatCtrl', function($scope, $stateParams, ChatSrv){
+  'use strict';
+  var data = {}, fn = {};
+  $scope.data = data;
+  $scope.fn = fn;
+  data.chatId = $stateParams.id;
+
+  $scope.$on('$ionicView.enter', function(){
+    data.chat = ChatSrv.setupPublicChat(data.chatId);
+  });
+  $scope.$on('$ionicView.leave', function(){
+    ChatSrv.destroy(data.chat);
+  });
+
+  fn.sendMessage = function(){
+    if(data.chat && data.message && data.message.length > 0){
+      ChatSrv.sendToPublicChat(data.chat, data.message).then(function(){
+        data.message = '';
+      });
+    }
   };
 })
 

@@ -2,11 +2,17 @@
   <ion-nav-buttons side="primary">
     <button class="button button-icon ion-plus" ng-click="fn.createRoom()"></button>
   </ion-nav-buttons>
-  <ion-content class="padding">
-    <h1>Chats</h1>
-    <p>
-      Bientôt ici des salons de discussion publics !<br>
-      Vous pourrez créer vos topics et échanger à leur propos avec les personnes autours de vous !
-    </p>
+  <ion-content>
+    <loading ng-show="data.rooms === null" top="100px"></loading>
+    <div ng-if="data.rooms !== null">
+      <ion-refresher pulling-text="Pull to refresh..." on-refresh="fn.refresh()"></ion-refresher>
+      <div class="list">
+        <div class="item item-icon-left item-icon-right" ng-repeat="room in data.rooms" ui-sref="tabs.chat({id: room.id})">
+          <i class="icon ion-chatboxes"></i>
+          /{{room.id}}
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </div>
+      </div>
+    </div>
   </ion-content>
 </ion-view>
