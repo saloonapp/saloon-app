@@ -30,8 +30,9 @@ To run the app on your android device :
 
 ## TODO
 
-- add warning when register (early beta => all data may be deleted)
 - public chat rooms
+    - only show near messages (no filtering yet)
+- add warning when register (early beta => all data may be deleted)
 
 ## Resources
 
