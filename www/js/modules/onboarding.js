@@ -58,9 +58,9 @@ angular.module('app')
 
   function getSuggestedInterests(){
     return angular.copy([
-      {ref: 'job', name: 'Opportunités professionnelles', interested: false},
-      {ref: 'business', name: 'Nouveaux produits', interested: false},
-      {ref: 'network', name: 'Networker', interested: false}
+      {name: 'Opportunités professionnelles', interested: false},
+      {name: 'Nouveaux produits', interested: false},
+      {name: 'Networker', interested: false}
     ]);
   }
 
@@ -158,8 +158,15 @@ angular.module('app')
   fn.createAccount = function(credentials){
     data.loading = true;
     data.error = null;
-    OnboardingSrv.extendUserWithSocialProfile(credentials);
-    UserSrv.register(credentials, OnboardingSrv.getProvider()).then(function(user){
+    var user = angular.copy(credentials);
+    OnboardingSrv.extendUserWithSocialProfile(user);
+    user.interests = [];
+    for(var i in credentials.interests){
+      if(credentials.interests[i].interested){
+        user.interests.push({name: credentials.interests[i].name});
+      }
+    }
+    UserSrv.register(user, OnboardingSrv.getProvider()).then(function(user){
       $ionicHistory.nextViewOptions({disableBack:true});
       $state.go('tabs.users');
       data.credentials.password = '';
@@ -278,7 +285,12 @@ angular.module('app')
     UserSrv.getCurrent().then(function(user){
       user.pseudo = credentials.pseudo;
       user.actualPurpose = credentials.actualPurpose;
-      user.interests = credentials.interests;
+      user.interests = [];
+      for(var i in credentials.interests){
+        if(credentials.interests[i].interested){
+          user.interests.push({name: credentials.interests[i].name});
+        }
+      }
       UserSrv.setCurrent(user).then(function(){
         $ionicHistory.nextViewOptions({disableBack:true});
         $state.go('tabs.users');

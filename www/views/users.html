@@ -15,6 +15,9 @@
           <img ng-src="{{user.avatar || 'img/user.jpg'}}">
           <h2>{{user.pseudo}}</h2>
           <p>{{user.actualPurpose}}</p>
+          <p ng-if="user.interests && user.interests.length > 0">
+            <span ng-repeat="interest in user.interests"><span class="label label-positive">{{interest.name}}</span> </span>
+          </p>
         </div>
       </div>
     </div>

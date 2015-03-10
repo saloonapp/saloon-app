@@ -17,12 +17,21 @@ $bsDangerColor: #d9534f;
   vertical-align: baseline;
   border-radius: .25em;
 }
-.label-default  { background-color: $bsDefaultColor;  }
-.label-primary  { background-color: $bsPrimaryColor;  }
-.label-success  { background-color: $bsSuccessColor;  }
-.label-info     { background-color: $bsInfoColor;     }
-.label-warning  { background-color: $bsWarningColor;  }
-.label-danger   { background-color: $bsDangerColor;   }
+.label-default    { background-color: $bsDefaultColor;  }
+.label-primary    { background-color: $bsPrimaryColor;  }
+.label-success    { background-color: $bsSuccessColor;  }
+.label-info       { background-color: $bsInfoColor;     }
+.label-warning    { background-color: $bsWarningColor;  }
+.label-danger     { background-color: $bsDangerColor;   }
+.label-light      { background-color: $light;           }
+.label-stable     { background-color: $stable;          }
+.label-positive   { background-color: $positive;        }
+.label-calm       { background-color: $calm;            }
+.label-balanced   { background-color: $balanced;        }
+.label-energized  { background-color: $energized;       }
+.label-assertive  { background-color: $assertive;       }
+.label-royal      { background-color: $royal;           }
+.label-dark       { background-color: $dark;            }
 
 .alert {
   padding: 15px;

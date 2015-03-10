@@ -49,7 +49,7 @@
       <div class="list card padding">
         <h4>Intéressé par :</h4>
         <ul>
-          <li ng-repeat="interest in data.user.interests" ng-if="interest.interested">- {{interest.name}}</li>
+          <li ng-repeat="interest in data.user.interests">- {{interest.name}}</li>
         </ul>
       </div>
 
@@ -65,7 +65,7 @@
     </div>
   </ion-content>
 
-  <form ng-submit="fn.sendMessage()" ng-show="fn.isAccepted(data.relation)">
+  <form ng-submit="fn.sendMessage()" ng-if="fn.isAccepted(data.relation)">
     <ion-footer-bar class="item-input-inset">
       <label class="item-input-wrapper">
         <i class="icon ion-ios7-search placeholder-icon"></i>
