@@ -7,6 +7,7 @@ angular.module('app')
     setProfile: setProfile,
     getProvider: getProvider,
     getSuggestedPseudo: getSuggestedPseudo,
+    getSuggestedPurpose: getSuggestedPurpose,
     getEmail: getEmail,
     extendUserWithSocialProfile: extendUserWithSocialProfile,
     getSuggestedInterests: getSuggestedInterests,
@@ -28,6 +29,13 @@ angular.module('app')
       if(data.provider === LinkedinSrv.provider)  { return data.profile.firstName+' '+data.profile.lastName; }
     }
     return 'Anonymous '+Utils.randInt(1, 1000);
+  }
+
+  function getSuggestedPurpose(){
+    if(data.profile){
+      if(data.provider === LinkedinSrv.provider){ return data.profile.headline; }
+    }
+    return '';
   }
 
   function getEmail(){
@@ -141,7 +149,7 @@ angular.module('app')
     email: OnboardingSrv.getEmail(),
     password: '',
     pseudo: OnboardingSrv.getSuggestedPseudo(),
-    actualPurpose: '',
+    actualPurpose: OnboardingSrv.getSuggestedPurpose(),
     interests: OnboardingSrv.getSuggestedInterests()
   };
   data.loading = false;
@@ -258,7 +266,7 @@ angular.module('app')
 
   data.credentials = {
     pseudo: OnboardingSrv.getSuggestedPseudo(),
-    actualPurpose: '',
+    actualPurpose: OnboardingSrv.getSuggestedPurpose(),
     interests: OnboardingSrv.getSuggestedInterests()
   };
   data.loading = false;
