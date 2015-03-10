@@ -32,7 +32,6 @@ To run the app on your android device :
 
 - public chat rooms
     - only show near messages (no filtering yet)
-- design login screen
 
 ## Resources
 

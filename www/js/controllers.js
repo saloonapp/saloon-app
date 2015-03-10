@@ -6,7 +6,12 @@ angular.module('app')
   $scope.$on('$ionicView.loaded', function(){
     if(!loaded){
       loaded = true;
-      UserSrv.updatePosition();
+      UserSrv.fetchCurrent().then(function(){
+        UserSrv.updatePosition();
+      }, function(err){
+        ToastPlugin.show('Votre compte n\'existe pas en base :(');
+        $scope.logout();
+      });
     }
   });
   $scope.$on('$ionicView.enter', function(){

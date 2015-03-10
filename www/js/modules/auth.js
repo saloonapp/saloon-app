@@ -5,6 +5,7 @@ angular.module('app')
   var storageKey = 'user';
   var userCrud = ParseUtils.createUserCrud(AuthSrv.getToken());
   var service = {
+    fetchCurrent: fetchCurrent,
     getCurrent: getCurrent,
     setCurrent: setCurrent,
     updatePosition: updatePosition,
@@ -23,6 +24,14 @@ angular.module('app')
   function setCurrent(user){
     return userCrud.save(user).then(function(){
       return StorageUtils.set(storageKey, user);
+    });
+  }
+
+  function fetchCurrent(){
+    return getCurrent().then(function(user){
+      return userCrud.get(user.objectId).then(function(backendUser){
+        return StorageUtils.set(storageKey, backendUser);
+      });
     });
   }
 
