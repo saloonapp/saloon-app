@@ -30,6 +30,7 @@ To run the app on your android device :
 
 ## TODO
 
+- replace firebase with parse+pusher/push (user-user chat + public chat)
 - public chat rooms
     - only show near messages (no filtering yet)
 
@@ -51,3 +52,8 @@ To run the app on your android device :
     - http://www.mobile-patterns.com/
     - http://www.pttrns.com/
     - http://mycolorscreen.com/
+- Offline communication :
+    - https://opengarden.com/developers
+    - Apple’s Multipeer Connectivity framework (iOS only)
+- Offline cache :
+    - http://pouchdb.com/ ?

@@ -41,7 +41,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
     url: '/users',
     views: {
       'users-tab': {
-        templateUrl: 'views/users.html',
+        templateUrl: 'views/user/users.html',
         controller: 'UsersCtrl'
       }
     }
@@ -50,7 +50,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
     url: '/contacts',
     views: {
       'users-tab': {
-        templateUrl: 'views/contacts.html',
+        templateUrl: 'views/user/contacts.html',
         controller: 'ContactsCtrl'
       }
     }
@@ -59,7 +59,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
     url: '/user/:id',
     views: {
       'users-tab': {
-        templateUrl: 'views/user.html',
+        templateUrl: 'views/user/user.html',
         controller: 'UserCtrl'
       }
     }
@@ -68,7 +68,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
     url: '/chats',
     views: {
       'chats-tab': {
-        templateUrl: 'views/chats.html',
+        templateUrl: 'views/chat/chats.html',
         controller: 'ChatsCtrl'
       }
     }
@@ -77,7 +77,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
     url: '/chat/:id',
     views: {
       'chats-tab': {
-        templateUrl: 'views/chat.html',
+        templateUrl: 'views/chat/chat.html',
         controller: 'ChatCtrl'
       }
     }
@@ -86,7 +86,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
     url: '/polls',
     views: {
       'polls-tab': {
-        templateUrl: 'views/polls.html',
+        templateUrl: 'views/poll/polls.html',
         controller: 'PollsCtrl'
       }
     }
@@ -95,7 +95,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
     url: '/issues',
     views: {
       'issues-tab': {
-        templateUrl: 'views/issues.html',
+        templateUrl: 'views/issue/issues.html',
         controller: 'IssuesCtrl'
       }
     }
