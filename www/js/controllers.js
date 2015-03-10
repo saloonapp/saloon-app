@@ -1,6 +1,6 @@
 angular.module('app')
 
-.controller('TabsCtrl', function($scope, $state, $ionicPopover, $ionicModal, TabSrv, UserSrv, ToastPlugin){
+.controller('TabsCtrl', function($scope, $state, $ionicHistory, $ionicPopover, $ionicModal, TabSrv, UserSrv, ToastPlugin){
   'use strict';
   var loaded = false; // TODO : $ionicView.loaded is fired twice... :(
   $scope.$on('$ionicView.loaded', function(){
@@ -34,6 +34,7 @@ angular.module('app')
 
   $scope.logout = function(){
     UserSrv.logout().then(function(){
+      $ionicHistory.nextViewOptions({disableBack:true});
       $state.go('login_welcome');
     });
   };
@@ -46,7 +47,7 @@ angular.module('app')
     'Sometimes you win, sometimes you learn'
   ];
   $scope.$watch('user.active', function(value, oldValue){
-    if(value !== oldValue && oldValue !== undefined){
+    if(value !== undefined && oldValue !== undefined && value !== oldValue){
       UserSrv.updateStatus(value);
       if(value){
         ToastPlugin.show(welcomeSentences[Math.floor(Math.random()*welcomeSentences.length)]);
@@ -101,7 +102,7 @@ angular.module('app')
   };
 
   $scope.$watch('user.active', function(value, oldValue){
-    if(value !== oldValue && oldValue !== undefined){
+    if(value !== undefined && oldValue !== undefined && value !== oldValue){
       if(value){
         fn.refresh();
       } else {
