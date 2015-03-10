@@ -87,6 +87,17 @@ angular.module('app')
         $scope.$broadcast('scroll.refreshComplete');
       }
     });
+    // screenshot data
+    /*TabSrv.badges.users = 9;
+    data.users = [
+      {avatar: 'http://loic.knuchel.org/blog/wp-content/uploads/2013/10/loicknuchel.jpg', pseudo: 'Loïc Knuchel', actualPurpose: 'Discuter de startup, scala, angular et ionic.'},
+      {avatar: 'https://media.licdn.com/media/p/3/005/051/360/2398350.jpg', pseudo: 'Samir Bouaked', actualPurpose: 'Apprenti developpeur chez Neocase Software, Inc.'},
+      {avatar: 'https://media.licdn.com/media/p/6/005/064/324/04b3525.jpg', pseudo: 'Audrey Stroppa', actualPurpose: 'Fondatrice de Cookers & Prof de langues'},
+      {avatar: 'http://matparisot.fr/content/images/2014/12/matparisot_square_min.jpg', pseudo: 'Mathieu Parisot', actualPurpose: 'Développeur Web, formateur et co-organisateur des Humantalks Paris'},
+      {avatar: 'https://media.licdn.com/mpr/mpr/shrinknp_400_400/p/1/005/0b7/3a0/13ab331.jpg', pseudo: 'Hadil Filali', actualPurpose: 'Chasseur de jobs.  Belles opportunités dans des starups.'},
+      {avatar: 'https://media.licdn.com/media/p/1/005/080/1d5/11e201b.jpg', pseudo: 'Jean-Loup Karst', actualPurpose: 'Lead Talent & Co-founder at breaz.io / techtalent.io'},
+    ];
+    $scope.$broadcast('scroll.refreshComplete');*/
   };
 
   $scope.$watch('user.active', function(value, oldValue){

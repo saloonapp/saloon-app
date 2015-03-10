@@ -269,7 +269,7 @@ angular.module('app')
 })
 
 // for Geolocation plugin : org.apache.cordova.geolocation (https://github.com/apache/cordova-plugin-geolocation)
-.factory('GeolocationPlugin', function($window, $q, $timeout, $log, PluginUtils){
+.factory('GeolocationPlugin', function($window, $q, $timeout, $log, PluginUtils, Utils){
   'use strict';
   // http://stackoverflow.com/questions/8543763/android-geo-location-tutorial
 
@@ -282,59 +282,90 @@ angular.module('app')
    */
   var pluginName = 'Geolocation';
   var pluginTest = function(){ return $window.navigator && $window.navigator.geolocation; };
+  var cache = {
+    currentPositionPromise: null,
+    currentPositionMaxAge: 1000,
+    currentPosition: null
+  };
   var service = {
     getCurrentPosition: getCurrentPosition
   };
 
   function getCurrentPosition(_timeout, _enableHighAccuracy, _maximumAge){
-    var opts = {
-      enableHighAccuracy: _enableHighAccuracy ? _enableHighAccuracy : true,
-      timeout: _timeout ? _timeout : 3000,
-      maximumAge: _maximumAge ? _maximumAge : 3000
-    };
-
-    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
-      var defer = $q.defer();
-      var geolocTimeout = $timeout(function(){
-        defer.reject({message: 'Geolocation didn\'t responded within '+opts.timeout+' millis :('});
-      }, opts.timeout);
-      $window.navigator.geolocation.getCurrentPosition(function(position){
-        $timeout.cancel(geolocTimeout);
-        defer.resolve(position);
-      }, function(error){
-        $timeout.cancel(geolocTimeout);
-        $log.error('pluginError:'+pluginName, error);
-        defer.reject(error);
-      }, opts);
-      return defer.promise;
-    });
+    if(cache.currentPosition && Date.now() < cache.currentPosition.time+cache.currentPositionMaxAge){
+      return Utils.async(function(){
+        return angular.copy(cache.currentPosition.data);
+      });
+    } else if(!cache.currentPositionPromise){
+      cache.currentPositionPromise = PluginUtils.onReady(pluginName, pluginTest).then(function(){
+        var defer = $q.defer();
+        var opts = {
+          enableHighAccuracy: _enableHighAccuracy ? _enableHighAccuracy : true,
+          timeout: _timeout ? _timeout : 3000,
+          maximumAge: _maximumAge ? _maximumAge : 3000
+        };
+        var geolocTimeout = $timeout(function(){
+          cache.currentPositionPromise = null;
+          defer.reject({message: 'Geolocation didn\'t responded within '+opts.timeout+' millis :('});
+        }, opts.timeout);
+        $window.navigator.geolocation.getCurrentPosition(function(position){
+          $timeout.cancel(geolocTimeout);
+          cache.currentPosition = {
+            time: Date.now(),
+            data: position
+          };
+          cache.currentPositionPromise = null;
+          defer.resolve(angular.copy(cache.currentPosition.data));
+        }, function(error){
+          $timeout.cancel(geolocTimeout);
+          $log.error('pluginError:'+pluginName, error);
+          cache.currentPositionPromise = null;
+          defer.reject(error);
+        }, opts);
+        return defer.promise;
+      });
+    }
+    return cache.currentPositionPromise;
   }
 
   function getCurrentPositionByWatch(_timeout, _enableHighAccuracy, _maximumAge){
-    var opts = {
-      enableHighAccuracy: _enableHighAccuracy ? _enableHighAccuracy : true,
-      timeout: _timeout ? _timeout : 3000,
-      maximumAge: _maximumAge ? _maximumAge : 3000
-    };
-
-    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
-      var defer = $q.defer();
-      var watchID = null;
-      var geolocTimeout = $timeout(function(){
-        $window.navigator.geolocation.clearWatch(watchID);
-        defer.reject({message: 'Geolocation didn\'t responded within '+opts.timeout+' millis :('});
-      }, opts.timeout);
-      watchID = $window.navigator.geolocation.watchPosition(function(position){
-        $window.navigator.geolocation.clearWatch(watchID);
-        $timeout.cancel(geolocTimeout);
-        defer.resolve(position);
-      }, function(error){
-        $timeout.cancel(geolocTimeout);
-        $log.error('pluginError:'+pluginName, error);
-        defer.reject(error);
-      }, opts);
-      return defer.promise;
-    });
+    if(cache.currentPosition && Date.now() < cache.currentPosition.time+cache.currentPositionMaxAge){
+      return Utils.async(function(){
+        return angular.copy(cache.currentPosition.data);
+      });
+    } else if(!cache.currentPositionPromise){
+      cache.currentPositionPromise = PluginUtils.onReady(pluginName, pluginTest).then(function(){
+        var defer = $q.defer();
+        var opts = {
+          enableHighAccuracy: _enableHighAccuracy ? _enableHighAccuracy : true,
+          timeout: _timeout ? _timeout : 3000,
+          maximumAge: _maximumAge ? _maximumAge : 3000
+        };
+        var watchID = null;
+        var geolocTimeout = $timeout(function(){
+          $window.navigator.geolocation.clearWatch(watchID);
+          cache.currentPositionPromise = null;
+          defer.reject({message: 'Geolocation didn\'t responded within '+opts.timeout+' millis :('});
+        }, opts.timeout);
+        watchID = $window.navigator.geolocation.watchPosition(function(position){
+          $window.navigator.geolocation.clearWatch(watchID);
+          $timeout.cancel(geolocTimeout);
+          cache.currentPosition = {
+            time: Date.now(),
+            data: position
+          };
+          cache.currentPositionPromise = null;
+          defer.resolve(angular.copy(cache.currentPosition.data));
+        }, function(error){
+          $timeout.cancel(geolocTimeout);
+          $log.error('pluginError:'+pluginName, error);
+          cache.currentPositionPromise = null;
+          defer.reject(error);
+        }, opts);
+        return defer.promise;
+      });
+    }
+    return cache.currentPositionPromise;
   }
 
   return service;
