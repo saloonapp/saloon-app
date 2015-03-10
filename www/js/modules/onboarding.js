@@ -83,7 +83,7 @@ angular.module('app')
           if(position.title)      { pos.title = position.title;                                                                 }
           if(position.summary)    { pos.summary = position.summary;                                                             }
           if(position.startDate)  { pos.started = new Date(position.startDate.year, position.startDate.month - 1, 1).getTime(); }
-           // TODO : format linkedin company object...
+          // TODO : format linkedin company object...
           if(position.company)    { pos.company = position.company;                                                             }
           res.currentPositions.push(pos);
         }
@@ -107,22 +107,27 @@ angular.module('app')
   fn.loginLinkedin = function(){
     data.loading = true;
     data.error = null;
-    LinkedinSrv.login().then(function(profile){
-      $ionicHistory.nextViewOptions({disableBack:true});
-      UserSrv.loginOAuth(LinkedinSrv.provider, profile).then(function(){
-        $state.go('tabs.users');
-        data.loading = false;
-        data.error = null;
+    try {
+      LinkedinSrv.login().then(function(profile){
+        $ionicHistory.nextViewOptions({disableBack:true});
+        UserSrv.loginOAuth(LinkedinSrv.provider, profile).then(function(){
+          $state.go('tabs.users');
+          data.loading = false;
+          data.error = null;
+        }, function(err){
+          OnboardingSrv.setProfile(LinkedinSrv.provider, profile);
+          $state.go('login_createaccountwithprofile');
+          data.loading = false;
+          data.error = null;
+        });
       }, function(err){
-        OnboardingSrv.setProfile(LinkedinSrv.provider, profile);
-        $state.go('login_createaccountwithprofile');
         data.loading = false;
-        data.error = null;
+        data.error = err.message ? err.message : err;
       });
-    }, function(err){
+    } catch(err) {
       data.loading = false;
       data.error = err.message ? err.message : err;
-    });
+    }
   };
 })
 

@@ -1,12 +1,33 @@
-<ion-view title="SalooN">
+<ion-view title="SalooN" hide-nav-bar="true" class="login welcome">
   <ion-content>
-    <div class="padding">
-      <button class="button button-block button-positive" ng-click="fn.loginLinkedin()" ng-disabled="data.loading == true">Se connecter avec LinkedIn</button>
-      <div class="alert alert-danger card padding" ng-if="data.error !== null" ng-click="data.error=null;"><strong>Oups !</strong> {{data.error}}</div>
-    </div>
-    <div class="row">
-      <div class="col"><button class="button button-block button-positive" ui-sref="login_login">Se connecter</button></div>
-      <div class="col"><button class="button button-block button-positive" ui-sref="login_register">S'inscrire</button></div>
+    <div class="header">
+      <img src="img/logo.png" class="logo">
+      <h1 class="title">SalooN</h1>
+      <h3 class="subtitle">échangez avec les bonnes personnes<br>autours de vous !</h3>
     </div>
   </ion-content>
+  <div class="connect">
+    <div class="row">
+      <div class="col">
+        <div class="alert alert-danger card" ng-if="data.error !== null" ng-click="data.error=null;">
+          <strong>Oups !</strong> {{data.error}}
+        </div>
+        <button class="button button-block button-positive" ng-click="fn.loginLinkedin()" ng-disabled="data.loading == true">
+          Se connecter avec LinkedIn
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button class="button button-block button-outline button-positive" ng-disabled="data.loading == true" ui-sref="login_login">
+          Se connecter
+        </button>
+      </div>
+      <div class="col">
+        <button class="button button-block button-outline button-positive" ng-disabled="data.loading == true" ui-sref="login_register">
+          S'inscrire
+        </button>
+      </div>
+    </div>
+  </div>
 </ion-view>

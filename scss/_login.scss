@@ -1,0 +1,31 @@
+.login {
+  .header {
+    padding: 0px 10px;
+    padding-top: 25px;
+    .logo {
+      display: block;
+      margin: auto;
+      max-width: 200px;
+    }
+    .title {
+      text-align: center;
+      color: $dark;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 18px;
+      font-style: italic;
+      color: $dark;
+      &:first-letter {
+        text-transform: uppercase;
+      }
+    }
+  }
+  .connect {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
