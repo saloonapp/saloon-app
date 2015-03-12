@@ -5,5 +5,53 @@
       Bientôt ici toutes les questions que vous aurez envie de poser autours de vous !<br>
       Posez votre question (QCM) et regardez en temps réel les réponses.
     </p>
+    <div class="list card" ng-repeat="poll in polls">
+
+	  <div class="item item-avatar" >
+	    <h2>{{poll.question}}</h2>
+	    
+	  </div>
+
+	  <div class="item item-body">
+	  	<h3>Réponses</h3>
+	  	<div class="list">
+	  	 <label class="item item-radio" ng-repeat="(index,choice) in poll.choices">
+		    <input type="checkbox" ng-model="choice.selected" ng-if="poll.singleChoise == false">
+		    <input type="radio" name="userchoice" ng-model="choice.selected" ng-if="poll.singleChoise == true" value=choice>
+		    <div class="item-content">
+		      {{choice.value}}
+		    </div>
+		    <i class="radio-icon ion-checkmark"></i>
+		  </label>
+	    </div>
+	  </div>
+	   <a href="#" ng-click="fn.submitChoice(poll, poll.choices)" class="item item-icon-left">
+	    <i class="ion-ios7-checkmark-outline"></i>
+	    Répondre
+	  </a>
+
+	</div>
+
+    <button ng-click="fn.initForm()">Créer un sondage</button>
+    
+    <div class="list" ng-if="displayForm">
+    	<ion-toggle ng-model="poll.singleanswer" ng-init="poll.singleanswer=false;" toggle-class="toggle-calm">Single answer</ion-toggle>
+	  <label class="item item-input">
+	    <span class="input-label">Question</span>
+	    <input type="text" ng-model="poll.question">
+	  </label>
+	  <div ng-repeat="choice in choices" id="{{choice.id}}">
+	  	<i style="float: left" class="ion-ios7-close-outline" ng-click="fn.removeChoice(choice.id)"></i>
+	  	<label class="item item-input" style="float : left">
+	    	<span class="input-label">Réponse</span>
+	    	<input type="text" ng-model="choice.value">
+	    	
+	  	</label>
+	  	<div style="clear: both"></div>
+	  	</div>
+	  <button ng-click="fn.addChoice()">Add other answer</button>
+
+	  <button class="button button-block button-positive" ng-click="fn.submitForm(poll)">Créer</button>
+	</div>
   </ion-content>
 </ion-view>
