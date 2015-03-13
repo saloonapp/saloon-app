@@ -39,24 +39,66 @@ angular.module('app')
     }
     function getAnswers(pollid){
       var dataPoll;
+      var answersPath = getAnswersPath(pollid);
 
-      dataPoll = $firebaseArray(ref.child(pollid));
+      dataPoll = $firebaseArray(answersPath);
       return dataPoll;
     }
 
-    function saveAnswer(poll, choice, user){
-      var dataPoll;
+    function saveAnswer(poll, choices, user){
 
-      dataPoll = $firebaseArray(ref.child(poll.objectId));
-      dataPoll.$add({
-        choice : choice[0].id,
-        user : user.objectId
+      var answers = $firebaseArray(getAnswersPath(poll.objectId));
+      var statsPath = getStatsPath(poll.objectId);
+      var answersStats = $firebaseArray(statsPath);
+
+      //dataPoll['nbVotes'][choice[0].id] = dataPoll['nbVotes'][choice[0].id]++;
+      //dataPoll.$save('nbVotes');
+      _.map(choices, function(choice){
+        answers.$add({
+          choice : choice.id,
+          user : user.objectId
+        });
+        //var id = choice.id;
+
+        var statsChoice = statsPath.child(choice.id);
+        statsChoice.transaction(function(current_val){
+          if(!current_val){
+            current_val = 0;
+          }
+          current_val++;
+          return current_val;
+        });
       });
-      return dataPoll;
+
+      return {
+        answers : answers,
+        answersStats: answersStats
+      };
     }
 
+/*
+maybe use some or every. The use of break can be good for a performance point of view...
+ */
     function hasUserAlreadyVoted(answers, user){
+      var isFound = false;
+      _.map(answers, function(answer){
+        if(answer.user == user.objectId){
+          isFound = true;
+        }
+      });
+      return isFound;
+    }
 
+    function getRootPath(pollid){
+      return ref.child(pollid);
+    }
+
+    function getAnswersPath(pollid){
+      return getRootPath(pollid).child('answers');
+    }
+
+    function getStatsPath(pollid){
+      return getRootPath(pollid).child('stats');
     }
 
   return {

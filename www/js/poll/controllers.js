@@ -6,6 +6,7 @@ angular.module('app')
   var fn = {};
   $scope.displayForm = false;
   $scope.fn = fn;
+    $scope.polls = [];
   $scope.choices = [
 	  {
 	  	id : 'choice1'
@@ -14,6 +15,14 @@ angular.module('app')
 	  	id : 'choice2'
 	  }
   ];
+
+    fn.init = function(){
+      UserSrv.getCurrent().then(function(user){
+        $scope.user = user;
+        fn.getAroundPolls();
+      });
+    };
+
   $scope.selectedChoices = {};
 
   fn.initForm = function(){
@@ -46,11 +55,16 @@ angular.module('app')
   	PollSrv.getPollsAround().then(function(polls){
 
       _.map(polls, function(poll){
-        poll.anwsers = PollSrv.getAnswers(poll.objectId);
+        PollSrv.getAnswers(poll.objectId).$loaded().then(function(answers){
+          poll.answers = answers;
+          poll.alreadyVoted = PollSrv.hasUserAlreadyVoted(poll.answers, $scope.user);
+          console.log(poll);
+          $scope.polls.push(poll);
+        });
+
 
       });
-      $scope.polls = polls;
-      console.log($scope.polls);
+
   	});
   };
 
@@ -62,11 +76,11 @@ angular.module('app')
   		selected = _.filter(choices, {selected:true});
   	}
     UserSrv.getCurrent().then(function(user){
-     $scope.anwsers = PollSrv.saveAnswer(poll,selected,user);
+     $scope.answers = PollSrv.saveAnswer(poll,selected,user);
     });
   };
 
-  fn.getAroundPolls();
+ fn.init();
 
 
 });

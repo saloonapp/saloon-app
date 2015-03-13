@@ -9,7 +9,7 @@
 
 	  <div class="item item-avatar" >
 	    <h2>{{poll.question}}</h2>
-	    
+
 	  </div>
 
 	  <div class="item item-body">
@@ -25,15 +25,19 @@
 		  </label>
 	    </div>
 	  </div>
-	   <a href="#" ng-click="fn.submitChoice(poll, poll.choices)" class="item item-icon-left">
+
+	   <a href="#" ng-click="fn.submitChoice(poll, poll.choices)" class="item item-icon-left" ng-if="poll.alreadyVoted == false">
 	    <i class="ion-ios7-checkmark-outline"></i>
 	    Répondre
 	  </a>
+      <div ng-if="poll.alreadyVoted == true">
+        Vous avez déjà participé
+      </div>
 
 	</div>
 
     <button ng-click="fn.initForm()">Créer un sondage</button>
-    
+
     <div class="list" ng-if="displayForm">
     	<ion-toggle ng-model="poll.singleanswer" ng-init="poll.singleanswer=false;" toggle-class="toggle-calm">Single answer</ion-toggle>
 	  <label class="item item-input">
@@ -45,7 +49,7 @@
 	  	<label class="item item-input" style="float : left">
 	    	<span class="input-label">Réponse</span>
 	    	<input type="text" ng-model="choice.value">
-	    	
+
 	  	</label>
 	  	<div style="clear: both"></div>
 	  	</div>
