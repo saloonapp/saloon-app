@@ -8,29 +8,29 @@
     <div class="list card" ng-repeat="poll in polls">
 
 	  <div class="item item-avatar" >
-	    <h2>{{poll.question}}</h2>
+	    <h2>{{poll.poll.question}}</h2>
 
 	  </div>
 
 	  <div class="item item-body">
 	  	<h3>Réponses</h3>
 	  	<div class="list">
-	  	 <label class="item item-radio" ng-repeat="(index,choice) in poll.choices">
-		    <input type="checkbox" ng-model="choice.selected" ng-if="poll.singleChoise == false">
-		    <input type="radio" name="userchoice" ng-model="choice.selected" ng-if="poll.singleChoise == true" value=choice>
+	  	 <label class="item item-radio" ng-repeat="(index,choice) in poll.poll.choices">
+		    <input type="checkbox" ng-model="choice.selected" ng-if="poll.poll.singleChoise == false">
+		    <input type="radio" name="userchoice" ng-model="choice.selected" ng-if="poll.poll.singleChoise == true" value="selected">
 		    <div class="item-content">
-		      {{choice.value}}
+		      {{choice.value}} nbVote = {{choice.nbVotes}} sur {{poll.totalVotes}}
 		    </div>
 		    <i class="radio-icon ion-checkmark"></i>
 		  </label>
 	    </div>
 	  </div>
 
-	   <a href="#" ng-click="fn.submitChoice(poll, poll.choices)" class="item item-icon-left" ng-if="poll.alreadyVoted == false">
+	   <a ng-click="fn.submitChoice(poll, poll.poll.choices)" class="item item-icon-left">
 	    <i class="ion-ios7-checkmark-outline"></i>
 	    Répondre
 	  </a>
-      <div ng-if="poll.alreadyVoted == true">
+      <div ng-if="poll.poll.alreadyVoted == true">
         Vous avez déjà participé
       </div>
 

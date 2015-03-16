@@ -6,7 +6,8 @@ angular.module('app')
   var fn = {};
   $scope.displayForm = false;
   $scope.fn = fn;
-    $scope.polls = [];
+  $scope.polls = [];
+
   $scope.choices = [
 	  {
 	  	id : 'choice1'
@@ -43,8 +44,7 @@ angular.module('app')
   };
 
   fn.submitForm = function(poll){
-  	poll.choices = $scope.choices;
-  	console.log(poll);
+    poll.choices = $scope.choices;
   	UserSrv.getCurrent().then(function(user){
   		PollSrv.setPollsData(poll, user);
   	});
@@ -54,29 +54,26 @@ angular.module('app')
   fn.getAroundPolls = function(){
   	PollSrv.getPollsAround().then(function(polls){
 
-      _.map(polls, function(poll){
-        PollSrv.getAnswers(poll.objectId).$loaded().then(function(answers){
-          poll.answers = answers;
-          poll.alreadyVoted = PollSrv.hasUserAlreadyVoted(poll.answers, $scope.user);
-          console.log(poll);
-          $scope.polls.push(poll);
-        });
 
+          $scope.polls = PollSrv.structurePolls(polls);
+          console.log($scope.polls);
+    });
 
-      });
-
-  	});
   };
+
 
   fn.submitChoice = function(poll, choices){
   	var selected = null;
-  	if(poll.singleChoise === 1){
-  		  selected = _.filter(choices, {selected:true});
+  	if(poll.poll.singleChoise === true){
+  		  selected = _.filter(choices, {selected : "selected"});
   	}else{
   		selected = _.filter(choices, {selected:true});
   	}
     UserSrv.getCurrent().then(function(user){
-     $scope.answers = PollSrv.saveAnswer(poll,selected,user);
+
+      var dataPoll = PollSrv.saveAnswer(poll,selected,user);
+      console.log(dataPoll);
+      $scope.polls[_.findIndex($scope.polls, {'pollid' : poll.objectId})] = dataPoll;
     });
   };
 
