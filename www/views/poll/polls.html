@@ -6,31 +6,33 @@
       Posez votre question (QCM) et regardez en temps réel les réponses.
     </p>
     <div class="list card" ng-repeat="poll in polls">
-
 	  <div class="item item-avatar" >
-	    <h2>{{poll.poll.question}}</h2>
+	    <h2>{{poll.question}}</h2>
 
 	  </div>
 
 	  <div class="item item-body">
 	  	<h3>Réponses</h3>
 	  	<div class="list">
-	  	 <label class="item item-radio" ng-repeat="(index,choice) in poll.poll.choices">
-		    <input type="checkbox" ng-model="choice.selected" ng-if="poll.poll.singleChoise == false">
-		    <input type="radio" name="userchoice" ng-model="choice.selected" ng-if="poll.poll.singleChoise == true" value="selected">
+	  	 <label class="item item-radio" ng-repeat="(index,choice) in poll.choices">
+		    <input type="checkbox" ng-model="choice.selected" ng-if="poll.singleChoise == false">
+		    <input type="radio" name="userchoice" ng-model="choice.selected" ng-if="poll.singleChoise == true" value="selected">
 		    <div class="item-content">
-		      {{choice.value}} nbVote = {{choice.nbVotes}} sur {{poll.totalVotes}}
+
+
+
+		      {{choice.value}} nbVote = {{fn.getValue(poll.answersStats,fn.getIndexBy$Id(poll, choice.id))}} sur {{fn.getValue(poll.answersStats,fn.getIndexBy$Id(poll, 'totalVotes'))}}
 		    </div>
 		    <i class="radio-icon ion-checkmark"></i>
 		  </label>
 	    </div>
 	  </div>
 
-	   <a ng-click="fn.submitChoice(poll, poll.poll.choices)" class="item item-icon-left">
+	   <a ng-click="fn.submitChoice(poll, poll.choices)" class="item item-icon-left">
 	    <i class="ion-ios7-checkmark-outline"></i>
 	    Répondre
 	  </a>
-      <div ng-if="poll.poll.alreadyVoted == true">
+      <div ng-if="poll.alreadyVoted == true">
         Vous avez déjà participé
       </div>
 
