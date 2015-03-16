@@ -301,7 +301,7 @@ angular.module('app')
         var defer = $q.defer();
         var opts = {
           enableHighAccuracy: _enableHighAccuracy ? _enableHighAccuracy : true,
-          timeout: _timeout ? _timeout : 3000,
+          timeout: _timeout ? _timeout : 30000,
           maximumAge: _maximumAge ? _maximumAge : 3000
         };
         var geolocTimeout = $timeout(function(){
