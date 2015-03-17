@@ -1,5 +1,9 @@
 <ion-view title="Sondages">
   <ion-content class="padding">
+    <ion-refresher
+      pulling-text="Pull to refresh..."
+      on-refresh="fn.refresh()">
+    </ion-refresher>
     <h1>Sondages</h1>
     <p>
       Bientôt ici toutes les questions que vous aurez envie de poser autours de vous !<br>

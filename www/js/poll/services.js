@@ -39,14 +39,21 @@ angular.module('app')
   /*
   Return Polls without firebase reference
    */
-    function getPollsAround(){
+    function getPollsAround(lastDate){
+      if(lastDate === undefined){
+        var matchMaxAge = 60 * 60 * 1000; // 1h
+        var gt = ParseUtils.toDate(Date.now() - matchMaxAge);
+      }else{
+        var gt = ParseUtils.toDate(lastDate);
+      }
+
       var matchDistance = 0.1; // 100m
-      var matchMaxAge = 60 * 60 * 1000; // 1h
+
 
       return UserSrv.getCurrent().then(function(user){
     	  return pollCrud.find({
 	          updatedAt: {
-              $gt: ParseUtils.toDate(Date.now() - matchMaxAge)
+              $gt: gt
             },
 	          location: {
 	            $nearSphere: ParseUtils.toGeoPoint(user.location.latitude, user.location.longitude),
