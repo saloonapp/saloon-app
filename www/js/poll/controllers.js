@@ -6,12 +6,12 @@ angular.module('app')
 
   $scope.fn = fn;
   $scope.polls = [];
+    $scope.initiated = false;
 
     $scope.lastUpdate = Date.now();
 
-
   fn.init = function(){
-
+    $scope.initiated = false;
     UserSrv.getCurrent().then(function(user){
       $scope.user = user;
       fn.getAroundPolls();
@@ -27,10 +27,12 @@ angular.module('app')
   };
     //get Answers for active polls
     fn.getAnswers = function(polls){
+      $scope.initiated = true;
       $scope.polls = polls;
       PollSrv.getAnwsersForPolls(polls).then(function(result){
         $scope.polls = result;
         $scope.lastUpdated = Date.now();
+
         console.log(result);
 
       });
@@ -43,14 +45,17 @@ angular.module('app')
         $scope.$broadcast('scroll.refreshComplete');
       });
     };
-
-    fn.submitChoice = function(poll, choices){
+    fn.getSelectedChoice = function(poll, choices){
       var selected = null;
       if(poll.singleChoise === true){
         selected = _.filter(choices, {selected : "selected"});
       }else{
         selected = _.filter(choices, {selected:true});
       }
+      return selected;
+    };
+    fn.submitChoice = function(poll, choices){
+      var selected = fn.getSelectedChoice(poll, choices);
       UserSrv.getCurrent().then(function(user){
         PollSrv.saveAnswer(poll,selected,user).then(function(result){
           $scope.polls[_.findIndex($scope.polls, {'pollid' : poll.objectId})] = result;

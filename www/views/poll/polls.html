@@ -5,12 +5,9 @@
       on-refresh="fn.refresh()">
     </ion-refresher>
     <h1>Sondages</h1>
-    <p>
-      Bientôt ici toutes les questions que vous aurez envie de poser autours de vous !<br>
-      Posez votre question (QCM) et regardez en temps réel les réponses.
-    </p>
-    <loading ng-show="polls.length === 0" top="100px"></loading>
 
+    <loading ng-show="initiated === false" top="100px"></loading>
+    <div class="list" ng-if="initiated == true && polls.length === 0">Aucun sondage n'est disponible actuellement</div>
     <div class="list card" ng-repeat="poll in polls">
 	  <div class="item item-avatar" >
 	    <h2>{{poll.question}}</h2>
@@ -24,27 +21,26 @@
 		    <input type="checkbox" ng-model="choice.selected" ng-if="poll.singleChoise == false">
 		    <input type="radio" name="userchoice" ng-model="choice.selected" ng-if="poll.singleChoise == true" value="selected">
 		    <div class="item-content">
-
-
-
 		      {{choice.value}} nbVote = {{fn.getValue(poll.answersStats,fn.getIndexBy$Id(poll, choice.id))}} sur {{fn.getValue(poll.answersStats,fn.getIndexBy$Id(poll, 'totalVotes'))}}
 		    </div>
 		    <i class="radio-icon ion-checkmark"></i>
 		  </label>
 	    </div>
 	  </div>
-
-	   <a ng-click="fn.submitChoice(poll, poll.choices)" class="item item-icon-left">
+      {{}}
+	   <button ng-click="fn.submitChoice(poll, poll.choices)"
+             class="button button-block button-balanced item item-icon-left"
+             ng-disabled="fn.getSelectedChoice(poll,poll.choices).length == 0">
 	    <i class="ion-ios7-checkmark-outline"></i>
 	    Répondre
-	  </a>
+	  </button>
       <div ng-if="poll.alreadyVoted == true">
         Vous avez déjà participé
       </div>
 
 	</div>
 
-    <button ng-click="fn.create()">Créer un sondage</button>
+    <button class="button button-block button-positive" ng-click="fn.create()">Créer un sondage</button>
 
 
   </ion-content>
