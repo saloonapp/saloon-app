@@ -91,8 +91,8 @@ angular.module('app')
     ];
 
     fn.addChoice = function(){
-      var newIdChoice = choices.length + 1;
-      choices.push({
+      var newIdChoice = $scope.choices.length + 1;
+      $scope.choices.push({
         id : 'choice' + newIdChoice
       });
     };
