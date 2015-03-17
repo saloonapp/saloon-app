@@ -98,7 +98,7 @@ angular.module('app')
     };
 
     fn.removeChoice = function(id){
-      $scope.choices = _.filter(choices, function(elt){
+      $scope.choices = _.filter($scope.choices, function(elt){
         return elt.id !== id;
       });
     };
