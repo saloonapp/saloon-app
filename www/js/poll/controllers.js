@@ -81,7 +81,13 @@ angular.module('app')
   };
     fn.create = function(){
       $state.go('tabs.pollcreate');
-    }
+    };
+
+    fn.getPercent = function(poll, choiceid){
+      var nbVotes = fn.getValue(poll.answersStats,fn.getIndexBy$Id(poll, choiceid));
+      var totalVotes = fn.getValue(poll.answersStats,fn.getIndexBy$Id(poll, 'totalVotes'));
+      return parseInt( (nbVotes / totalVotes) * 100);
+  };
 
 })
 .controller('PollCreationCtrl', function($scope, PollSrv,UserSrv, $state) {

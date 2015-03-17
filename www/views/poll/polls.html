@@ -1,4 +1,4 @@
-<ion-view title="Sondages">
+<ion-view title="Sondages" xmlns="http://www.w3.org/1999/html">
   <ion-content class="padding">
     <ion-refresher
       pulling-text="Pull to refresh..."
@@ -20,9 +20,11 @@
 	  	 <label class="item item-radio" ng-repeat="(index,choice) in poll.choices">
 		    <input type="checkbox" ng-model="choice.selected" ng-if="poll.singleChoise == false">
 		    <input type="radio" name="userchoice" ng-model="choice.selected" ng-if="poll.singleChoise == true" value="selected">
-		    <div class="item-content">
-		      {{choice.value}} nbVote = {{fn.getValue(poll.answersStats,fn.getIndexBy$Id(poll, choice.id))}} sur {{fn.getValue(poll.answersStats,fn.getIndexBy$Id(poll, 'totalVotes'))}}
-		    </div>
+		    <div class="item-content" style="position : relative">
+        <p style="position : relative; top : 0; z-index : 1000;">{{choice.value}}</p>
+          <div style="position : absolute; top : 0;height : 100%; width : {{fn.getPercent(poll, choice.id)}}%; background-color : red">&nbsp;</div>
+
+        </div>
 		    <i class="radio-icon ion-checkmark"></i>
 		  </label>
 	    </div>
