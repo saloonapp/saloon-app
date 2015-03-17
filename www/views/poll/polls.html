@@ -9,6 +9,8 @@
       Bientôt ici toutes les questions que vous aurez envie de poser autours de vous !<br>
       Posez votre question (QCM) et regardez en temps réel les réponses.
     </p>
+    <loading ng-show="polls.length === 0" top="100px"></loading>
+
     <div class="list card" ng-repeat="poll in polls">
 	  <div class="item item-avatar" >
 	    <h2>{{poll.question}}</h2>
