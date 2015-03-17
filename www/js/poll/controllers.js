@@ -40,7 +40,9 @@ angular.module('app')
 
     fn.refresh = function(){
       fn.getAroundPolls($scope.lastUpdate).then(function(result) {
-        $scope.polls.push(result);
+        if(result !== undefined){
+          $scope.polls.push(result);
+        }
       }).finally(function(){
         $scope.$broadcast('scroll.refreshComplete');
       });
