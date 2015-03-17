@@ -1,0 +1,24 @@
+<ion-view title="Sondages">
+  <ion-content class="padding">
+    <h1>Créer un sondage</h1>
+    <div class="list">
+      <ion-toggle ng-model="poll.singleChoise" ng-init="poll.singleChoise=false;" toggle-class="toggle-calm">Single answer</ion-toggle>
+      <label class="item item-input">
+        <span class="input-label">Question</span>
+        <input type="text" ng-model="poll.question">
+      </label>
+      <div ng-repeat="choice in choices" id="{{choice.id}}">
+        <i style="float: left" class="ion-ios7-close-outline" ng-click="fn.removeChoice(choice.id)"></i>
+        <label class="item item-input" style="float : left">
+          <span class="input-label">Réponse</span>
+          <input type="text" ng-model="choice.value">
+
+        </label>
+        <div style="clear: both"></div>
+      </div>
+      <button ng-click="fn.addChoice()">Add other answer</button>
+
+      <button class="button button-block button-positive" ng-click="fn.submitForm(poll)">Créer</button>
+    </div>
+    </ion-content>
+</ion-view>
