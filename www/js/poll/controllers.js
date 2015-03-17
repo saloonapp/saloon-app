@@ -4,13 +4,14 @@ angular.module('app')
   'use strict';
   var fn = {};
 
-  $scope.displayForm = false;
   $scope.fn = fn;
   $scope.polls = [];
 
+    $scope.lastUpdate = Date.now();
 
 
   fn.init = function(){
+
     UserSrv.getCurrent().then(function(user){
       $scope.user = user;
       fn.getAroundPolls();
@@ -18,8 +19,8 @@ angular.module('app')
   };
 
     //get Active Polls.
-  fn.getAroundPolls = function(){
-  	PollSrv.getPollsAround().then(function(polls){
+  fn.getAroundPolls = function(lastUpdate){
+  	return PollSrv.getPollsAround().then(function(polls){
       fn.getAnswers(polls);
 
     });
@@ -29,11 +30,19 @@ angular.module('app')
       $scope.polls = polls;
       PollSrv.getAnwsersForPolls(polls).then(function(result){
         $scope.polls = result;
+        $scope.lastUpdated = Date.now();
         console.log(result);
 
       });
     };
 
+    fn.refresh = function(){
+      fn.getAroundPolls($scope.lastUpdate).then(function(result) {
+        $scope.polls.push(result);
+      }).finally(function(){
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+    };
 
     fn.submitChoice = function(poll, choices){
       var selected = null;
@@ -49,8 +58,9 @@ angular.module('app')
 
       });
     };
-
- fn.init();
+    $scope.$on('$ionicView.enter', function() {
+      fn.init();
+    });
 
   fn.getIndexBy$Id = function(poll, choiceId){
     return  _.findIndex(poll.answersStats,function(chr){ return chr.$id == choiceId;});
@@ -79,8 +89,6 @@ angular.module('app')
         id : 'choice2'
       }
     ];
-    $scope.selectedChoices = {};
-
 
     fn.addChoice = function(){
       var newIdChoice = choices.length + 1;
