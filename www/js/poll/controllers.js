@@ -17,12 +17,12 @@ angular.module('app')
 	  }
   ];
 
-    fn.init = function(){
-      UserSrv.getCurrent().then(function(user){
-        $scope.user = user;
-        fn.getAroundPolls();
-      });
-    };
+  fn.init = function(){
+    UserSrv.getCurrent().then(function(user){
+      $scope.user = user;
+      fn.getAroundPolls();
+    });
+  };
 
   $scope.selectedChoices = {};
 
@@ -31,14 +31,14 @@ angular.module('app')
   };
 
   fn.addChoice = function(){
-  	var newIdChoice = $scope.choices.length + 1;
-  	$scope.choices.push({
+  	var newIdChoice = choices.length + 1;
+  	choices.push({
   		id : 'choice' + newIdChoice
   	});
   };
 
   fn.removeChoice = function(id){
-  	$scope.choices = _.filter($scope.choices, function(elt){
+    $scope.choices = _.filter(choices, function(elt){
   		return elt.id !== id;
   	});
   };
@@ -46,9 +46,10 @@ angular.module('app')
   fn.submitForm = function(poll){
     poll.choices = $scope.choices;
   	UserSrv.getCurrent().then(function(user){
-  		PollSrv.setPollsData(poll, user);
+      PollSrv.setPollsData(poll, user).then(function(result){
+        $scope.polls.push(result);
+      });
   	});
-
   };
 
     //get Active Polls.
@@ -77,9 +78,7 @@ angular.module('app')
   		selected = _.filter(choices, {selected:true});
   	}
     UserSrv.getCurrent().then(function(user){
-
       PollSrv.saveAnswer(poll,selected,user).then(function(result){
-        console.log(result);
         $scope.polls[_.findIndex($scope.polls, {'pollid' : poll.objectId})] = result;
       });
 
@@ -88,18 +87,16 @@ angular.module('app')
 
  fn.init();
 
-    fn.getIndexBy$Id = function(poll, choiceId){
-      console.log("totot");
-      console.log("index", _.findIndex(poll.answersStats,function(chr){ return chr.$id == choiceId;}));
-      return  _.findIndex(poll.answersStats,function(chr){ return chr.$id == choiceId;});
-    };
+  fn.getIndexBy$Id = function(poll, choiceId){
+    return  _.findIndex(poll.answersStats,function(chr){ return chr.$id == choiceId;});
+  };
 
-    fn.getValue = function(array, index){
-      if(index < 0){
-        return 0;
-      }
-      return array[index].$value;
+  fn.getValue = function(array, index){
+    if(index < 0){
+      return 0;
     }
+    return array[index].$value;
+  }
 
 
 });

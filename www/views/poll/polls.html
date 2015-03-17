@@ -41,7 +41,7 @@
     <button ng-click="fn.initForm()">Créer un sondage</button>
 
     <div class="list" ng-if="displayForm">
-    	<ion-toggle ng-model="poll.singleanswer" ng-init="poll.singleanswer=false;" toggle-class="toggle-calm">Single answer</ion-toggle>
+    	<ion-toggle ng-model="poll.singleChoise" ng-init="poll.singleChoise=false;" toggle-class="toggle-calm">Single answer</ion-toggle>
 	  <label class="item item-input">
 	    <span class="input-label">Question</span>
 	    <input type="text" ng-model="poll.question">
