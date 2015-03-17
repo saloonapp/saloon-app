@@ -91,6 +91,15 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
       }
     }
   })
+  .state('tabs.pollcreate', {
+    url: '/polls/create',
+      views : {
+        'polls-tab': {
+          templateUrl: 'views/poll/create.html',
+          controller: 'PollCreationCtrl'
+        }
+      }
+  })
   .state('tabs.issues', {
     url: '/issues',
     views: {
