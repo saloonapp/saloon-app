@@ -682,7 +682,7 @@ angular.module('app')
         defer.resolve(notification.regid);
         cancel(callbackRef);
       }, service.type.REGISTERED);
-      $window.plugins.pushNotification.register(function(data){}, function(err){ registerDefer.reject(err); }, {
+      $window.plugins.pushNotification.register(function(data){}, function(err){ defer.reject(err); }, {
         senderID: projectNumber,
         ecb: 'onPushNotification'
       });
