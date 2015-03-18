@@ -68,7 +68,7 @@ angular.module('app')
 /*
 Return Answers & Stats (firebase ref) for an array of polls
  */
-    function getAnwsersForPolls(polls){
+    function getAnwsersForPolls(polls, user){
       var deferred = $q.defer();
       var promises = [];
       var pollsToReturn = [];
@@ -76,7 +76,7 @@ Return Answers & Stats (firebase ref) for an array of polls
       _.map(polls, function(poll){
         //Maybe we need a Poll Model in order to be sure to have the right informations every time
         //and to have a cleaner code?
-        promises.push(getAnswers(poll).then(function(result){
+        promises.push(getAnswers(poll, user).then(function(result){
           pollsToReturn.push(angular.extend(poll,result));
         }));
       });
@@ -87,7 +87,7 @@ Return Answers & Stats (firebase ref) for an array of polls
       return deferred.promise;
     }
 
-    function getAnswers(poll){
+    function getAnswers(poll, user){
       var answers;
       var answersPath = getAnswersPath(poll.objectId);
       var statsPath = getStatsPath(poll.objectId);
@@ -98,10 +98,12 @@ Return Answers & Stats (firebase ref) for an array of polls
         answers = result;
         $firebaseArray(statsPath).$loaded().then(function(stats){
           answersStats = stats;
+          var alreadyVoted = hasUserAlreadyVoted(answers, user);
           var toReturn = angular.extend({
             answers : answers,
             answersStats: answersStats,
-            pollid : poll.objectId
+            pollid : poll.objectId,
+            alreadyVoted : alreadyVoted
           }, poll);
           defer.resolve(toReturn);
         });
@@ -141,6 +143,7 @@ Return Answers & Stats (firebase ref) for an array of polls
             return current_val;
           }, function(){
             poll.pollid = poll.objectId;
+            poll.alreadyVoted = true;
             deferred.resolve(poll);
           });
         });

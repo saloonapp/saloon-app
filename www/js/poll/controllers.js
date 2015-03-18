@@ -29,7 +29,9 @@ angular.module('app')
     fn.getAnswers = function(polls){
       $scope.initiated = true;
       $scope.polls = polls;
-      PollSrv.getAnwsersForPolls(polls).then(function(result){
+      $scope.loadingAnswers = true;
+      PollSrv.getAnwsersForPolls(polls,$scope.user).then(function(result){
+        $scope.loadingAnswers = false;
         $scope.polls = result;
         $scope.lastUpdated = Date.now();
 

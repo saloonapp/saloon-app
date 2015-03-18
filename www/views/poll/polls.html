@@ -9,36 +9,49 @@
     <loading ng-show="initiated === false" top="100px"></loading>
     <div class="list" ng-if="initiated == true && polls.length === 0">Aucun sondage n'est disponible actuellement</div>
     <div class="list card" ng-repeat="poll in polls">
-	  <div class="item item-avatar" >
+	  <div class="item question" >
 	    <h2>{{poll.question}}</h2>
 
 	  </div>
 
 	  <div class="item item-body">
-	  	<h3>Réponses</h3>
 	  	<div class="list">
-	  	 <label class="item item-radio choice" ng-repeat="(index,choice) in poll.choices">
-		    <input type="checkbox" ng-model="choice.selected" ng-if="poll.singleChoise == false">
-		    <input type="radio" name="userchoice" ng-model="choice.selected" ng-if="poll.singleChoise == true" value="selected">
-		    <div class="item-content containerValuePercent">
-          <p class="choiceValue">{{choice.value}}</p>
-          <div class="percentBar choice_{{index}}" style=" width : {{fn.getPercent(poll, choice.id)}}%; ">
-
-          </div>
+        <loading ng-show="loadingAnswers === true"></loading>
+        <div ng-if="poll.alreadyVoted !== true" >
+          <label class="item item-radio" ng-repeat="(index,choice) in poll.choices">
+            <input type="checkbox" ng-model="choice.selected" ng-if="poll.singleChoise == false">
+            <input type="radio" name="userchoice" ng-model="choice.selected" ng-if="poll.singleChoise == true" value="selected">
+            <div class="item-content ">
+              <p class="choiceValue">{{choice.value}}</p>
+            </div>
+            <i class="radio-icon ion-checkmark"></i>
+          </label>
         </div>
-		    <i class="radio-icon ion-checkmark"></i>
-		  </label>
+	  	 <div ng-if="poll.alreadyVoted === true" class="voted">
+
+
+         <label class="item item-radio choice" ng-repeat="(index,choice) in poll.choices">
+           <div class="item-content containerValuePercent">
+             <p class="choiceValue">{{choice.value}}</p>
+             <div class="percentBar choice_{{index}}" style=" width : {{fn.getPercent(poll, choice.id)}}%; ">
+               <span class="badge" ng-if="fn.getValue(poll.answersStats,fn.getIndexBy$Id(poll, choice.id)) > 0">
+                 {{fn.getValue(poll.answersStats,fn.getIndexBy$Id(poll, choice.id))}}
+               </span>
+             </div>
+             </div>
+
+         </label>
+       </div>
 	    </div>
 	  </div>
 	   <button ng-click="fn.submitChoice(poll, poll.choices)"
              class="button button-block button-balanced item item-icon-left"
-             ng-disabled="fn.getSelectedChoice(poll,poll.choices).length == 0">
+             ng-disabled="fn.getSelectedChoice(poll,poll.choices).length == 0"
+             ng-if="poll.alreadyVoted !== true">
 	    <i class="ion-ios7-checkmark-outline"></i>
 	    Répondre
 	  </button>
-      <div ng-if="poll.alreadyVoted == true">
-        Vous avez déjà participé
-      </div>
+
 
 	</div>
 
