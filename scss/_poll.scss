@@ -1,0 +1,33 @@
+.polls {
+  .choice {
+    .containerValuePercent {
+      position : relative;
+      .choiceValue {
+        position : relative;
+        top : 0;
+        z-index : 1000;
+        color : #fff;
+      }
+      .percentBar {
+        position : absolute;
+        top : 0;
+        height : 100%;
+      }
+      .choice_0 {
+        background-color: #43cee6;
+      }
+      .choice_1 {
+        background-color: #4a87ee;
+      }
+      .choice_2 {
+        background-color: #66cc33;
+      }
+      .choice_3 {
+        background-color: #f0b840;
+      }
+      .choice_4 {
+        background-color: #8a6de9;
+      }
+    }
+  }
+}
