@@ -1,24 +1,23 @@
-<ion-view title="Sondages">
+<ion-view title="Création d'un Sondage">
   <ion-content class="padding">
     <h1>Créer un sondage</h1>
     <div class="list">
-      <ion-toggle ng-model="poll.singleChoise" ng-init="poll.singleChoise=false;" toggle-class="toggle-calm">Single answer</ion-toggle>
-      <label class="item item-input">
+      <label class="item item-input item-stacked-label">
         <span class="input-label">Question</span>
-        <input type="text" ng-model="poll.question">
+        <input type="text" ng-model="poll.question" placeholder="Vous aimez ?">
       </label>
       <div ng-repeat="choice in choices" id="{{choice.id}}">
-        <i style="float: left" class="ion-ios7-close-outline" ng-click="fn.removeChoice(choice.id)"></i>
-        <label class="item item-input" style="float : left">
-          <span class="input-label">Réponse</span>
-          <input type="text" ng-model="choice.value">
-
+        <div class="item item-input-inset">
+        <label class="item-input-wrapper">
+          <input type="text" ng-model="choice.value" placeholder="Réponse">
         </label>
-        <div style="clear: both"></div>
+        <button class="button button-small ion-ios7-close-outline" ng-click="fn.removeChoice(choice.id)">
+        </button>
+          </div>
       </div>
-      <button ng-click="fn.addChoice()">Add other answer</button>
-
-      <button class="button button-block button-positive" ng-click="fn.submitForm(poll)">Créer</button>
+      <button class="button button-balanced" ng-click="fn.addChoice()">Ajouter une réponse</button>
+      <ion-toggle ng-model="poll.singleChoise" ng-init="poll.singleChoise=false;" toggle-class="toggle-calm">Choix unique</ion-toggle>
+      <button class="button button-block button-positive" ng-click="fn.submitForm(poll)">Créer le sondage</button>
     </div>
     </ion-content>
 </ion-view>

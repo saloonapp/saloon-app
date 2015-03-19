@@ -105,10 +105,12 @@ angular.module('app')
       }
     ];
 
+    $scope.choiceId = 2;
+
     fn.addChoice = function(){
-      var newIdChoice = $scope.choices.length + 1;
+      $scope.choiceId++;
       $scope.choices.push({
-        id : 'choice' + newIdChoice
+        id : 'choice' + $scope.choiceId
       });
     };
 
