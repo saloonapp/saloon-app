@@ -5,7 +5,7 @@
     </div>
     <div class="list chat" ng-show="data.chat.length > 0">
       <div class="item item-avatar" ng-repeat="message in data.chat | orderBy:'time':true">
-        <img ng-src="{{message.user.avatar || 'img/user.jpg'}}" ui-sref="tabs.user({id: message.user.objectId})">
+        <img ng-src="{{message.user | avatar}}" ui-sref="tabs.user({id: message.user.objectId})">
         <small class="pull-right">{{message.time | humanTime}}</small>
         <h2>{{message.user.pseudo}}</h2>
         <p>{{message.content}}</p>

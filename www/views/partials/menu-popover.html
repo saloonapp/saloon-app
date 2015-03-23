@@ -2,7 +2,7 @@
   <ion-content>
     <div class="list">
       <div class="item item-avatar" ng-click="profileModal.show();menuPopover.hide()">
-        <img ng-src="{{user.avatar || 'img/user.jpg'}}">
+        <img ng-src="{{user | avatar}}">
         <h2>{{user.pseudo}}</h2>
         <p>{{user.actualPurpose}}</p>
       </div>

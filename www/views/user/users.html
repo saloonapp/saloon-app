@@ -12,7 +12,7 @@
       <div class="list">
         <!--<div class="item item-avatar" collection-repeat="user in data.users | filter:search" collection-item-width="'100%'" collection-item-height="75" style="height: 75px; left: 0; right: 0;" ui-sref="tabs.user({id: user.objectId})">-->
         <div class="item item-avatar" ng-repeat="user in data.users | filter:search" ui-sref="tabs.user({id: user.objectId})">
-          <img ng-src="{{user.avatar || 'img/user.jpg'}}">
+          <img ng-src="{{user | avatar}}">
           <h2>{{user.pseudo}}</h2>
           <p>{{user.actualPurpose}}</p>
           <p ng-if="user.interests && user.interests.length > 0">
