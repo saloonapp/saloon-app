@@ -3,10 +3,10 @@ angular.module('app')
 .filter('avatar', function(){
   'use strict';
   return function(user){
-    var avatar = typeof user === 'object' ? user.avatar : user;
+    var avatar = user && typeof user === 'object' ? user.avatar : user;
     if(avatar){
       return avatar;
-    } else if(typeof user === 'object' && user.pseudo){
+    } else if(user && typeof user === 'object' && user.pseudo){
       return 'https://sigil.cupcake.io/'+user.pseudo;
     } else {
       return 'img/user.jpg';

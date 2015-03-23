@@ -20,7 +20,7 @@ To run the app on your android device :
 
 ## Main features
 
-- Connecti with your linkedin profile
+- Connection with your linkedin profile
 - see connected people around you (ordered by relevance)
 - chat publicly with others (rooms ordered by last message sent by you)
 - send polls (by instant (1h) popularity & filter by answered or not)
