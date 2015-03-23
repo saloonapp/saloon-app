@@ -54,6 +54,9 @@ To run the app on your android device :
     - http://mycolorscreen.com/
 - Offline communication :
     - https://opengarden.com/developers
-    - Apple’s Multipeer Connectivity framework (iOS only)
+    - Apple’s Multipeer Connectivity framework (https://developer.apple.com/library/ios/documentation/MultipeerConnectivity/Reference/MultipeerConnectivityFramework/)
+    - Android direct wifi (http://developer.android.com/guide/topics/connectivity/wifip2p.html)
+    - WebRTC or Boost Asio (http://stackoverflow.com/questions/17965176/is-there-any-framework-to-allow-p2p-communication-via-phone)
+    - NFC (https://github.com/don/phonegap-p2p)
 - Offline cache :
     - http://pouchdb.com/ ?

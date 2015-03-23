@@ -1,53 +1,42 @@
 angular.module('app')
 
-.provider('AuthSrv', function(LocalStorageUtilsProvider){
+.factory('AuthSrv', function(ParseUtils, LocalStorageUtils, Utils){
   'use strict';
   var storageKey = 'user-token';
+  var authCrud = ParseUtils.createCrud('Auth');
+  var service = {
+    isLogged: isLogged,
+    setToken: setToken,
+    removeToken: removeToken,
+    getToken: getToken,
+    getAuthData: getAuthData,
+    setAuthData: setAuthData
+  };
 
-  function getToken()       { return LocalStorageUtilsProvider.getSync(storageKey); }
-  function isLogged()       { return !!getToken();                                  }
+  function getToken()       { return LocalStorageUtils.getSync(storageKey);     }
+  function setToken(token)  { return LocalStorageUtils.set(storageKey, token);  }
+  function removeToken()    { return LocalStorageUtils.remove(storageKey);      }
+  function isLogged()       { return !!getToken();                              }
 
-  this.isLogged = isLogged;
+  function getAuthData(provider, id){
+    return authCrud.findOne({provider: provider, id: id}).then(function(res){
+      console.log('authData', res);
+      if(res && res.data){
+        return res.data;
+      }
+    });
+  }
 
-  this.$get = ['ParseUtils', 'LocalStorageUtils', 'Utils', function(ParseUtils, LocalStorageUtils, Utils){
-    var authCrud = ParseUtils.createCrud('Auth');
-    var service = {
-      isLogged: isLogged,
-      setToken: setToken,
-      removeToken: removeToken,
-      getToken: getToken,
-      getAuthData: getAuthData,
-      setAuthData: setAuthData
-    };
+  function setAuthData(provider, id, authData, user){
+    return authCrud.save({
+      provider: provider,
+      id: id,
+      user: ParseUtils.toPointer('_User', user),
+      data: authData
+    });
+  }
 
-    function setToken(token){
-      return LocalStorageUtils.set(storageKey, token);
-    }
-
-    function removeToken(){
-      return LocalStorageUtils.remove(storageKey);
-    }
-
-    function getAuthData(provider, id){
-      return authCrud.findOne({provider: provider, id: id}).then(function(res){
-        console.log('authData', res);
-        if(res && res.data){
-          return res.data;
-        }
-      });
-    }
-
-    function setAuthData(provider, id, authData, user){
-      return authCrud.save({
-        provider: provider,
-        id: id,
-        user: ParseUtils.toPointer('_User', user),
-        data: authData
-      });
-    }
-
-    return service;
-  }];
+  return service;
 })
 
 .factory('LinkedinSrv', function($http, $q, $cordovaOauth, LocalStorageUtils, Config){

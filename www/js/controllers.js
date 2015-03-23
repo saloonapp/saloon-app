@@ -40,7 +40,7 @@ angular.module('app')
   $scope.logout = function(){
     UserSrv.logout().then(function(){
       $ionicHistory.nextViewOptions({disableBack:true});
-      $state.go('login_welcome');
+      $state.go('welcome');
     });
   };
 

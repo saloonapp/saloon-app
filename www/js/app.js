@@ -1,41 +1,64 @@
 angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
 
-.config(function($stateProvider, $urlRouterProvider, $provide, $httpProvider, AuthSrvProvider, ParseUtilsProvider, Config) {
+.config(function($stateProvider, $urlRouterProvider, $provide, $httpProvider, ParseUtilsProvider, Config) {
   'use strict';
   ParseUtilsProvider.initialize(Config.parse.applicationId, Config.parse.restApiKey);
 
   $stateProvider
-  .state('login_welcome', {
+  .state('loading', {
+    url: '/loading',
+    templateUrl: 'views/onboarding/loading.html',
+    controller: 'LoadingCtrl',
+  })
+  .state('welcome', {
     url: '/welcome',
     templateUrl: 'views/onboarding/welcome.html',
-    controller: 'WelcomeCtrl'
+    controller: 'WelcomeCtrl',
+    data: {
+      restrictAccess: ['notLogged']
+    }
   })
-  .state('login_register', {
+  .state('register', {
     url: '/register',
     templateUrl: 'views/onboarding/register.html',
-    controller: 'RegisterCtrl'
+    controller: 'RegisterCtrl',
+    data: {
+      restrictAccess: ['notLogged']
+    }
   })
-  .state('login_login', {
+  .state('signin', {
     url: '/signin',
     templateUrl: 'views/onboarding/signin.html',
-    controller: 'SigninCtrl'
+    controller: 'SigninCtrl',
+    data: {
+      restrictAccess: ['notLogged']
+    }
   })
-  .state('login_createaccountwithprofile', {
+  .state('createaccountwithprofile', {
     url: '/createaccountwithprofile',
     templateUrl: 'views/onboarding/createaccountwithprofile.html',
-    controller: 'CreateAccountWithProfileCtrl'
+    controller: 'CreateAccountWithProfileCtrl',
+    data: {
+      restrictAccess: ['notLogged']
+    }
   })
   .state('fillprofile', {
     url: '/fillprofile',
     templateUrl: 'views/onboarding/fillprofile.html',
-    controller: 'FillProfileCtrl'
+    controller: 'FillProfileCtrl',
+    data: {
+      restrictAccess: ['logged']
+    }
   })
 
   .state('tabs', {
     url: '/tabs',
     abstract: true,
     templateUrl: 'views/tabs.html',
-    controller: 'TabsCtrl'
+    controller: 'TabsCtrl',
+    data: {
+      restrictAccess: ['logged']
+    }
   })
   .state('tabs.users', {
     url: '/users',
@@ -44,6 +67,9 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
         templateUrl: 'views/user/users.html',
         controller: 'UsersCtrl'
       }
+    },
+    data: {
+      restrictAccess: ['logged']
     }
   })
   .state('tabs.contacts', {
@@ -53,6 +79,9 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
         templateUrl: 'views/user/contacts.html',
         controller: 'ContactsCtrl'
       }
+    },
+    data: {
+      restrictAccess: ['logged']
     }
   })
   .state('tabs.user', {
@@ -62,6 +91,9 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
         templateUrl: 'views/user/user.html',
         controller: 'UserCtrl'
       }
+    },
+    data: {
+      restrictAccess: ['logged']
     }
   })
   .state('tabs.chats', {
@@ -71,6 +103,9 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
         templateUrl: 'views/chat/chats.html',
         controller: 'ChatsCtrl'
       }
+    },
+    data: {
+      restrictAccess: ['logged']
     }
   })
   .state('tabs.chat', {
@@ -80,6 +115,9 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
         templateUrl: 'views/chat/chat.html',
         controller: 'ChatCtrl'
       }
+    },
+    data: {
+      restrictAccess: ['logged']
     }
   })
   .state('tabs.polls', {
@@ -89,6 +127,9 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
         templateUrl: 'views/poll/polls.html',
         controller: 'PollsCtrl'
       }
+    },
+    data: {
+      restrictAccess: ['logged']
     }
   })
   .state('tabs.issues', {
@@ -98,14 +139,13 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
         templateUrl: 'views/issue/issues.html',
         controller: 'IssuesCtrl'
       }
+    },
+    data: {
+      restrictAccess: ['logged']
     }
   });
 
-  if(AuthSrvProvider.isLogged()){
-    $urlRouterProvider.otherwise('/tabs/users');
-  } else {
-    $urlRouterProvider.otherwise('/welcome');
-  }
+  $urlRouterProvider.otherwise('/loading');
 
   // improve angular logger
   $provide.decorator('$log', ['$delegate', 'customLogger', function($delegate, customLogger){
@@ -118,18 +158,21 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
 
 .constant('Config', Config)
 
-.run(function($rootScope, $state, $log, AuthSrv, UserSrv, Utils, PushPlugin, NotificationSrv, Config){
+.run(function($rootScope, $state, $log, AuthSrv, UserSrv, PushPlugin, NotificationSrv, Config){
   'use strict';
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-    var logged = AuthSrv.isLogged();
-    if(Utils.startsWith(toState.name, 'login') && logged){
-      event.preventDefault();
-      $log.log('IllegalAccess', 'Already logged in !');
-      $state.go('tabs.users');
-    } else if(!Utils.startsWith(toState.name, 'login') && !logged){
-      event.preventDefault();
-      $log.log('IllegalAccess', 'Not allowed to access to <'+toState.name+'> state !');
-      $state.go('login_welcome');
+    if(toState && toState.data && Array.isArray(toState.data.restrictAccess)){
+      var restricted = toState.data.restrictAccess;
+      var logged = AuthSrv.isLogged();
+      if(logged && restricted.indexOf('notLogged') > -1){
+        event.preventDefault();
+        $log.log('IllegalAccess', 'State <'+toState.name+'> is restricted to non logged users !');
+        $state.go('tabs.users');
+      } else if(!logged && restricted.indexOf('logged') > -1){
+        event.preventDefault();
+        $log.log('IllegalAccess', 'State <'+toState.name+'> is restricted to logged users !');
+        $state.go('welcome');
+      }
     }
   });
 
