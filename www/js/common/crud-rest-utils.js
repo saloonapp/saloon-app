@@ -164,6 +164,7 @@ angular.module('app')
         var data = typeof _getData === 'function' ? _getData(result) : result.data;
         var newElt = angular.copy(elt);
         if(!newElt[objectKey] && data[objectKey]){ newElt[objectKey] = data[objectKey]; }
+        if(!newElt['createdAt'] && data['createdAt']){ newElt['createdAt'] = data['createdAt']; } // for Parse responses...
         _setInCache(_cache, endpointUrl, objectKey, result, newElt);
         _invalideAllCache(_cache, endpointUrl);
         return newElt;

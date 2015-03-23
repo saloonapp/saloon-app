@@ -7,6 +7,10 @@ Meet interesting people around you !
 - install nodejs, gulp, cordova & ionic (if not already done)
 - go to project folder
 - rename `www/js/config/_config-sample.js` to `www/js/config/_config.js` and setup your keys
+- rename `ParseCloudCode/config/global-sample.json` to `ParseCloudCode/config/global.json` and setup your keys
+- rename `ParseCloudCode/cloud/credentials-sample.js` to `ParseCloudCode/cloud/credentials.js` and setup your keys
+- install parse CLI `curl -s https://www.parse.com/downloads/cloud_code/installer.sh | sudo /bin/bash` (if not done yet)
+- upload cloud code to parse `cd ParseCloudCode/ && parse deploy && cd ../`
 - `bower install` : install app dependencies
 - `npm install gulp` : install build dependencies
 - `ionic setup sass` : use sass
@@ -30,7 +34,7 @@ To run the app on your android device :
 
 ## TODO
 
-- replace firebase with parse+pusher/push (user-user chat + public chat)
+- replace firebase with parse+pusher/push (for public chat)
 - public chat rooms
     - only show near messages (no filtering yet)
 

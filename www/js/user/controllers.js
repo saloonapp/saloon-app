@@ -65,34 +65,50 @@ angular.module('app')
   });
 })
 
-.controller('UserCtrl', function($scope, $state, $stateParams, $timeout, $ionicScrollDelegate, UserSrv, UsersSrv, RelationsSrv, PrivateMessageSrv, ToastPlugin){
+.controller('UserCtrl', function($scope, $state, $stateParams, $timeout, $ionicScrollDelegate, UserSrv, UsersSrv, RelationsSrv, PrivateMessageSrv, PusherSrv, ToastPlugin){
   'use strict';
   var userId = $stateParams.id;
-  var chatSetupTime = null;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
+  var channel = null;
+  var channelName = null;
+  data.currentUser = null;
   data.user = null;
   data.relation = null;
-  UserSrv.getCurrent().then(function(currentUser){
-    data.currentUser = currentUser;
+  data.messages = [];
+
+  $scope.$on('$ionicView.enter', function(){
+    UserSrv.getCurrent().then(function(currentUser){
+      data.currentUser = currentUser;
+      channelName = userId+'-'+currentUser.objectId;
+      channel = PusherSrv.subscribe(channelName);
+      PusherSrv.bind(channel, 'PrivateMessage', onMessage);
+    });
+    UsersSrv.get(userId).then(function(user){
+      if(user){
+        data.user = user;
+        RelationsSrv.get(user).then(function(relation){
+          data.relation = relation;
+        });
+        PrivateMessageSrv.getAll(user).then(function(messages){
+          data.messages = messages;
+          if($stateParams.section){ $timeout(function(){scrollTo($stateParams.section);}, 100); }
+        });
+      } else {
+        $state.go('tabs.users');
+      }
+    });
   });
-  UsersSrv.get(userId).then(function(user){
-    if(user){
-      data.user = user;
-      RelationsSrv.get(user).then(function(relation){
-        data.relation = relation;
-      });
-      // TODO : subscribe to message updates... now they are not updated... :(
-      PrivateMessageSrv.getAll(user).then(function(messages){
-        data.messages = messages;
-        if($stateParams.section){ $timeout(function(){scrollTo($stateParams.section);}, 100); }
-      });
-    } else {
-      $state.go('tabs.users');
-    }
+
+  $scope.$on('$ionicView.leave', function(){
+    PusherSrv.unbind(channel, 'PrivateMessage', onMessage);
+    PusherSrv.unsubscribe(channelName);
+    channel = null;
+    channelName = null;
   });
+
 
   fn.hasRelation = function(relation){ return relation !== null && !!relation; };
   fn.hasNoRelation = function(relation){ return relation !== null && !relation; };
@@ -123,12 +139,17 @@ angular.module('app')
   fn.sendMessage = function(){
     if(fn.isAccepted(data.relation) && data.message && data.message.length > 0){
       PrivateMessageSrv.sendTo(data.user, data.message).then(function(message){
-        data.messages.unshift(message);
+        onMessage(message);
         data.message = '';
         scrollTo('chat');
       });
     }
   };
+
+
+  function onMessage(message){
+    data.messages.unshift(message);
+  }
 
   function scrollTo(className){
     var scroll = $ionicScrollDelegate.getScrollPosition();

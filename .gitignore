@@ -3,6 +3,8 @@
 
 # config file
 www/js/config/_config.js
+ParseCloudCode/cloud/credentials.js
+ParseCloudCode/config/global.json
 
 node_modules/
 platforms/

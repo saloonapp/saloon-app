@@ -11,6 +11,24 @@ angular.module('app')
   return service;
 })
 
+.factory('PusherSrv', function(Config){
+  'use strict';
+  var pusher = new Pusher(Config.pusher.key);
+  var service = {
+    subscribe: subscribe,
+    unsubscribe: unsubscribe,
+    bind: bind,
+    unbind: unbind
+  };
+
+  function subscribe(channel){ return pusher.subscribe(channel); }
+  function unsubscribe(channel){ pusher.unsubscribe(channel); }
+  function bind(channel, event, fn){ channel.bind(event, fn); }
+  function unbind(channel, event, fn){ channel.unbind(event, fn); }
+
+  return service;
+})
+
 .factory('NotificationSrv', function($state, $q, PushPlugin, DialogPlugin, ToastPlugin){
   'use strict';
   var service = {
