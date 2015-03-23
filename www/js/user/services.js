@@ -212,7 +212,7 @@ angular.module('app')
   return service;
 })
 
-.factory('RelationsSrv', function($state, UserSrv, UsersSrv, DialogPlugin, ParseUtils, PushPlugin, GeolocationPlugin){
+.factory('RelationsSrv', function(UserSrv, UsersSrv, ParseUtils, NotificationSrv, GeolocationPlugin){
   'use strict';
   var relationCrud = ParseUtils.createCrud('Relation');
   var service = {
@@ -225,8 +225,7 @@ angular.module('app')
     getContactsIds: getContactsIds,
     invite: invite,
     acceptInvite: acceptInvite,
-    declineInvite: declineInvite,
-    onInvitation: onInvitation
+    declineInvite: declineInvite
   };
 
   function get(user){
@@ -273,19 +272,9 @@ angular.module('app')
           status: service.status.INVITED
         };
         return relationCrud.save(relation).then(function(relationCreated){
-          if(user && user.push && user.push.id && user.push.platform === 'android'){
-            return PushPlugin.sendPush([user.push.id], {
-              type: 'relation_invite',
-              userId: currentUser.objectId,
-              title: 'Invitation reçue',
-              message: currentUser.pseudo+' vous invite à le rencontrer'
-            }).then(function(){
-              return relationCreated;
-            });
-          } else {
-            console.log('no able to push to user', user);
+          return NotificationSrv.sendInvite(currentUser, user).then(function(){
             return relationCreated;
-          }
+          });
         });
       });
     });
@@ -298,16 +287,7 @@ angular.module('app')
       return relationCrud.save(rel).then(function(){
         return UsersSrv.get(relation.from.objectId);
       }).then(function(user){
-        if(user && user.push && user.push.id && user.push.platform === 'android'){
-          return PushPlugin.sendPush([user.push.id], {
-            type: 'relation_accept',
-            userId: currentUser.objectId,
-            title: 'Invitation acceptée',
-            message: currentUser.pseudo+' a accepté votre invitation :)'
-          });
-        } else {
-          console.log('no able to push to user', user);
-        }
+        return NotificationSrv.acceptInvite(currentUser, user);
       });
     });
   }
@@ -319,29 +299,47 @@ angular.module('app')
       return relationCrud.save(rel).then(function(){
         return UsersSrv.get(relation.from.objectId);
       }).then(function(user){
-        if(user && user.push && user.push.id && user.push.platform === 'android'){
-          return PushPlugin.sendPush([user.push.id], {
-            type: 'relation_decline',
-            userId: currentUser.objectId,
-            title: 'Invitation ignorée',
-            message: currentUser.pseudo+' a ignorée votre invitation :('
-          });
-        } else {
-          console.log('no able to push to user', user);
-        }
+        return NotificationSrv.declineInvite(currentUser, user);
       });
     });
   }
 
-  function onInvitation(notification, data){
-    if(notification.foreground){
-      DialogPlugin.confirmMulti(data.message,data.title, ['Voir profil', 'Ignorer']).then(function(btnIndex){
-        if(btnIndex === 1){ $state.go('tabs.user', {id: data.userId}); }
-        else if(btnIndex === 2){}
+  return service;
+})
+
+.factory('PrivateMessageSrv', function($q, UserSrv, UsersSrv, ParseUtils, NotificationSrv){
+  'use strict';
+  var messageCrud = ParseUtils.createCrud('PrivateMessage');
+  var service = {
+    getAll: getAll,
+    sendTo: sendTo
+  };
+
+  function getAll(user){
+    return UserSrv.getCurrent().then(function(currentUser){
+      return messageCrud.find({
+        from: {$in: [ParseUtils.toPointer('_User', user), ParseUtils.toPointer('_User', currentUser)]},
+        to: {$in: [ParseUtils.toPointer('_User', user), ParseUtils.toPointer('_User', currentUser)]}
+      }, '&include=from');
+    });
+  }
+
+  function sendTo(user, message){
+    return UserSrv.getCurrent().then(function(currentUser){
+      var chatMessage = {
+        from: ParseUtils.toPointer('_User', currentUser),
+        to: ParseUtils.toPointer('_User', user),
+        content: {
+          text: message
+        }
+      };
+      return messageCrud.save(chatMessage).then(function(sentMessage){
+        return NotificationSrv.sendPrivateMessage(currentUser, user, message).then(function(){
+          sentMessage.from = currentUser;
+          return sentMessage;
+        });
       });
-    } else {
-      $state.go('tabs.user', {id: data.userId});
-    }
+    });
   }
 
   return service;

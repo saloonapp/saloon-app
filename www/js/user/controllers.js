@@ -65,7 +65,7 @@ angular.module('app')
   });
 })
 
-.controller('UserCtrl', function($scope, $state, $stateParams, $ionicScrollDelegate, UserSrv, UsersSrv, RelationsSrv, ChatSrv, ToastPlugin){
+.controller('UserCtrl', function($scope, $state, $stateParams, $timeout, $ionicScrollDelegate, UserSrv, UsersSrv, RelationsSrv, PrivateMessageSrv, ToastPlugin){
   'use strict';
   var userId = $stateParams.id;
   var chatSetupTime = null;
@@ -83,7 +83,11 @@ angular.module('app')
       data.user = user;
       RelationsSrv.get(user).then(function(relation){
         data.relation = relation;
-        setupChatIfNeeded(relation);
+      });
+      // TODO : subscribe to message updates... now they are not updated... :(
+      PrivateMessageSrv.getAll(user).then(function(messages){
+        data.messages = messages;
+        if($stateParams.section){ $timeout(function(){scrollTo($stateParams.section);}, 100); }
       });
     } else {
       $state.go('tabs.users');
@@ -100,7 +104,6 @@ angular.module('app')
   fn.invite = function(user){
     RelationsSrv.invite(user).then(function(relationCreated){
       data.relation = relationCreated;
-      setupChatIfNeeded(relationCreated);
       ToastPlugin.show('Invitation envoyée :)');
     });
   };
@@ -118,28 +121,15 @@ angular.module('app')
   };
 
   fn.sendMessage = function(){
-    if(fn.isAccepted(data.relation) && data.chat && data.message && data.message.length > 0){
-      ChatSrv.sendToRelationChat(data.chat, data.message).then(function(){
+    if(fn.isAccepted(data.relation) && data.message && data.message.length > 0){
+      PrivateMessageSrv.sendTo(data.user, data.message).then(function(message){
+        data.messages.unshift(message);
         data.message = '';
         scrollTo('chat');
       });
     }
   };
 
-  function setupChatIfNeeded(relation){
-    if(relation && relation.objectId && !data.chat){
-      data.chat = ChatSrv.setupRelationChat(relation);
-      data.chat.$watch(function onMessage(infos){
-        if(infos.event === 'child_added'){
-          var message = data.chat.$getRecord(infos.key);
-          if(message && chatSetupTime !== null && message.time > chatSetupTime && message.user.objectId !== data.currentUser.objectId){
-            ToastPlugin.showLongBottom('Nouveau message de '+message.user.pseudo+' : \n'+message.content);
-          }
-        }
-      });
-      chatSetupTime = Date.now();
-    }
-  }
   function scrollTo(className){
     var scroll = $ionicScrollDelegate.getScrollPosition();
     var elt = document.getElementsByClassName(className);

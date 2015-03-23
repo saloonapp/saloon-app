@@ -53,13 +53,13 @@
         </ul>
       </div>
 
-      <div class="list chat" ng-show="fn.isAccepted(data.relation) && data.chat.length > 0">
+      <div class="list chat" ng-show="fn.isAccepted(data.relation) && data.messages.length > 0">
         <div class="item item-divider">Messages échangés :</div>
-        <div class="item item-avatar" ng-repeat="message in data.chat | orderBy:'time':true">
-          <img ng-src="{{message.user | avatar}}">
-          <small class="pull-right">{{message.time | humanTime}}</small>
-          <h2>{{message.user.pseudo}}</h2>
-          <p>{{message.content}}</p>
+        <div class="item item-avatar" ng-repeat="message in data.messages | orderBy:'createdAt':true">
+          <img ng-src="{{message.from | avatar}}">
+          <small class="pull-right" am-time-ago="message.createdAt"></small>
+          <h2>{{message.from.pseudo}}</h2>
+          <p>{{message.content.text}}</p>
         </div>
       </div>
     </div>

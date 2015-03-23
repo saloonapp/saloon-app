@@ -1,4 +1,4 @@
-angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
+angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase', 'angularMoment'])
 
 .config(function($stateProvider, $urlRouterProvider, $provide, $httpProvider, ParseUtilsProvider, Config) {
   'use strict';
@@ -85,7 +85,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'firebase'])
     }
   })
   .state('tabs.user', {
-    url: '/user/:id',
+    url: '/user/:id?section',
     views: {
       'users-tab': {
         templateUrl: 'views/user/user.html',
