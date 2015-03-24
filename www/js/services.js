@@ -11,7 +11,7 @@ angular.module('app')
   return service;
 })
 
-.factory('PusherSrv', function(Config){
+.factory('RealtimeSrv', function(Config){
   'use strict';
   var pusher = new Pusher(Config.pusher.key);
   var service = {
@@ -91,10 +91,17 @@ angular.module('app')
         if($state.is('tabs.user', {id: data.userId}) || $state.is('tabs.user', {id: data.userId, section: 'chat'})){
           ToastPlugin.showLongTop(data.title+' :\n'+data.message);
         } else {
-          DialogPlugin.promptMulti(data.message, data.title, ['Voir profil', 'Ignorer', 'Répondre']).then(function(res){
+          /*DialogPlugin.promptMulti(data.message, data.title, ['Voir profil', 'Ignorer', 'Répondre']).then(function(res){
             if(res.buttonIndex === 1){ $state.go('tabs.user', {id: data.userId, section: 'chat'}); }
             else if(res.buttonIndex === 2){}
-            else if(res.buttonIndex === 3){ /* send answer */ }
+            else if(res.buttonIndex === 3){
+              var message = res.input1;
+              // send answer
+            }
+          });*/
+          DialogPlugin.confirmMulti(data.message, data.title, ['Voir', 'Ignorer']).then(function(btnIndex){
+            if(btnIndex === 1){ $state.go('tabs.user', {id: data.userId, section: 'chat'}); }
+            else if(btnIndex === 2){}
           });
         }
       } else {

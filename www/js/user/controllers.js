@@ -65,7 +65,7 @@ angular.module('app')
   });
 })
 
-.controller('UserCtrl', function($scope, $state, $stateParams, $timeout, $ionicScrollDelegate, UserSrv, UsersSrv, RelationsSrv, PrivateMessageSrv, PusherSrv, ToastPlugin){
+.controller('UserCtrl', function($scope, $state, $stateParams, $timeout, $ionicScrollDelegate, UserSrv, UsersSrv, RelationsSrv, PrivateMessageSrv, RealtimeSrv, ToastPlugin){
   'use strict';
   var userId = $stateParams.id;
   var data = {}, fn = {};
@@ -83,8 +83,8 @@ angular.module('app')
     UserSrv.getCurrent().then(function(currentUser){
       data.currentUser = currentUser;
       channelName = userId+'-'+currentUser.objectId;
-      channel = PusherSrv.subscribe(channelName);
-      PusherSrv.bind(channel, 'PrivateMessage', onMessage);
+      channel = RealtimeSrv.subscribe(channelName);
+      RealtimeSrv.bind(channel, 'PrivateMessage', onMessage);
     });
     UsersSrv.get(userId).then(function(user){
       if(user){
@@ -103,8 +103,8 @@ angular.module('app')
   });
 
   $scope.$on('$ionicView.leave', function(){
-    PusherSrv.unbind(channel, 'PrivateMessage', onMessage);
-    PusherSrv.unsubscribe(channelName);
+    RealtimeSrv.unbind(channel, 'PrivateMessage', onMessage);
+    RealtimeSrv.unsubscribe(channelName);
     channel = null;
     channelName = null;
   });
