@@ -22,7 +22,15 @@ angular.module('app')
             $maxDistanceInKilometers: matchDistance
           }
         }, '&order=room,-updatedAt').then(function(messages){
-          messageByRoomCache = _.groupBy(messages, 'room');
+          var byRoom = _.groupBy(messages, 'room');
+          var rooms = {};
+          for(var i in byRoom){
+            rooms[i] = _createRoom(i, byRoom[i]);
+          }
+          if(!rooms['SalooN']){
+            rooms['SalooN'] = _createRoom('SalooN', []);
+          }
+          messageByRoomCache = rooms;
           return angular.copy(messageByRoomCache);
         });
       });
@@ -46,8 +54,8 @@ angular.module('app')
             }
           }, '&order=room,-updatedAt').then(function(messages){
             if(!messageByRoomCache){ messageByRoomCache = {}; }
-            messageByRoomCache[room] = messages;
-            return angular.copy(messages);
+            messageByRoomCache[room] = _createRoom(room, messages);
+            return angular.copy(messageByRoomCache[room]);
           });
         });
       });
@@ -72,6 +80,21 @@ angular.module('app')
         });
       });
     });
+  }
+
+  function _createRoom(id, messages){
+    messages.sort(function(a, b){ return _date_sort_desc(a.createdAt, b.createdAt); });
+    var room = {
+      id: id,
+      lastMessage: messages[0],
+      messages: messages
+    };
+    return room;
+  }
+  function _date_sort_desc(date1, date2){
+    if(new Date(date1) < new Date(date2)){ return 1; }
+    else if(new Date(date1) > new Date(date2)){ return -1; }
+    else { return 0; }
   }
 
   return service;

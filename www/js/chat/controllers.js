@@ -10,13 +10,14 @@ angular.module('app')
   function loadRooms(){
     PublicMessageSrv.getNearMessages().then(function(roomMessages){
       data.rooms = roomMessages;
-      if(data.rooms && !data.rooms['SalooN']){
-        data.rooms['SalooN'] = [];
-      }
       $scope.$broadcast('scroll.refreshComplete');
     });
   }
-  loadRooms();
+
+  $scope.$on('$ionicView.enter', function(){
+    console.log('view enter');
+    loadRooms();
+  });
 
   fn.refresh = function(){
     loadRooms();
@@ -64,14 +65,15 @@ angular.module('app')
   $scope.data = data;
   $scope.fn = fn;
   data.roomId = $stateParams.id;
-  data.messages = null;
+  data.room = null;
 
   var channel = null;
   var channelName = null;
 
   $scope.$on('$ionicView.enter', function(){
-    PublicMessageSrv.getNearMessagesByRoom(data.roomId).then(function(messages){
-      data.messages = messages;
+    PublicMessageSrv.getNearMessagesByRoom(data.roomId).then(function(room){
+      console.log('room', room);
+      data.room = room;
     });
     UserSrv.getCurrent().then(function(currentUser){
       channelName = currentUser.objectId+'-'+data.roomId;
@@ -86,6 +88,13 @@ angular.module('app')
     channelName = null;
   });
 
+  fn.refresh = function(){
+    PublicMessageSrv.getNearMessagesByRoom(data.roomId, true).then(function(room){
+      data.room = room;
+      $scope.$broadcast('scroll.refreshComplete');
+    });
+  };
+
   fn.sendMessage = function(){
     if(data.message && data.message.length > 0){
       PublicMessageSrv.sendTo(data.roomId, data.message).then(function(){
@@ -95,6 +104,8 @@ angular.module('app')
   };
 
   function onMessage(message){
-    data.messages.unshift(message);
+    $scope.safeApply(function(){
+      data.room.messages.unshift(message);
+    });
   }
 });

@@ -32,6 +32,16 @@ To run the app on your android device :
 
 - slack integration ?
 
+## TODO
+
+- demo mode
+- fix geolocation bug on android
+- add background geolocation (https://github.com/christocracy/cordova-background-geolocation)
+- get full-profile & contacts from linkedin
+- improve people search (showing matching elements)
+- send photos in chats
+- add events (like devoxx) with speakers, rooms, attendee, sponsors, slots (speakers+room+time+...), map...
+
 ## Resources
 
 - Code sample :

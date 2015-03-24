@@ -148,7 +148,9 @@ angular.module('app')
 
 
   function onMessage(message){
-    data.messages.unshift(message);
+    $scope.safeApply(function(){
+      data.messages.unshift(message);
+    });
   }
 
   function scrollTo(className){

@@ -190,5 +190,16 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
   PushPlugin.onNotification(function(notification){
     NotificationSrv.received(notification);
   });
+
+  $rootScope.safeApply = function(fn){
+    var phase = this.$root ? this.$root.$$phase : this.$$phase;
+    if(phase === '$apply' || phase === '$digest'){
+      if(fn && (typeof(fn) === 'function')){
+        fn();
+      }
+    } else {
+      this.$apply(fn);
+    }
+  };
 });
 

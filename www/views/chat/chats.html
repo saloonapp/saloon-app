@@ -3,13 +3,14 @@
     <button class="button button-icon ion-plus" ng-click="fn.createRoom()"></button>
   </ion-nav-buttons>
   <ion-content>
-    <loading ng-show="data.rooms === null" top="100px"></loading>
+    <loading ng-if="data.rooms === null" top="100px"></loading>
     <div ng-if="data.rooms !== null">
       <ion-refresher pulling-text="Pull to refresh..." on-refresh="fn.refresh()"></ion-refresher>
       <div class="list">
-        <div class="item item-icon-left item-icon-right" ng-repeat="(room, messages) in data.rooms" ui-sref="tabs.chat({id: room})">
+        <div class="item item-icon-left item-icon-right" ng-repeat="room in data.rooms" ui-sref="tabs.chat({id: room.id})">
           <i class="icon ion-chatboxes"></i>
-          /{{room}}
+          /{{room.id}}
+          <span class="badge badge-assertive">{{room.messages.length}}</span>
           <i class="icon ion-chevron-right icon-accessory"></i>
         </div>
       </div>

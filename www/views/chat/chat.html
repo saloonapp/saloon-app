@@ -1,15 +1,18 @@
 <ion-view title="/{{data.roomId || 'Chat'}}">
   <ion-content>
-    <loading ng-show="data.messages === null" top="100px"></loading>
-    <div class="padding" style="text-align: center;" ng-if="data.messages.length === 0">
+    <loading ng-if="data.room === null" top="100px"></loading>
+    <div class="padding" style="text-align: center;" ng-if="data.room.messages.length === 0">
       <h3>Aucun message pour le moment...</h3>
     </div>
-    <div class="list chat" ng-show="data.messages.length > 0">
-      <div class="item item-avatar" ng-repeat="message in data.messages | orderBy:'createdAt':true">
-        <img user-avatar="message.from" ui-sref="tabs.user({id: message.from.objectId})">
-        <small class="pull-right" am-time-ago="message.createdAt"></small>
-        <h2 user-name="message.from"></h2>
-        <p>{{message.content.text}}</p>
+    <div ng-if="data.room.messages.length > 0">
+      <ion-refresher pulling-text="Pull to refresh..." on-refresh="fn.refresh()"></ion-refresher>
+      <div class="list chat">
+        <div class="item item-avatar" ng-repeat="message in data.room.messages | orderBy:'createdAt':true">
+          <img user-avatar="message.from" ui-sref="tabs.user({id: message.from.objectId})">
+          <small class="pull-right" am-time-ago="message.createdAt"></small>
+          <h2 user-name="message.from"></h2>
+          <p>{{message.content.text}}</p>
+        </div>
       </div>
     </div>
   </ion-content>
