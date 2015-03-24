@@ -1,14 +1,15 @@
-<ion-view title="/{{data.chatId || 'Chat'}}">
+<ion-view title="/{{data.roomId || 'Chat'}}">
   <ion-content>
-    <div class="padding" style="text-align: center;" ng-if="data.chat.length === 0">
+    <loading ng-show="data.messages === null" top="100px"></loading>
+    <div class="padding" style="text-align: center;" ng-if="data.messages.length === 0">
       <h3>Aucun message pour le moment...</h3>
     </div>
-    <div class="list chat" ng-show="data.chat.length > 0">
-      <div class="item item-avatar" ng-repeat="message in data.chat | orderBy:'time':true">
-        <img ng-src="{{message.user | avatar}}" ui-sref="tabs.user({id: message.user.objectId})">
-        <small class="pull-right">{{message.time | humanTime}}</small>
-        <h2>{{message.user.pseudo}}</h2>
-        <p>{{message.content}}</p>
+    <div class="list chat" ng-show="data.messages.length > 0">
+      <div class="item item-avatar" ng-repeat="message in data.messages | orderBy:'createdAt':true">
+        <img user-avatar="message.from" ui-sref="tabs.user({id: message.from.objectId})">
+        <small class="pull-right" am-time-ago="message.createdAt"></small>
+        <h2 user-name="message.from"></h2>
+        <p>{{message.content.text}}</p>
       </div>
     </div>
   </ion-content>

@@ -1,19 +1,5 @@
 angular.module('app')
 
-.filter('avatar', function(){
-  'use strict';
-  return function(user){
-    var avatar = user && typeof user === 'object' ? user.avatar : user;
-    if(avatar){
-      return avatar;
-    } else if(user && typeof user === 'object' && user.pseudo){
-      return 'https://sigil.cupcake.io/'+user.pseudo;
-    } else {
-      return 'img/user.jpg';
-    }
-  };
-})
-
 .filter('date', function(Utils){
   'use strict';
   return function(date, format){

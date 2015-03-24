@@ -11,6 +11,43 @@ angular.module('app')
   return service;
 })
 
+.factory('CacheSrv', function(UsersSrv, Utils){
+  'use strict';
+  var expireTime = 60 * 1000; // 1 min
+  var cache = {};
+  var promiseCache = {};
+  var service = {
+    getUser: function(userId){ return get(UsersSrv, 'users', userId); }
+  };
+
+  function get(Srv, type, id){
+    if(!cache){ cache = {}; }
+    if(!cache[type]){ cache[type] = {}; }
+    if(!promiseCache){ promiseCache = {}; }
+    if(!promiseCache[type]){ promiseCache[type] = {}; }
+
+    if(cache[type][id] && cache[type][id].time + expireTime > Date.now()){
+      return Utils.async(function(){
+        return angular.copy(cache[type][id].data);
+      });
+    } else if(promiseCache[type][id]){
+      return promiseCache[type][id];
+    } else {
+      promiseCache[type][id] = Srv.get(id).then(function(elt){
+        cache[type][id] = {
+          time: Date.now(),
+          data: elt
+        };
+        delete promiseCache[type][id];
+        return angular.copy(elt);
+      });
+      return promiseCache[type][id];
+    }
+  }
+
+  return service;
+})
+
 .factory('RealtimeSrv', function(Config){
   'use strict';
   var pusher = new Pusher(Config.pusher.key);

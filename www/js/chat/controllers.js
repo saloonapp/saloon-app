@@ -1,6 +1,6 @@
 angular.module('app')
 
-.controller('ChatsCtrl', function($scope, $state, $ionicPopup, ChatSrv, ToastPlugin, KeyboardPlugin){
+.controller('ChatsCtrl', function($scope, $state, $ionicPopup, PublicMessageSrv, ToastPlugin, KeyboardPlugin){
   'use strict';
   var data = {}, fn = {};
   $scope.data = data;
@@ -8,12 +8,10 @@ angular.module('app')
 
   data.rooms = null;
   function loadRooms(){
-    ChatSrv.getPublicRooms().then(function(rooms){
-      if(!data.rooms){ data.rooms = []; }
-      for(var i in rooms){
-        if(_.find(data.rooms, {id: rooms[i].id}) === undefined){
-          data.rooms.push(rooms[i]);
-        }
+    PublicMessageSrv.getNearMessages().then(function(roomMessages){
+      data.rooms = roomMessages;
+      if(data.rooms && !data.rooms['SalooN']){
+        data.rooms['SalooN'] = [];
       }
       $scope.$broadcast('scroll.refreshComplete');
     });
@@ -50,8 +48,8 @@ angular.module('app')
       }).then(function(name) {
         KeyboardPlugin.close();
         if(name){
-          if(!data.rooms){ data.rooms = []; }
-          data.rooms.unshift({id: name});
+          if(!data.rooms){ data.rooms = {}; }
+          data.rooms[name] = [];
           $state.go('tabs.chat', {id: name});
         }
       });
@@ -60,25 +58,43 @@ angular.module('app')
   };
 })
 
-.controller('ChatCtrl', function($scope, $stateParams, ChatSrv){
+.controller('ChatCtrl', function($scope, $stateParams, UserSrv, PublicMessageSrv, RealtimeSrv){
   'use strict';
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
-  data.chatId = $stateParams.id;
+  data.roomId = $stateParams.id;
+  data.messages = null;
+
+  var channel = null;
+  var channelName = null;
 
   $scope.$on('$ionicView.enter', function(){
-    data.chat = ChatSrv.setupPublicChat(data.chatId);
+    PublicMessageSrv.getNearMessagesByRoom(data.roomId).then(function(messages){
+      data.messages = messages;
+    });
+    UserSrv.getCurrent().then(function(currentUser){
+      channelName = currentUser.objectId+'-'+data.roomId;
+      channel = RealtimeSrv.subscribe(channelName);
+      RealtimeSrv.bind(channel, 'PublicMessage', onMessage);
+    });
   });
   $scope.$on('$ionicView.leave', function(){
-    ChatSrv.destroy(data.chat);
+    RealtimeSrv.unbind(channel, 'PublicMessage', onMessage);
+    RealtimeSrv.unsubscribe(channelName);
+    channel = null;
+    channelName = null;
   });
 
   fn.sendMessage = function(){
-    if(data.chat && data.message && data.message.length > 0){
-      ChatSrv.sendToPublicChat(data.chat, data.message).then(function(){
+    if(data.message && data.message.length > 0){
+      PublicMessageSrv.sendTo(data.roomId, data.message).then(function(){
         data.message = '';
       });
     }
   };
+
+  function onMessage(message){
+    data.messages.unshift(message);
+  }
 });

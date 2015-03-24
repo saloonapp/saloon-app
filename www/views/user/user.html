@@ -6,8 +6,8 @@
         <div class="social pull-right">
           <a href="{{data.user.linkedin.publicUrl}}" ng-if="data.user.linkedin"><img src="img/social/square/linkedin.png"></a>
         </div>
-        <img class="avatar" ng-src="{{data.user | avatar}}">
-        <h2 class="title">{{data.user.pseudo}}</h2>
+        <img class="avatar" user-avatar="data.user">
+        <h2 class="title" user-name="data.user"></h2>
         <p class="profile">{{data.user.actualPurpose}}</p>
         <p class="level"><i class="fa fa-connectdevelop"></i> SalooN explorer</p>
       </div>
@@ -56,9 +56,9 @@
       <div class="list chat" ng-show="fn.isAccepted(data.relation) && data.messages.length > 0">
         <div class="item item-divider">Messages échangés :</div>
         <div class="item item-avatar" ng-repeat="message in data.messages | orderBy:'createdAt':true">
-          <img ng-src="{{message.from | avatar}}">
+          <img user-avatar="message.from">
           <small class="pull-right" am-time-ago="message.createdAt"></small>
-          <h2>{{message.from.pseudo}}</h2>
+          <h2 user-name="message.from"></h2>
           <p>{{message.content.text}}</p>
         </div>
       </div>

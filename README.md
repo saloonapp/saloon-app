@@ -32,12 +32,6 @@ To run the app on your android device :
 
 - slack integration ?
 
-## TODO
-
-- replace firebase with parse+pusher/push (for public chat)
-- public chat rooms
-    - only show near messages (no filtering yet)
-
 ## Resources
 
 - Code sample :

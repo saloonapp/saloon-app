@@ -15,9 +15,9 @@ var Config = (function(){
       restApiKey: 'YOUR_PARSE_REST_API_KEY',
       clientKey: 'YOUR_PARSE_CLIENT_KEY'
     },
-    firebase: {
-      // create account & app here : https://www.firebase.com/
-      url: 'https://<your-firebase>.firebaseio.com'
+    pusher: {
+      // create application here : https://pusher.com/
+      key: 'YOUR_PUSHER_KEY'
     },
     gcm: {
       // create project here : https://console.developers.google.com/

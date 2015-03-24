@@ -2,8 +2,8 @@
   <ion-content>
     <div class="list">
       <div class="item item-avatar" ng-click="profileModal.show();menuPopover.hide()">
-        <img ng-src="{{user | avatar}}">
-        <h2>{{user.pseudo}}</h2>
+        <img user-avatar="user">
+        <h2 user-name="user"></h2>
         <p>{{user.actualPurpose}}</p>
       </div>
       <div class="item" ui-sref="tabs.contacts" ng-click="menuPopover.hide()"><i class="icon ion-android-friends"></i> Mes contacts</div>
