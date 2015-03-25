@@ -13,18 +13,12 @@ angular.module('app')
   });
 
   fn.refresh = function(){
-    UserSrv.getCurrent().then(function(user){
-      if(user.active){
-        UsersSrv.getNearUsers().then(function(users){
-          TabSrv.badges.users = users.length;
-          data.users = users;
-          $scope.$broadcast('scroll.refreshComplete');
-        });
-        UserSrv.updatePosition();
-      } else {
-        $scope.$broadcast('scroll.refreshComplete');
-      }
+    UsersSrv.getNearUsers().then(function(users){
+      TabSrv.badges.users = users.length;
+      data.users = users;
+      $scope.$broadcast('scroll.refreshComplete');
     });
+    UserSrv.updatePosition();
     // screenshot data
     /*TabSrv.badges.users = 9;
     data.users = [

@@ -1,25 +1,5 @@
 angular.module('app')
 
-.controller('LoadingCtrl', function($state, $ionicHistory, AuthSrv, OnboardingSrv){
-  'use strict';
-  $ionicHistory.nextViewOptions({
-    disableAnimate: true,
-    disableBack: true,
-    historyRoot: true
-  });
-
-  var onboardingProvider = OnboardingSrv.getProvider();
-  if(onboardingProvider === 'email'){
-    $state.go('fillprofile');
-  } else if(onboardingProvider){
-    $state.go('createaccountwithprofile');
-  } else if(AuthSrv.isLogged()){
-    $state.go('tabs.users');
-  } else {
-    $state.go('welcome');
-  }
-})
-
 .controller('WelcomeCtrl', function($scope, $state, $ionicHistory, UserSrv, LinkedinSrv, OnboardingSrv){
   'use strict';
   var data = {}, fn = {};

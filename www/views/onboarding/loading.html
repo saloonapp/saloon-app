@@ -1,7 +1,12 @@
 <ion-view title="SalooN" hide-nav-bar="true">
   <ion-content>
-    <div style="text-align: center; margin-top: 200px; font-size: 50px; color: #ccc;">
-      <i class="icon ion-loading-c"></i>
+    <div style="text-align: center; margin-top: 200px;">
+      <div ng-if="!data.retry" style="font-size: 50px; color: #ccc;"><i class="icon ion-loading-c"></i></div>
+      <div ng-if="data.retry">
+        Activez la géolocalisation pour accéder à l'application.<br>
+        <br>
+        <button class="button button-positive" ng-click="fn.init()">Réessayer</button>
+      </div>
     </div>
   </ion-content>
 </ion-view>

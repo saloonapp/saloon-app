@@ -4,6 +4,10 @@ angular.module('app')
   'use strict';
   var storageKey = 'user';
   var userCrud = ParseUtils.createUserCrud(AuthSrv.getToken());
+  /*BackgroundGeolocationPlugin.configure({}, function(position){
+    console.log('get position', position);
+    return $q.when();
+  });*/
   var service = {
     fetchCurrent: fetchCurrent,
     getCurrent: getCurrent,
@@ -36,16 +40,20 @@ angular.module('app')
   }
 
   function updatePosition(){
+    return GeolocationPlugin.getCurrentPosition().then(function(pos){
+      return _updatePosition(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy);
+    });
+  }
+
+  function _updatePosition(latitude, longitude, accuracy){
     return getCurrent().then(function(user){
       if(user.active){
-        return GeolocationPlugin.getCurrentPosition().then(function(pos){
-          var data = {
-            location: ParseUtils.toGeoPoint(pos.coords.latitude, pos.coords.longitude),
-            locationAccuracy: pos.coords.accuracy
-          };
-          return userCrud.savePartial(user, data).then(function(){
-            return StorageUtils.set(storageKey, angular.extend(user, data));
-          });
+        var data = {
+          location: ParseUtils.toGeoPoint(latitude, longitude),
+          locationAccuracy: accuracy
+        };
+        return userCrud.savePartial(user, data).then(function(){
+          return StorageUtils.set(storageKey, angular.extend(user, data));
         });
       }
     });
@@ -60,6 +68,11 @@ angular.module('app')
           locationAccuracy: pos.coords.accuracy
         };
         return userCrud.savePartial(user, data).then(function(){
+          /*if(active){
+            BackgroundGeolocationPlugin.start();
+          } else {
+            BackgroundGeolocationPlugin.stop();
+          }*/
           return StorageUtils.set(storageKey, angular.extend(user, data));
         });
       }, function(err){

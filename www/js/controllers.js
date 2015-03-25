@@ -1,5 +1,47 @@
 angular.module('app')
 
+.controller('LoadingCtrl', function($scope, $state, $ionicHistory, AuthSrv, OnboardingSrv, GeolocationPlugin, DialogPlugin, WebIntentPlugin){
+  'use strict';
+  var data = {}, fn = {};
+  $scope.data = data;
+  $scope.fn = fn;
+
+  data.retry = false;
+
+  fn.init = function(){
+    data.retry = false;
+    GeolocationPlugin.getCurrentPosition().then(function(pos){
+      $ionicHistory.nextViewOptions({
+        disableAnimate: true,
+        disableBack: true,
+        historyRoot: true
+      });
+
+      var onboardingProvider = OnboardingSrv.getProvider();
+      if(onboardingProvider === 'email'){
+        $state.go('fillprofile');
+      } else if(onboardingProvider){
+        $state.go('createaccountwithprofile');
+      } else if(AuthSrv.isLogged()){
+        $state.go('tabs.users');
+      } else {
+        $state.go('welcome');
+      }
+    }, function(err){
+      data.retry = true;
+      DialogPlugin.confirm('Impossible d\'accéder à votre géolocalisation. Merci d\'activer le gps').then(function(res){
+        if(res){
+          WebIntentPlugin.startActivity({
+            action: WebIntentPlugin.android.Settings.ACTION_LOCATION_SOURCE_SETTINGS
+          });
+        }
+      });
+    });
+  };
+
+  fn.init();
+})
+
 .controller('TabsCtrl', function($scope, $state, $ionicHistory, $ionicPopover, $ionicModal, TabSrv, UserSrv, ToastPlugin){
   'use strict';
   var loaded = false; // TODO : $ionicView.loaded is fired twice... :(

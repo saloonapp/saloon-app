@@ -22,6 +22,7 @@
     "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin",
     "org.apache.cordova.inappbrowser",
     "org.apache.cordova.geolocation",
-    "https://github.com/phonegap-build/PushPlugin"
+    "https://github.com/phonegap-build/PushPlugin",
+    "https://github.com/Initsogar/cordova-webintent"
   ]
 }
