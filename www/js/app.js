@@ -1,4 +1,4 @@
-angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment'])
+angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment', 'firebase'])
 
 .config(function($stateProvider, $urlRouterProvider, $provide, $httpProvider, ParseUtilsProvider, Config) {
   'use strict';
@@ -131,6 +131,15 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
     data: {
       restrictAccess: ['logged']
     }
+  })
+  .state('tabs.pollcreate', {
+    url: '/polls/create',
+      views : {
+        'polls-tab': {
+          templateUrl: 'views/poll/create.html',
+          controller: 'PollCreationCtrl'
+        }
+      }
   })
   .state('tabs.issues', {
     url: '/issues',

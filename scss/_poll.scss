@@ -1,0 +1,72 @@
+.polls {
+  .choice {
+    border : none;
+    overflow: visible;
+    .containerValuePercent {
+      position : relative;
+      margin : 5px;
+      padding: 5px;
+      overflow: visible;
+      .choiceValue {
+        position : relative;
+        top : 0;
+        z-index : 1000;
+        //color : #fff;
+        margin : 0;
+        margin-left : 15px;
+      }
+      .percentBar {
+        position : absolute;
+        top : 0;
+        height : 100%;
+        .badge {
+          position: absolute;
+          top: 3px;
+          right: -15px;
+          background: $positive;
+          color: white;
+        }
+      }
+      .choice_0 {
+        background-color: #43cee6;
+      }
+      .choice_1 {
+        background-color: #4a87ee;
+      }
+      .choice_2 {
+        background-color: #66cc33;
+      }
+      .choice_3 {
+        background-color: #f0b840;
+      }
+      .choice_4 {
+        background-color: #8a6de9;
+      }
+    }
+  }
+  .voted {
+    .item-radio {
+      &:hover {
+        cursor: default;
+      }
+    }
+  }
+  .question {
+    background-color : $energized;
+    h2 {
+      color : $light;
+      font-weight: bold;
+    }
+
+  }
+}
+
+.poll-create {
+  .addChoice {
+   padding: 0;
+  }
+  .add {
+    padding: 0;
+    margin: 0;
+  }
+}

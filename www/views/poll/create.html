@@ -1,0 +1,26 @@
+<ion-view title="Création d'un Sondage">
+  <ion-content class="padding poll-create">
+    <h1>Créer un sondage</h1>
+    <div class="list">
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Question</span>
+        <input type="text" ng-model="poll.question" placeholder="Vous aimez ?">
+      </label>
+      <div ng-repeat="choice in choices" id="{{choice.id}}">
+        <div class="item item-input-inset">
+          <label class="item-input-wrapper">
+            <input type="text" ng-model="choice.value" placeholder="Réponse">
+          </label>
+          <button class="button button-small ion-ios7-close-outline" ng-click="fn.removeChoice(choice.id)"></button>
+        </div>
+      </div>
+      <label class="item addChoice">
+        <button class="button button-positive button-block button-outline add" ng-click="fn.addChoice()">
+          Ajouter une réponse
+        </button>
+      </label>
+      <ion-toggle ng-model="poll.singleChoise" ng-init="poll.singleChoise=false;" toggle-class="toggle-calm">Choix unique</ion-toggle>
+      <button class="button button-block button-positive" ng-click="fn.submitForm(poll)">Créer le sondage</button>
+    </div>
+    </ion-content>
+</ion-view>
