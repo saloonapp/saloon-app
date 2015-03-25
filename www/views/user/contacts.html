@@ -11,8 +11,8 @@
       <div class="row grid">
         <div class="col col-33" ng-repeat="user in data.users | filter:search">
           <div class="item item-grid" ui-sref="tabs.user({id: user.objectId})">
-            <img ng-src="{{user.avatar || 'img/user.jpg'}}">
-            <h2>{{user.pseudo}}</h2>
+            <img user-avatar="user">
+            <h2 user-name="user"></h2>
           </div>
         </div>
       </div>

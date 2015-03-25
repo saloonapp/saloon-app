@@ -1,0 +1,18 @@
+{
+    "applications": {
+        "SalooN": {
+            "applicationId": "YOUR_PARSE_APP_ID", 
+            "masterKey": "YOUR_PARSE_MASTER_KEY"
+        }, 
+        "SalooN-dev": {
+            "applicationId": "YOUR_PARSE_APP_ID", 
+            "masterKey": "YOUR_PARSE_MASTER_KEY"
+        }, 
+        "_default": {
+            "link": "SalooN-dev"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.3.5"
+    }
+}

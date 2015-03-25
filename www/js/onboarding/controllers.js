@@ -21,7 +21,7 @@ angular.module('app')
           data.error = null;
         }, function(err){
           OnboardingSrv.setProfile(LinkedinSrv.provider, profile);
-          $state.go('login_createaccountwithprofile');
+          $state.go('createaccountwithprofile');
           data.loading = false;
           data.error = null;
         });
@@ -32,6 +32,7 @@ angular.module('app')
     } catch(err) {
       data.loading = false;
       data.error = err.message ? err.message : err;
+      throw err;
     }
   };
 })
@@ -64,6 +65,7 @@ angular.module('app')
       }
     }
     UserSrv.register(user, OnboardingSrv.getProvider()).then(function(user){
+      OnboardingSrv.clearOnboarding();
       $ionicHistory.nextViewOptions({disableBack:true});
       $state.go('tabs.users');
       data.credentials.password = '';
@@ -189,6 +191,7 @@ angular.module('app')
         }
       }
       UserSrv.setCurrent(user).then(function(){
+        OnboardingSrv.clearOnboarding();
         $ionicHistory.nextViewOptions({disableBack:true});
         $state.go('tabs.users');
         data.loading = false;

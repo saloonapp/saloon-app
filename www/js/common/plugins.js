@@ -284,7 +284,7 @@ angular.module('app')
   var pluginTest = function(){ return $window.navigator && $window.navigator.geolocation; };
   var cache = {
     currentPositionPromise: null,
-    currentPositionMaxAge: 1000,
+    currentPositionMaxAge: 60*1000, // get cached position during 1 min
     currentPosition: null
   };
   var service = {
@@ -292,7 +292,8 @@ angular.module('app')
   };
 
   function getCurrentPosition(_timeout, _enableHighAccuracy, _maximumAge){
-    if(cache.currentPosition && Date.now() < cache.currentPosition.time+cache.currentPositionMaxAge){
+    var maximumAge = _maximumAge ? _maximumAge : cache.currentPositionMaxAge;
+    if(cache.currentPosition && Date.now() < cache.currentPosition.time+maximumAge){
       return Utils.async(function(){
         return angular.copy(cache.currentPosition.data);
       });
@@ -301,13 +302,13 @@ angular.module('app')
         var defer = $q.defer();
         var opts = {
           enableHighAccuracy: _enableHighAccuracy ? _enableHighAccuracy : true,
-          timeout: _timeout ? _timeout : 30000,
-          maximumAge: _maximumAge ? _maximumAge : 3000
+          timeout: _timeout ? _timeout : 3000,
+          maximumAge: maximumAge
         };
         var geolocTimeout = $timeout(function(){
           cache.currentPositionPromise = null;
           defer.reject({message: 'Geolocation didn\'t responded within '+opts.timeout+' millis :('});
-        }, opts.timeout);
+        }, opts.timeout+500);
         $window.navigator.geolocation.getCurrentPosition(function(position){
           $timeout.cancel(geolocTimeout);
           cache.currentPosition = {
@@ -318,7 +319,7 @@ angular.module('app')
           defer.resolve(angular.copy(cache.currentPosition.data));
         }, function(error){
           $timeout.cancel(geolocTimeout);
-          $log.error('pluginError:'+pluginName, error);
+          //$log.error('pluginError:'+pluginName, error);
           cache.currentPositionPromise = null;
           defer.reject(error);
         }, opts);
@@ -371,27 +372,25 @@ angular.module('app')
   return service;
 })
 
-// for BackgroundGeolocation plugin : https://github.com/christocracy/cordova-plugin-background-geolocation
+// for BackgroundGeolocation plugin : https://github.com/christocracy/cordova-background-geolocation (paying private repo)
 .factory('BackgroundGeolocationPlugin', function($window, $q, $log, GeolocationPlugin, PluginUtils){
   'use strict';
   var pluginName = 'BackgroundGeolocation';
   var pluginTest = function(){ return $window.plugins && $window.plugins.backgroundGeoLocation; };
   var service = {
-    enable: enable,
-    disable: stop,
     configure: configure,
     start: start,
     stop: stop
   };
   var defaultOpts = {
-    desiredAccuracy: 10,
-    stationaryRadius: 20,
-    distanceFilter: 30,
-    notificationTitle: 'Location tracking',
-    notificationText: 'ENABLED',
-    activityType: 'AutomotiveNavigation',
-    debug: true,
-    stopOnTerminate: true
+    desiredAccuracy: 0,                     // [0-1000] 0: highest power & accuracy / 1000: lowest power & accuracy
+    stationaryRadius: 50,
+    distanceFilter: 50,                     // minimum distance between location events
+    activityType: 'AutomotiveNavigation',   // [ios only]
+    locationUpdateInterval: 30000,          // [android only] minimum time between location updates, used in conjunction with #distanceFilter
+    activityRecognitionInterval: 10000,     // [android only] sampling-rate activity-recognition system for movement/stationary detection
+    debug: true,                            // enable this hear sounds, see notifications during life-cycle events.
+    stopOnTerminate: true                   // enable this to clear background location settings when the app terminates
   };
 
   // postLocation function should take a 'location' parameter and return a promise
@@ -414,25 +413,21 @@ angular.module('app')
       };
       var options = angular.extend({}, defaultOpts, opts);
       $window.plugins.backgroundGeoLocation.configure(callbackFn, failureFn, options);
-      return GeolocationPlugin.getCurrentPosition();
+      return GeolocationPlugin.getCurrentPosition(); // at least one call to ask geoloc permission to user (ios)
     });
   }
 
   function start(){
     return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+      console.log('start backgroundGeoLocation');
       $window.plugins.backgroundGeoLocation.start();
     });
   }
 
   function stop(){
     return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+      console.log('stop backgroundGeoLocation');
       $window.plugins.backgroundGeoLocation.stop();
-    });
-  }
-
-  function enable(opts, postLocation){
-    return configure(opts, postLocation).then(function(){
-      return start();
     });
   }
 
@@ -460,6 +455,36 @@ angular.module('app')
       var defer = $q.defer();
       $window.plugin.notification.local.cancel(id, function(){
         defer.resolve();
+      });
+      return defer.promise;
+    });
+  }
+
+  return service;
+})
+
+// for WebIntent plugin : https://github.com/Initsogar/cordova-webintent
+.factory('WebIntentPlugin', function($window, $q, PluginUtils){
+  'use strict';
+  var pluginName = 'WebIntent';
+  var pluginTest = function(){ return $window.plugins && $window.plugins.webintent; };
+  var service = {
+    android: {
+      // see http://developer.android.com/reference/android/provider/Settings.html
+      Settings: {
+        ACTION_LOCATION_SOURCE_SETTINGS: 'android.settings.LOCATION_SOURCE_SETTINGS' // to open gps settings
+      }
+    },
+    startActivity: startActivity
+  };
+
+  function startActivity(opts){
+    return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+      var defer = $q.defer();
+      $window.plugins.webintent.startActivity(opts, function(){
+        defer.resolve();
+      }, function(){
+        defer.reject();
       });
       return defer.promise;
     });

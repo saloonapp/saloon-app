@@ -7,6 +7,10 @@ Meet interesting people around you !
 - install nodejs, gulp, cordova & ionic (if not already done)
 - go to project folder
 - rename `www/js/config/_config-sample.js` to `www/js/config/_config.js` and setup your keys
+- rename `ParseCloudCode/config/global-sample.json` to `ParseCloudCode/config/global.json` and setup your keys
+- rename `ParseCloudCode/cloud/credentials-sample.js` to `ParseCloudCode/cloud/credentials.js` and setup your keys
+- install parse CLI `curl -s https://www.parse.com/downloads/cloud_code/installer.sh | sudo /bin/bash` (if not done yet)
+- upload cloud code to parse `cd ParseCloudCode/ && parse deploy && cd ../`
 - `bower install` : install app dependencies
 - `npm install gulp` : install build dependencies
 - `ionic setup sass` : use sass
@@ -20,7 +24,7 @@ To run the app on your android device :
 
 ## Main features
 
-- Connecti with your linkedin profile
+- Connection with your linkedin profile
 - see connected people around you (ordered by relevance)
 - chat publicly with others (rooms ordered by last message sent by you)
 - send polls (by instant (1h) popularity & filter by answered or not)
@@ -30,9 +34,14 @@ To run the app on your android device :
 
 ## TODO
 
-- replace firebase with parse+pusher/push (user-user chat + public chat)
-- public chat rooms
-    - only show near messages (no filtering yet)
+- demo mode
+- fix geolocation bug on android
+- add background geolocation (https://github.com/christocracy/cordova-background-geolocation)
+- get full-profile & contacts from linkedin
+- improve people search (showing matching elements)
+- include geolocalized twitts in SalooN (default) chat
+- send photos in chats
+- add events (like devoxx) with speakers, rooms, attendee, sponsors, slots (speakers+room+time+...), map...
 
 ## Resources
 
@@ -54,6 +63,9 @@ To run the app on your android device :
     - http://mycolorscreen.com/
 - Offline communication :
     - https://opengarden.com/developers
-    - Apple’s Multipeer Connectivity framework (iOS only)
+    - Apple’s Multipeer Connectivity framework (https://developer.apple.com/library/ios/documentation/MultipeerConnectivity/Reference/MultipeerConnectivityFramework/)
+    - Android direct wifi (http://developer.android.com/guide/topics/connectivity/wifip2p.html)
+    - WebRTC or Boost Asio (http://stackoverflow.com/questions/17965176/is-there-any-framework-to-allow-p2p-communication-via-phone)
+    - NFC (https://github.com/don/phonegap-p2p)
 - Offline cache :
     - http://pouchdb.com/ ?

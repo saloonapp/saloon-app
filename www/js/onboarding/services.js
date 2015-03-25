@@ -1,8 +1,8 @@
 angular.module('app')
 
-.factory('OnboardingSrv', function(LinkedinSrv, Utils){
+.factory('OnboardingSrv', function(LinkedinSrv, LocalStorageUtils, Utils){
   'use strict';
-  var data = {};
+  var storageKey = 'onboarding';
   var service = {
     setProfile: setProfile,
     getProvider: getProvider,
@@ -11,20 +11,27 @@ angular.module('app')
     getEmail: getEmail,
     extendUserWithSocialProfile: extendUserWithSocialProfile,
     getSuggestedInterests: getSuggestedInterests,
-    isValidPassword: isValidPassword
+    isValidPassword: isValidPassword,
+    clearOnboarding: clearOnboarding
   };
 
   function setProfile(provider, profile){
+    var data = {};
     data.provider = provider;
     data.profile = profile;
+    LocalStorageUtils.setSync(storageKey, data);
   }
 
   function getProvider(){
-    return data.provider;
+    var data = LocalStorageUtils.getSync(storageKey);
+    if(data){
+      return data.provider;
+    }
   }
 
   function getSuggestedPseudo(){
-    if(data.profile){
+    var data = LocalStorageUtils.getSync(storageKey);
+    if(data && data.profile){
       if(data.provider === 'email')               { return data.profile.email.split('@')[0];                 }
       if(data.provider === LinkedinSrv.provider)  { return data.profile.firstName+' '+data.profile.lastName; }
     }
@@ -32,14 +39,16 @@ angular.module('app')
   }
 
   function getSuggestedPurpose(){
-    if(data.profile){
+    var data = LocalStorageUtils.getSync(storageKey);
+    if(data && data.profile){
       if(data.provider === LinkedinSrv.provider){ return data.profile.headline; }
     }
     return '';
   }
 
   function getEmail(){
-    if(data.profile){
+    var data = LocalStorageUtils.getSync(storageKey);
+    if(data && data.profile){
       if(data.provider === 'email')     { return data.profile.email;        }
       if(data.provider === 'linkedin')  { return data.profile.emailAddress; }
     }
@@ -47,7 +56,8 @@ angular.module('app')
   }
 
   function extendUserWithSocialProfile(user){
-    if(data.provider === 'linkedin'){
+    var data = LocalStorageUtils.getSync(storageKey);
+    if(data && data.provider === 'linkedin'){
       user.authData = {anonymous: {id: Utils.createUuid()}};
       if(data.profile){
         user[data.provider] = _formatLinkedinProfile(data.profile);
@@ -66,6 +76,10 @@ angular.module('app')
 
   function isValidPassword(password){
     return password && password.length >= 6;
+  }
+
+  function clearOnboarding(){
+    LocalStorageUtils.remove(storageKey);
   }
 
   function _formatLinkedinProfile(profile){

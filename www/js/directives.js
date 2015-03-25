@@ -1,5 +1,73 @@
 angular.module('app')
 
+.directive('userName', function($timeout, CacheSrv){
+  'use strict';
+  return {
+    template: '{{name}}',
+    scope: {
+      userName: '='
+    },
+    link: function(scope, element, attrs){
+      scope.$watch('userName', function(user){
+        if(user && typeof user === 'object'){
+          if(user.pseudo){
+            scope.name = user.pseudo;
+          } else {
+            var timeout = $timeout(function(){
+              scope.name = user.objectId;
+            },  300);
+            CacheSrv.getUser(user.objectId).then(function(u){
+              scope.name = u.pseudo;
+              $timeout.cancel(timeout);
+            });
+          }
+        } else {
+          scope.name = user;
+        }
+      });
+    }
+  };
+})
+
+.directive('userAvatar', function($timeout, CacheSrv){
+  'use strict';
+  function setAvatar(url, element, attrs){
+    if(element[0].tagName === 'A'){
+      attrs.$set('href', url);
+    } else if(element[0].tagName === 'IMG'){
+      attrs.$set('src', url);
+    }
+  }
+
+  return {
+    scope: {
+      userAvatar: '='
+    },
+    link: function(scope, element, attrs){
+      scope.$watch('userAvatar', function(user){
+        if(user && typeof user === 'object'){
+          if(user.avatar){
+            setAvatar(user.avatar, element, attrs);
+          } else if(user.pseudo){
+            setAvatar('https://sigil.cupcake.io/'+user.pseudo, element, attrs);
+          } else {
+            var timeout = $timeout(function(){
+              setAvatar('img/user.jpg', element, attrs);
+            },  300);
+            CacheSrv.getUser(user.objectId).then(function(u){
+              if(u && u.avatar){ setAvatar(u.avatar, element, attrs); }
+              else if(u && u.pseudo){ setAvatar('https://sigil.cupcake.io/'+u.pseudo, element, attrs); }
+              $timeout.cancel(timeout);
+            });
+          }
+        } else {
+          setAvatar(user, element, attrs);
+        }
+      });
+    }
+  };
+})
+
 // open external links (starting with http:// or https://) outside the app
 .directive('href', function($window){
   'use strict';

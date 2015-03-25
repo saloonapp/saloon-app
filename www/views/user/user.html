@@ -6,8 +6,8 @@
         <div class="social pull-right">
           <a href="{{data.user.linkedin.publicUrl}}" ng-if="data.user.linkedin"><img src="img/social/square/linkedin.png"></a>
         </div>
-        <img class="avatar" ng-src="{{data.user.avatar || 'img/user.jpg'}}">
-        <h2 class="title">{{data.user.pseudo}}</h2>
+        <img class="avatar" user-avatar="data.user">
+        <h2 class="title" user-name="data.user"></h2>
         <p class="profile">{{data.user.actualPurpose}}</p>
         <p class="level"><i class="fa fa-connectdevelop"></i> SalooN explorer</p>
       </div>
@@ -53,13 +53,13 @@
         </ul>
       </div>
 
-      <div class="list chat" ng-show="fn.isAccepted(data.relation) && data.chat.length > 0">
+      <div class="list chat" ng-show="fn.isAccepted(data.relation) && data.messages.length > 0">
         <div class="item item-divider">Messages échangés :</div>
-        <div class="item item-avatar" ng-repeat="message in data.chat | orderBy:'time':true">
-          <img ng-src="{{message.user.avatar || 'img/user.jpg'}}">
-          <small class="pull-right">{{message.time | humanTime}}</small>
-          <h2>{{message.user.pseudo}}</h2>
-          <p>{{message.content}}</p>
+        <div class="item item-avatar" ng-repeat="message in data.messages | orderBy:'createdAt':true">
+          <img user-avatar="message.from">
+          <small class="pull-right" am-time-ago="message.createdAt"></small>
+          <h2 user-name="message.from"></h2>
+          <p>{{message.content.text}}</p>
         </div>
       </div>
     </div>
