@@ -19,6 +19,10 @@ var Config = (function(){
       // create application here : https://pusher.com/
       key: 'YOUR_PUSHER_KEY'
     },
+    firebase: {
+      // create account & app here : https://www.firebase.com/
+      url: 'https://<YOUR_FIREBASE_ID>.firebaseio.com'
+    },
     gcm: {
       // create project here : https://console.developers.google.com/
       projectNumber: 'YOUR_GOOGLE_PROJECT_NUMBER', // Google project number

@@ -35,10 +35,13 @@ To run the app on your android device :
 ## TODO
 
 - demo mode
-- fix geolocation bug on android
-- add background geolocation (https://github.com/christocracy/cordova-background-geolocation)
-- get full-profile & contacts from linkedin
+- user profile (updates)
+- migrate getUsersAround(), getMessagesAround() & getPollsAround() to cloud code (centralize 'around' distance + update user location)
 - improve people search (showing matching elements)
+- save linkedin profile in separate collection
+- add more API : fullcontact, gravatar, twitter, github, google, facebook...
+- get full-profile & contacts from linkedin
+- add background geolocation (https://github.com/christocracy/cordova-background-geolocation)
 - include geolocalized twitts in SalooN (default) chat
 - send photos in chats
 - add events (like devoxx) with speakers, rooms, attendee, sponsors, slots (speakers+room+time+...), map...
