@@ -10,13 +10,18 @@
     <div ng-if="user.active && data.users.length > 0">
       <ion-refresher pulling-text="Pull to refresh..." on-refresh="fn.refresh()"></ion-refresher>
       <div class="list">
-        <div class="item item-avatar" ng-repeat="user in data.users | filter:search" ui-sref="tabs.user({id: user.objectId})">
+        <div class="item item-avatar" ng-repeat="user in data.users | deepFilter:search" ui-sref="tabs.user({id: user.objectId})">
           <img user-avatar="user">
           <h2 user-name="user"></h2>
-          <p>{{user.actualPurpose}}</p>
-          <p ng-if="user.interests && user.interests.length > 0">
-            <span ng-repeat="interest in user.interests"><span class="label label-positive">{{interest.name}}</span> </span>
-          </p>
+          <div ng-show="!(search.length > 1)">
+            <p>{{user.actualPurpose}}</p>
+            <p ng-if="user.interests && user.interests.length > 0">
+              <span ng-repeat="interest in user.interests"><span class="label label-positive">{{interest.name}}</span> </span>
+            </p>
+          </div>
+          <div ng-if="search.length > 1">
+            <p ng-repeat="match in user | filteredMatches:search | limitTo:5" ng-bind-html="match"></p>
+          </div>
         </div>
       </div>
     </div>

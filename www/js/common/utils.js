@@ -10,6 +10,7 @@ angular.module('app')
     endsWith: endsWith,       // (str, suffix)                  check if str ends with suffix
     randInt: randInt,         // (min, max)                     generate a random Int between min & max
     toDate: toDate,           // (date)                         format input (timestamp, iso string, JS Date, moment Date) to a JS Date
+    isDate: isDate,           // (date)                         check if date is a Date, get timestamp, iso string, JS Date or moment Date
     async: async,             // (fn)                           transform synchronous function in asynchronous function
     debounce: debounce,       // (key, callback, _debounceTime) debounce a value based on given key
     trustHtml: trustHtml,     // (html)                         angular trust html (to display unsafe html)
@@ -49,6 +50,11 @@ angular.module('app')
     if(typeof date === 'string'){ return new Date(date); } // iso string
     if(date instanceof Date){ return date; } // JavaScript Date
     if(date && typeof date.toDate === 'function' && date.toDate() instanceof Date){ return date.toDate(); } // moment Date
+  }
+
+  function isDate(date){
+    var d = toDate(date);
+    return d instanceof Date && d.toString() !== 'Invalid Date';
   }
 
   function async(fn){
