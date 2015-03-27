@@ -16,7 +16,7 @@ angular.module('app')
       LinkedinSrv.login().then(function(profile){
         $ionicHistory.nextViewOptions({disableBack:true});
         UserSrv.loginOAuth(LinkedinSrv.provider, profile).then(function(){
-          $state.go('tabs.users');
+          $state.go('app.live.users');
           data.loading = false;
           data.error = null;
         }, function(err){
@@ -67,7 +67,7 @@ angular.module('app')
     UserSrv.register(user, OnboardingSrv.getProvider()).then(function(user){
       OnboardingSrv.clearOnboarding();
       $ionicHistory.nextViewOptions({disableBack:true});
-      $state.go('tabs.users');
+      $state.go('app.live.users');
       data.credentials.password = '';
       data.loading = false;
       data.error = null;
@@ -141,7 +141,7 @@ angular.module('app')
     data.error = null;
     UserSrv.login(credentials).then(function(){
       $ionicHistory.nextViewOptions({disableBack:true});
-      $state.go('tabs.users');
+      $state.go('app.live.users');
       data.credentials.password = '';
       data.loading = false;
       data.error = null;
@@ -193,7 +193,7 @@ angular.module('app')
       UserSrv.setCurrent(user).then(function(){
         OnboardingSrv.clearOnboarding();
         $ionicHistory.nextViewOptions({disableBack:true});
-        $state.go('tabs.users');
+        $state.go('app.live.users');
         data.loading = false;
         data.error = null;
       }, function(err){

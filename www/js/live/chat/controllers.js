@@ -51,7 +51,7 @@ angular.module('app')
         if(name){
           if(!data.rooms){ data.rooms = {}; }
           data.rooms[name] = [];
-          $state.go('tabs.chat', {id: name});
+          $state.go('app.live.chat', {id: name});
         }
       });
     });

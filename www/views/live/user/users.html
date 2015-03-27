@@ -10,7 +10,7 @@
     <div ng-if="user.active && data.users.length > 0">
       <ion-refresher pulling-text="Pull to refresh..." on-refresh="fn.refresh()"></ion-refresher>
       <div class="list">
-        <div class="item item-avatar" ng-repeat="user in data.users | deepFilter:search" ui-sref="tabs.user({id: user.objectId})">
+        <div class="item item-avatar" ng-repeat="user in data.users | deepFilter:search" ui-sref="app.live.user({id: user.objectId})">
           <img user-avatar="user">
           <h2 user-name="user"></h2>
           <div ng-show="!(search.length > 1)">

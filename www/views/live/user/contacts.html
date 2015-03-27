@@ -10,7 +10,7 @@
     <div ng-if="data.users !== null">
       <div class="row grid">
         <div class="col col-33" ng-repeat="user in data.users | filter:search">
-          <div class="item item-grid" ui-sref="tabs.user({id: user.objectId})">
+          <div class="item item-grid" ui-sref="app.live.user({id: user.objectId})">
             <img user-avatar="user">
             <h2 user-name="user"></h2>
           </div>
@@ -20,7 +20,7 @@
     <div class="padding" style="text-align: center;" ng-if="data.users.length === 0">
       <h3>Vous n'avez pas encore de contacts :(</h3>
       <br><br>
-      <button class="button button-positive" ui-sref="tabs.users">Voir les personnes autours de moi</button>
+      <button class="button button-positive" ui-sref="app.live.users">Voir les personnes autours de moi</button>
     </div>
     <loading ng-show="data.users === null" top="100px"></loading>
   </ion-content>

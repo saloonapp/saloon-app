@@ -23,7 +23,7 @@ angular.module('app')
       } else if(onboardingProvider){
         $state.go('createaccountwithprofile');
       } else if(AuthSrv.isLogged()){
-        $state.go('tabs.users');
+        $state.go('app.live.users');
       } else {
         $state.go('welcome');
       }
@@ -42,7 +42,7 @@ angular.module('app')
   fn.init();
 })
 
-.controller('TabsCtrl', function($scope, $state, $ionicHistory, $ionicPopover, $ionicModal, TabSrv, UserSrv, ToastPlugin){
+.controller('SidemenuCtrl', function($scope, $state, $ionicHistory, $ionicPopover, $ionicModal, UserSrv, ToastPlugin){
   'use strict';
   var loaded = false; // TODO : $ionicView.loaded is fired twice... :(
   $scope.$on('$ionicView.loaded', function(){
@@ -65,18 +65,10 @@ angular.module('app')
     delete $scope.user;
   });
 
-  $scope.badges = TabSrv.badges;
-
   $ionicPopover.fromTemplateUrl('views/partials/menu-popover.html', {
     scope: $scope
   }).then(function(popover){
     $scope.menuPopover = popover;
-  });
-  $ionicModal.fromTemplateUrl('views/partials/profile-modal.html', {
-    scope: $scope,
-    animation: 'slide-in-up'
-  }).then(function(modal){
-    $scope.profileModal = modal;
   });
 
   $scope.logout = function(){
@@ -106,7 +98,11 @@ angular.module('app')
 
   $scope.$on('$destroy', function(){
     if($scope.menuPopover)  { $scope.menuPopover.remove();  }
-    if($scope.profileModal) { $scope.profileModal.remove(); }
   });
+})
+
+.controller('TabsCtrl', function($scope, TabSrv){
+  'use strict';
+  $scope.badges = TabSrv.badges;
 });
 

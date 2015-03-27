@@ -8,7 +8,7 @@
       <ion-refresher pulling-text="Pull to refresh..." on-refresh="fn.refresh()"></ion-refresher>
       <div class="list chat">
         <div class="item item-avatar" ng-repeat="message in data.room.messages | orderBy:'createdAt':true">
-          <img user-avatar="message.from" ui-sref="tabs.user({id: message.from.objectId})">
+          <img user-avatar="message.from" ui-sref="app.live.user({id: message.from.objectId})">
           <small class="pull-right" am-time-ago="message.createdAt"></small>
           <h2 user-name="message.from"></h2>
           <p>{{message.content.text}}</p>

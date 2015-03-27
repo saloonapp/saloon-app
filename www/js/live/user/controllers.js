@@ -91,7 +91,7 @@ angular.module('app')
           if($stateParams.section){ $timeout(function(){scrollTo($stateParams.section);}, 100); }
         });
       } else {
-        $state.go('tabs.users');
+        $state.go('app.live.users');
       }
     });
   });

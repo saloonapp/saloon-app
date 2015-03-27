@@ -7,7 +7,7 @@
     <div ng-if="data.rooms !== null">
       <ion-refresher pulling-text="Pull to refresh..." on-refresh="fn.refresh()"></ion-refresher>
       <div class="list">
-        <div class="item item-icon-left item-icon-right" ng-repeat="room in data.rooms" ui-sref="tabs.chat({id: room.id})">
+        <div class="item item-icon-left item-icon-right" ng-repeat="room in data.rooms" ui-sref="app.live.chat({id: room.id})">
           <i class="icon ion-chatboxes"></i>
           /{{room.id}}
           <span class="badge badge-assertive">{{room.messages.length}}</span>

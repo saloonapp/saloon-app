@@ -117,19 +117,19 @@ angular.module('app')
     if(['relation_invite', 'relation_accept', 'relation_decline'].indexOf(data.type) > -1){
       if(notification.foreground){
         DialogPlugin.confirmMulti(data.message, data.title, ['Voir profil', 'Ignorer']).then(function(btnIndex){
-          if(btnIndex === 1){ $state.go('tabs.user', {id: data.userId}); }
+          if(btnIndex === 1){ $state.go('app.live.user', {id: data.userId}); }
           else if(btnIndex === 2){}
         });
       } else {
-        $state.go('tabs.user', {id: data.userId});
+        $state.go('app.live.user', {id: data.userId});
       }
     } else if(data.type === 'private_message'){
       if(notification.foreground){
-        if($state.is('tabs.user', {id: data.userId}) || $state.is('tabs.user', {id: data.userId, section: 'chat'})){
+        if($state.is('app.live.user', {id: data.userId}) || $state.is('app.live.user', {id: data.userId, section: 'chat'})){
           ToastPlugin.showLongTop(data.title+' :\n'+data.message);
         } else {
           /*DialogPlugin.promptMulti(data.message, data.title, ['Voir profil', 'Ignorer', 'Répondre']).then(function(res){
-            if(res.buttonIndex === 1){ $state.go('tabs.user', {id: data.userId, section: 'chat'}); }
+            if(res.buttonIndex === 1){ $state.go('app.live.user', {id: data.userId, section: 'chat'}); }
             else if(res.buttonIndex === 2){}
             else if(res.buttonIndex === 3){
               var message = res.input1;
@@ -137,12 +137,12 @@ angular.module('app')
             }
           });*/
           DialogPlugin.confirmMulti(data.message, data.title, ['Voir', 'Ignorer']).then(function(btnIndex){
-            if(btnIndex === 1){ $state.go('tabs.user', {id: data.userId, section: 'chat'}); }
+            if(btnIndex === 1){ $state.go('app.live.user', {id: data.userId, section: 'chat'}); }
             else if(btnIndex === 2){}
           });
         }
       } else {
-        $state.go('tabs.user', {id: data.userId});
+        $state.go('app.live.user', {id: data.userId});
       }
     } else {
       console.log('Notification received', notification);

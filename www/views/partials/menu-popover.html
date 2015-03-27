@@ -1,13 +1,13 @@
 <ion-popover-view>
   <ion-content>
     <div class="list">
-      <div class="item item-avatar" ng-click="profileModal.show();menuPopover.hide()">
+      <div class="item item-avatar" ui-sref="app.profile" ng-click="menuPopover.hide()">
         <img user-avatar="user">
         <h2 user-name="user"></h2>
         <p>{{user.actualPurpose}}</p>
       </div>
-      <div class="item" ui-sref="tabs.contacts" ng-click="menuPopover.hide()"><i class="icon ion-android-friends"></i> Mes contacts</div>
-      <div class="item item-toggle">
+      <div class="item item-icon-left" ui-sref="app.live.contacts" ng-click="menuPopover.hide()"><i class="icon ion-android-friends"></i> Mes contacts</div>
+      <div class="item item-icon-left item-toggle">
         <i class="icon ion-eye"></i> Actif
         <label class="toggle toggle-balanced">
           <input type="checkbox" ng-model="user.active">
@@ -16,7 +16,7 @@
           </div>
         </label>
       </div>
-      <div class="item" ng-click="logout();menuPopover.hide()"><i class="icon ion-log-out"></i> Déconnexion</div>
+      <div class="item item-icon-left" ng-click="logout();menuPopover.hide()"><i class="icon ion-log-out"></i> Déconnexion</div>
     </div>
   </ion-content>
 </ion-popover-view>
