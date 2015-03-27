@@ -65,7 +65,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
     abstract: true,
     views: {
       'menuContent': {
-        templateUrl: 'views/tabs.html',
+        templateUrl: 'views/live/tabs.html',
         controller: 'TabsCtrl',
       }
     },
@@ -160,6 +160,15 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
       'menuContent': {
         templateUrl: 'views/profile/details.html',
         controller: 'ProfileCtrl'
+      }
+    }
+  })
+  .state('app.profileEdit', {
+    url: '/profile-edit',
+    views : {
+      'menuContent': {
+        templateUrl: 'views/profile/edit.html',
+        controller: 'ProfileEditCtrl'
       }
     }
   });

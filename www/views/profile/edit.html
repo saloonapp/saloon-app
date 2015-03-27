@@ -1,0 +1,31 @@
+<ion-view title="Modifier">
+  <ion-content class="padding">
+    <form ng-submit="fn.updateProfile(data.profile)">
+      <div class="list">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Ton nom :</span>
+          <input type="text" name="pseudo" placeholder="ex: SalooN" ng-model="data.profile.pseudo">
+        </label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Qu'est ce qui t'intéresse ?</span>
+          <textarea name="actualPurpose" placeholder="ex: Discuter d'opportunités scala" ng-model="data.profile.actualPurpose"></textarea>
+        </label>
+      </div>
+      <div class="list">
+        <div class="item item-divider">Tu souhaites discuter de :</div>
+        <div class="item item-checkbox small" ng-repeat="interest in data.profile.interests">
+          <label class="checkbox">
+            <input type="checkbox" ng-model="interest.interested">
+          </label>
+          {{interest.name}}
+        </div>
+        <div class="item item-divider" ng-click="fn.addInterest()">
+          <i class="icon ion-plus-circled"></i>
+          &nbsp; Ajouter un sujet
+        </div>
+      </div>
+      <div class="alert alert-danger card padding" ng-if="data.error !== null" ng-click="data.error=null;"><strong>Oups !</strong> {{data.error}}</div>
+      <button type="submit" class="button button-block button-positive" ng-disabled="!fn.canSubmit()">Mettre à jour</button>
+    </form>
+  </ion-content>
+</ion-view>

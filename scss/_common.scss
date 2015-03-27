@@ -1,3 +1,17 @@
+$facebookColor: #3B5998;
+$twitterColor:  #55acee;
+$googleColor:   #D95232;
+$linkedinColor: #007BB6;
+
+.facebook-color { color: $facebookColor;  }
+.twitter-color  { color: $twitterColor;   }
+.google-color   { color: $googleColor;    }
+.linkedin-color { color: $linkedinColor;  }
+.facebook-bg { background-color: $facebookColor;  }
+.twitter-bg  { background-color: $twitterColor;   }
+.google-bg   { background-color: $googleColor;    }
+.linkedin-bg { background-color: $linkedinColor;  }
+
 /* from http://tobiasahlin.com/spinkit/ */
 .spinner {
   width: 40px;

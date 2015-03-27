@@ -1,5 +1,53 @@
 <ion-view title="Mon profil">
   <ion-content>
-    Tada...
+    <div class="user-profile">
+      <div class="header">
+        <div class="social pull-right">
+          <i class="icon ion-edit" style="font-size: 20px;" ui-sref="app.profileEdit"></i>
+        </div>
+        <img class="avatar" user-avatar="data.user">
+        <h2 class="title" user-name="data.user"></h2>
+        <p class="profile">{{data.user.actualPurpose}}</p>
+        <p class="level"><i class="fa fa-connectdevelop"></i> SalooN explorer</p>
+      </div>
+
+      <div class="list card padding">
+        <h4>Intéressé par :</h4>
+        <ul>
+          <li ng-repeat="interest in data.user.interests">- {{interest.name}}</li>
+        </ul>
+      </div>
+
+      <div class="list">
+        <div class="item item-icon-right">
+          Mes contacts
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </div>
+        <div class="item item-icon-right">
+          Mes sondages
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </div>
+      </div>
+
+      <div class="list">
+        <div class="item item-divider">Réseaux sociaux</div>
+        <div class="item item-icon-right linkedin-color">
+          Connecter mon compte LinkedIn
+          <i class="icon ion-social-linkedin"></i>
+        </div>
+        <div class="item item-icon-right">
+          Connecter mon compte Twitter
+          <i class="icon ion-social-twitter-outline"></i>
+        </div>
+        <div class="item item-icon-right">
+          Connecter mon compte Facebook
+          <i class="icon ion-social-facebook-outline"></i>
+        </div>
+        <div class="item item-icon-right">
+          Connecter mon compte Google
+          <i class="icon ion-social-google-outline"></i>
+        </div>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

@@ -24,38 +24,35 @@ angular.module('app')
   };
 
   fn.createRoom = function(){
-    KeyboardPlugin.onNextShow(function(e){
-      var popupScope = $scope.$new(true);
-      popupScope.data = {};
-      $ionicPopup.show({
-        template: '<input type="text" ng-model="data.newRoomName" autofocus>',
-        title: 'Nom de votre room :',
-        scope: popupScope,
-        buttons: [
-          { text: 'Annuler' },
-          {
-            text: '<b>Créer</b>',
-            type: 'button-positive',
-            onTap: function(e){
-              if(!popupScope.data.newRoomName){
-                e.preventDefault();
-                ToastPlugin.showShortCenter('Vous devez donner un nom à votre room');
-              } else {
-                return popupScope.data.newRoomName;
-              }
+    var popupScope = $scope.$new(true);
+    popupScope.data = {};
+    $ionicPopup.show({
+      template: '<input type="text" ng-model="data.newRoomName" autofocus>',
+      title: 'Nom de votre room :',
+      scope: popupScope,
+      buttons: [
+        { text: 'Annuler' },
+        {
+          text: '<b>Créer</b>',
+          type: 'button-positive',
+          onTap: function(e){
+            if(!popupScope.data.newRoomName){
+              e.preventDefault();
+              ToastPlugin.showShortCenter('Vous devez donner un nom à votre room');
+            } else {
+              return popupScope.data.newRoomName;
             }
-          },
-        ]
-      }).then(function(name) {
-        KeyboardPlugin.close();
-        if(name){
-          if(!data.rooms){ data.rooms = {}; }
-          data.rooms[name] = [];
-          $state.go('app.live.chat', {id: name});
-        }
-      });
+          }
+        },
+      ]
+    }).then(function(name){
+      KeyboardPlugin.close();
+      if(name){
+        if(!data.rooms){ data.rooms = {}; }
+        data.rooms[name] = [];
+        $state.go('app.live.chat', {id: name});
+      }
     });
-    KeyboardPlugin.show();
   };
 })
 
