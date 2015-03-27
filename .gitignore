@@ -5,6 +5,7 @@
 www/js/config/_config.js
 ParseCloudCode/cloud/credentials.js
 ParseCloudCode/config/global.json
+my-release-key.keystore
 
 node_modules/
 platforms/
@@ -16,8 +17,8 @@ www/lib/
 
 # do not commit generated images
 resources/android
-
-*~
-
 resources/ios/
+
+*.apk
+*~
 .idea

@@ -1,5 +1,33 @@
 angular.module('app')
 
+.filter('filteredMatches', function(DeepFilter){
+  'use strict';
+  return function(item, search, prefixLength, suffixLength){
+    var matches = _.uniq(DeepFilter.getMatches(item, search));
+    return _.flatten(_.map(matches, function(match){
+      return DeepFilter.parseMatch(match, search, prefixLength, suffixLength);
+    }));
+  };
+})
+
+.filter('deepFilter', function(DeepFilter){
+  'use strict';
+  return function(items, search){
+    var filtered = [];
+    angular.forEach(items, function(item){
+      if(search && search.length > 1){
+        var matches = DeepFilter.getMatches(item, search);
+        if(matches.length > 0){
+          filtered.push(item);
+        }
+      } else {
+        filtered.push(item);
+      }
+    });
+    return filtered;
+  };
+})
+
 .service('DeepFilter', function(Utils){
   'use strict';
   var service = {
@@ -11,7 +39,6 @@ angular.module('app')
     return search && str.match(new RegExp(search, 'gi')) !== null;
   }
 
-  // TODO : exclude fields : email, url, id, avatar...
   function shouldExclude(paramName, value){
     return paramName.indexOf('_') === 0
     || paramName.indexOf('$') === 0
@@ -75,32 +102,4 @@ angular.module('app')
   }
 
   return service;
-})
-
-.filter('filteredMatches', function(DeepFilter){
-  'use strict';
-  return function(item, search, prefixLength, suffixLength){
-    var matches = _.uniq(DeepFilter.getMatches(item, search));
-    return _.flatten(_.map(matches, function(match){
-      return DeepFilter.parseMatch(match, search, prefixLength, suffixLength);
-    }));
-  };
-})
-
-.filter('deepFilter', function(DeepFilter){
-  'use strict';
-  return function(items, search){
-    var filtered = [];
-    angular.forEach(items, function(item){
-      if(search && search.length > 1){
-        var matches = DeepFilter.getMatches(item, search);
-        if(matches.length > 0){
-          filtered.push(item);
-        }
-      } else {
-        filtered.push(item);
-      }
-    });
-    return filtered;
-  };
 });

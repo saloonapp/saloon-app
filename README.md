@@ -37,10 +37,9 @@ To run the app on your android device :
 - demo mode
 - user profile (updates)
 - migrate getUsersAround(), getMessagesAround() & getPollsAround() to cloud code (centralize 'around' distance + update user location)
-- improve people search (showing matching elements)
 - save linkedin profile in separate collection
-- add more API : fullcontact, gravatar, twitter, github, google, facebook...
 - get full-profile & contacts from linkedin
+- add more API : fullcontact, gravatar, twitter, github, google, facebook...
 - add background geolocation (https://github.com/christocracy/cordova-background-geolocation)
 - include geolocalized twitts in SalooN (default) chat
 - send photos in chats
