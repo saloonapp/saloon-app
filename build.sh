@@ -49,7 +49,7 @@ rm CordovaApp-release-unsigned.apk
 # build debug apk
 sed -i 's/\(id="'$appPackage'\)\("\)/\1.dev\2/' $configApk
 sed -i 's/\(<name>\)\('$appName'<\/name>\)/\1dev-\2/' $configApk
-sed -i 's/\(var env = \)[^;]*\(;\)/\1debug\2/' $configApp
+sed -i 's/\(var env = \)[^;]*\(;\)/\1dev\2/' $configApp
 sed -i 's/\(verbose: \)[^,]*\(,\)/\1true\2/' $configApp
 sed -i 's/\(debug: \)[^,]*\(,\)/\1true\2/' $configApp
 cordova platform remove android
