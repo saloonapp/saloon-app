@@ -1,15 +1,15 @@
 {
     "applications": {
-        "SalooN": {
+        "prod": {
             "applicationId": "YOUR_PARSE_APP_ID", 
             "masterKey": "YOUR_PARSE_MASTER_KEY"
         }, 
-        "SalooN-dev": {
+        "dev": {
             "applicationId": "YOUR_PARSE_APP_ID", 
             "masterKey": "YOUR_PARSE_MASTER_KEY"
         }, 
         "_default": {
-            "link": "SalooN-dev"
+            "link": "dev"
         }
     }, 
     "global": {

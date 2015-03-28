@@ -1,5 +1,5 @@
 // from https://github.com/HeinrichFilter/pusher-parse-cloud-code-server
-var credentials = require('cloud/credentials.js');
+var credentials = require('cloud/credentials.js')[Parse.applicationId];
 var Pusher = require('cloud/pusher.js');
 var pusher = new Pusher(credentials.pusher);
 
