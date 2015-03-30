@@ -35,7 +35,10 @@ To run the app on your android device :
 ## TODO
 
 - demo mode
-- user profile (updates)
+- add other default rooms :
+    * recrutement
+    * levée de fonds
+    * trolling
 - migrate getUsersAround(), getMessagesAround() & getPollsAround() to cloud code (centralize 'around' distance + update user location)
 - save linkedin profile in separate collection
 - get full-profile & contacts from linkedin
