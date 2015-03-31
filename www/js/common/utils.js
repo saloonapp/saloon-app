@@ -77,6 +77,7 @@ angular.module('app')
     }, _debounceTime || 1000);
   }
 
+  // like angular.merge() (but for previous angular versions)
   function extendDeep(dest){
     angular.forEach(arguments, function(arg){
       if(arg !== dest){

@@ -145,6 +145,18 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
       restrictAccess: ['logged']
     }
   })
+  .state('app.events', {
+    url: '/events',
+    views: {
+      'menuContent': {
+        templateUrl: 'views/events/list.html',
+        controller: 'EventsCtrl',
+      }
+    },
+    data: {
+      restrictAccess: ['logged']
+    }
+  })
   .state('app.profile', {
     url: '/profile',
     views : {

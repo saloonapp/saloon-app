@@ -11,6 +11,8 @@ node_modules/
 platforms/
 plugins/
 
+www/data/
+
 # when use sass, do not commit css files
 www/css/
 www/lib/
