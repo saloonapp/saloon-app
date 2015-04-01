@@ -10,6 +10,7 @@ angular.module('app')
     getEvents: getEvents,
     getEventData: getEventData,
     getEventActivity: getEventActivity,
+    getEventSpeaker: getEventSpeaker,
     groupBySlot: groupBySlot,
     getActivityValues: getActivityValues,
     getActivityFilterModal: getActivityFilterModal
@@ -60,7 +61,13 @@ angular.module('app')
 
   function getEventActivity(eventId, activityId){
     return getEventData(eventId).then(function(eventData){
-      return _.find(eventData.activities, {objectId: activityId});
+      return _.find(eventData.activities, {extId: activityId});
+    });
+  }
+
+  function getEventSpeaker(eventId, speakerId){
+    return getEventData(eventId).then(function(eventData){
+      return _.find(eventData.speakers, {extId: speakerId});
     });
   }
 

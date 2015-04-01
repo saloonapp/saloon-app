@@ -7,7 +7,7 @@
       <div ng-repeat="group in data.groupedActivities">
         <div class="item item-divider" ng-show="filtered.length > 0"><span class="pull-right">{{group.activities.length}}</span>{{group.name}}</div>
         <div class="item item-icon-right" ng-repeat="activity in filtered = (group.activities | activityFilter:data.activityFilter)"
-             ui-sref="app.event.activity({eventId: eventId, activityId: activity.objectId, title: activity.title})">
+             ui-sref="app.event.activity({eventId: eventId, activityId: activity.extId, title: activity.title})">
           <h2>{{activity.title}}</h2>
           <p>
             <span class="assertive" ng-show="activity.format">{{activity.format}}</span>

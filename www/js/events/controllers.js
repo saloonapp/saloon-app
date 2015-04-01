@@ -104,15 +104,38 @@ angular.module('app')
     data.activity = activity;
   });
 
-  $scope.$on('$ionicView.beforeEnter', function(){
+  /*$scope.$on('$ionicView.beforeEnter', function(){
     parentScopeData.hideTabs = true;
   });
   $scope.$on('$ionicView.beforeLeave', function(){
     parentScopeData.hideTabs = false;
-  });
+  });*/
 })
 
 .controller('EventSpeakersCtrl', function($scope){
   'use strict';
 
+})
+
+.controller('EventSpeakerCtrl', function($scope, $stateParams, EventSrv){
+  'use strict';
+  var eventId = $stateParams.eventId;
+  var speakerId = $stateParams.speakerId;
+  var title = $stateParams.title;
+  var parentScopeData = $scope.data;
+  var data = {}, fn = {};
+  $scope.data = data;
+  $scope.fn = fn;
+
+  data.title = title;
+  EventSrv.getEventSpeaker(eventId, speakerId).then(function(speaker){
+    data.speaker = speaker;
+  });
+
+  /*$scope.$on('$ionicView.beforeEnter', function(){
+    parentScopeData.hideTabs = true;
+  });
+  $scope.$on('$ionicView.beforeLeave', function(){
+    parentScopeData.hideTabs = false;
+  });*/
 });

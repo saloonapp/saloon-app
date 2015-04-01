@@ -7,7 +7,8 @@
     </div>
     <div class="list" ng-if="data.activity.speakers">
       <div class="item item-divider">Speakers</div>
-      <div class="item item-avatar" ng-repeat="speaker in data.activity.speakers">
+      <div class="item item-avatar" ng-repeat="speaker in data.activity.speakers"
+           ui-sref="app.event.speaker({eventId: eventId, speakerId: speaker.extId, title: speaker.name})">
         <img ng-src="{{speaker.avatar}}">
         <h2>{{speaker.name}}</h2>
         <p class="multiline">{{speaker.bio}}</p>

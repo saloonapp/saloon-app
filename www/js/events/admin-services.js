@@ -55,6 +55,7 @@ angular.module('app')
           var fullActivity = _.find(fullEventData.activities, {extId: activity.extId});
           if(fullActivity){
             activity.abstract = fullActivity.abstract;
+            activity.room = angular.copy(fullActivity.room);
             activity.lang = fullActivity.lang;
           } else {
             console.warn('activity '+activity.extId+' not found in speaker '+speaker.extId+' :(');

@@ -206,6 +206,18 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
       restrictAccess: ['logged']
     }
   })
+  .state('app.event.speaker', {
+    url: '/speaker/:speakerId?title',
+    views: {
+      'speaker-tab': {
+        templateUrl: 'views/events/speaker.html',
+        controller: 'EventSpeakerCtrl',
+      }
+    },
+    data: {
+      restrictAccess: ['logged']
+    }
+  })
   .state('app.profile', {
     url: '/profile',
     views : {

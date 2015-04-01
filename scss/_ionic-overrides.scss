@@ -8,9 +8,16 @@
 .royal      { color: $royal !important; }
 .dark       { color: $dark !important; }
 
-.item .multiline {
-  white-space: normal;
+.item h2 small {
+  font-size: 12px;
+  color: #666;
 }
+.item .multiline { white-space: normal; }
+.item .multiline.l2 { max-height: 40px; }
+.item .multiline.l3 { max-height: 60px; }
+.item .multiline.l4 { max-height: 80px; }
+.item .multiline.l5 { max-height: 100px; }
+.item .multiline.l6 { max-height: 120px; }
 
 .list.small {
   margin-bottom: 10px;

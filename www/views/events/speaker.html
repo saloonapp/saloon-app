@@ -1,0 +1,24 @@
+<ion-view title="{{data.title || data.speaker.name}}">
+  <ion-content>
+    <div class="list">
+      <div class="item item-avatar">
+        <img ng-src="{{data.speaker.avatar}}">
+        <h2>{{data.speaker.name}} <small>{{data.speaker.twitter}}</small></h2>
+        <p>{{data.speaker.company}}</p>
+      </div>
+    </div>
+    <div class="padding">
+      <p>{{data.speaker.bio}}</p>
+    </div>
+    <div class="list" ng-if="data.speaker.activities">
+      <div class="item item-divider">Interventions :</div>
+      <div class="item" ng-repeat="activity in data.speaker.activities" ui-sref="app.event.activity({eventId: eventId, activityId: activity.extId, title: activity.title})">
+        <h2>{{activity.title}}</h2>
+        <p>
+          <span class="assertive" ng-show="activity.format">{{activity.format}}</span>
+          <span ng-show="activity.room && activity.room.name">@{{activity.room.name}}</span>
+        </p>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
