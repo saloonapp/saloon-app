@@ -1,4 +1,4 @@
-angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment', 'firebase'])
+angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment', 'firebase', 'btford.markdown'])
 
 .config(function($stateProvider, $urlRouterProvider, $provide, $httpProvider, ParseUtilsProvider, Config) {
   'use strict';

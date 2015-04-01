@@ -1,5 +1,17 @@
 <ion-view title="{{data.title || data.activity.title}}">
   <ion-content>
-    <pre>{{data.activity | json}}</pre>
+    <div class="padding">
+      <h1>[{{data.activity.format}}] {{data.activity.title}}</h1>
+      <h3>{{data.activity.from | time}}-{{data.activity.to | time}} @{{data.activity.room.name}}</h3>
+      <div btf-markdown="data.activity.abstract"></div>
+    </div>
+    <div class="list" ng-if="data.activity.speakers">
+      <div class="item item-divider">Speakers</div>
+      <div class="item item-avatar" ng-repeat="speaker in data.activity.speakers">
+        <img ng-src="{{speaker.avatar}}">
+        <h2>{{speaker.name}}</h2>
+        <p class="multiline">{{speaker.bio}}</p>
+      </div>
+    </div>
   </ion-content>
 </ion-view>
