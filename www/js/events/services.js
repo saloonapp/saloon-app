@@ -11,7 +11,7 @@ angular.module('app')
     getEventData: getEventData,
     getEventActivity: getEventActivity,
     groupBySlot: groupBySlot,
-    valueLists: valueLists
+    getActivityValues: getActivityValues
   };
 
   function getEvents(_fromRemote){
@@ -84,7 +84,21 @@ angular.module('app')
     });
   }
 
-  function valueLists(fields, activities){
+  function getActivityValues(activities){
+    var values = _valueLists(['format', 'from', 'category', 'room'], activities);
+    values.from = _.map(_.sortBy(values.from, function(f){
+      return new Date(f).getTime();
+    }), function(f){
+      return {
+        data: f,
+        group: f ? moment(f).format('dddd') : 'Non planifié',
+        label: f ? moment(f).format('ddd H\\hmm') : 'Non planifié'
+      };
+    });
+    return values;
+  }
+
+  function _valueLists(fields, activities){
     var values = {};
     _.map(fields, function(field){
       values[field] = [];

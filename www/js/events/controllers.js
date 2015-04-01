@@ -38,17 +38,7 @@ angular.module('app')
     data.speakers = eventData.speakers;
     data.activities = eventData.activities;
     data.groupedActivities = EventSrv.groupBySlot(eventData.activities);
-    data.activityValues = EventSrv.valueLists(['format', 'from', 'category', 'room'], eventData.activities);
-    data.activityValues.from = _.map(_.sortBy(data.activityValues.from, function(f){
-      return new Date(f).getTime();
-    }), function(f){
-      return {
-        data: f,
-        group: f ? moment(f).format('dddd') : 'Non planifié',
-        label: f ? moment(f).format('ddd H\\hmm') : 'Non planifié'
-      };
-    });
-    console.log('data.activityValues', data.activityValues);
+    data.activityValues = EventSrv.getActivityValues(eventData.activities);
   });
 })
 
@@ -58,27 +48,6 @@ angular.module('app')
   var data = $scope.data; // herited from EventCtrl
   $scope.fn = fn;
   $scope.ui = ui;
-
-  fn.activityFilter = function(criteria){
-    return function(item){
-      return isMatch(item, criteria);
-    };
-  };
-
-  function isMatch(obj, filter){
-    for(var i in filter){
-      if(filter[i]){
-        if(!obj[i] || ((typeof obj[i]) !== (typeof filter[i]))){
-          return false;
-        } else if(typeof filter[i] === 'object' && !isMatch(obj[i], filter[i])){
-          return false;
-        } else if(typeof filter[i] === 'string' && obj[i] !== filter[i]){
-          return false;
-        }
-      }
-    }
-    return true;
-  }
 
   $ionicModal.fromTemplateUrl('views/events/filter-modal.html', {
     scope: $scope,
@@ -93,6 +62,29 @@ angular.module('app')
   fn.closeFilter = function(){
     ui.filterModal.hide();
   };
+  fn.clearFilter = function(){
+    delete data.activityFilter.search;
+    delete data.activityFilter.filter;
+  };
+  fn.isFiltered = function(){
+    if(data.activityFilter){
+      return hasValue(data.activityFilter.search) || hasValue(data.activityFilter.filter);
+    }
+    return false;
+  };
+
+  function hasValue(obj){
+    if(obj){
+      if(typeof obj === 'object'){
+        for(var i in obj){
+          if(hasValue(obj[i])){ return true; }
+        }
+      } else {
+        return !!obj;
+      }
+    }
+    return false;
+  }
 
   $scope.$on('$destroy', function(){
     $scope.modal.remove();
