@@ -15,23 +15,23 @@
         <div class="pull-right" ng-show="data.relation !== null">
           <button class="button button-small button-outline button-positive"
                   ng-show="fn.hasNoRelation(data.relation)" ng-click="fn.invite(data.user)">
-            <i class="icon ion-android-add-contact"></i> Inviter
+            <i class="icon ion-person-add"></i> Inviter
           </button>
           <button class="button button-small button-outline button-positive" disabled
                   ng-show="fn.isInitiator(data.relation, data.currentUser) && fn.isPending(data.relation)">
-            <i class="icon ion-android-add-contact"></i> En attente...
+            <i class="icon ion-person-add"></i> En attente...
           </button>
           <button class="button button-small button-outline button-assertive"
                   ng-show="!fn.isInitiator(data.relation, data.currentUser) && fn.isPending(data.relation)" ng-click="fn.declineInvite(data.relation)">
-            <i class="icon ion-android-add-contact"></i> Refuser
+            <i class="icon ion-person-add"></i> Refuser
           </button>
           <button class="button button-small button-outline button-balanced"
                   ng-show="!fn.isInitiator(data.relation, data.currentUser) && fn.isPending(data.relation)" ng-click="fn.acceptInvite(data.relation)">
-            <i class="icon ion-android-add-contact"></i> Accepter
+            <i class="icon ion-person-add"></i> Accepter
           </button>
           <button class="button button-small button-positive"
                   ng-show="fn.isAccepted(data.relation)">
-            <i class="icon ion-android-contact"></i> Contact
+            <i class="icon ion-person"></i> Contact
           </button>
           <button class="button button-small button-outline button-stable"
                   ng-show="fn.isDeclined(data.relation)">
@@ -68,8 +68,8 @@
   <form ng-submit="fn.sendMessage()" ng-if="fn.isAccepted(data.relation)">
     <ion-footer-bar class="item-input-inset">
       <label class="item-input-wrapper">
-        <i class="icon ion-ios7-search placeholder-icon"></i>
-        <input type="search" placeholder="Message" ng-model="data.message">
+        <i class="icon ion-chatboxes placeholder-icon"></i>
+        <input type="text" placeholder="Ton message ..." ng-model="data.message">
       </label>
       <button type="submit" class="button button-clear">Envoyer</button>
     </ion-footer-bar>
