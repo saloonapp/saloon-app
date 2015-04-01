@@ -1,6 +1,6 @@
 angular.module('app')
 
-.factory('EventSrv', function($q, StorageUtils, ParseUtils, Utils){
+.factory('EventSrv', function($q, $ionicModal, StorageUtils, ParseUtils, Utils){
   'use strict';
   var storageKey = 'events';
   var eventCrud = ParseUtils.createCrud('Event');
@@ -11,7 +11,8 @@ angular.module('app')
     getEventData: getEventData,
     getEventActivity: getEventActivity,
     groupBySlot: groupBySlot,
-    getActivityValues: getActivityValues
+    getActivityValues: getActivityValues,
+    getActivityFilterModal: getActivityFilterModal
   };
 
   function getEvents(_fromRemote){
@@ -115,6 +116,13 @@ angular.module('app')
       });
     });
     return values;
+  }
+
+  function getActivityFilterModal($scope){
+    return $ionicModal.fromTemplateUrl('views/events/filter-modal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    });
   }
 
   return service;

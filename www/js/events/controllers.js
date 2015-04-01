@@ -42,17 +42,14 @@ angular.module('app')
   });
 })
 
-.controller('EventActivitiesCtrl', function($scope, $ionicModal){
+.controller('EventActivitiesCtrl', function($scope, EventSrv){
   'use strict';
   var fn = {}, ui = {};
   var data = $scope.data; // herited from EventCtrl
   $scope.fn = fn;
   $scope.ui = ui;
 
-  $ionicModal.fromTemplateUrl('views/events/filter-modal.html', {
-    scope: $scope,
-    animation: 'slide-in-up'
-  }).then(function(modal){
+  EventSrv.getActivityFilterModal($scope).then(function(modal){
     ui.filterModal = modal;
   });
 
@@ -61,10 +58,11 @@ angular.module('app')
   };
   fn.closeFilter = function(){
     ui.filterModal.hide();
+    data.activityFilter = angular.copy(data.modalData);
   };
   fn.clearFilter = function(){
-    delete data.activityFilter.search;
-    delete data.activityFilter.filter;
+    delete data.modalData.search;
+    delete data.modalData.filter;
   };
   fn.isFiltered = function(){
     if(data.activityFilter){
@@ -87,7 +85,7 @@ angular.module('app')
   }
 
   $scope.$on('$destroy', function(){
-    $scope.modal.remove();
+    ui.filterModal.remove();
   });
 })
 
