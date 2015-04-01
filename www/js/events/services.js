@@ -1,6 +1,6 @@
 angular.module('app')
 
-.factory('EventSrv', function($q, StorageUtils, ParseUtils){
+.factory('EventSrv', function($q, StorageUtils, ParseUtils, Utils){
   'use strict';
   var storageKey = 'events';
   var eventCrud = ParseUtils.createCrud('Event');
@@ -8,7 +8,10 @@ angular.module('app')
   var activityCrud = ParseUtils.createCrud('EventActivity');
   var service = {
     getEvents: getEvents,
-    getEventData: getEventData
+    getEventData: getEventData,
+    getEventActivity: getEventActivity,
+    groupBySlot: groupBySlot,
+    valueLists: valueLists
   };
 
   function getEvents(_fromRemote){
@@ -31,7 +34,7 @@ angular.module('app')
       if(data && !_fromRemote){
         return data;
       } else {
-        return eventCrud.findOne({extId: eventId}).then(function(event){
+        return eventCrud.findOne({objectId: eventId}).then(function(event){
           if(event){
             return $q.all([
               speakerCrud.find({event: ParseUtils.toPointer('Event', event)}, '&limit=1000'),
@@ -52,6 +55,52 @@ angular.module('app')
         });
       }
     });
+  }
+
+  function getEventActivity(eventId, activityId){
+    return getEventData(eventId).then(function(eventData){
+      return _.find(eventData.activities, {objectId: activityId});
+    });
+  }
+
+  function groupBySlot(activities){
+    var activitiesBySlot = [];
+    _.map(activities, function(activity){
+      var slot = activity.from && activity.to ? moment(activity.from).format('ddd H\\hmm')+'-'+moment(activity.to).format('H\\hmm') : 'Non planifié';
+      var group = _.find(activitiesBySlot, {name: slot});
+      if(!group){
+        group = {
+          name: slot,
+          from: activity.from,
+          to: activity.to,
+          activities: []
+        };
+        activitiesBySlot.push(group);
+      }
+      group.activities.push(activity);
+    });
+    return _.sortBy(activitiesBySlot, function(a){
+      return new Date(a.from).getTime();
+    });
+  }
+
+  function valueLists(fields, activities){
+    var values = {};
+    _.map(fields, function(field){
+      values[field] = [];
+    });
+    _.map(activities, function(activity){
+      _.map(fields, function(field){
+        var value = Utils.getDeep(activity, field);
+        if(typeof value === 'string' && values[field].indexOf(value) === -1){
+          values[field].push(value);
+        }
+        if(typeof value === 'object' && !_.find(values[field], value)){
+          values[field].push(value);
+        }
+      });
+    });
+    return values;
   }
 
   return service;

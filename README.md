@@ -34,6 +34,9 @@ To run the app on your android device :
 
 ## TODO
 
+- make it exiting !!!
+- shorten woah effect
+
 - demo mode
 - add other default rooms :
     * recrutement

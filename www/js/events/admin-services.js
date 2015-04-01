@@ -320,7 +320,7 @@ angular.module('app')
             } else if(slot.break){
               activity.extId = slot.slotId;
               activity.format = 'break';
-              activity.category = _cleanStr(slot.break.id);
+              activity.category = 'break';
               activity.title = _cleanStr(slot.break.nameFR ? slot.break.nameFR : slot.break.nameEN);
             }
             

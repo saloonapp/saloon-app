@@ -1,0 +1,22 @@
+<ion-view title="{{data.title || data.event.name}}">
+  <ion-nav-buttons side="right">
+    <button class="button button-icon ion-funnel" ng-click="fn.openFilter()"></button>
+  </ion-nav-buttons>
+  <ion-content>
+    <div class="list">
+      <div ng-repeat="group in data.groupedActivities">
+        <div class="item item-divider"><span class="pull-right">{{group.activities.length}}</span>{{group.name}}</div>
+        <div class="item item-icon-right" ng-repeat="activity in group.activities | filter:fn.activityFilter(data.activityFilter.filter) | filter:data.activityFilter.search"
+             ui-sref="app.event.activity({eventId: eventId, activityId: activity.objectId, title: activity.title})">
+          <h2>{{activity.title}}</h2>
+          <p>
+            <span class="assertive" ng-show="activity.format">{{activity.format}}</span>
+            <span ng-show="activity.room && activity.room.name">@{{activity.room.name}}</span>
+            <span class="calm" ng-show="activity.speakers" ng-repeat="speaker in activity.speakers">{{speaker.name}}<span ng-if="!$last">, </span></span>
+          </p>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

@@ -11,6 +11,7 @@ angular.module('app')
     randInt: randInt,         // (min, max)                     generate a random Int between min & max
     toDate: toDate,           // (date)                         format input (timestamp, iso string, JS Date, moment Date) to a JS Date
     isDate: isDate,           // (date)                         check if date is a Date, get timestamp, iso string, JS Date or moment Date
+    getDeep: getDeep,         // (obj, path)                    allow to get deep value in object
     async: async,             // (fn)                           transform synchronous function in asynchronous function
     debounce: debounce,       // (key, callback, _debounceTime) debounce a value based on given key
     trustHtml: trustHtml,     // (html)                         angular trust html (to display unsafe html)
@@ -149,6 +150,10 @@ angular.module('app')
       var bBool = _getDeep(b, params.order.split('.'), 0);
       return (aBool === bBool ? 0 : (aBool ? -1 : 1)) * (params.desc ? -1 : 1);
     });
+  }
+
+  function getDeep(obj, path, _defaultValue){
+    return _getDeep(obj, path.split('.'), _defaultValue);
   }
 
   function _getDeep(obj, attrs, _defaultValue){

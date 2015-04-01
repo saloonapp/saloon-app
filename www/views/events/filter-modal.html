@@ -1,0 +1,43 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-positive">
+    <h1 class="title">Filtrer les sessions</h1>
+    <button class="button button-clear" ng-click="fn.closeFilter()">Valider</button>
+  </ion-header-bar>
+  <ion-content>
+    <form ng-submit="fn.closeFilter()">
+      <div class="list list-inset">
+        <label class="item item-input">
+          <i class="icon ion-search placeholder-icon"></i>
+          <input type="text" placeholder="Search" ng-model="data.activityFilter.search">
+        </label>
+      </div>
+
+      <div class="list list-inset">
+        <label class="item item-input item-select">
+          <div class="input-label">Horaire</div>
+          <select ng-options="from.data as from.label group by from.group for from in data.activityValues.from" ng-model="data.activityFilter.filter.from">
+            <option></option>
+          </select>
+        </label>
+        <label class="item item-input item-select">
+          <div class="input-label">Type</div>
+          <select ng-options="format for format in data.activityValues.format" ng-model="data.activityFilter.filter.format">
+            <option></option>
+          </select>
+        </label>
+        <label class="item item-input item-select">
+          <div class="input-label">Catégorie</div>
+          <select ng-options="category for category in data.activityValues.category" ng-model="data.activityFilter.filter.category">
+            <option></option>
+          </select>
+        </label>
+        <label class="item item-input item-select">
+          <div class="input-label">Salle</div>
+          <select ng-options="room.extId as room.name for room in data.activityValues.room" ng-model="data.activityFilter.filter.room.extId">
+            <option></option>
+          </select>
+        </label>
+      </div>
+    </form>
+  </ion-content>
+</ion-modal-view>

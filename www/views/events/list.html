@@ -1,9 +1,10 @@
 <ion-view title="Evénements">
   <ion-content>
     <div class="list">
-      <div class="item" ng-repeat="event in data.events">
+      <div class="item item-icon-right" ng-repeat="event in data.events" ui-sref="app.event.activities({eventId: event.objectId, title: event.name})">
         <h2>{{event.name}}</h2>
         <p>{{event.address}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
       </div>
     </div>
   </ion-content>
