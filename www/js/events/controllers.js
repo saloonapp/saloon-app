@@ -14,6 +14,13 @@ angular.module('app')
     data.events = events;
   });
 
+  fn.refresh = function(){
+    EventSrv.getEvents(true).then(function(events){
+      data.events = events;
+    }).finally(function(){
+      $scope.$broadcast('scroll.refreshComplete');
+    });
+  };
 
   /*
    * Filtrer par :

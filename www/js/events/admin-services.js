@@ -3,7 +3,7 @@
 
 angular.module('app')
 
-.factory('ParseEventLoader', function($q, EventSrv, DevoxxApi, ParseUtils, Utils){
+.factory('ParseEventLoader', function($q, DevoxxApi, ParseUtils, Utils){
   'use strict';
   var eventCrud = ParseUtils.createCrud('Event');
   var speakerCrud = ParseUtils.createCrud('EventSpeaker');
@@ -13,6 +13,7 @@ angular.module('app')
   };
   
   function loadDevoxxEvent(eventId){
+    console.log('loadDevoxxEvent('+eventId+')');
     return $q.all([
       DevoxxApi.getEvent(eventId),
       DevoxxApi.getSpeakers(eventId),
@@ -74,10 +75,18 @@ angular.module('app')
           }
         });
       });
+      var firstActivity = _.min(fullEventData.activities, function(activity){
+        return new Date(activity.from).getTime();
+      });
+      var lastActivity = _.max(fullEventData.activities, function(activity){
+        return new Date(activity.from).getTime();
+      });
+      fullEventData.event.from = firstActivity.from;
+      fullEventData.event.to = lastActivity.to;
       return fullEventData;
     }).then(function(formatedEventData){
       // get parse event data
-      return EventSrv.getEventData(eventId).then(function(parseData){
+      return _getEventData(eventId).then(function(parseData){
         return {
           devoxxApi: formatedEventData,
           parse: parseData
@@ -166,16 +175,31 @@ angular.module('app')
       });
     });
   }
+
+  function _getEventData(eventId){
+    return eventCrud.findOne({extId: eventId}).then(function(event){
+      return $q.all([
+        event ? speakerCrud.find({event: ParseUtils.toPointer('Event', event)}, '&limit=1000') : $q.when([]),
+        event ? activityCrud.find({event: ParseUtils.toPointer('Event', event)}, '&limit=1000') : $q.when([])
+      ]).then(function(results){
+        return {
+          event: event,
+          speakers: results[0],
+          activities: results[1]
+        };
+      });
+    });
+  }
   
-  function _shouldUpdate(parseData, newData){
-    var updated = _merge(parseData, newData);
+  function _shouldUpdate(parseData, devoxxData){
+    var updated = _merge(parseData, devoxxData);
     var res = JSON.stringify(updated) !== JSON.stringify(parseData);
     return res;
   }
   
-  function _merge(dest, src){
-    // return angular.merge({}, dest, src);
-    return Utils.extendDeep({}, dest, src);
+  function _merge(src1, src2){
+    // return angular.merge({}, src1, src2);
+    return Utils.extendDeep({}, src1, src2);
   }
   
   return service;
@@ -208,7 +232,11 @@ angular.module('app')
       }
     });
   }
-  
+
+  function getEvent(eventId){
+    return _getEvent(baseUrl+'conferences/'+eventId);
+  }
+
   function getSpeakers(eventId){
     return _get(baseUrl+'conferences/'+eventId+'/speakers').then(function(speakers){
       if(Array.isArray(speakers)){

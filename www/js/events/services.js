@@ -8,7 +8,6 @@ angular.module('app')
   var activityCrud = ParseUtils.createCrud('EventActivity');
   var service = {
     getEvents: getEvents,
-    getEventData: getEventData,
     getEventInfo: getEventInfo,
     getEventSpeakers: getEventSpeakers,
     getEventSpeaker: getEventSpeaker,
@@ -35,20 +34,6 @@ angular.module('app')
           });
         });
       }
-    });
-  }
-
-  function getEventData(eventId, _fromRemote){
-    return $q.all([
-      getEventInfo(eventId, _fromRemote),
-      getEventActivities(eventId, _fromRemote),
-      getEventSpeakers(eventId, _fromRemote)
-    ]).then(function(results){
-      return {
-        event: results[0],
-        speakers: results[1],
-        activities: results[2]
-      };
     });
   }
 
