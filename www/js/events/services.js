@@ -1,6 +1,6 @@
 angular.module('app')
 
-.factory('EventSrv', function($q, $ionicModal, StorageUtils, ParseUtils, Utils){
+.factory('EventSrv', function($rootScope, $q, $ionicModal, StorageUtils, ParseUtils, Utils){
   'use strict';
   var storageKey = 'events';
   var eventCrud = ParseUtils.createCrud('Event');
@@ -9,11 +9,19 @@ angular.module('app')
   var service = {
     getEvents: getEvents,
     getEventData: getEventData,
-    getEventActivity: getEventActivity,
+    getEventInfo: getEventInfo,
+    getEventSpeakers: getEventSpeakers,
     getEventSpeaker: getEventSpeaker,
+    getEventActivities: getEventActivities,
+    getEventActivity: getEventActivity,
+    getEventUserData: getEventUserData,
     groupBySlot: groupBySlot,
     getActivityValues: getActivityValues,
-    getActivityFilterModal: getActivityFilterModal
+    addActivityToFav: addActivityToFav,
+    removeActivityFromFav: removeActivityFromFav,
+    isActivityFav: isActivityFav,
+    getActivityFilterModal: getActivityFilterModal,
+    buildChooseActivityModal: buildChooseActivityModal
   };
 
   function getEvents(_fromRemote){
@@ -31,43 +39,49 @@ angular.module('app')
   }
 
   function getEventData(eventId, _fromRemote){
-    var eventKey = storageKey+'-'+eventId;
-    return StorageUtils.get(eventKey).then(function(data){
-      if(data && !_fromRemote){
-        return data;
-      } else {
-        return eventCrud.findOne({objectId: eventId}).then(function(event){
-          if(event){
-            return $q.all([
-              speakerCrud.find({event: ParseUtils.toPointer('Event', event)}, '&limit=1000'),
-              activityCrud.find({event: ParseUtils.toPointer('Event', event)}, '&limit=1000')
-            ]).then(function(results){
-              var res = {
-                event: event,
-                speakers: results[0],
-                activities: results[1]
-              };
-              return StorageUtils.set(eventKey, res).then(function(){
-                return res;
-              });
-            });
-          } else {
-            return {event: {}, speakers: [], activities: []};
-          }
-        });
-      }
+    return $q.all([
+      getEventInfo(eventId, _fromRemote),
+      getEventActivities(eventId, _fromRemote),
+      getEventSpeakers(eventId, _fromRemote)
+    ]).then(function(results){
+      return {
+        event: results[0],
+        speakers: results[1],
+        activities: results[2]
+      };
     });
   }
 
-  function getEventActivity(eventId, activityId){
-    return getEventData(eventId).then(function(eventData){
-      return _.find(eventData.activities, {extId: activityId});
-    });
+  function getEventInfo(eventId, _fromRemote){
+    var key = storageKey+'-'+eventId;
+    return _getLocalOrRemote(key, function(){
+      return eventCrud.findOne({objectId: eventId});
+    }, {}, _fromRemote);
+  }
+
+  function getEventSpeakers(eventId, _fromRemote){
+    var key = storageKey+'-'+eventId+'-speakers';
+    return _getLocalOrRemote(key, function(){
+      return speakerCrud.find({event: ParseUtils.toPointer('Event', eventId)}, '&limit=1000');
+    }, [], _fromRemote);
   }
 
   function getEventSpeaker(eventId, speakerId){
-    return getEventData(eventId).then(function(eventData){
-      return _.find(eventData.speakers, {extId: speakerId});
+    return getEventSpeakers(eventId).then(function(speakers){
+      return _.find(speakers, {extId: speakerId});
+    });
+  }
+
+  function getEventActivities(eventId, _fromRemote){
+    var key = storageKey+'-'+eventId+'-activities';
+    return _getLocalOrRemote(key, function(){
+      return activityCrud.find({event: ParseUtils.toPointer('Event', eventId)}, '&limit=1000');
+    }, [], _fromRemote);
+  }
+
+  function getEventActivity(eventId, activityId){
+    return getEventActivities(eventId).then(function(activities){
+      return _.find(activities, {extId: activityId});
     });
   }
 
@@ -106,6 +120,117 @@ angular.module('app')
     return values;
   }
 
+  function getEventUserData(eventId){
+    var key = storageKey+'-'+eventId+'-userData';
+    return StorageUtils.get(key).then(function(data){
+      return data;
+    });
+  }
+
+  function _setEventUserData(eventId, userData){
+    var key = storageKey+'-'+eventId+'-userData';
+    return StorageUtils.set(key, userData).then(function(){
+      return userData;
+    });
+  }
+
+  function addActivityToFav(eventId, activity){
+    // TODO : increment activity fav counter (https://parse.com/docs/rest#objects-updating)
+    return getEventUserData(eventId).then(function(userData){
+      if(!userData){ userData = {}; }
+      if(!userData.activityFavs){ userData.activityFavs = []; }
+      if(userData.activityFavs.indexOf(activity.objectId) === -1){
+        userData.activityFavs.push(activity.objectId);
+      }
+      return _setEventUserData(eventId, userData);
+    });
+  }
+
+  function removeActivityFromFav(eventId, activity){
+    // TODO : decrement activity fav counter
+    return getEventUserData(eventId).then(function(userData){
+      if(!userData){ userData = {}; }
+      if(!userData.activityFavs){ userData.activityFavs = []; }
+      var index = userData.activityFavs.indexOf(activity.objectId);
+      if(index > -1){
+        userData.activityFavs.splice(index, 1);
+      }
+      return _setEventUserData(eventId, userData);
+    });
+  }
+
+  function isActivityFav(userData, activity){
+    if(userData && activity && Array.isArray(userData.activityFavs)){
+      return userData.activityFavs.indexOf(activity.objectId) > -1;
+    }
+    return false;
+  }
+
+  function getActivityFilterModal($scope){
+    return $ionicModal.fromTemplateUrl('views/events/filter-modal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    });
+  }
+
+  function buildChooseActivityModal(eventId, activities){
+    var modalScope = $rootScope.$new(true);
+    modalScope.data = {};
+    modalScope.fn = {};
+    modalScope.fn.initModal = function(group){
+      modalScope.data.group = group;
+      modalScope.data.activities = angular.copy(_.filter(activities, function(activity){
+        return group.from === activity.from && group.to === activity.to;
+      }));
+      _.map(modalScope.data.activities, function(activity){
+        activity.checked = !!_.find(group.activities, {objectId: activity.objectId});
+      });
+      modalScope.modal.show();
+    };
+    modalScope.fn.validActivities = function(){
+      _.map(modalScope.data.activities, function(activity){
+        if(_.find(modalScope.data.group.activities, {objectId: activity.objectId})){
+          if(!activity.checked){
+            _.remove(modalScope.data.group.activities, {objectId: activity.objectId});
+            removeActivityFromFav(eventId, activity);
+          }
+        } else {
+          if(activity.checked){
+            modalScope.data.group.activities.push(activity);
+            addActivityToFav(eventId, activity);
+          }
+        }
+      });
+      modalScope.modal.hide();
+    };
+
+    return $ionicModal.fromTemplateUrl('views/events/choose-activity-modal.html', {
+      scope: modalScope,
+      animation: 'slide-in-up'
+    }).then(function(modal){
+      modalScope.modal = modal;
+      return modalScope;
+    });
+  }
+
+  function _getLocalOrRemote(key, getRemote, remoteDefault, _fromRemote){
+    return StorageUtils.get(key).then(function(data){
+      if(data && !_fromRemote){
+        return data;
+      } else {
+        return getRemote().then(function(remoteData){
+          if(remoteData){
+            return StorageUtils.set(key, remoteData).then(function(){
+              return remoteData;
+            });
+          } else {
+            return remoteDefault;
+          }
+        });
+      }
+    });
+  }
+
   function _valueLists(fields, activities){
     var values = {};
     _.map(fields, function(field){
@@ -123,13 +248,6 @@ angular.module('app')
       });
     });
     return values;
-  }
-
-  function getActivityFilterModal($scope){
-    return $ionicModal.fromTemplateUrl('views/events/filter-modal.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    });
   }
 
   return service;

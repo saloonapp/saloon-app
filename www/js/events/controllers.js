@@ -1,5 +1,8 @@
 angular.module('app')
 
+// TODO : show only future sessions (option activated by default in session filter)
+// TODO : filter by day in 'Sessions' & 'Programm' and show by default sessions of the current day (or first day)
+
 .controller('EventsCtrl', function($scope, EventSrv){
   'use strict';
   // ParseEventLoader.loadDevoxxEvent('DevoxxFR2015');
@@ -33,13 +36,27 @@ angular.module('app')
   $scope.fn = fn;
 
   data.title = title;
-  EventSrv.getEventData(eventId).then(function(eventData){
-    data.event = eventData.event;
-    data.speakers = eventData.speakers;
-    data.activities = eventData.activities;
-    data.groupedActivities = EventSrv.groupBySlot(eventData.activities);
-    data.activityValues = EventSrv.getActivityValues(eventData.activities);
+  EventSrv.getEventInfo(eventId).then(function(info){
+    data.event = info;
   });
+  EventSrv.getEventSpeakers(eventId).then(function(speakers){
+    data.speakers = speakers;
+  });
+  EventSrv.getEventActivities(eventId).then(function(activities){
+    data.activities = activities;
+    data.groupedActivities = EventSrv.groupBySlot(activities);
+    data.activityValues = EventSrv.getActivityValues(activities);
+  });
+  $scope.$on('$ionicView.enter', function(){
+    EventSrv.getEventUserData(eventId).then(function(userData){
+      data.userData = userData;
+    });
+  });
+})
+
+.controller('EventInfoCtrl', function($scope){
+  'use strict';
+
 })
 
 .controller('EventActivitiesCtrl', function($scope, EventSrv){
@@ -53,6 +70,9 @@ angular.module('app')
     ui.filterModal = modal;
   });
 
+  fn.isFav = function(activity){
+    return EventSrv.isActivityFav(data.userData, activity);
+  };
   fn.openFilter = function(){
     ui.filterModal.show();
   };
@@ -94,7 +114,6 @@ angular.module('app')
   var eventId = $stateParams.eventId;
   var activityId = $stateParams.activityId;
   var title = $stateParams.title;
-  var parentScopeData = $scope.data;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
@@ -103,13 +122,21 @@ angular.module('app')
   EventSrv.getEventActivity(eventId, activityId).then(function(activity){
     data.activity = activity;
   });
-
-  /*$scope.$on('$ionicView.beforeEnter', function(){
-    parentScopeData.hideTabs = true;
+  $scope.$on('$ionicView.enter', function(){
+    EventSrv.getEventUserData(eventId).then(function(userData){
+      data.userData = userData;
+    });
   });
-  $scope.$on('$ionicView.beforeLeave', function(){
-    parentScopeData.hideTabs = false;
-  });*/
+
+  fn.isFav = function(activity){
+    return EventSrv.isActivityFav(data.userData, activity);
+  };
+  fn.toggleFav = function(activity){
+    var action = fn.isFav(activity) ? EventSrv.removeActivityFromFav : EventSrv.addActivityToFav;
+    action(eventId, activity).then(function(userData){
+      data.userData = userData;
+    });
+  };
 })
 
 .controller('EventSpeakersCtrl', function($scope){
@@ -122,7 +149,6 @@ angular.module('app')
   var eventId = $stateParams.eventId;
   var speakerId = $stateParams.speakerId;
   var title = $stateParams.title;
-  var parentScopeData = $scope.data;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
@@ -131,11 +157,45 @@ angular.module('app')
   EventSrv.getEventSpeaker(eventId, speakerId).then(function(speaker){
     data.speaker = speaker;
   });
+})
 
-  /*$scope.$on('$ionicView.beforeEnter', function(){
-    parentScopeData.hideTabs = true;
+.controller('EventProgrammCtrl', function($scope, $stateParams, $ionicModal, EventSrv){
+  'use strict';
+  var eventId = $stateParams.eventId;
+  var title = $stateParams.title;
+  var activities = [];
+  var data = {}, fn = {};
+  $scope.data = data;
+  $scope.fn = fn;
+
+  data.title = title;
+  EventSrv.getEventActivities(eventId).then(function(allActivities){
+    activities = _.filter(allActivities, function (activity){
+      return activity.format !== 'break';
+    });
+    EventSrv.buildChooseActivityModal(eventId, activities).then(function(scope){
+      fn.chooseActivity = scope.fn.initModal;
+    });
+    data.groupedActivities = EventSrv.groupBySlot(activities);
+    _.map(data.groupedActivities, function(group){
+      group.activities = [];
+    });
+    EventSrv.getEventUserData(eventId).then(function(userData){
+      _.map(data.groupedActivities, function(group){
+        group.activities = _.filter(activities, function(activity){
+          return EventSrv.isActivityFav(userData, activity) && group.from === activity.from && group.to === activity.to;
+        });
+      });
+    });
   });
-  $scope.$on('$ionicView.beforeLeave', function(){
-    parentScopeData.hideTabs = false;
-  });*/
+
+  $scope.$on('$ionicView.enter', function(){
+    EventSrv.getEventUserData(eventId).then(function(userData){
+      _.map(data.groupedActivities, function(group){
+        group.activities = _.filter(activities, function(activity){
+          return EventSrv.isActivityFav(userData, activity) && group.from === activity.from && group.to === activity.to;
+        });
+      });
+    });
+  });
 });

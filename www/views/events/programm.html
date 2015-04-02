@@ -1,0 +1,24 @@
+<ion-view title="{{data.title || data.event.name}}">
+  <ion-content>
+    <div class="list list-activity">
+      <div ng-repeat="group in data.groupedActivities">
+        <div class="item item-divider">
+          <i class="icon ion-edit pull-right" ng-click="fn.chooseActivity(group)" ng-show="group.activities && group.activities.length > 0" style="margin-right: 20px;"></i>
+          {{group.name}}
+        </div>
+        <div class="row" style="padding: 0px;">
+          <div class="col item" ng-repeat="activity in group.activities"
+               ui-sref="app.event.activity({eventId: eventId, activityId: activity.extId, title: activity.title})">
+            <h2 class="multiline">{{activity.title}}</h2>
+            <p>
+              <span ng-show="activity.room && activity.room.name">@{{activity.room.name}}</span>
+            </p>
+          </div>
+          <div class="col" ng-show="!group.activities || group.activities.length === 0" style="text-align: center;">
+            <button class="button button-positive" ng-click="fn.chooseActivity(group)">Choisir</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

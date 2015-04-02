@@ -170,6 +170,18 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
       restrictAccess: ['logged']
     }
   })
+  .state('app.event.info', {
+    url: '/info?title',
+    views: {
+      'info-tab': {
+        templateUrl: 'views/events/info.html',
+        controller: 'EventInfoCtrl',
+      }
+    },
+    data: {
+      restrictAccess: ['logged']
+    }
+  })
   .state('app.event.activities', {
     url: '/activities',
     views: {
@@ -212,6 +224,18 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
       'speaker-tab': {
         templateUrl: 'views/events/speaker.html',
         controller: 'EventSpeakerCtrl',
+      }
+    },
+    data: {
+      restrictAccess: ['logged']
+    }
+  })
+  .state('app.event.programm', {
+    url: '/programm?title',
+    views: {
+      'programm-tab': {
+        templateUrl: 'views/events/programm.html',
+        controller: 'EventProgrammCtrl',
       }
     },
     data: {
