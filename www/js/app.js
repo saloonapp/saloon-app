@@ -153,6 +153,11 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
         controller: 'EventsCtrl',
       }
     },
+    resolve: {
+      events: function(EventSrv, IonicSrv){
+        return IonicSrv.withLoading(EventSrv.getEvents());
+      }
+    },
     data: {
       restrictAccess: ['logged']
     }
@@ -164,6 +169,11 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
       'menuContent': {
         templateUrl: 'views/events/details.html',
         controller: 'EventCtrl',
+      }
+    },
+    resolve: {
+      event: function($stateParams, EventSrv, IonicSrv){
+        return IonicSrv.withLoading(EventSrv.getEventInfo($stateParams.eventId));
       }
     },
     data: {
@@ -202,6 +212,14 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
         controller: 'EventActivityCtrl',
       }
     },
+    resolve: {
+      activity: function($stateParams, EventSrv, IonicSrv){
+        return IonicSrv.withLoading(EventSrv.getEventActivity($stateParams.eventId, $stateParams.activityId));
+      },
+      userData: function($stateParams, EventSrv, IonicSrv){
+        return IonicSrv.withLoading(EventSrv.getEventUserData($stateParams.eventId));
+      }
+    },
     data: {
       restrictAccess: ['logged']
     }
@@ -224,6 +242,11 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
       'speaker-tab': {
         templateUrl: 'views/events/speaker.html',
         controller: 'EventSpeakerCtrl',
+      }
+    },
+    resolve: {
+      speaker: function($stateParams, EventSrv, IonicSrv){
+        return IonicSrv.withLoading(EventSrv.getEventSpeaker($stateParams.eventId, $stateParams.speakerId));
       }
     },
     data: {

@@ -1,5 +1,22 @@
 angular.module('app')
 
+.factory('IonicSrv', function($ionicLoading){
+  'use strict';
+  var service = {
+    withLoading: withLoading
+  };
+
+  function withLoading(promise){
+    $ionicLoading.show();
+    return promise.then(function(res){
+      $ionicLoading.hide();
+      return res;
+    });
+  }
+
+  return service;
+})
+
 .factory('EventSrv', function($rootScope, $q, $ionicModal, StorageUtils, ParseUtils, Utils){
   'use strict';
   var storageKey = 'events';

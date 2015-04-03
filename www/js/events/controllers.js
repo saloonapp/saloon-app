@@ -3,16 +3,14 @@ angular.module('app')
 // TODO : show only future sessions (option activated by default in session filter)
 // TODO : filter by day in 'Sessions' & 'Program' and show by default sessions of the current day (or first day)
 
-.controller('EventsCtrl', function($scope, EventSrv){
+.controller('EventsCtrl', function($scope, EventSrv, events){
   'use strict';
   // ParseEventLoader.loadDevoxxEvent('DevoxxFR2015');
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
-  EventSrv.getEvents().then(function(events){
-    data.events = events;
-  });
+  data.events = events;
 
   fn.refresh = function(){
     EventSrv.getEvents(true).then(function(events){
@@ -27,23 +25,20 @@ angular.module('app')
   'use strict';
 })
 
-.controller('EventInfoCtrl', function($scope, $stateParams, $window, EventSrv){
+.controller('EventInfoCtrl', function($scope, $window, event){
   'use strict';
-  var eventId = $stateParams.eventId;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
-  EventSrv.getEventInfo(eventId).then(function(info){
-    data.event = info;
-  });
+  data.event = event;
 
   fn.mapUrl = function(adress){
     return 'https://maps.googleapis.com/maps/api/staticmap?markers=color:red%7C'+adress+'&zoom=15&size='+($window.innerWidth-20)+'x300';
   };
 })
 
-.controller('EventActivitiesCtrl', function($scope, $stateParams, EventSrv){
+.controller('EventActivitiesCtrl', function($scope, $stateParams, EventSrv, event){
   'use strict';
   var eventId = $stateParams.eventId;
   var data = {}, fn = {}, ui = {};
@@ -51,9 +46,7 @@ angular.module('app')
   $scope.fn = fn;
   $scope.ui = ui;
 
-  EventSrv.getEventInfo(eventId).then(function(info){
-    data.event = info;
-  });
+  data.event = event;
   EventSrv.getEventActivities(eventId).then(function(activities){
     data.activities = activities;
     data.groupedActivities = EventSrv.groupBySlot(activities);
@@ -109,7 +102,7 @@ angular.module('app')
   });
 })
 
-.controller('EventActivityCtrl', function($scope, $stateParams, EventSrv){
+.controller('EventActivityCtrl', function($scope, $stateParams, EventSrv, activity, userData){
   'use strict';
   var eventId = $stateParams.eventId;
   var activityId = $stateParams.activityId;
@@ -118,9 +111,8 @@ angular.module('app')
   $scope.fn = fn;
 
   data.eventId = eventId;
-  EventSrv.getEventActivity(eventId, activityId).then(function(activity){
-    data.activity = activity;
-  });
+  data.activity = activity;
+  data.userData = userData;
   $scope.$on('$ionicView.enter', function(){
     EventSrv.getEventUserData(eventId).then(function(userData){
       data.userData = userData;
@@ -138,36 +130,30 @@ angular.module('app')
   };
 })
 
-.controller('EventSpeakersCtrl', function($scope, $stateParams, EventSrv){
+.controller('EventSpeakersCtrl', function($scope, $stateParams, EventSrv, event){
   'use strict';
   var eventId = $stateParams.eventId;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
-  EventSrv.getEventInfo(eventId).then(function(info){
-    data.event = info;
-  });
+  data.event = event;
   EventSrv.getEventSpeakers(eventId).then(function(speakers){
     data.speakers = speakers;
   });
 })
 
-.controller('EventSpeakerCtrl', function($scope, $stateParams, EventSrv){
+.controller('EventSpeakerCtrl', function($scope, $stateParams, speaker){
   'use strict';
-  var eventId = $stateParams.eventId;
-  var speakerId = $stateParams.speakerId;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
-  data.eventId = eventId;
-  EventSrv.getEventSpeaker(eventId, speakerId).then(function(speaker){
-    data.speaker = speaker;
-  });
+  data.eventId = $stateParams.eventId;
+  data.speaker = speaker;
 })
 
-.controller('EventProgramCtrl', function($scope, $stateParams, $ionicModal, EventSrv){
+.controller('EventProgramCtrl', function($scope, $stateParams, $ionicModal, EventSrv, event){
   'use strict';
   var eventId = $stateParams.eventId;
   var activities = [];
@@ -175,9 +161,7 @@ angular.module('app')
   $scope.data = data;
   $scope.fn = fn;
 
-  EventSrv.getEventInfo(eventId).then(function(info){
-    data.event = info;
-  });
+  data.event = event;
   EventSrv.getEventActivities(eventId).then(function(allActivities){
     activities = _.filter(allActivities, function (activity){
       return activity.format !== 'break';
