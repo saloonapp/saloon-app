@@ -1,4 +1,4 @@
-<ion-view title="{{data.title || data.event.name}}">
+<ion-view title="{{data.event.name}}">
   <ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light">
     <ion-tab title="Info" ui-sref="app.event.info">
       <ion-nav-view name="info-tab"></ion-nav-view>
@@ -12,8 +12,8 @@
       <ion-nav-view name="speaker-tab"></ion-nav-view>
     </ion-tab>
 
-    <ion-tab title="Mon programme" ui-sref="app.event.programm">
-      <ion-nav-view name="programm-tab"></ion-nav-view>
+    <ion-tab title="Mon programme" ui-sref="app.event.program">
+      <ion-nav-view name="program-tab"></ion-nav-view>
     </ion-tab>
   </ion-tabs>
 </ion-view>

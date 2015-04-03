@@ -1,4 +1,4 @@
-<ion-view title="{{data.title || data.event.name}}">
+<ion-view title="{{data.event.name}}">
   <div class="bar bar-subheader has-tabs-top item-input-inset">
     <label class="item-input-wrapper">
       <i class="icon ion-search placeholder-icon"></i>
@@ -8,8 +8,8 @@
   </div>
   <ion-content class="has-subheader">
     <div class="list">
-      <div class="item item-avatar item-icon-right" ng-repeat="speaker in data.speakers | filter:search"
-           ui-sref="app.event.speaker({eventId: eventId, speakerId: speaker.extId, title: speaker.name})">
+      <div class="item item-avatar item-icon-right" collection-repeat="speaker in data.speakers | filter:search"
+           ui-sref="app.event.speaker({eventId: data.event.objectId, speakerId: speaker.extId})">
         <img ng-src="{{speaker.avatar}}">
         <h2>{{speaker.name}} <small>{{speaker.twitter}}</small></h2>
         <p class="multiline l3">{{speaker.bio}}</p>

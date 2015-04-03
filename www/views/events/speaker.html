@@ -1,4 +1,4 @@
-<ion-view title="{{data.title || data.speaker.name}}">
+<ion-view title="{{data.speaker.name}}">
   <ion-content>
     <div class="list">
       <div class="item item-avatar">
@@ -12,7 +12,7 @@
     </div>
     <div class="list" ng-if="data.speaker.activities">
       <div class="item item-divider">Interventions :</div>
-      <div class="item" ng-repeat="activity in data.speaker.activities" ui-sref="app.event.activity({eventId: eventId, activityId: activity.extId, title: activity.title})">
+      <div class="item" ng-repeat="activity in data.speaker.activities" ui-sref="app.event.activity({eventId: data.eventId, activityId: activity.extId})">
         <h2>{{activity.title}}</h2>
         <p>
           <span class="assertive" ng-show="activity.format">{{activity.format}}</span>

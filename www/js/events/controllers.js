@@ -1,7 +1,7 @@
 angular.module('app')
 
 // TODO : show only future sessions (option activated by default in session filter)
-// TODO : filter by day in 'Sessions' & 'Programm' and show by default sessions of the current day (or first day)
+// TODO : filter by day in 'Sessions' & 'Program' and show by default sessions of the current day (or first day)
 
 .controller('EventsCtrl', function($scope, EventSrv){
   'use strict';
@@ -21,57 +21,50 @@ angular.module('app')
       $scope.$broadcast('scroll.refreshComplete');
     });
   };
-
-  /*
-   * Filtrer par :
-   *  - jour
-   *  - slot (talks en mm temps)
-   *  - room (talks dans la mm salle)
-   *  - format
-   *  - track
-   *  - speaker
-   */
 })
 
-.controller('EventCtrl', function($scope, $stateParams, EventSrv){
+.controller('EventCtrl', function($scope){
+  'use strict';
+})
+
+.controller('EventInfoCtrl', function($scope, $stateParams, $window, EventSrv){
   'use strict';
   var eventId = $stateParams.eventId;
-  $scope.eventId = eventId;
-  var title = $stateParams.title;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
-  data.title = title;
   EventSrv.getEventInfo(eventId).then(function(info){
     data.event = info;
   });
-  EventSrv.getEventSpeakers(eventId).then(function(speakers){
-    data.speakers = speakers;
+
+  fn.mapUrl = function(adress){
+    return 'https://maps.googleapis.com/maps/api/staticmap?markers=color:red%7C'+adress+'&zoom=15&size='+($window.innerWidth-20)+'x300';
+  };
+})
+
+.controller('EventActivitiesCtrl', function($scope, $stateParams, EventSrv){
+  'use strict';
+  var eventId = $stateParams.eventId;
+  var data = {}, fn = {}, ui = {};
+  $scope.data = data;
+  $scope.fn = fn;
+  $scope.ui = ui;
+
+  EventSrv.getEventInfo(eventId).then(function(info){
+    data.event = info;
   });
   EventSrv.getEventActivities(eventId).then(function(activities){
     data.activities = activities;
     data.groupedActivities = EventSrv.groupBySlot(activities);
     data.activityValues = EventSrv.getActivityValues(activities);
   });
+
   $scope.$on('$ionicView.enter', function(){
     EventSrv.getEventUserData(eventId).then(function(userData){
       data.userData = userData;
     });
   });
-})
-
-.controller('EventInfoCtrl', function($scope){
-  'use strict';
-
-})
-
-.controller('EventActivitiesCtrl', function($scope, EventSrv){
-  'use strict';
-  var fn = {}, ui = {};
-  var data = $scope.data; // herited from EventCtrl
-  $scope.fn = fn;
-  $scope.ui = ui;
 
   EventSrv.getActivityFilterModal($scope).then(function(modal){
     ui.filterModal = modal;
@@ -120,12 +113,11 @@ angular.module('app')
   'use strict';
   var eventId = $stateParams.eventId;
   var activityId = $stateParams.activityId;
-  var title = $stateParams.title;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
-  data.title = title;
+  data.eventId = eventId;
   EventSrv.getEventActivity(eventId, activityId).then(function(activity){
     data.activity = activity;
   });
@@ -146,36 +138,46 @@ angular.module('app')
   };
 })
 
-.controller('EventSpeakersCtrl', function($scope){
+.controller('EventSpeakersCtrl', function($scope, $stateParams, EventSrv){
   'use strict';
+  var eventId = $stateParams.eventId;
+  var data = {}, fn = {};
+  $scope.data = data;
+  $scope.fn = fn;
 
+  EventSrv.getEventInfo(eventId).then(function(info){
+    data.event = info;
+  });
+  EventSrv.getEventSpeakers(eventId).then(function(speakers){
+    data.speakers = speakers;
+  });
 })
 
 .controller('EventSpeakerCtrl', function($scope, $stateParams, EventSrv){
   'use strict';
   var eventId = $stateParams.eventId;
   var speakerId = $stateParams.speakerId;
-  var title = $stateParams.title;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
-  data.title = title;
+  data.eventId = eventId;
   EventSrv.getEventSpeaker(eventId, speakerId).then(function(speaker){
     data.speaker = speaker;
   });
 })
 
-.controller('EventProgrammCtrl', function($scope, $stateParams, $ionicModal, EventSrv){
+.controller('EventProgramCtrl', function($scope, $stateParams, $ionicModal, EventSrv){
   'use strict';
   var eventId = $stateParams.eventId;
-  var title = $stateParams.title;
   var activities = [];
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
-  data.title = title;
+  EventSrv.getEventInfo(eventId).then(function(info){
+    data.event = info;
+  });
   EventSrv.getEventActivities(eventId).then(function(allActivities){
     activities = _.filter(allActivities, function (activity){
       return activity.format !== 'break';
@@ -187,16 +189,14 @@ angular.module('app')
     _.map(data.groupedActivities, function(group){
       group.activities = [];
     });
-    EventSrv.getEventUserData(eventId).then(function(userData){
-      _.map(data.groupedActivities, function(group){
-        group.activities = _.filter(activities, function(activity){
-          return EventSrv.isActivityFav(userData, activity) && group.from === activity.from && group.to === activity.to;
-        });
-      });
-    });
+    setProgramActivities();
   });
 
   $scope.$on('$ionicView.enter', function(){
+    setProgramActivities();
+  });
+
+  function setProgramActivities(){
     EventSrv.getEventUserData(eventId).then(function(userData){
       _.map(data.groupedActivities, function(group){
         group.activities = _.filter(activities, function(activity){
@@ -204,5 +204,5 @@ angular.module('app')
         });
       });
     });
-  });
+  }
 });

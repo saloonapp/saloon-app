@@ -1,8 +1,11 @@
-<ion-view title="{{data.title || data.event.name}}">
+<ion-view title="{{data.event.name}}">
   <ion-content>
     <div class="padding">
       <h1>{{data.event.name}}</h1>
       <p>{{data.event.address}}</p>
+      <a href="http://maps.google.com/?q={{data.event.address}}">
+        <img ng-src="{{fn.mapUrl(data.event.address)}}">
+      </a>
     </div>
   </ion-content>
 </ion-view>

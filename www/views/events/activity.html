@@ -1,4 +1,4 @@
-<ion-view title="{{data.title || data.activity.title}}">
+<ion-view title="{{data.activity.title}}">
   <ion-content>
     <div class="event-activity">
       <div class="pull-right fav" ng-class="{active: fn.isFav(data.activity)}" ng-click="fn.toggleFav(data.activity)">
@@ -12,7 +12,7 @@
     <div class="list" ng-if="data.activity.speakers">
       <div class="item item-divider">Speakers</div>
       <div class="item item-avatar" ng-repeat="speaker in data.activity.speakers"
-           ui-sref="app.event.speaker({eventId: eventId, speakerId: speaker.extId, title: speaker.name})">
+           ui-sref="app.event.speaker({eventId: data.eventId, speakerId: speaker.extId})">
         <img ng-src="{{speaker.avatar}}">
         <h2>{{speaker.name}}</h2>
         <p class="multiline l3">{{speaker.bio}}</p>

@@ -1,4 +1,4 @@
-<ion-view title="{{data.title || data.event.name}}">
+<ion-view title="{{data.event.name}}">
   <ion-nav-buttons side="right">
     <button class="button button-icon ion-funnel" ng-class="{energized: fn.isFiltered()}" ng-click="fn.openFilter()"></button>
   </ion-nav-buttons>
@@ -8,7 +8,7 @@
         <div class="item item-divider" ng-show="filtered.length > 0"><span class="pull-right">{{group.activities.length}}</span>{{group.name}}</div>
         <div class="item item-icon-right" ng-class="{fav: fn.isFav(activity)}"
              ng-repeat="activity in filtered = (group.activities | activityFilter:data.activityFilter)"
-             ui-sref="app.event.activity({eventId: eventId, activityId: activity.extId, title: activity.title})">
+             ui-sref="app.event.activity({eventId: data.event.objectId, activityId: activity.extId})">
           <h2>{{activity.title}}</h2>
           <p>
             <span class="assertive" ng-show="activity.format">{{activity.format}}</span>

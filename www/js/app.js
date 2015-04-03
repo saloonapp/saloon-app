@@ -158,7 +158,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
     }
   })
   .state('app.event', {
-    url: '/event/:eventId?title',
+    url: '/event/:eventId',
     abstract: true,
     views: {
       'menuContent': {
@@ -171,7 +171,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
     }
   })
   .state('app.event.info', {
-    url: '/info?title',
+    url: '/info',
     views: {
       'info-tab': {
         templateUrl: 'views/events/info.html',
@@ -195,7 +195,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
     }
   })
   .state('app.event.activity', {
-    url: '/activity/:activityId?title',
+    url: '/activity/:activityId',
     views: {
       'activity-tab': {
         templateUrl: 'views/events/activity.html',
@@ -219,7 +219,7 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
     }
   })
   .state('app.event.speaker', {
-    url: '/speaker/:speakerId?title',
+    url: '/speaker/:speakerId',
     views: {
       'speaker-tab': {
         templateUrl: 'views/events/speaker.html',
@@ -230,12 +230,12 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
       restrictAccess: ['logged']
     }
   })
-  .state('app.event.programm', {
-    url: '/programm?title',
+  .state('app.event.program', {
+    url: '/program',
     views: {
-      'programm-tab': {
-        templateUrl: 'views/events/programm.html',
-        controller: 'EventProgrammCtrl',
+      'program-tab': {
+        templateUrl: 'views/events/program.html',
+        controller: 'EventProgramCtrl',
       }
     },
     data: {
