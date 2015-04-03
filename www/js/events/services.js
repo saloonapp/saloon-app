@@ -1,17 +1,43 @@
 angular.module('app')
 
-.factory('IonicSrv', function($ionicLoading){
+.factory('IonicSrv', function($ionicLoading, $ionicScrollDelegate, $ionicPosition){
   'use strict';
   var service = {
-    withLoading: withLoading
+    withLoading: withLoading,
+    scrollTo: scrollTo
   };
 
   function withLoading(promise){
     $ionicLoading.show();
     return promise.then(function(res){
-      $ionicLoading.hide();
       return res;
+    }).finally(function(){
+      $ionicLoading.hide();
     });
+  }
+
+  function scrollTo(className){
+    var scroll = $ionicScrollDelegate.getScrollPosition();
+    var elt = document.getElementsByClassName(className);
+    if(elt){
+      var scrollElt = _getParentWithClass(angular.element(elt), 'scroll');
+      if(scrollElt){
+        try {
+          var eltOffset = $ionicPosition.offset(elt); // get an error when element is not visible :(
+          var scrollOffset = $ionicPosition.offset(scrollElt);
+          $ionicScrollDelegate.scrollTo(scroll.left, eltOffset.top-scrollOffset.top, true);
+        } catch(e){}
+      }
+    }
+  }
+
+  // because  ionic.DomUtil.getParentWithClass(elt, 'scroll') doesn't seems to work :(
+  function _getParentWithClass(elt, className, _maxDeep){
+    if(_maxDeep === undefined){ _maxDeep = 10; }
+    var parent = elt.parent();
+    if(parent.hasClass(className)){ return parent; }
+    else if(_maxDeep > 0){ return _getParentWithClass(parent, className, _maxDeep-1); }
+    else { return null; }
   }
 
   return service;
@@ -32,6 +58,7 @@ angular.module('app')
     getEventActivity: getEventActivity,
     getEventUserData: getEventUserData,
     groupBySlot: groupBySlot,
+    groupByDay: groupByDay,
     getActivityValues: getActivityValues,
     addActivityToFav: addActivityToFav,
     removeActivityFromFav: removeActivityFromFav,
@@ -108,18 +135,29 @@ angular.module('app')
     });
   }
 
-  function getActivityValues(activities){
-    var values = _valueLists(['format', 'from', 'category', 'room'], activities);
-    values.from = _.map(_.sortBy(values.from, function(f){
-      return new Date(f).getTime();
-    }), function(f){
-      return {
-        data: f,
-        group: f ? moment(f).format('dddd') : 'Non planifié',
-        label: f ? moment(f).format('ddd H\\hmm') : 'Non planifié'
-      };
+  function groupByDay(slots){
+    var slotsByDay = [];
+    _.map(slots, function(slot){
+      if(slot.from){
+        var date = Date.parse(moment(new Date(slot.from)).format('MM/DD/YYYY'));
+        var day = moment(new Date(slot.from)).format('dddd');
+        var group = _.find(slotsByDay, {date: date});
+        if(!group){
+          group = {
+            date: date,
+            day: day,
+            slots: []
+          };
+          slotsByDay.push(group);
+        }
+        group.slots.push(slot);
+      }
     });
-    return values;
+    return _.sortBy(slotsByDay, 'date');
+  }
+
+  function getActivityValues(activities){
+    return _valueLists(['format', 'category', 'room'], activities);
   }
 
   function getEventUserData(eventId){

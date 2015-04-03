@@ -3,8 +3,25 @@
     <button class="button button-icon ion-funnel" ng-class="{energized: fn.isFiltered()}" ng-click="fn.openFilter()"></button>
   </ion-nav-buttons>
   <ion-content>
+    <div class="button-bar">
+      <button class="button" ng-class="{active: day === data.dayActivities}" ng-repeat="day in data.dailyActivities" ng-click="fn.setDay($index)">{{day.day}}</button>
+    </div>
+    <div class="button-bar" ng-repeat="group in data.dayActivities.slots" ng-if="$index%4 === 0">
+      <button class="button button-small" ng-click="fn.scrollTo(data.dayActivities.slots[$index].from)">
+        {{data.dayActivities.slots[$index].from | time}}-{{data.dayActivities.slots[$index].to | time}}
+      </button>
+      <button class="button button-small" ng-click="fn.scrollTo(data.dayActivities.slots[$index+1].from)" ng-show="data.dayActivities.slots[$index+1]">
+        {{data.dayActivities.slots[$index+1].from | time}}-{{data.dayActivities.slots[$index+1].to | time}}
+      </button>
+      <button class="button button-small" ng-click="fn.scrollTo(data.dayActivities.slots[$index+2].from)" ng-show="data.dayActivities.slots[$index+2]">
+        {{data.dayActivities.slots[$index+2].from | time}}-{{data.dayActivities.slots[$index+2].to | time}}
+      </button>
+      <button class="button button-small" ng-click="fn.scrollTo(data.dayActivities.slots[$index+3].from)" ng-show="data.dayActivities.slots[$index+3]">
+        {{data.dayActivities.slots[$index+3].from | time}}-{{data.dayActivities.slots[$index+3].to | time}}
+      </button>
+    </div>
     <div class="list list-activity">
-      <div ng-repeat="group in data.groupedActivities">
+      <div ng-class="group.from" ng-repeat="group in data.dayActivities.slots">
         <div class="item item-divider" ng-show="filtered.length > 0"><span class="pull-right">{{group.activities.length}}</span>{{group.name}}</div>
         <div class="item item-icon-right" ng-class="{fav: fn.isFav(activity)}"
              ng-repeat="activity in filtered = (group.activities | activityFilter:data.activityFilter)"

@@ -38,7 +38,7 @@ angular.module('app')
   };
 })
 
-.controller('EventActivitiesCtrl', function($scope, $stateParams, EventSrv, event){
+.controller('EventActivitiesCtrl', function($scope, $stateParams, EventSrv, IonicSrv, event){
   'use strict';
   var eventId = $stateParams.eventId;
   var data = {}, fn = {}, ui = {};
@@ -49,9 +49,18 @@ angular.module('app')
   data.event = event;
   EventSrv.getEventActivities(eventId).then(function(activities){
     data.activities = activities;
-    data.groupedActivities = EventSrv.groupBySlot(activities);
+    data.dailyActivities = EventSrv.groupByDay(EventSrv.groupBySlot(activities));
+    data.dayActivities = _.find(data.dailyActivities, {date: Date.parse(moment(new Date()).format('MM/DD/YYYY'))});
+    if(!data.dayActivities){
+      data.dayActivities = data.dailyActivities[0];
+    }
     data.activityValues = EventSrv.getActivityValues(activities);
   });
+
+  fn.setDay = function(index){
+    data.dayActivities = data.dailyActivities[index];
+  };
+  fn.scrollTo = IonicSrv.scrollTo;
 
   $scope.$on('$ionicView.enter', function(){
     EventSrv.getEventUserData(eventId).then(function(userData){
@@ -74,8 +83,10 @@ angular.module('app')
     data.activityFilter = angular.copy(data.modalData);
   };
   fn.clearFilter = function(){
-    delete data.modalData.search;
-    delete data.modalData.filter;
+    if(data.modalData){
+      delete data.modalData.search;
+      delete data.modalData.filter;
+    }
   };
   fn.isFiltered = function(){
     if(data.activityFilter){
