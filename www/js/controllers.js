@@ -65,12 +65,6 @@ angular.module('app')
     delete $scope.user;
   });
 
-  $ionicPopover.fromTemplateUrl('views/partials/menu-popover.html', {
-    scope: $scope
-  }).then(function(popover){
-    $scope.menuPopover = popover;
-  });
-
   $scope.logout = function(){
     UserSrv.logout().then(function(){
       $ionicHistory.nextViewOptions({disableBack:true});
@@ -94,10 +88,6 @@ angular.module('app')
         ToastPlugin.show('A bientôt :)');
       }
     }
-  });
-
-  $scope.$on('$destroy', function(){
-    if($scope.menuPopover)  { $scope.menuPopover.remove();  }
   });
 })
 

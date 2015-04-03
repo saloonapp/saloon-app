@@ -27,8 +27,11 @@ angular.module('app')
           for(var i in byRoom){
             rooms[i] = _createRoom(i, byRoom[i]);
           }
-          if(!rooms['SalooN']){
-            rooms['SalooN'] = _createRoom('SalooN', []);
+          var defaultRooms = ['Général', 'SalooN', 'Annonces', 'Recrutement', 'Startup'];
+          for(var i in defaultRooms){
+            if(!rooms[defaultRooms[i]]){
+              rooms[defaultRooms[i]] = _createRoom(defaultRooms[i], []);
+            }
           }
           messageByRoomCache = rooms;
           return angular.copy(messageByRoomCache);
@@ -84,8 +87,15 @@ angular.module('app')
 
   function _createRoom(id, messages){
     messages.sort(function(a, b){ return _date_sort_desc(a.createdAt, b.createdAt); });
+    var icon = 'ion-chatboxes';
+    if(id === 'Général')      { icon = 'ion-star';              }
+    if(id === 'SalooN')       { icon = 'ion-help-circled';      }
+    if(id === 'Annonces')     { icon = 'ion-chatbox-working';   }
+    if(id === 'Recrutement')  { icon = 'ion-android-favorite';  }
+    if(id === 'Startup')      { icon = 'ion-flash';             }
     var room = {
       id: id,
+      icon: icon,
       lastMessage: messages[0],
       messages: messages
     };
