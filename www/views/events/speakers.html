@@ -9,6 +9,7 @@
   <ion-content class="has-subheader">
     <div class="list">
       <div class="item item-avatar item-icon-right" collection-repeat="speaker in data.speakers | filter:search"
+           item-height="115px"
            ui-sref="app.event.speaker({eventId: data.event.objectId, speakerId: speaker.extId})">
         <img ng-src="{{speaker.avatar}}">
         <h2>{{speaker.name}} <small>{{speaker.twitter}}</small></h2>

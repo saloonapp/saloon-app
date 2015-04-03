@@ -11,7 +11,7 @@
       <p>{{data.speaker.bio}}</p>
     </div>
     <div class="list" ng-if="data.speaker.activities">
-      <div class="item item-divider">Interventions :</div>
+      <div class="item item-divider">Sessions :</div>
       <div class="item" ng-repeat="activity in data.speaker.activities" ui-sref="app.event.activity({eventId: data.eventId, activityId: activity.extId})">
         <h2>{{activity.title}}</h2>
         <p>
