@@ -3,7 +3,7 @@
     <h1 class="title">Session : {{data.group.name}}</h1>
     <button class="button button-clear" ng-click="fn.validSessions()">Valider</button>
   </ion-header-bar>
-  <ion-content>
+  <ion-content delegate-handle="modalChooseSessionContent">
     <div class="list">
       <label class="item item-radio" ng-repeat="session in data.sessions">
         <input type="checkbox" name="group" ng-model="session.checked">

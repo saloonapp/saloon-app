@@ -7,16 +7,16 @@
       <button class="button" ng-class="{active: day === data.daySessions}" ng-repeat="day in data.dailySessions" ng-click="fn.setDay($index)">{{day.day}}</button>
     </div>
     <div class="button-bar" ng-repeat="group in data.daySessions.slots" ng-if="$index%4 === 0">
-      <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index].from)">
+      <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index].from)" style="padding: 0 4px;">
         {{data.daySessions.slots[$index].from | time}}-{{data.daySessions.slots[$index].to | time}}
       </button>
-      <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index+1].from)" ng-show="data.daySessions.slots[$index+1]">
+      <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index+1].from)" ng-show="data.daySessions.slots[$index+1]" style="padding: 0 4px;">
         {{data.daySessions.slots[$index+1].from | time}}-{{data.daySessions.slots[$index+1].to | time}}
       </button>
-      <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index+2].from)" ng-show="data.daySessions.slots[$index+2]">
+      <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index+2].from)" ng-show="data.daySessions.slots[$index+2]" style="padding: 0 4px;">
         {{data.daySessions.slots[$index+2].from | time}}-{{data.daySessions.slots[$index+2].to | time}}
       </button>
-      <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index+3].from)" ng-show="data.daySessions.slots[$index+3]">
+      <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index+3].from)" ng-show="data.daySessions.slots[$index+3]" style="padding: 0 4px;">
         {{data.daySessions.slots[$index+3].from | time}}-{{data.daySessions.slots[$index+3].to | time}}
       </button>
     </div>

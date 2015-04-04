@@ -176,7 +176,7 @@ angular.module('app')
   data.participant = participant;
 })
 
-.controller('EventProgramCtrl', function($scope, $stateParams, $ionicModal, EventSrv, event){
+.controller('EventProgramCtrl', function($scope, $stateParams, EventSrv, event){
   'use strict';
   var eventId = $stateParams.eventId;
   var sessions = [];
@@ -190,7 +190,7 @@ angular.module('app')
       return session.format !== 'break';
     });
     EventSrv.buildChooseSessionModal(eventId, sessions).then(function(scope){
-      fn.chooseSession = scope.fn.initModal;
+      fn.chooseSession = scope.fn.openModal;
     });
     data.groupedSessions = EventSrv.groupBySlot(sessions);
     _.map(data.groupedSessions, function(group){

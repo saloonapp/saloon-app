@@ -43,7 +43,7 @@ angular.module('app')
   return service;
 })
 
-.factory('EventSrv', function($rootScope, $q, $ionicModal, StorageUtils, ParseUtils, Utils){
+.factory('EventSrv', function($rootScope, $q, $ionicModal, $ionicScrollDelegate, StorageUtils, ParseUtils, Utils){
   'use strict';
   var storageKey = 'events';
   var eventCrud = ParseUtils.createCrud('Event');
@@ -217,7 +217,8 @@ angular.module('app')
     var modalScope = $rootScope.$new(true);
     modalScope.data = {};
     modalScope.fn = {};
-    modalScope.fn.initModal = function(group){
+    modalScope.fn.openModal = function(group){
+      $ionicScrollDelegate.$getByHandle('modalChooseSessionContent').scrollTop(false); // does not work in ionic 1.0.0-rc2 but it should :(
       modalScope.data.group = group;
       modalScope.data.sessions = angular.copy(_.filter(sessions, function(session){
         return group.from === session.from && group.to === session.to;
@@ -242,7 +243,9 @@ angular.module('app')
           }
         }
       });
-      _updateFavSessions(eventId, toAdd, toRemove);
+      if(toAdd.length > 0 || toRemove.length > 0){
+        _updateFavSessions(eventId, toAdd, toRemove);
+      }
       modalScope.modal.hide();
     };
 

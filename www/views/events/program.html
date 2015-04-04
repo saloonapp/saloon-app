@@ -2,8 +2,8 @@
   <ion-content>
     <div class="list list-session">
       <div ng-repeat="group in data.groupedSessions">
-        <div class="item item-divider">
-          <i class="icon ion-edit pull-right" ng-click="fn.chooseSession(group)" ng-show="group.sessions && group.sessions.length > 0" style="margin-right: 20px;"></i>
+        <div class="item item-divider" ng-click="fn.chooseSession(group)">
+          <i class="icon ion-edit pull-right" ng-show="group.sessions && group.sessions.length > 0"></i>
           {{group.name}}
         </div>
         <div class="row" style="padding: 0px;">
