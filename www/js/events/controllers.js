@@ -69,9 +69,6 @@ angular.module('app')
     data.sessionValues = EventSrv.getSessionValues(sessions);
   });
 
-  fn.setDay = function(index){
-    data.daySessions = data.dailySessions[index];
-  };
   fn.scrollTo = IonicSrv.scrollTo;
 
   $scope.$on('$ionicView.enter', function(){
@@ -176,7 +173,7 @@ angular.module('app')
   data.participant = participant;
 })
 
-.controller('EventProgramCtrl', function($scope, $stateParams, EventSrv, event){
+.controller('EventProgramCtrl', function($scope, $stateParams, EventSrv, IonicSrv, event){
   'use strict';
   var eventId = $stateParams.eventId;
   var sessions = [];
@@ -192,12 +189,22 @@ angular.module('app')
     EventSrv.buildChooseSessionModal(eventId, sessions).then(function(scope){
       fn.chooseSession = scope.fn.openModal;
     });
-    data.groupedSessions = EventSrv.groupBySlot(sessions);
-    _.map(data.groupedSessions, function(group){
-      group.sessions = [];
+
+    data.dailySessions = EventSrv.groupByDay(EventSrv.groupBySlot(sessions));
+    _.map(data.dailySessions, function(daySessions){
+      _.map(daySessions.slots, function(group){
+        group.sessions = [];
+      });
     });
+    data.daySessions = _.find(data.dailySessions, {date: Date.parse(moment(new Date()).format('MM/DD/YYYY'))});
+    if(!data.daySessions){
+      data.daySessions = data.dailySessions[0];
+    }
+
     setProgramSessions();
   });
+
+  fn.scrollTo = IonicSrv.scrollTo;
 
   $scope.$on('$ionicView.enter', function(){
     setProgramSessions();
@@ -205,9 +212,11 @@ angular.module('app')
 
   function setProgramSessions(){
     EventSrv.getEventUserData(eventId).then(function(userData){
-      _.map(data.groupedSessions, function(group){
-        group.sessions = _.filter(sessions, function(session){
-          return EventSrv.isSessionFav(userData, session) && group.from === session.from && group.to === session.to;
+      _.map(data.dailySessions, function(daySessions){
+        _.map(daySessions.slots, function(group){
+          group.sessions = _.filter(sessions, function(session){
+            return EventSrv.isSessionFav(userData, session) && group.from === session.from && group.to === session.to;
+          });
         });
       });
     });

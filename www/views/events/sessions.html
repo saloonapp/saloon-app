@@ -4,7 +4,7 @@
   </ion-nav-buttons>
   <ion-content>
     <div class="button-bar">
-      <button class="button" ng-class="{active: day === data.daySessions}" ng-repeat="day in data.dailySessions" ng-click="fn.setDay($index)">{{day.day}}</button>
+      <button class="button" ng-class="{active: day === data.daySessions}" ng-repeat="day in data.dailySessions" ng-click="data.daySessions = day">{{day.day}}</button>
     </div>
     <div class="button-bar" ng-repeat="group in data.daySessions.slots" ng-if="$index%4 === 0">
       <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index].from)" style="padding: 0 4px;">
@@ -20,6 +20,7 @@
         {{data.daySessions.slots[$index+3].from | time}}-{{data.daySessions.slots[$index+3].to | time}}
       </button>
     </div>
+
     <div class="list list-session">
       <div ng-class="group.from" ng-repeat="group in data.daySessions.slots">
         <div class="item item-divider" ng-show="filtered.length > 0"><span class="pull-right">{{group.sessions.length}}</span>{{group.name}}</div>
