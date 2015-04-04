@@ -2,7 +2,7 @@
   <ion-nav-buttons side="right">
     <button class="button button-icon ion-funnel" ng-class="{energized: fn.isFiltered()}" ng-click="fn.openFilter()"></button>
   </ion-nav-buttons>
-  <ion-content>
+  <ion-content delegate-handle="sessionsContent">
     <div class="button-bar">
       <button class="button" ng-class="{active: day === data.daySessions}" ng-repeat="day in data.dailySessions" ng-click="data.daySessions = day">{{day.day}}</button>
     </div>

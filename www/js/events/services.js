@@ -16,22 +16,30 @@ angular.module('app')
     });
   }
 
-  function scrollTo(className){
-    var scroll = $ionicScrollDelegate.getScrollPosition();
+  function scrollTo(className, _shouldAnimate){
     var elt = document.getElementsByClassName(className);
     if(elt){
-      var scrollElt = _getParentWithClass(angular.element(elt), 'scroll');
+      var scrollElt = _getParentWithClass(angular.element(elt), 'scroll-content');
       if(scrollElt){
         try {
           var eltOffset = $ionicPosition.offset(elt); // get an error when element is not visible :(
           var scrollOffset = $ionicPosition.offset(scrollElt);
-          $ionicScrollDelegate.scrollTo(scroll.left, eltOffset.top-scrollOffset.top, true);
-        } catch(e){}
+          var handle = scrollElt.attr('delegate-handle');
+          var $scroll = handle ? $ionicScrollDelegate.$getByHandle(handle) : $ionicScrollDelegate;
+          var scroll = $scroll.getScrollPosition();
+          $scroll.scrollTo(scroll.left, eltOffset.top-scrollOffset.top, _shouldAnimate);
+        } catch(e){
+          console.warn('scrollTo('+className+') error :(', e);
+        }
+      } else {
+        console.warn('Parent element with class <scroll-content> not found !');
       }
+    } else {
+      console.warn('Element with class <'+className+'> not found !');
     }
   }
 
-  // because  ionic.DomUtil.getParentWithClass(elt, 'scroll') doesn't seems to work :(
+  // because  ionic.DomUtil.getParentWithClass(elt, 'scroll-content') doesn't seems to work :(
   function _getParentWithClass(elt, className, _maxDeep){
     if(_maxDeep === undefined){ _maxDeep = 10; }
     var parent = elt.parent();

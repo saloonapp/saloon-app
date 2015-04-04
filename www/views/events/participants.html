@@ -6,10 +6,10 @@
     </label>
     <button class="button button-clear" ng-click="search=''">Annuler</button>
   </div>
-  <ion-content class="has-subheader">
+  <ion-content delegate-handle="participantsContent" class="has-subheader">
     <div class="list">
       <div class="item item-avatar item-icon-right" collection-repeat="participant in data.participants | filter:search"
-           item-height="115px"
+           item-height="115px" item-width="100%"
            ui-sref="app.event.participant({eventId: data.event.objectId, participantId: participant.extId})">
         <img ng-src="{{participant.avatar}}">
         <h2>{{participant.name}} <span class="label label-positive">{{participant.role}}</span></h2>
