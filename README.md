@@ -49,7 +49,6 @@ To run the app on your android device :
 - add background geolocation (https://github.com/christocracy/cordova-background-geolocation)
 - include geolocalized twitts in SalooN (default) chat
 - send photos in chats
-- add events (like devoxx) with speakers, rooms, attendee, sponsors, slots (speakers+room+time+...), map...
 
 ## Resources
 

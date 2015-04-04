@@ -1,0 +1,24 @@
+<ion-view title="{{data.participant.name}}">
+  <ion-content>
+    <div class="list">
+      <div class="item item-avatar">
+        <img ng-src="{{data.participant.avatar}}">
+        <h2>{{data.participant.name}} <span class="label label-positive">{{data.participant.role}}</span></h2>
+        <p>{{data.participant.company}}</p>
+      </div>
+    </div>
+    <div class="padding">
+      <p>{{data.participant.bio}}</p>
+    </div>
+    <div class="list" ng-if="data.participant.sessions">
+      <div class="item item-divider">Sessions :</div>
+      <div class="item" ng-repeat="session in data.participant.sessions" ui-sref="app.event.session({eventId: data.eventId, sessionId: session.extId})">
+        <h2>{{session.title}} <span class="label label-positive">{{session.role}}</span></h2>
+        <p>
+          <span class="assertive" ng-show="session.format">{{session.format}}</span>
+          <span ng-show="session.room && session.room.name">@{{session.room.name}}</span>
+        </p>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

@@ -1,21 +1,21 @@
 <ion-view title="{{data.event.name}}">
   <ion-content>
-    <div class="list list-activity">
-      <div ng-repeat="group in data.groupedActivities">
+    <div class="list list-session">
+      <div ng-repeat="group in data.groupedSessions">
         <div class="item item-divider">
-          <i class="icon ion-edit pull-right" ng-click="fn.chooseActivity(group)" ng-show="group.activities && group.activities.length > 0" style="margin-right: 20px;"></i>
+          <i class="icon ion-edit pull-right" ng-click="fn.chooseSession(group)" ng-show="group.sessions && group.sessions.length > 0" style="margin-right: 20px;"></i>
           {{group.name}}
         </div>
         <div class="row" style="padding: 0px;">
-          <div class="col item" ng-repeat="activity in group.activities"
-               ui-sref="app.event.activity({eventId: data.event.objectId, activityId: activity.extId})">
-            <h2 class="multiline">{{activity.title}}</h2>
+          <div class="col item" ng-repeat="session in group.sessions"
+               ui-sref="app.event.session({eventId: data.event.objectId, sessionId: session.extId})">
+            <h2 class="multiline">{{session.title}}</h2>
             <p>
-              <span ng-show="activity.room && activity.room.name">@{{activity.room.name}}</span>
+              <span ng-show="session.room && session.room.name">@{{session.room.name}}</span>
             </p>
           </div>
-          <div class="col" ng-show="!group.activities || group.activities.length === 0" style="text-align: center;">
-            <button class="button button-positive" ng-click="fn.chooseActivity(group)">Choisir</button>
+          <div class="col" ng-show="!group.sessions || group.sessions.length === 0" style="text-align: center;">
+            <button class="button button-positive" ng-click="fn.chooseSession(group)">Choisir</button>
           </div>
         </div>
       </div>

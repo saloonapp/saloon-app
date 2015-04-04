@@ -8,12 +8,12 @@
   </div>
   <ion-content class="has-subheader">
     <div class="list">
-      <div class="item item-avatar item-icon-right" collection-repeat="speaker in data.speakers | filter:search"
+      <div class="item item-avatar item-icon-right" collection-repeat="participant in data.participants | filter:search"
            item-height="115px"
-           ui-sref="app.event.speaker({eventId: data.event.objectId, speakerId: speaker.extId})">
-        <img ng-src="{{speaker.avatar}}">
-        <h2>{{speaker.name}} <small>{{speaker.twitter}}</small></h2>
-        <p class="multiline l3">{{speaker.bio}}</p>
+           ui-sref="app.event.participant({eventId: data.event.objectId, participantId: participant.extId})">
+        <img ng-src="{{participant.avatar}}">
+        <h2>{{participant.name}} <span class="label label-positive">{{participant.role}}</span></h2>
+        <p class="multiline l3">{{participant.bio}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
       </div>
     </div>

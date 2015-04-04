@@ -192,29 +192,29 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
       restrictAccess: ['logged']
     }
   })
-  .state('app.event.activities', {
-    url: '/activities',
+  .state('app.event.sessions', {
+    url: '/sessions',
     views: {
-      'activity-tab': {
-        templateUrl: 'views/events/activities.html',
-        controller: 'EventActivitiesCtrl',
+      'session-tab': {
+        templateUrl: 'views/events/sessions.html',
+        controller: 'EventSessionsCtrl',
       }
     },
     data: {
       restrictAccess: ['logged']
     }
   })
-  .state('app.event.activity', {
-    url: '/activity/:activityId',
+  .state('app.event.session', {
+    url: '/session/:sessionId',
     views: {
-      'activity-tab': {
-        templateUrl: 'views/events/activity.html',
-        controller: 'EventActivityCtrl',
+      'session-tab': {
+        templateUrl: 'views/events/session.html',
+        controller: 'EventSessionCtrl',
       }
     },
     resolve: {
-      activity: function($stateParams, EventSrv, IonicSrv){
-        return IonicSrv.withLoading(EventSrv.getEventActivity($stateParams.eventId, $stateParams.activityId));
+      session: function($stateParams, EventSrv, IonicSrv){
+        return IonicSrv.withLoading(EventSrv.getEventSession($stateParams.eventId, $stateParams.sessionId));
       },
       userData: function($stateParams, EventSrv, IonicSrv){
         return IonicSrv.withLoading(EventSrv.getEventUserData($stateParams.eventId));
@@ -224,29 +224,29 @@ angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'angularMoment
       restrictAccess: ['logged']
     }
   })
-  .state('app.event.speakers', {
-    url: '/speakers',
+  .state('app.event.participants', {
+    url: '/participants',
     views: {
-      'speaker-tab': {
-        templateUrl: 'views/events/speakers.html',
-        controller: 'EventSpeakersCtrl',
+      'participant-tab': {
+        templateUrl: 'views/events/participants.html',
+        controller: 'EventParticipantsCtrl',
       }
     },
     data: {
       restrictAccess: ['logged']
     }
   })
-  .state('app.event.speaker', {
-    url: '/speaker/:speakerId',
+  .state('app.event.participant', {
+    url: '/participant/:participantId',
     views: {
-      'speaker-tab': {
-        templateUrl: 'views/events/speaker.html',
-        controller: 'EventSpeakerCtrl',
+      'participant-tab': {
+        templateUrl: 'views/events/participant.html',
+        controller: 'EventParticipantCtrl',
       }
     },
     resolve: {
-      speaker: function($stateParams, EventSrv, IonicSrv){
-        return IonicSrv.withLoading(EventSrv.getEventSpeaker($stateParams.eventId, $stateParams.speakerId));
+      participant: function($stateParams, EventSrv, IonicSrv){
+        return IonicSrv.withLoading(EventSrv.getEventParticipant($stateParams.eventId, $stateParams.participantId));
       }
     },
     data: {

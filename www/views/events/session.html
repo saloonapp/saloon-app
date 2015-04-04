@@ -1,0 +1,22 @@
+<ion-view title="{{data.session.title}}">
+  <ion-content>
+    <div class="event-session">
+      <div class="pull-right fav" ng-class="{active: fn.isFav(data.session)}" ng-click="fn.toggleFav(data.session)">
+        <i class="icon ion-android-star-outline unstarred"></i>
+        <i class="icon ion-android-star starred"></i>
+      </div>
+      <h1>[{{data.session.format}}] {{data.session.title}}</h1>
+      <h3 class="assertive">{{data.session.from | time}}-{{data.session.to | time}} @{{data.session.room.name}}</h3>
+      <div btf-markdown="data.session.abstract"></div>
+    </div>
+    <div class="list" ng-if="data.session.participants">
+      <div class="item item-divider">Participants :</div>
+      <div class="item item-avatar" ng-repeat="participant in data.session.participants"
+           ui-sref="app.event.participant({eventId: data.eventId, participantId: participant.extId})">
+        <img ng-src="{{participant.avatar}}">
+        <h2>{{participant.name}} <span class="label label-positive">{{participant.role}}</span></h2>
+        <p class="multiline l3">{{participant.bio}}</p>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

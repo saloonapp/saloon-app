@@ -47,24 +47,24 @@ angular.module('app')
   'use strict';
   var storageKey = 'events';
   var eventCrud = ParseUtils.createCrud('Event');
-  var speakerCrud = ParseUtils.createCrud('EventSpeaker');
-  var activityCrud = ParseUtils.createCrud('EventActivity');
+  var participantCrud = ParseUtils.createCrud('EventParticipant');
+  var sessionCrud = ParseUtils.createCrud('EventSession');
   var service = {
     getEvents: getEvents,
     getEventInfo: getEventInfo,
-    getEventSpeakers: getEventSpeakers,
-    getEventSpeaker: getEventSpeaker,
-    getEventActivities: getEventActivities,
-    getEventActivity: getEventActivity,
+    getEventSessions: getEventSessions,
+    getEventParticipants: getEventParticipants,
+    getEventSession: getEventSession,
+    getEventParticipant: getEventParticipant,
     getEventUserData: getEventUserData,
     groupBySlot: groupBySlot,
     groupByDay: groupByDay,
-    getActivityValues: getActivityValues,
-    addActivityToFav: addActivityToFav,
-    removeActivityFromFav: removeActivityFromFav,
-    isActivityFav: isActivityFav,
-    getActivityFilterModal: getActivityFilterModal,
-    buildChooseActivityModal: buildChooseActivityModal
+    getSessionValues: getSessionValues,
+    addSessionToFav: addSessionToFav,
+    removeSessionFromFav: removeSessionFromFav,
+    isSessionFav: isSessionFav,
+    getSessionFilterModal: getSessionFilterModal,
+    buildChooseSessionModal: buildChooseSessionModal
   };
 
   function getEvents(_fromRemote){
@@ -88,49 +88,49 @@ angular.module('app')
     }, {}, _fromRemote);
   }
 
-  function getEventSpeakers(eventId, _fromRemote){
-    var key = storageKey+'-'+eventId+'-speakers';
+  function getEventSessions(eventId, _fromRemote){
+    var key = storageKey+'-'+eventId+'-sessions';
     return _getLocalOrRemote(key, function(){
-      return speakerCrud.find({event: ParseUtils.toPointer('Event', eventId)}, '&limit=1000');
+      return sessionCrud.find({event: ParseUtils.toPointer('Event', eventId)}, '&limit=1000');
     }, [], _fromRemote);
   }
 
-  function getEventSpeaker(eventId, speakerId){
-    return getEventSpeakers(eventId).then(function(speakers){
-      return _.find(speakers, {extId: speakerId});
-    });
-  }
-
-  function getEventActivities(eventId, _fromRemote){
-    var key = storageKey+'-'+eventId+'-activities';
+  function getEventParticipants(eventId, _fromRemote){
+    var key = storageKey+'-'+eventId+'-participants';
     return _getLocalOrRemote(key, function(){
-      return activityCrud.find({event: ParseUtils.toPointer('Event', eventId)}, '&limit=1000');
+      return participantCrud.find({event: ParseUtils.toPointer('Event', eventId)}, '&limit=1000');
     }, [], _fromRemote);
   }
 
-  function getEventActivity(eventId, activityId){
-    return getEventActivities(eventId).then(function(activities){
-      return _.find(activities, {extId: activityId});
+  function getEventSession(eventId, sessionId){
+    return getEventSessions(eventId).then(function(sessions){
+      return _.find(sessions, {extId: sessionId});
     });
   }
 
-  function groupBySlot(activities){
-    var activitiesBySlot = [];
-    _.map(activities, function(activity){
-      var slot = activity.from && activity.to ? moment(activity.from).format('ddd H\\hmm')+'-'+moment(activity.to).format('H\\hmm') : 'Non planifié';
-      var group = _.find(activitiesBySlot, {name: slot});
+  function getEventParticipant(eventId, participantId){
+    return getEventParticipants(eventId).then(function(participants){
+      return _.find(participants, {extId: participantId});
+    });
+  }
+
+  function groupBySlot(sessions){
+    var sessionsBySlot = [];
+    _.map(sessions, function(session){
+      var slot = session.from && session.to ? moment(session.from).format('ddd H\\hmm')+'-'+moment(session.to).format('H\\hmm') : 'Non planifié';
+      var group = _.find(sessionsBySlot, {name: slot});
       if(!group){
         group = {
           name: slot,
-          from: activity.from,
-          to: activity.to,
-          activities: []
+          from: session.from,
+          to: session.to,
+          sessions: []
         };
-        activitiesBySlot.push(group);
+        sessionsBySlot.push(group);
       }
-      group.activities.push(activity);
+      group.sessions.push(session);
     });
-    return _.sortBy(activitiesBySlot, function(a){
+    return _.sortBy(sessionsBySlot, function(a){
       return new Date(a.from).getTime();
     });
   }
@@ -156,8 +156,8 @@ angular.module('app')
     return _.sortBy(slotsByDay, 'date');
   }
 
-  function getActivityValues(activities){
-    return _valueLists(['format', 'category', 'room'], activities);
+  function getSessionValues(sessions){
+    return _valueLists(['format', 'category', 'room'], sessions);
   }
 
   function getEventUserData(eventId){
@@ -174,77 +174,77 @@ angular.module('app')
     });
   }
 
-  function addActivityToFav(eventId, activity){
-    // TODO : increment activity fav counter (https://parse.com/docs/rest#objects-updating)
+  function addSessionToFav(eventId, session){
+    // TODO : increment session fav counter (https://parse.com/docs/rest#objects-updating)
     return getEventUserData(eventId).then(function(userData){
       if(!userData){ userData = {}; }
-      if(!userData.activityFavs){ userData.activityFavs = []; }
-      if(userData.activityFavs.indexOf(activity.objectId) === -1){
-        userData.activityFavs.push(activity.objectId);
+      if(!userData.sessionFavs){ userData.sessionFavs = []; }
+      if(userData.sessionFavs.indexOf(session.objectId) === -1){
+        userData.sessionFavs.push(session.objectId);
       }
       return _setEventUserData(eventId, userData);
     });
   }
 
-  function removeActivityFromFav(eventId, activity){
-    // TODO : decrement activity fav counter
+  function removeSessionFromFav(eventId, session){
+    // TODO : decrement session fav counter
     return getEventUserData(eventId).then(function(userData){
       if(!userData){ userData = {}; }
-      if(!userData.activityFavs){ userData.activityFavs = []; }
-      var index = userData.activityFavs.indexOf(activity.objectId);
+      if(!userData.sessionFavs){ userData.sessionFavs = []; }
+      var index = userData.sessionFavs.indexOf(session.objectId);
       if(index > -1){
-        userData.activityFavs.splice(index, 1);
+        userData.sessionFavs.splice(index, 1);
       }
       return _setEventUserData(eventId, userData);
     });
   }
 
-  function isActivityFav(userData, activity){
-    if(userData && activity && Array.isArray(userData.activityFavs)){
-      return userData.activityFavs.indexOf(activity.objectId) > -1;
+  function isSessionFav(userData, session){
+    if(userData && session && Array.isArray(userData.sessionFavs)){
+      return userData.sessionFavs.indexOf(session.objectId) > -1;
     }
     return false;
   }
 
-  function getActivityFilterModal($scope){
+  function getSessionFilterModal($scope){
     return $ionicModal.fromTemplateUrl('views/events/filter-modal.html', {
       scope: $scope,
       animation: 'slide-in-up'
     });
   }
 
-  function buildChooseActivityModal(eventId, activities){
+  function buildChooseSessionModal(eventId, sessions){
     var modalScope = $rootScope.$new(true);
     modalScope.data = {};
     modalScope.fn = {};
     modalScope.fn.initModal = function(group){
       modalScope.data.group = group;
-      modalScope.data.activities = angular.copy(_.filter(activities, function(activity){
-        return group.from === activity.from && group.to === activity.to;
+      modalScope.data.sessions = angular.copy(_.filter(sessions, function(session){
+        return group.from === session.from && group.to === session.to;
       }));
-      _.map(modalScope.data.activities, function(activity){
-        activity.checked = !!_.find(group.activities, {objectId: activity.objectId});
+      _.map(modalScope.data.sessions, function(session){
+        session.checked = !!_.find(group.sessions, {objectId: session.objectId});
       });
       modalScope.modal.show();
     };
-    modalScope.fn.validActivities = function(){
-      _.map(modalScope.data.activities, function(activity){
-        if(_.find(modalScope.data.group.activities, {objectId: activity.objectId})){
-          if(!activity.checked){
-            _.remove(modalScope.data.group.activities, {objectId: activity.objectId});
-            removeActivityFromFav(eventId, activity);
+    modalScope.fn.validSessions = function(){
+      _.map(modalScope.data.sessions, function(session){
+        if(_.find(modalScope.data.group.sessions, {objectId: session.objectId})){
+          if(!session.checked){
+            _.remove(modalScope.data.group.sessions, {objectId: session.objectId});
+            removeSessionFromFav(eventId, session);
           }
         } else {
-          if(activity.checked){
-            modalScope.data.group.activities.push(activity);
-            addActivityToFav(eventId, activity);
+          if(session.checked){
+            modalScope.data.group.sessions.push(session);
+            addSessionToFav(eventId, session);
           }
         }
       });
       modalScope.modal.hide();
     };
 
-    return $ionicModal.fromTemplateUrl('views/events/choose-activity-modal.html', {
+    return $ionicModal.fromTemplateUrl('views/events/choose-session-modal.html', {
       scope: modalScope,
       animation: 'slide-in-up'
     }).then(function(modal){
@@ -271,14 +271,14 @@ angular.module('app')
     });
   }
 
-  function _valueLists(fields, activities){
+  function _valueLists(fields, sessions){
     var values = {};
     _.map(fields, function(field){
       values[field] = [];
     });
-    _.map(activities, function(activity){
+    _.map(sessions, function(session){
       _.map(fields, function(field){
-        var value = Utils.getDeep(activity, field);
+        var value = Utils.getDeep(session, field);
         if(typeof value === 'string' && values[field].indexOf(value) === -1){
           values[field].push(value);
         }

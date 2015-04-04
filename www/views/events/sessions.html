@@ -1,0 +1,40 @@
+<ion-view title="{{data.event.name}}">
+  <ion-nav-buttons side="right">
+    <button class="button button-icon ion-funnel" ng-class="{energized: fn.isFiltered()}" ng-click="fn.openFilter()"></button>
+  </ion-nav-buttons>
+  <ion-content>
+    <div class="button-bar">
+      <button class="button" ng-class="{active: day === data.daySessions}" ng-repeat="day in data.dailySessions" ng-click="fn.setDay($index)">{{day.day}}</button>
+    </div>
+    <div class="button-bar" ng-repeat="group in data.daySessions.slots" ng-if="$index%4 === 0">
+      <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index].from)">
+        {{data.daySessions.slots[$index].from | time}}-{{data.daySessions.slots[$index].to | time}}
+      </button>
+      <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index+1].from)" ng-show="data.daySessions.slots[$index+1]">
+        {{data.daySessions.slots[$index+1].from | time}}-{{data.daySessions.slots[$index+1].to | time}}
+      </button>
+      <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index+2].from)" ng-show="data.daySessions.slots[$index+2]">
+        {{data.daySessions.slots[$index+2].from | time}}-{{data.daySessions.slots[$index+2].to | time}}
+      </button>
+      <button class="button button-small" ng-click="fn.scrollTo(data.daySessions.slots[$index+3].from)" ng-show="data.daySessions.slots[$index+3]">
+        {{data.daySessions.slots[$index+3].from | time}}-{{data.daySessions.slots[$index+3].to | time}}
+      </button>
+    </div>
+    <div class="list list-session">
+      <div ng-class="group.from" ng-repeat="group in data.daySessions.slots">
+        <div class="item item-divider" ng-show="filtered.length > 0"><span class="pull-right">{{group.sessions.length}}</span>{{group.name}}</div>
+        <div class="item item-icon-right" ng-class="{fav: fn.isFav(session)}"
+             ng-repeat="session in filtered = (group.sessions | sessionFilter:data.sessionFilter)"
+             ui-sref="app.event.session({eventId: data.event.objectId, sessionId: session.extId})">
+          <h2>{{session.title}}</h2>
+          <p>
+            <span class="assertive" ng-show="session.format">{{session.format}}</span>
+            <span ng-show="session.room && session.room.name">@{{session.room.name}}</span>
+            <span class="calm" ng-show="session.participants" ng-repeat="participant in session.participants">{{participant.name}}<span ng-if="!$last">, </span></span>
+          </p>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

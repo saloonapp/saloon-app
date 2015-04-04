@@ -6,8 +6,8 @@ angular.module('app')
 .factory('ParseEventLoader', function($q, DevoxxApi, ParseUtils, Utils){
   'use strict';
   var eventCrud = ParseUtils.createCrud('Event');
-  var speakerCrud = ParseUtils.createCrud('EventSpeaker');
-  var activityCrud = ParseUtils.createCrud('EventActivity');
+  var participantCrud = ParseUtils.createCrud('EventParticipant');
+  var sessionCrud = ParseUtils.createCrud('EventSession');
   var service = {
     loadDevoxxEvent: loadDevoxxEvent
   };
@@ -16,124 +16,126 @@ angular.module('app')
     console.log('loadDevoxxEvent('+eventId+')');
     return $q.all([
       DevoxxApi.getEvent(eventId),
-      DevoxxApi.getSpeakers(eventId),
-      DevoxxApi.getActivities(eventId)
+      DevoxxApi.getSessions(eventId),
+      DevoxxApi.getParticipants(eventId)
     ]).then(function(results){
       // get all data and store it in object
       return {
         event: results[0],
-        speakers: results[1],
-        activities: results[2]
+        sessions: results[1],
+        participants: results[2]
       };
     }).then(function(eventData){
       // check for missing elements and add it to data
-      var missingActivityIds = _.filter(_.flatten(_.map(eventData.speakers, function(speaker){
-        return _.map(speaker.activities, function(activity){
-          if(!_.find(eventData.activities, {extId: activity.extId})){
-            return activity.extId;
+      var missingSessionIds = _.filter(_.flatten(_.map(eventData.participants, function(participant){
+        return _.map(participant.sessions, function(session){
+          if(!_.find(eventData.sessions, {extId: session.extId})){
+            return session.extId;
           }
         });
       })));
-      var missingSpeakerIds = _.filter(_.flatten(_.map(eventData.activities, function(activity){
-        return _.map(activity.speakers, function(speaker){
-          if(!_.find(eventData.speakers, {extId: speaker.extId})){
-            return speaker.extId;
+      var missingParticipantIds = _.filter(_.flatten(_.map(eventData.sessions, function(session){
+        return _.map(session.participants, function(participant){
+          if(!_.find(eventData.participants, {extId: participant.extId})){
+            return participant.extId;
           }
         });
       })));
       return $q.all([
-        DevoxxApi.getSpeakersByIds(eventId, missingSpeakerIds),
-        DevoxxApi.getActivitiesByIds(eventId, missingActivityIds)
+        DevoxxApi.getSessionsByIds(eventId, missingSessionIds),
+        DevoxxApi.getParticipantsByIds(eventId, missingParticipantIds)
       ]).then(function(results){
-        eventData.speakers = eventData.speakers.concat(results[0]);
-        eventData.activities = eventData.activities.concat(results[1]);
+        eventData.sessions = eventData.sessions.concat(results[0]);
+        eventData.participants = eventData.participants.concat(results[1]);
         return eventData;
       });
     }).then(function(fullEventData){
       // format & enrich data
-      _.map(fullEventData.speakers, function(speaker){
-        _.map(speaker.activities, function(activity){
-          var fullActivity = _.find(fullEventData.activities, {extId: activity.extId});
-          if(fullActivity){
-            activity.abstract = fullActivity.abstract;
-            activity.room = angular.copy(fullActivity.room);
-            activity.lang = fullActivity.lang;
+      _.map(fullEventData.participants, function(participant){
+        _.map(participant.sessions, function(session){
+          var fullSession = _.find(fullEventData.sessions, {extId: session.extId});
+          if(fullSession){
+            session.role = fullSession.role ? fullSession.role : participant.role;
+            session.abstract = fullSession.abstract;
+            session.room = angular.copy(fullSession.room);
+            session.lang = fullSession.lang;
           } else {
-            console.warn('activity '+activity.extId+' not found in speaker '+speaker.extId+' :(');
+            console.warn('session '+session.extId+' not found in participant '+participant.extId+' :(');
           }
         });
       });
-      _.map(fullEventData.activities, function(activity){
-        _.map(activity.speakers, function(speaker){
-          var fullSpeaker = _.find(fullEventData.speakers, {extId: speaker.extId});
-          if(fullSpeaker){
-            speaker.name = fullSpeaker.name;
-            speaker.avatar = fullSpeaker.avatar;
-            speaker.bio = fullSpeaker.bio;
+      _.map(fullEventData.sessions, function(session){
+        _.map(session.participants, function(participant){
+          var fullParticipant = _.find(fullEventData.participants, {extId: participant.extId});
+          if(fullParticipant){
+            participant.name = fullParticipant.name;
+            participant.avatar = fullParticipant.avatar;
+            participant.bio = fullParticipant.bio;
+            if(!participant.role){ participant.role = fullParticipant.role; }
           } else {
-            console.warn('speaker '+speaker.extId+' not found in activity '+activity.extId+' in slot '+activity.slotId+' :(');
+            console.warn('participant '+participant.extId+' not found in session '+session.extId+' in slot '+session.slotId+' :(');
           }
         });
       });
-      var firstActivity = _.min(fullEventData.activities, function(activity){
-        return new Date(activity.from).getTime();
+      var firstSession = _.min(fullEventData.sessions, function(session){
+        return new Date(session.from).getTime();
       });
-      var lastActivity = _.max(fullEventData.activities, function(activity){
-        return new Date(activity.from).getTime();
+      var lastSession = _.max(fullEventData.sessions, function(session){
+        return new Date(session.from).getTime();
       });
-      fullEventData.event.from = firstActivity.from;
-      fullEventData.event.to = lastActivity.to;
+      fullEventData.event.from = firstSession.from;
+      fullEventData.event.to = lastSession.to;
       return fullEventData;
     }).then(function(formatedEventData){
       // get parse event data
       return _getEventData(eventId).then(function(parseData){
         return {
-          devoxxApi: formatedEventData,
+          devoxx: formatedEventData,
           parse: parseData
         };
       });
     }).then(function(oldAndNewData){
       // make diff data to save
       var diff = {
-        devoxxApi: oldAndNewData.devoxxApi,
+        devoxx: oldAndNewData.devoxx,
         parse: oldAndNewData.parse,
         toSave: {
-          speakers: [],
-          activities: [],
+          participants: [],
+          sessions: [],
         },
         toDelete: {
-          speakers: [],
-          activities: []
+          participants: [],
+          sessions: []
         }
       };
-      if(_shouldUpdate(oldAndNewData.parse.event, oldAndNewData.devoxxApi.event)){
-        diff.toSave.event = _merge(oldAndNewData.parse.event, oldAndNewData.devoxxApi.event);
+      if(_shouldUpdate(oldAndNewData.parse.event, oldAndNewData.devoxx.event)){
+        diff.toSave.event = _merge(oldAndNewData.parse.event, oldAndNewData.devoxx.event);
       }
-      _.map(oldAndNewData.devoxxApi.speakers, function(speaker){
-        var parseSpeaker = _.find(oldAndNewData.parse.speakers, {extId: speaker.extId});
-        if(!parseSpeaker){
-          diff.toSave.speakers.push(speaker);
-        } else if(_shouldUpdate(parseSpeaker, speaker)){
-          diff.toSave.speakers.push(_merge(parseSpeaker, speaker));
+      _.map(oldAndNewData.devoxx.participants, function(participant){
+        var parseParticipant = _.find(oldAndNewData.parse.participants, {extId: participant.extId});
+        if(!parseParticipant){
+          diff.toSave.participants.push(participant);
+        } else if(_shouldUpdate(parseParticipant, participant)){
+          diff.toSave.participants.push(_merge(parseParticipant, participant));
         }
       });
-      _.map(oldAndNewData.parse.speakers, function(speaker){
-        if(!_.find(oldAndNewData.devoxxApi.speakers, {extId: speaker.extId})){
-          diff.toDelete.speakers.push(speaker);
+      _.map(oldAndNewData.parse.participants, function(participant){
+        if(!_.find(oldAndNewData.devoxx.participants, {extId: participant.extId})){
+          diff.toDelete.participants.push(participant);
         }
       });
-      _.map(oldAndNewData.devoxxApi.activities, function(activity){
-        var parseActivity = _.find(oldAndNewData.parse.activities, {extId: activity.extId});
-        if(!parseActivity){
-          diff.toSave.activities.push(activity);
-        } else if(_shouldUpdate(parseActivity, activity)){
-          var merge = _merge(parseActivity, activity);
-          diff.toSave.activities.push(merge);
+      _.map(oldAndNewData.devoxx.sessions, function(session){
+        var parseSession = _.find(oldAndNewData.parse.sessions, {extId: session.extId});
+        if(!parseSession){
+          diff.toSave.sessions.push(session);
+        } else if(_shouldUpdate(parseSession, session)){
+          var merge = _merge(parseSession, session);
+          diff.toSave.sessions.push(merge);
         }
       });
-      _.map(oldAndNewData.parse.activities, function(activity){
-        if(!_.find(oldAndNewData.devoxxApi.activities, {extId: activity.extId})){
-          diff.toDelete.activities.push(activity);
+      _.map(oldAndNewData.parse.sessions, function(session){
+        if(!_.find(oldAndNewData.devoxx.sessions, {extId: session.extId})){
+          diff.toDelete.sessions.push(session);
         }
       });
       return diff;
@@ -150,23 +152,23 @@ angular.module('app')
       
       return eventPromise.then(function(parseEvent){
         var promises = [];
-        promises = promises.concat(_.map(diff.toSave.speakers, function(speaker){
-          speaker.event = ParseUtils.toPointer('Event', parseEvent);
-          console.log('SAVE speaker', speaker);
-          speakerCrud.save(speaker);
+        promises = promises.concat(_.map(diff.toSave.participants, function(participant){
+          participant.event = ParseUtils.toPointer('Event', parseEvent);
+          console.log('SAVE participant', participant);
+          participantCrud.save(participant);
         }));
-        promises = promises.concat(_.map(diff.toSave.activities, function(activity){
-          activity.event = ParseUtils.toPointer('Event', parseEvent);
-          console.log('SAVE activity', activity);
-          activityCrud.save(activity);
+        promises = promises.concat(_.map(diff.toSave.sessions, function(session){
+          session.event = ParseUtils.toPointer('Event', parseEvent);
+          console.log('SAVE session', session);
+          sessionCrud.save(session);
         }));
-        promises = promises.concat(_.map(diff.toDelete.speakers, function(speaker){
-          console.log('DELETE speaker', speaker);
-          speakerCrud.remove(speaker);
+        promises = promises.concat(_.map(diff.toDelete.participants, function(participant){
+          console.log('DELETE participant', participant);
+          participantCrud.remove(participant);
         }));
-        promises = promises.concat(_.map(diff.toDelete.activities, function(activity){
-          console.log('DELETE activity', activity);
-          activityCrud.remove(activity);
+        promises = promises.concat(_.map(diff.toDelete.sessions, function(session){
+          console.log('DELETE session', session);
+          sessionCrud.remove(session);
         }));
         
         return $q.all(promises).then(function(results){
@@ -179,13 +181,13 @@ angular.module('app')
   function _getEventData(eventId){
     return eventCrud.findOne({extId: eventId}).then(function(event){
       return $q.all([
-        event ? speakerCrud.find({event: ParseUtils.toPointer('Event', event)}, '&limit=1000') : $q.when([]),
-        event ? activityCrud.find({event: ParseUtils.toPointer('Event', event)}, '&limit=1000') : $q.when([])
+        event ? participantCrud.find({event: ParseUtils.toPointer('Event', event)}, '&limit=1000') : $q.when([]),
+        event ? sessionCrud.find({event: ParseUtils.toPointer('Event', event)}, '&limit=1000') : $q.when([])
       ]).then(function(results){
         return {
           event: event,
-          speakers: results[0],
-          activities: results[1]
+          participants: results[0],
+          sessions: results[1]
         };
       });
     });
@@ -211,10 +213,10 @@ angular.module('app')
   var service = {
     getEvents: function(){ return _get('data/devoxx/events.json'); },
     getEvent: function(eventId){ return _get('data/devoxx/events.json').then(function(events){ return _.find(events, {extId: eventId}); }); },
-    getSpeakers: function(eventId){ return _get('data/devoxx/speakers.json'); },
-    getActivities: function(eventId){ return _get('data/devoxx/activities.json'); },
-    getSpeakersByIds: function(){ return _get('data/devoxx/missing-speakers.json'); },
-    getActivitiesByIds: function(){ return _get('data/devoxx/missing-activities.json'); }
+    getSessions: function(eventId){ return _get('data/devoxx/sessions.json'); },
+    getParticipants: function(eventId){ return _get('data/devoxx/participants.json'); },
+    getSessionsByIds: function(){ return _get('data/devoxx/missing-sessions.json'); },
+    getParticipantsByIds: function(){ return _get('data/devoxx/missing-participants.json'); }
   };
   
   function getEvents(){
@@ -236,24 +238,8 @@ angular.module('app')
   function getEvent(eventId){
     return _getEvent(baseUrl+'conferences/'+eventId);
   }
-
-  function getSpeakers(eventId){
-    return _get(baseUrl+'conferences/'+eventId+'/speakers').then(function(speakers){
-      if(Array.isArray(speakers)){
-        var filteredSpeakers = _.filter(speakers, function(speaker){
-          return speaker && Array.isArray(speaker.links) && speaker.links.length > 0;
-        });
-        var promises = _.map(filteredSpeakers, function(speaker){
-          return _getSpeaker(speaker.links[0].href);
-        });
-        return $q.all(promises);
-      } else {
-        return [];
-      }
-    });
-  }
   
-  function getActivities(eventId){
+  function getSessions(eventId){
     return _get(baseUrl+'conferences/'+eventId+'/schedules').then(function(schedules){
       if(schedules && Array.isArray(schedules.links)){
         var links = _.filter(schedules.links, function(schedule){
@@ -270,16 +256,32 @@ angular.module('app')
       }
     });
   }
+
+  function getParticipants(eventId){
+    return _get(baseUrl+'conferences/'+eventId+'/speakers').then(function(participants){
+      if(Array.isArray(participants)){
+        var filteredParticipants = _.filter(participants, function(participant){
+          return participant && Array.isArray(participant.links) && participant.links.length > 0;
+        });
+        var promises = _.map(filteredParticipants, function(participant){
+          return _getSpeaker(participant.links[0].href);
+        });
+        return $q.all(promises);
+      } else {
+        return [];
+      }
+    });
+  }
   
-  function getSpeakersByIds(eventId, ids){
+  function getSessionsByIds(eventId, ids){
     return $q.all(_.map(ids, function(id){
-      return _getSpeaker(baseUrl+'conferences/'+eventId+'/speakers/'+id);
+      return _getTalk(baseUrl+'conferences/'+eventId+'/talks/'+id);
     }));
   }
   
-  function getActivitiesByIds(eventId, ids){
+  function getParticipantsByIds(eventId, ids){
     return $q.all(_.map(ids, function(id){
-      return _getTalk(baseUrl+'conferences/'+eventId+'/talks/'+id);
+      return _getSpeaker(baseUrl+'conferences/'+eventId+'/speakers/'+id);
     }));
   }
   
@@ -287,7 +289,7 @@ angular.module('app')
     return _get(url).then(function(event){
       return {
         extId: event.eventCode,
-        name: _cleanStr(event.label),
+        name: _cleanStr(event.label ? event.label.split(',')[0] : event.eventCode),
         address: _cleanStr(event.localisation),
         soureUrl: url
       };
@@ -295,16 +297,17 @@ angular.module('app')
   }
   
   function _getSpeaker(url){
-    return _get(url).then(function(speaker){
+    return _get(url).then(function(participant){
       return {
-        extId: speaker.uuid,
-        name: _cleanStr(speaker.firstName+' '+speaker.lastName),
-        avatar: speaker.avatarURL,
-        bio: _cleanStr(speaker.bio),
-        company: _cleanStr(speaker.company),
-        site: speaker.blog,
-        twitter: _cleanStr(speaker.twitter),
-        activities: _.map(speaker.acceptedTalks, function(talk){
+        extId: participant.uuid,
+        role: 'speaker',
+        name: _cleanStr(participant.firstName+' '+participant.lastName),
+        avatar: participant.avatarURL,
+        bio: _cleanStr(participant.bio),
+        company: _cleanStr(participant.company),
+        site: participant.blog,
+        twitter: _cleanStr(participant.twitter),
+        sessions: _.map(participant.acceptedTalks, function(talk){
           return {
             extId: talk.id,
             format: _cleanStr(talk.talkType),
@@ -322,7 +325,7 @@ angular.module('app')
       if(schedule && Array.isArray(schedule.slots)){
         return _.filter(_.map(schedule.slots, function(slot){
           if(slot && !slot.notAllocated){
-            var activity = {
+            var session = {
               slotId: slot.slotId,
               room: {
                 extId: slot.roomId,
@@ -333,28 +336,28 @@ angular.module('app')
               to: new Date(slot.toTimeMillis).toISOString()
             };
             if(slot.talk){
-              activity.extId = slot.talk.id;
-              activity.format = _cleanStr(slot.talk.talkType);
-              activity.category = _cleanStr(slot.talk.track);
-              activity.title = _cleanStr(slot.talk.title);
-              activity.abstract = _cleanStr(slot.talk.summary);
-              activity.lang = _cleanStr(slot.talk.lang);
-              activity.speakers = _.map(slot.talk.speakers, function(speaker){
-                var urlArray = speaker.link.href.split('/');
+              session.extId = slot.talk.id;
+              session.format = _cleanStr(slot.talk.talkType);
+              session.category = _cleanStr(slot.talk.track);
+              session.title = _cleanStr(slot.talk.title);
+              session.abstract = _cleanStr(slot.talk.summary);
+              session.lang = _cleanStr(slot.talk.lang);
+              session.participants = _.map(slot.talk.speakers, function(participant){
+                var urlArray = participant.link.href.split('/');
                 return {
                   extId: urlArray[urlArray.length-1],
-                  name: _cleanStr(speaker.name)
+                  name: _cleanStr(participant.name)
                 };
               });
             } else if(slot.break){
-              activity.extId = slot.slotId;
-              activity.format = 'break';
-              activity.category = 'break';
-              activity.title = _cleanStr(slot.break.nameFR ? slot.break.nameFR : slot.break.nameEN);
+              session.extId = slot.slotId;
+              session.format = 'break';
+              session.category = 'break';
+              session.title = _cleanStr(slot.break.nameFR ? slot.break.nameFR : slot.break.nameEN);
             }
             
-            if(activity.extId){
-              return activity;
+            if(session.extId){
+              return session;
             }
           }
         }));
@@ -364,25 +367,25 @@ angular.module('app')
     });
   }
   
-  // used for speaker talk not referenced in schedule
+  // used for a participant session not referenced in schedule
   // I noticed it's generally a 'Autres formats de conférence' talkType & it has no schedule or room...
   function _getTalk(url){
     return _get(url).then(function(talk){
-      var activity = {};
-      activity.extId = talk.id;
-      activity.format = _cleanStr(talk.talkType);
-      activity.category = _cleanStr(talk.track);
-      activity.title = _cleanStr(talk.title);
-      activity.abstract = _cleanStr(talk.summary);
-      activity.lang = _cleanStr(talk.lang);
-      activity.speakers = _.map(talk.speakers, function(speaker){
-        var urlArray = speaker.link.href.split('/');
+      var session = {};
+      session.extId = talk.id;
+      session.format = _cleanStr(talk.talkType);
+      session.category = _cleanStr(talk.track);
+      session.title = _cleanStr(talk.title);
+      session.abstract = _cleanStr(talk.summary);
+      session.lang = _cleanStr(talk.lang);
+      session.participants = _.map(talk.speakers, function(participant){
+        var urlArray = participant.link.href.split('/');
         return {
           extId: urlArray[urlArray.length-1],
-          name: _cleanStr(speaker.name)
+          name: _cleanStr(participant.name)
         };
       });
-      return activity;
+      return session;
     });
   }
   

@@ -21,8 +21,20 @@ angular.module('app')
   };
 })
 
-.controller('EventCtrl', function($scope){
+.controller('EventCtrl', function($scope, $q, $stateParams, EventSrv, IonicSrv){
   'use strict';
+  var eventId = $stateParams.eventId;
+  var fn = {};
+  $scope.fn = fn;
+
+  // TODO : where to call it and how to update data on other controllers ?
+  fn.refresh = function(){
+    IonicSrv.withLoading($q.all([
+      EventSrv.getEventInfo(eventId, true),
+      EventSrv.getEventSessions(eventId, true),
+      EventSrv.getEventParticipants(eventId, true)
+    ]));
+  };
 })
 
 .controller('EventInfoCtrl', function($scope, $window, event){
@@ -38,7 +50,7 @@ angular.module('app')
   };
 })
 
-.controller('EventActivitiesCtrl', function($scope, $stateParams, EventSrv, IonicSrv, event){
+.controller('EventSessionsCtrl', function($scope, $stateParams, EventSrv, IonicSrv, event){
   'use strict';
   var eventId = $stateParams.eventId;
   var data = {}, fn = {}, ui = {};
@@ -47,18 +59,18 @@ angular.module('app')
   $scope.ui = ui;
 
   data.event = event;
-  EventSrv.getEventActivities(eventId).then(function(activities){
-    data.activities = activities;
-    data.dailyActivities = EventSrv.groupByDay(EventSrv.groupBySlot(activities));
-    data.dayActivities = _.find(data.dailyActivities, {date: Date.parse(moment(new Date()).format('MM/DD/YYYY'))});
-    if(!data.dayActivities){
-      data.dayActivities = data.dailyActivities[0];
+  EventSrv.getEventSessions(eventId).then(function(sessions){
+    data.sessions = sessions;
+    data.dailySessions = EventSrv.groupByDay(EventSrv.groupBySlot(sessions));
+    data.daySessions = _.find(data.dailySessions, {date: Date.parse(moment(new Date()).format('MM/DD/YYYY'))});
+    if(!data.daySessions){
+      data.daySessions = data.dailySessions[0];
     }
-    data.activityValues = EventSrv.getActivityValues(activities);
+    data.sessionValues = EventSrv.getSessionValues(sessions);
   });
 
   fn.setDay = function(index){
-    data.dayActivities = data.dailyActivities[index];
+    data.daySessions = data.dailySessions[index];
   };
   fn.scrollTo = IonicSrv.scrollTo;
 
@@ -68,19 +80,19 @@ angular.module('app')
     });
   });
 
-  EventSrv.getActivityFilterModal($scope).then(function(modal){
+  EventSrv.getSessionFilterModal($scope).then(function(modal){
     ui.filterModal = modal;
   });
 
-  fn.isFav = function(activity){
-    return EventSrv.isActivityFav(data.userData, activity);
+  fn.isFav = function(session){
+    return EventSrv.isSessionFav(data.userData, session);
   };
   fn.openFilter = function(){
     ui.filterModal.show();
   };
   fn.closeFilter = function(){
     ui.filterModal.hide();
-    data.activityFilter = angular.copy(data.modalData);
+    data.sessionFilter = angular.copy(data.modalData);
   };
   fn.clearFilter = function(){
     if(data.modalData){
@@ -89,8 +101,8 @@ angular.module('app')
     }
   };
   fn.isFiltered = function(){
-    if(data.activityFilter){
-      return hasValue(data.activityFilter.search) || hasValue(data.activityFilter.filter);
+    if(data.sessionFilter){
+      return hasValue(data.sessionFilter.search) || hasValue(data.sessionFilter.filter);
     }
     return false;
   };
@@ -113,16 +125,16 @@ angular.module('app')
   });
 })
 
-.controller('EventActivityCtrl', function($scope, $stateParams, EventSrv, activity, userData){
+.controller('EventSessionCtrl', function($scope, $stateParams, EventSrv, session, userData){
   'use strict';
   var eventId = $stateParams.eventId;
-  var activityId = $stateParams.activityId;
+  var sessionId = $stateParams.sessionId;
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
   data.eventId = eventId;
-  data.activity = activity;
+  data.session = session;
   data.userData = userData;
   $scope.$on('$ionicView.enter', function(){
     EventSrv.getEventUserData(eventId).then(function(userData){
@@ -130,18 +142,18 @@ angular.module('app')
     });
   });
 
-  fn.isFav = function(activity){
-    return EventSrv.isActivityFav(data.userData, activity);
+  fn.isFav = function(session){
+    return EventSrv.isSessionFav(data.userData, session);
   };
-  fn.toggleFav = function(activity){
-    var action = fn.isFav(activity) ? EventSrv.removeActivityFromFav : EventSrv.addActivityToFav;
-    action(eventId, activity).then(function(userData){
+  fn.toggleFav = function(session){
+    var action = fn.isFav(session) ? EventSrv.removeSessionFromFav : EventSrv.addSessionToFav;
+    action(eventId, session).then(function(userData){
       data.userData = userData;
     });
   };
 })
 
-.controller('EventSpeakersCtrl', function($scope, $stateParams, EventSrv, event){
+.controller('EventParticipantsCtrl', function($scope, $stateParams, EventSrv, event){
   'use strict';
   var eventId = $stateParams.eventId;
   var data = {}, fn = {};
@@ -149,53 +161,53 @@ angular.module('app')
   $scope.fn = fn;
 
   data.event = event;
-  EventSrv.getEventSpeakers(eventId).then(function(speakers){
-    data.speakers = speakers;
+  EventSrv.getEventParticipants(eventId).then(function(participants){
+    data.participants = participants;
   });
 })
 
-.controller('EventSpeakerCtrl', function($scope, $stateParams, speaker){
+.controller('EventParticipantCtrl', function($scope, $stateParams, participant){
   'use strict';
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
   data.eventId = $stateParams.eventId;
-  data.speaker = speaker;
+  data.participant = participant;
 })
 
 .controller('EventProgramCtrl', function($scope, $stateParams, $ionicModal, EventSrv, event){
   'use strict';
   var eventId = $stateParams.eventId;
-  var activities = [];
+  var sessions = [];
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
   data.event = event;
-  EventSrv.getEventActivities(eventId).then(function(allActivities){
-    activities = _.filter(allActivities, function (activity){
-      return activity.format !== 'break';
+  EventSrv.getEventSessions(eventId).then(function(allSessions){
+    sessions = _.filter(allSessions, function(session){
+      return session.format !== 'break';
     });
-    EventSrv.buildChooseActivityModal(eventId, activities).then(function(scope){
-      fn.chooseActivity = scope.fn.initModal;
+    EventSrv.buildChooseSessionModal(eventId, sessions).then(function(scope){
+      fn.chooseSession = scope.fn.initModal;
     });
-    data.groupedActivities = EventSrv.groupBySlot(activities);
-    _.map(data.groupedActivities, function(group){
-      group.activities = [];
+    data.groupedSessions = EventSrv.groupBySlot(sessions);
+    _.map(data.groupedSessions, function(group){
+      group.sessions = [];
     });
-    setProgramActivities();
+    setProgramSessions();
   });
 
   $scope.$on('$ionicView.enter', function(){
-    setProgramActivities();
+    setProgramSessions();
   });
 
-  function setProgramActivities(){
+  function setProgramSessions(){
     EventSrv.getEventUserData(eventId).then(function(userData){
-      _.map(data.groupedActivities, function(group){
-        group.activities = _.filter(activities, function(activity){
-          return EventSrv.isActivityFav(userData, activity) && group.from === activity.from && group.to === activity.to;
+      _.map(data.groupedSessions, function(group){
+        group.sessions = _.filter(sessions, function(session){
+          return EventSrv.isSessionFav(userData, session) && group.from === session.from && group.to === session.to;
         });
       });
     });

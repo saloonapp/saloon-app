@@ -1,6 +1,6 @@
 angular.module('app')
 
-.filter('activityFilter', function($filter){
+.filter('sessionFilter', function($filter){
   'use strict';
   
   function isMatch(item, filter){
