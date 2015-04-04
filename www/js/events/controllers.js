@@ -37,17 +37,41 @@ angular.module('app')
   };
 })
 
-.controller('EventInfoCtrl', function($scope, $window, event){
+.controller('EventInfoCtrl', function($scope, $window, $interval, event){
   'use strict';
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
 
   data.event = event;
+  data.countDown = remainingTime(event.from);
 
   fn.mapUrl = function(adress){
-    return 'https://maps.googleapis.com/maps/api/staticmap?markers=color:red%7C'+adress+'&zoom=15&size='+($window.innerWidth-20)+'x300';
+    return 'https://maps.googleapis.com/maps/api/staticmap?markers=color:red%7C'+adress+'&zoom=15&size='+($window.innerWidth-20)+'x250';
   };
+
+  var countDownInterval = null;
+  $scope.$on('$ionicView.enter', function(){
+    if(countDownInterval !== null){ $interval.cancel(countDownInterval); }
+    countDownInterval = $interval(function(){
+      data.countDown = remainingTime(event.from);
+    }, 1000);
+  });
+  $scope.$on('$ionicView.leave', function(){
+    if(countDownInterval !== null){
+      $interval.cancel(countDownInterval);
+      countDownInterval = null;
+    }
+  });
+
+  function remainingTime(toDate){
+    var duration = (new Date(toDate)).getTime() - Date.now();
+    if(duration > 0){
+      return moment.duration(duration).format('Y [années], M [mois], W [semaines], D [jours], hh [heures], mm [minutes] et ss [secondes]');
+    } else {
+      return '';
+    }
+  }
 })
 
 .controller('EventSessionsCtrl', function($scope, $stateParams, EventSrv, IonicSrv, event){
