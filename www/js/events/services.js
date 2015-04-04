@@ -228,19 +228,21 @@ angular.module('app')
       modalScope.modal.show();
     };
     modalScope.fn.validSessions = function(){
+      var toAdd = [], toRemove = [];
       _.map(modalScope.data.sessions, function(session){
         if(_.find(modalScope.data.group.sessions, {objectId: session.objectId})){
           if(!session.checked){
             _.remove(modalScope.data.group.sessions, {objectId: session.objectId});
-            removeSessionFromFav(eventId, session);
+            toRemove.push(session);
           }
         } else {
           if(session.checked){
             modalScope.data.group.sessions.push(session);
-            addSessionToFav(eventId, session);
+            toAdd.push(session);
           }
         }
       });
+      _updateFavSessions(eventId, toAdd, toRemove);
       modalScope.modal.hide();
     };
 
@@ -250,6 +252,24 @@ angular.module('app')
     }).then(function(modal){
       modalScope.modal = modal;
       return modalScope;
+    });
+  }
+
+  function _updateFavSessions(eventId, toAdd, toRemove){
+    return getEventUserData(eventId).then(function(userData){
+      if(!userData){ userData = {}; }
+      if(!userData.sessionFavs){ userData.sessionFavs = []; }
+      // TODO : update sessions fav counter
+      for(var i in toAdd){
+        if(userData.sessionFavs.indexOf(toAdd[i].objectId) === -1){
+          userData.sessionFavs.push(toAdd[i].objectId);
+        }
+      }
+      for(var i in toRemove){
+        var index = userData.sessionFavs.indexOf(toRemove[i].objectId);
+        if(index > -1){ userData.sessionFavs.splice(index, 1); }
+      }
+      return _setEventUserData(eventId, userData);
     });
   }
 
