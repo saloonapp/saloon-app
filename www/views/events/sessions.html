@@ -25,10 +25,11 @@
       <div ng-class="group.from" ng-repeat="group in data.daySessions.slots">
         <div class="item item-divider" ng-show="filtered.length > 0"><span class="pull-right">{{group.sessions.length}}</span>{{group.name}}</div>
         <div class="item item-icon-right" ng-class="{fav: fn.isFav(session)}"
-             ng-repeat="session in filtered = (group.sessions | sessionFilter:data.sessionFilter)"
+             ng-repeat="session in filtered = (group.sessions | sessionFilter:data.sessionFilter | orderBy:fn.getFavs:true)"
              ui-sref="app.event.session({eventId: data.event.objectId, sessionId: session.extId})">
           <h2>{{session.title}}</h2>
           <p>
+            <span class="fav-counter" ng-show="session.favs > 0">{{session.favs}} <i class="icon ion-star"></i></span>
             <span class="assertive" ng-show="session.format">{{session.format}}</span>
             <span ng-show="session.room && session.room.name">@{{session.room.name}}</span>
             <span class="calm" ng-show="session.participants" ng-repeat="participant in session.participants">{{participant.name}}<span ng-if="!$last">, </span></span>

@@ -5,12 +5,13 @@
   </ion-header-bar>
   <ion-content delegate-handle="modalChooseSessionContent">
     <div class="list">
-      <label class="item item-radio" ng-repeat="session in data.sessions">
+      <label class="item item-radio" ng-repeat="session in (data.sessions | orderBy:fn.getFavs:true)">
         <input type="checkbox" name="group" ng-model="session.checked">
         <div class="item-content">
           <h2 class="multiline">{{session.title}}</h2>
           <p class="multiline l4">{{session.abstract}}</p>
           <p>
+            <span class="fav-counter" ng-show="session.favs > 0">{{session.favs}} <i class="icon ion-star"></i></span>
             <span class="assertive" ng-show="session.format">{{session.format}}</span>
             <span ng-show="session.room && session.room.name">@{{session.room.name}}</span>
             <span class="calm" ng-show="session.participants" ng-repeat="participant in session.participants">{{participant.name}}<span ng-if="!$last">, </span></span>

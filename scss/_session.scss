@@ -1,6 +1,19 @@
 .list-session {
   .item.fav {
-    background: #FFF59D;
+    background: #fff9c2;
+  }
+  .fav-counter {
+    padding-right: 5px;
+    .icon {
+      position: static;
+      display: inline;
+      font-size: 14px;
+      color: $energized;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      &:before {
+        display: inline;
+      }
+}
   }
 }
 

@@ -29,12 +29,26 @@ angular.module('app')
 
   // TODO : where to call it and how to update data on other controllers ?
   fn.refresh = function(){
-    IonicSrv.withLoading($q.all([
+    IonicSrv.withLoading(refresh());
+  };
+
+  function refresh(){
+    return $q.all([
       EventSrv.getEventInfo(eventId, true),
       EventSrv.getEventSessions(eventId, true),
       EventSrv.getEventParticipants(eventId, true)
-    ]));
-  };
+    ]);
+  }
+
+  var lastRefresh = null;
+  $scope.$on('$ionicView.enter', function(){
+    console.log('EventCtrl enter');
+    if(lastRefresh === null || Date.now()-lastRefresh > 60*1000){
+      console.log('refresh !');
+      refresh();
+      lastRefresh = Date.now();
+    }
+  });
 })
 
 .controller('EventInfoCtrl', function($scope, $window, $interval, event){
@@ -83,21 +97,22 @@ angular.module('app')
   $scope.ui = ui;
 
   data.event = event;
-  EventSrv.getEventSessions(eventId).then(function(sessions){
-    data.sessions = sessions;
-    data.dailySessions = EventSrv.groupByDay(EventSrv.groupBySlot(sessions));
-    data.daySessions = _.find(data.dailySessions, {date: Date.parse(moment(new Date()).format('MM/DD/YYYY'))});
-    if(!data.daySessions){
-      data.daySessions = data.dailySessions[0];
-    }
-    data.sessionValues = EventSrv.getSessionValues(sessions);
-  });
 
   fn.scrollTo = IonicSrv.scrollTo;
+  fn.getFavs = function(session){ return session.favs ? session.favs : 0; }
 
   $scope.$on('$ionicView.enter', function(){
     EventSrv.getEventUserData(eventId).then(function(userData){
       data.userData = userData;
+    });
+    EventSrv.getEventSessions(eventId).then(function(sessions){
+      data.sessions = sessions;
+      data.dailySessions = EventSrv.groupByDay(EventSrv.groupBySlot(sessions));
+      data.daySessions = _.find(data.dailySessions, {date: Date.parse(moment(new Date()).format('MM/DD/YYYY'))});
+      if(!data.daySessions){
+        data.daySessions = data.dailySessions[0];
+      }
+      data.sessionValues = EventSrv.getSessionValues(sessions);
     });
   });
 
@@ -206,40 +221,38 @@ angular.module('app')
   $scope.fn = fn;
 
   data.event = event;
-  EventSrv.getEventSessions(eventId).then(function(allSessions){
-    sessions = _.filter(allSessions, function(session){
-      return session.format !== 'break';
-    });
-    EventSrv.buildChooseSessionModal(eventId, sessions).then(function(scope){
-      fn.chooseSession = scope.fn.openModal;
-    });
-
-    data.dailySessions = EventSrv.groupByDay(EventSrv.groupBySlot(sessions));
-    _.map(data.dailySessions, function(daySessions){
-      _.map(daySessions.slots, function(group){
-        group.sessions = [];
-      });
-    });
-    data.daySessions = _.find(data.dailySessions, {date: Date.parse(moment(new Date()).format('MM/DD/YYYY'))});
-    if(!data.daySessions){
-      data.daySessions = data.dailySessions[0];
-    }
-
-    setProgramSessions();
-  });
-
   fn.scrollTo = IonicSrv.scrollTo;
 
   $scope.$on('$ionicView.enter', function(){
-    setProgramSessions();
+    loadData();
   });
 
-  function setProgramSessions(){
-    EventSrv.getEventUserData(eventId).then(function(userData){
+  function loadData(){
+    EventSrv.getEventSessions(eventId).then(function(allSessions){
+      sessions = _.filter(allSessions, function(session){
+        return session.format !== 'break';
+      });
+      EventSrv.buildChooseSessionModal(eventId, sessions).then(function(scope){
+        fn.chooseSession = scope.fn.openModal;
+      });
+
+      data.dailySessions = EventSrv.groupByDay(EventSrv.groupBySlot(sessions));
       _.map(data.dailySessions, function(daySessions){
         _.map(daySessions.slots, function(group){
-          group.sessions = _.filter(sessions, function(session){
-            return EventSrv.isSessionFav(userData, session) && group.from === session.from && group.to === session.to;
+          group.sessions = [];
+        });
+      });
+      data.daySessions = _.find(data.dailySessions, {date: Date.parse(moment(new Date()).format('MM/DD/YYYY'))});
+      if(!data.daySessions){
+        data.daySessions = data.dailySessions[0];
+      }
+
+      EventSrv.getEventUserData(eventId).then(function(userData){
+        _.map(data.dailySessions, function(daySessions){
+          _.map(daySessions.slots, function(group){
+            group.sessions = _.filter(sessions, function(session){
+              return EventSrv.isSessionFav(userData, session) && group.from === session.from && group.to === session.to;
+            });
           });
         });
       });

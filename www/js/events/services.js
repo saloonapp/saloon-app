@@ -205,11 +205,20 @@ angular.module('app')
   }
 
   function addSessionToFav(eventId, session){
-    // TODO : increment session fav counter (https://parse.com/docs/rest#objects-updating)
     return getEventUserData(eventId).then(function(userData){
       if(userData.sessionFavs.indexOf(session.objectId) === -1){
         userData.sessionFavs.push(session.objectId);
         _scheduleSessionNotification(session);
+        sessionCrud.savePartial(session, {
+          favs: {__op: 'Increment', amount: 1}
+        });
+        getEventSessions(eventId).then(function(sessions){
+          var s = _.find(sessions, {objectId: session.objectId});
+          if(s){
+            s.favs++;
+            StorageUtils.set(storageKey+'-'+eventId+'-sessions', sessions);
+          }
+        });
         return _setEventUserData(eventId, userData);
       } else {
         return userData;
@@ -218,17 +227,77 @@ angular.module('app')
   }
 
   function removeSessionFromFav(eventId, session){
-    // TODO : decrement session fav counter
     return getEventUserData(eventId).then(function(userData){
       var index = userData.sessionFavs.indexOf(session.objectId);
       if(index > -1){
         userData.sessionFavs.splice(index, 1);
         _cancelSessionNotification(session);
+        sessionCrud.savePartial(session, {
+          favs: {__op: 'Increment', amount: -1}
+        });
+        getEventSessions(eventId).then(function(sessions){
+          var s = _.find(sessions, {objectId: session.objectId});
+          if(s){
+            s.favs--;
+            StorageUtils.set(storageKey+'-'+eventId+'-sessions', sessions);
+          }
+        });
         return _setEventUserData(eventId, userData);
       } else {
         return userData;
       }
     });
+  }
+
+  function _updateFavSessions(eventId, toAdd, toRemove){
+    return getEventUserData(eventId).then(function(userData){
+      if(!userData){ userData = {}; }
+      if(!userData.sessionFavs){ userData.sessionFavs = []; }
+      for(var i in toAdd){
+        if(userData.sessionFavs.indexOf(toAdd[i].objectId) === -1){
+          userData.sessionFavs.push(toAdd[i].objectId);
+          _scheduleSessionNotification(toAdd[i]);
+          sessionCrud.savePartial(toAdd[i], {
+            favs: {__op: 'Increment', amount: 1}
+          });
+        }
+      }
+      for(var i in toRemove){
+        var index = userData.sessionFavs.indexOf(toRemove[i].objectId);
+        if(index > -1){
+          userData.sessionFavs.splice(index, 1);
+          _cancelSessionNotification(toRemove[i]);
+          sessionCrud.savePartial(toRemove[i], {
+            favs: {__op: 'Increment', amount: -1}
+          });
+        }
+      }
+      getEventSessions(eventId).then(function(sessions){
+        for(var i in toAdd){
+          var s = _.find(sessions, {objectId: toAdd[i].objectId});
+          if(s){ s.favs++; }
+        }
+        for(var i in toRemove){
+          var s = _.find(sessions, {objectId: toRemove[i].objectId});
+          if(s){ s.favs--; }
+        }
+        StorageUtils.set(storageKey+'-'+eventId+'-sessions', sessions);
+      });
+      return _setEventUserData(eventId, userData);
+    });
+  }
+
+  function _scheduleSessionNotification(session){
+    LocalNotificationPlugin.schedule({
+      id: session.objectId,
+      title: 'Dans 10min, '+session.room.name,
+      text: '['+session.format+'] '+session.title,
+      at: new Date((new Date(session.from)).getTime() - (10 * 60 * 1000))
+    });
+  }
+
+  function _cancelSessionNotification(session){
+    LocalNotificationPlugin.cancel(session.objectId);
   }
 
   function isSessionFav(userData, session){
@@ -249,6 +318,7 @@ angular.module('app')
     var modalScope = $rootScope.$new(true);
     modalScope.data = {};
     modalScope.fn = {};
+    modalScope.fn.getFavs = function(session){ return session.favs ? session.favs : 0; }
     modalScope.fn.openModal = function(group){
       $ionicScrollDelegate.$getByHandle('modalChooseSessionContent').scrollTop(false); // does not work in ionic 1.0.0-rc2 but it should :(
       modalScope.data.group = group;
@@ -288,41 +358,6 @@ angular.module('app')
       modalScope.modal = modal;
       return modalScope;
     });
-  }
-
-  function _updateFavSessions(eventId, toAdd, toRemove){
-    return getEventUserData(eventId).then(function(userData){
-      if(!userData){ userData = {}; }
-      if(!userData.sessionFavs){ userData.sessionFavs = []; }
-      // TODO : update sessions fav counter
-      for(var i in toAdd){
-        if(userData.sessionFavs.indexOf(toAdd[i].objectId) === -1){
-          userData.sessionFavs.push(toAdd[i].objectId);
-          _scheduleSessionNotification(toAdd[i]);
-        }
-      }
-      for(var i in toRemove){
-        var index = userData.sessionFavs.indexOf(toRemove[i].objectId);
-        if(index > -1){
-          userData.sessionFavs.splice(index, 1);
-          _cancelSessionNotification(toRemove[i]);
-        }
-      }
-      return _setEventUserData(eventId, userData);
-    });
-  }
-
-  function _scheduleSessionNotification(session){
-    LocalNotificationPlugin.schedule({
-      id: session.objectId,
-      title: 'Dans 10min, '+session.room.name,
-      text: '['+session.format+'] '+session.title,
-      at: new Date((new Date(session.from)).getTime() - (10 * 60 * 1000))
-    });
-  }
-
-  function _cancelSessionNotification(session){
-    LocalNotificationPlugin.cancel(session.objectId);
   }
 
   function _getLocalOrRemote(key, getRemote, remoteDefault, _fromRemote){
