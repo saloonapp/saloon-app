@@ -435,28 +435,27 @@ angular.module('app')
 })
 
 // for LocalNotification plugin : de.appplant.cordova.plugin.local-notification (https://github.com/katzer/cordova-plugin-local-notifications/)
-.factory('LocalNotificationPlugin', function($window, $q, PluginUtils){
+.factory('LocalNotificationPlugin', function($window, PluginUtils){
   'use strict';
   var pluginName = 'LocalNotification';
-  var pluginTest = function(){ return $window.plugin && $window.plugin.notification && $window.plugin.notification.local; };
+  var pluginTest = function(){ return $window.cordova && $window.cordova.plugins && $window.cordova.plugins.notification && $window.cordova.plugins.notification.local; };
   var service = {
-    add: add,
+    schedule: schedule,
     cancel: cancel
   };
 
-  function add(opts){
+  function schedule(optsOrOptsArray, _onClick){
     return PluginUtils.onReady(pluginName, pluginTest).then(function(){
-      $window.plugin.notification.local.add(opts);
+      $window.cordova.plugins.notification.local.schedule(optsOrOptsArray);
+      if(_onClick){
+        $window.cordova.plugins.notification.local.on('click', _onClick);
+      }
     });
   }
 
-  function cancel(id){
+  function cancel(idOrIdArray){
     return PluginUtils.onReady(pluginName, pluginTest).then(function(){
-      var defer = $q.defer();
-      $window.plugin.notification.local.cancel(id, function(){
-        defer.resolve();
-      });
-      return defer.promise;
+      $window.cordova.plugins.notification.local.cancel(idOrIdArray, function(){});
     });
   }
 

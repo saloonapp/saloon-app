@@ -385,6 +385,7 @@ angular.module('app')
           name: _cleanStr(participant.name)
         };
       });
+      session.soureUrl = url;
       return session;
     });
   }

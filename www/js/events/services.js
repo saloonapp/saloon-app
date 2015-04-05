@@ -51,7 +51,7 @@ angular.module('app')
   return service;
 })
 
-.factory('EventSrv', function($rootScope, $q, $ionicModal, $ionicScrollDelegate, StorageUtils, ParseUtils, Utils){
+.factory('EventSrv', function($rootScope, $q, $ionicModal, $ionicScrollDelegate, StorageUtils, ParseUtils, Utils, LocalNotificationPlugin){
   'use strict';
   var storageKey = 'events';
   var eventCrud = ParseUtils.createCrud('Event');
@@ -190,6 +190,7 @@ angular.module('app')
       if(userData.sessionFavs.indexOf(session.objectId) === -1){
         userData.sessionFavs.push(session.objectId);
       }
+      _scheduleSessionNotification(session);
       return _setEventUserData(eventId, userData);
     });
   }
@@ -203,6 +204,7 @@ angular.module('app')
       if(index > -1){
         userData.sessionFavs.splice(index, 1);
       }
+      _cancelSessionNotification(session);
       return _setEventUserData(eventId, userData);
     });
   }
@@ -274,14 +276,31 @@ angular.module('app')
       for(var i in toAdd){
         if(userData.sessionFavs.indexOf(toAdd[i].objectId) === -1){
           userData.sessionFavs.push(toAdd[i].objectId);
+          _scheduleSessionNotification(toAdd[i]);
         }
       }
       for(var i in toRemove){
         var index = userData.sessionFavs.indexOf(toRemove[i].objectId);
-        if(index > -1){ userData.sessionFavs.splice(index, 1); }
+        if(index > -1){
+          userData.sessionFavs.splice(index, 1);
+          _cancelSessionNotification(toRemove[i]);
+        }
       }
       return _setEventUserData(eventId, userData);
     });
+  }
+
+  function _scheduleSessionNotification(session){
+    LocalNotificationPlugin.schedule({
+      id: session.objectId,
+      title: 'Dans 10min, '+session.room.name,
+      text: '['+session.format+'] '+session.title,
+      at: new Date((new Date(session.from)).getTime() - (10 * 60 * 1000))
+    });
+  }
+
+  function _cancelSessionNotification(session){
+    LocalNotificationPlugin.cancel(session.objectId);
   }
 
   function _getLocalOrRemote(key, getRemote, remoteDefault, _fromRemote){

@@ -131,22 +131,25 @@ ionic.Platform.ready(function(){
 
 
     // for LocalNotification plugin : de.appplant.cordova.plugin.local-notification (https://github.com/katzer/cordova-plugin-local-notifications/)
-    if(!window.plugin){window.plugin = {};}
-    if(!window.plugin.notification){window.plugin.notification = {};}
-    window.plugin.notification.local = (function(){
+    if(!window.cordova){window.cordova = {};}
+    if(!window.cordova.plugins){window.cordova.plugins = {};}
+    if(!window.cordova.plugins.notification){window.cordova.plugins.notification = {};}
+    window.cordova.plugins.notification.local = (function(){
       var notifs = {};
+      // https://github.com/katzer/cordova-plugin-local-notifications/wiki/04.-Scheduling#interface
       var defaults = {
-        message: '',
-        title: '',
-        autoCancel: false,
-        badge: 0,
         id: '0',
-        json: '',
-        repeat: '',
-        icon: 'icon',
-        smallIcon: null,
+        title: '',
+        text: '',
+        every: 0,
+        at: new Date(),
+        badge: 0,
+        sound: 'res://platform_default',
+        data: null,
+        icon: 'res://icon',
+        smallIcon: 'res://ic_popup_reminder',
         ongoing: false,
-        sound: 'TYPE_NOTIFICATION'
+        led: 'FFFFFF'
       };
 
       function withDefaults(opts){
@@ -160,10 +163,13 @@ ionic.Platform.ready(function(){
       var ret = {
         hasPermission: function(callback, scope){if(callback){callback(true);}},
         registerPermission: function(callback, scope){if(callback){callback(true);}},
-        add: function(opts, callback, scope){
-          var params = withDefaults(opts);
-          if(ret.onadd){ret.onadd(params.id, 'foreground', params.json);}
-          notifs[params.id] = params;
+        schedule: function(opts, callback, scope){
+          if(!Array.isArray(opts)){ opts = [opts]; }
+          for(var i in opts){
+            var params = withDefaults(opts[i]);
+            if(ret.onadd){ret.onadd(params.id, 'foreground', params.json);}
+            notifs[params.id] = params;
+          }
           if(callback){callback();}
         },
         cancel: function(id, callback, scope){
@@ -178,6 +184,7 @@ ionic.Platform.ready(function(){
           }
           if(callback){callback();}
         },
+        on: function(event, callback){}, // TODO
         isScheduled: function(id, callback, scope){
           if(callback){callback(!!notifs[id]);}
         },
