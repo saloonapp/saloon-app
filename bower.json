@@ -6,7 +6,7 @@
   "authors": [
     "Loïc Knuchel <loicknuchel@gmail.com>"
   ],
-  "description": "Discutez avec le bonnes personnes autours de vous !",
+  "description": "Discutez avec le bonnes personnes autour de vous !",
   "main": "www/index.html",
   "keywords": [
     "html5",

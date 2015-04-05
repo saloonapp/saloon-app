@@ -32,8 +32,7 @@
       </div>
       <label for="agreement">
         <input type="checkbox" id="agreement" ng-model="agreement">
-        Cette application est en cours de développement et a pour objectif de permettre des rencontres en direct ciblées.
-        <b>Les données peuvent être effacées à n'importe quel moment !</b>
+        Cette application est en béta. Merci d'être compréhensif et de nous aider à l'améliorer en nous indiquant les éventuels problèmes rencontrés. Les soutiens, partages et idées de fonctionnélités sont aussi les bienvenus ;)
       </label>
       <div class="alert alert-danger card padding" ng-if="data.error !== null" ng-click="data.error=null;"><strong>Oups !</strong> {{data.error}}</div>
       <button type="submit" class="button button-block button-positive" ng-disabled="!agreement || !fn.canSubmit()">Et voilà !</button>

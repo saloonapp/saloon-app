@@ -1,7 +1,7 @@
 {
   "name": "saloon",
   "version": "0.0.1",
-  "description": "Discutez avec le bonnes personnes autours de vous !",
+  "description": "Discutez avec les bonnes personnes autour de vous !",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^0.7.1",
