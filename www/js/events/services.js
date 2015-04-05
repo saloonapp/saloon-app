@@ -51,12 +51,13 @@ angular.module('app')
   return service;
 })
 
-.factory('EventSrv', function($rootScope, $q, $ionicModal, $ionicScrollDelegate, StorageUtils, ParseUtils, Utils, LocalNotificationPlugin){
+.factory('EventSrv', function($rootScope, $q, $ionicModal, $ionicScrollDelegate, UserSrv, StorageUtils, ParseUtils, Utils, LocalNotificationPlugin){
   'use strict';
   var storageKey = 'events';
   var eventCrud = ParseUtils.createCrud('Event');
   var participantCrud = ParseUtils.createCrud('EventParticipant');
   var sessionCrud = ParseUtils.createCrud('EventSession');
+  var userDataCrud = ParseUtils.createCrud('EventUserData');
   var service = {
     getEvents: getEvents,
     getEventInfo: getEventInfo,
@@ -168,15 +169,36 @@ angular.module('app')
     return _valueLists(['format', 'category', 'room'], sessions);
   }
 
-  function getEventUserData(eventId){
+  function getEventUserData(eventId, _fromRemote){
     var key = storageKey+'-'+eventId+'-userData';
     return StorageUtils.get(key).then(function(data){
-      return data;
+      if(data && !_fromRemote){
+        return data;
+      } else {
+        return UserSrv.getCurrent().then(function(user){
+          return userDataCrud.findOne({
+            event: ParseUtils.toPointer('Event', eventId),
+            user: ParseUtils.toPointer('_User', user)
+          }).then(function(data){
+            if(!data){
+              data = {
+                event: ParseUtils.toPointer('Event', eventId),
+                user: ParseUtils.toPointer('_User', user),
+                sessionFavs: []
+              };
+            }
+            return _setEventUserData(eventId, data);
+          });
+        });
+      }
     });
   }
 
   function _setEventUserData(eventId, userData){
     var key = storageKey+'-'+eventId+'-userData';
+    Utils.debounce('_setEventUserData', function(){
+      userDataCrud.save(userData);
+    }, 20000);
     return StorageUtils.set(key, userData).then(function(){
       return userData;
     });
@@ -185,27 +207,27 @@ angular.module('app')
   function addSessionToFav(eventId, session){
     // TODO : increment session fav counter (https://parse.com/docs/rest#objects-updating)
     return getEventUserData(eventId).then(function(userData){
-      if(!userData){ userData = {}; }
-      if(!userData.sessionFavs){ userData.sessionFavs = []; }
       if(userData.sessionFavs.indexOf(session.objectId) === -1){
         userData.sessionFavs.push(session.objectId);
+        _scheduleSessionNotification(session);
+        return _setEventUserData(eventId, userData);
+      } else {
+        return userData;
       }
-      _scheduleSessionNotification(session);
-      return _setEventUserData(eventId, userData);
     });
   }
 
   function removeSessionFromFav(eventId, session){
     // TODO : decrement session fav counter
     return getEventUserData(eventId).then(function(userData){
-      if(!userData){ userData = {}; }
-      if(!userData.sessionFavs){ userData.sessionFavs = []; }
       var index = userData.sessionFavs.indexOf(session.objectId);
       if(index > -1){
         userData.sessionFavs.splice(index, 1);
+        _cancelSessionNotification(session);
+        return _setEventUserData(eventId, userData);
+      } else {
+        return userData;
       }
-      _cancelSessionNotification(session);
-      return _setEventUserData(eventId, userData);
     });
   }
 
