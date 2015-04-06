@@ -211,12 +211,12 @@ angular.module('app')
   'use strict';
   var baseUrl = 'http://cfp.devoxx.fr/api/';
   var service = {
-    getEvents: function(){ return _get('data/devoxx/events.json'); },
-    getEvent: function(eventId){ return _get('data/devoxx/events.json').then(function(events){ return _.find(events, {extId: eventId}); }); },
-    getSessions: function(eventId){ return _get('data/devoxx/sessions.json'); },
-    getParticipants: function(eventId){ return _get('data/devoxx/participants.json'); },
-    getSessionsByIds: function(){ return _get('data/devoxx/missing-sessions.json'); },
-    getParticipantsByIds: function(){ return _get('data/devoxx/missing-participants.json'); }
+    getEvents: getEvents,//function(){ return _get('data/devoxx/events.json'); },
+    getEvent: getEvent,//function(eventId){ return _get('data/devoxx/events.json').then(function(events){ return _.find(events, {extId: eventId}); }); },
+    getSessions: getSessions,//function(eventId){ return _get('data/devoxx/sessions.json'); },
+    getParticipants: getParticipants,//function(eventId){ return _get('data/devoxx/participants.json'); },
+    getSessionsByIds: getSessionsByIds,//function(){ return _get('data/devoxx/missing-sessions.json'); },
+    getParticipantsByIds: getParticipantsByIds//function(){ return _get('data/devoxx/missing-participants.json'); }
   };
   
   function getEvents(){

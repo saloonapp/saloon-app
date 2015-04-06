@@ -5,7 +5,6 @@ angular.module('app')
 
 .controller('EventsCtrl', function($scope, EventSrv, events){
   'use strict';
-  // ParseEventLoader.loadDevoxxEvent('DevoxxFR2015');
   var data = {}, fn = {};
   $scope.data = data;
   $scope.fn = fn;
