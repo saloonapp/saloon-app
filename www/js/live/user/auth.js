@@ -20,7 +20,6 @@ angular.module('app')
 
   function getAuthData(provider, id){
     return authCrud.findOne({provider: provider, id: id}).then(function(res){
-      console.log('authData', res);
       if(res && res.data){
         return res.data;
       }
@@ -39,26 +38,30 @@ angular.module('app')
   return service;
 })
 
-.factory('LinkedinSrv', function($http, $q, $cordovaOauth, LocalStorageUtils, Config){
+.factory('LinkedinSrv', function($http, $q, $cordovaOauth, ParseUtils, LocalStorageUtils, Config){
   'use strict';
   // http://ngcordova.com/docs/plugins/oauth/
   // https://developer.linkedin.com/docs/oauth2
   // https://developer.linkedin.com/docs/fields
+  // https://developer-programs.linkedin.com/rest
   var provider = 'linkedin';
   var storageKey = provider+'-token';
   var baseUrl = 'https://api.linkedin.com/v1';
-  var defaultScope = ['r_basicprofile', 'r_emailaddress'];
-  var defaultFields = ['id', 'first-name', 'last-name', 'email-address', 'picture-url', 'headline', 'location', 'num-connections', 'summary', 'specialties', 'positions', 'api-standard-profile-request', 'public-profile-url'];
+  var defaultScope = ['r_basicprofile', 'r_emailaddress', 'r_fullprofile', 'r_network'];
+  var defaultBasicProfileFields = ['id', 'first-name', 'last-name', 'email-address', 'picture-url', 'headline', 'location', 'num-connections', 'summary', 'specialties', 'positions', 'api-standard-profile-request', 'public-profile-url'];
+  var defaultFullProfileFields = ['last-modified-timestamp', 'proposal-comments', 'interests', 'skills', 'certifications', 'educations', 'courses', 'three-current-positions', 'three-past-positions', 'num-recommenders', 'recommendations-received', 'following', 'job-bookmarks', 'suggestions', 'date-of-birth', 'member-url-resources', 'related-profile-views', 'honors-awards'];
+  var defaultFields = defaultBasicProfileFields.concat(defaultFullProfileFields);
+  var linkedinCrud = ParseUtils.createCrud('LinkedinProfile');
   var service = {
     provider: provider,
     token: LocalStorageUtils.getSync(storageKey),
     login: login,
-    getProfile: getProfile
+    saveProfile: saveProfile
   };
 
   function login(_scope){
     if(service.token){
-      return getProfile();
+      return getLinkedinData();
     } else {
       return $cordovaOauth.linkedin(Config.linkedin.clientId, Config.linkedin.clientSecret, _scope ? _scope : defaultScope, Config.linkedin.state).then(function(res){
         service.token = {
@@ -66,13 +69,38 @@ angular.module('app')
           expire: Date.now()+(res.expires_in*1000)
         };
         LocalStorageUtils.set(storageKey, service.token);
-        return getProfile();
+        return getLinkedinData();
       });
     }
   }
 
-  function getProfile(_fields){
-    return _get('/people/~:('+(_fields ? _fields : defaultFields).join(',')+')');
+  function saveProfile(profile){
+    return linkedinCrud.findOne({
+      id: profile.id
+    }).then(function(remoteProfile){
+      if(remoteProfile){
+        profile.objectId = remoteProfile.objectId;
+      }
+      return linkedinCrud.save(profile);
+    });
+  }
+
+  function getLinkedinData(){
+    // TODO : can't save connections to Parse, too much data :(
+    /*return $q.all([getProfile(), getConnections()]).then(function(results){
+      var profile = results[0];
+      profile.connections = results[1];
+      return profile;
+    });*/
+    return getProfile();
+  }
+
+  function getProfile(){
+    return _get('/people/~:('+defaultFields.join(',')+')');
+  }
+
+  function getConnections(){
+    return _get('/people/~/connections');
   }
 
   function _get(url){
@@ -81,10 +109,9 @@ angular.module('app')
         headers: {
           Authorization: 'Bearer '+service.token.value
         }
-      }).then(function(res2){
-        if(res2 && res2.data){
-          res2.data._updated = Date.now();
-          return res2.data;
+      }).then(function(res){
+        if(res && res.data){
+          return res.data;
         }
       });
     } else {

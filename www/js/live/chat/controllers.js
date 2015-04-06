@@ -15,7 +15,6 @@ angular.module('app')
   }
 
   $scope.$on('$ionicView.enter', function(){
-    console.log('view enter');
     loadRooms();
   });
 
@@ -69,7 +68,6 @@ angular.module('app')
 
   $scope.$on('$ionicView.enter', function(){
     PublicMessageSrv.getNearMessagesByRoom(data.roomId).then(function(room){
-      console.log('room', room);
       data.room = room;
     });
     UserSrv.getCurrent().then(function(currentUser){

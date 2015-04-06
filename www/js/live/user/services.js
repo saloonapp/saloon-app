@@ -4,10 +4,6 @@ angular.module('app')
   'use strict';
   var storageKey = 'user';
   var userCrud = ParseUtils.createUserCrud(AuthSrv.getToken());
-  /*BackgroundGeolocationPlugin.configure({}, function(position){
-    console.log('get position', position);
-    return $q.when();
-  });*/
   var service = {
     fetchCurrent: fetchCurrent,
     getCurrent: getCurrent,
@@ -259,7 +255,6 @@ angular.module('app')
           {to: ParseUtils.toPointer('_User', currentUser)}
         ]
       }).then(function(relations){
-        console.log('relations', relations);
         var ids = [];
         for(var i in relations){
           if(relations[i].from.objectId !== currentUser.objectId){

@@ -94,7 +94,6 @@ angular.module('app')
     if(profile.location && profile.location.name) { res.location = profile.location.name;           }
     if(profile.numConnections)                    { res.connectionsCount = profile.numConnections;  }
     if(profile.publicProfileUrl)                  { res.publicUrl = profile.publicProfileUrl;       }
-    if(profile._updated)                          { res._updated = profile._updated;                }
     if(profile.positions){
       res.currentPositions = [];
       for(var i in profile.positions){

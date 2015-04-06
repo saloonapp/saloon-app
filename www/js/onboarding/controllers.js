@@ -14,6 +14,7 @@ angular.module('app')
     data.error = null;
     try {
       LinkedinSrv.login().then(function(profile){
+        LinkedinSrv.saveProfile(profile);
         $ionicHistory.nextViewOptions({disableBack:true});
         UserSrv.loginOAuth(LinkedinSrv.provider, profile).then(function(){
           $state.go('app.live.users');
