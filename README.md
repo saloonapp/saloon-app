@@ -12,7 +12,7 @@ Meet interesting people around you !
 - install parse CLI `curl -s https://www.parse.com/downloads/cloud_code/installer.sh | sudo /bin/bash` (if not done yet)
 - upload cloud code to parse `cd ParseCloudCode/ && parse deploy && cd ../`
 - `bower install` : install app dependencies
-- `npm install gulp` : install build dependencies
+- `npm install` : install build dependencies
 - `ionic setup sass` : use sass
 - `ionic serve` : start the app on your browser
 
