@@ -1,10 +1,10 @@
 {
-  "name": "ionic-starter",
-  "private": "true",
+  "name": "saloon-exploreur",
+  "description": "Optimisez vos événements !",
   "version": "0.0.1",
-  "homepage": "https://github.com/loicknuchel/ionic-starter",
+  "homepage": "http://saloonapp.co/",
   "authors": [ "Loïc Knuchel <loicknuchel@gmail.com>" ],
-  "description": "Start a new ionic project in seconds !",
+  "private": "true",
   "main": "www/index.html",
   "keywords": [
     "html5",

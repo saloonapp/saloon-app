@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="fr.loicknuchel.starter.ionic" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>ionic-starter</name>
-  <description>
-    Start a new ionic project in seconds !
-  </description>
+<widget id="co.saloonapp.eventexplorer.dev" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>dev-Saloon exploreur</name>
+  <description>Optimisez vos événements !</description>
   <author email="loicknuchel@gmail.com" href="http://loic.knuchel.org/">Loïc Knuchel</author>
   <content src="index.html"/>
   <access origin="*"/>
