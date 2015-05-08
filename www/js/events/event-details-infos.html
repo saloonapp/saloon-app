@@ -1,0 +1,23 @@
+<ion-view title="{{vm.event.name}}">
+  <ion-nav-buttons>
+    <button class="button back-button header-item button-clear button-icon ion-ios-arrow-back" ui-sref="app.events"> Evénements</button>
+  </ion-nav-buttons>
+  <ion-content class="padding">
+    <div>
+      <img ng-src="{{vm.event.logo}}" style="margin: 0 10px 10px 0; max-width: 100px; float: left;">
+      {{vm.event.description}}
+      <div class="clearfix"></div>
+    </div>
+    <div>
+      <u>Date</u>: {{vm.event.start | date}}<br>
+      <u>Horaires</u>: {{vm.event.start | time}} - {{vm.event.end | time}}<br>
+      <u>Lieu</u>: {{vm.event.address.name}}<br>
+      <u>Inscription</u>: ???<br>
+    </div>
+    <button class="button button-block button-positive">Gérer ma visite</button>
+    <div>
+      <h2>Sponsors</h2>
+      ...
+    </div>
+  </ion-content>
+</ion-view>

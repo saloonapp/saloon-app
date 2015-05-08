@@ -1,9 +1,33 @@
 (function(){
   'use strict';
   angular.module('app')
-    .controller('EventDetailsCtrl', EventsCtrl);
+    .controller('EventDetailsCtrl', EventDetailsCtrl)
+    .controller('EventDetailsInfosCtrl', EventDetailsInfosCtrl)
+    .controller('EventDetailsExponentsCtrl', EventDetailsExponentsCtrl)
+    .controller('EventDetailsSessionsCtrl', EventDetailsSessionsCtrl);
 
-  function EventsCtrl($scope, event){
+  function EventDetailsCtrl($scope, event){
+    var vm = {};
+    $scope.vm = vm;
+
+    vm.event = event;
+  }
+
+  function EventDetailsInfosCtrl($scope, event){
+    var vm = {};
+    $scope.vm = vm;
+
+    vm.event = event;
+  }
+
+  function EventDetailsExponentsCtrl($scope, event){
+    var vm = {};
+    $scope.vm = vm;
+
+    vm.event = event;
+  }
+
+  function EventDetailsSessionsCtrl($scope, event){
     var vm = {};
     $scope.vm = vm;
 

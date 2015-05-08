@@ -1,5 +1,13 @@
-<ion-view title="{{vm.event.name}}">
-  <ion-content>
-    {{vm.event}}
-  </ion-content>
-</ion-view>
+<ion-tabs class="tabs-color-positive">
+  <ion-tab title="Infos" icon-on="ion-ios-information" icon-off="ion-ios-information-outline" ui-sref="app.event.infos">
+    <ion-nav-view name="infos-tab"></ion-nav-view>
+  </ion-tab>
+
+  <ion-tab title="Exposants" icon-on="ion-ios-people" icon-off="ion-ios-people-outline" ui-sref="app.event.exponents">
+    <ion-nav-view name="exponents-tab"></ion-nav-view>
+  </ion-tab>
+
+  <ion-tab title="Sessions" icon-on="ion-ios-list" icon-off="ion-ios-list-outline" ui-sref="app.event.sessions">
+    <ion-nav-view name="sessions-tab"></ion-nav-view>
+  </ion-tab>
+</ion-tabs>
