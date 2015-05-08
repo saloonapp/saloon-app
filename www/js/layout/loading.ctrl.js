@@ -3,18 +3,25 @@
   angular.module('app')
     .controller('LoadingCtrl', LoadingCtrl);
 
-  function LoadingCtrl($scope, $q, $timeout, $state){
+  LoadingCtrl.$inject = ['$scope', '$state', '$q', 'UserSrv', 'EventSrv'];
+  function LoadingCtrl($scope, $state, $q, UserSrv, EventSrv){
     var vm = {};
     $scope.vm = vm;
 
-    $scope.$on('$ionicView.enter', function(viewInfo){
+    vm.error = undefined;
+    vm.retry = function(){
+      vm.error = undefined;
       redirect();
-    });
+    };
+
+    redirect();
 
     function redirect(){
-      $timeout(function(){
+      $q.all([UserSrv.getUser(), EventSrv.getAll()]).then(function(results){
         $state.go('app.twitts');
-      }, 300);
+      }, function(err){
+        vm.error = err;
+      });
     }
   }
 })();

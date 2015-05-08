@@ -1,7 +1,14 @@
 <ion-view title="Loading..." hide-nav-bar="true">
   <ion-content>
     <div style="text-align: center; margin-top: 200px;">
-      <ion-spinner></ion-spinner>
+      <div ng-if="!vm.error"><ion-spinner></ion-spinner></div>
+      <div ng-if="vm.error">
+        L'application semble avoir du mal à se connecter à internet<span ng-show="vm.error.statusText">{{vm.error.statusText}}</span>.<br>
+        <br>
+        Assurez-vous d'avoir accès au réseau et réessayez.<br>
+        <br>
+        <button class="button button-positive" ng-click="vm.retry()">Réessayer</button>
+      </div>
     </div>
   </ion-content>
 </ion-view>
