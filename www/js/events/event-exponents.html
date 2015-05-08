@@ -1,0 +1,20 @@
+<ion-view title="Exposants">
+  <div class="bar bar-subheader has-tabs-top item-input-inset">
+    <label class="item-input-wrapper">
+      <i class="icon ion-search placeholder-icon"></i>
+      <input type="search" placeholder="Rechercher ..." ng-model="search">
+    </label>
+    <button class="button button-clear" ng-click="search=''">Annuler</button>
+  </div>
+  <ion-content class="has-subheader">
+    <div class="list">
+      <div class="item item-icon-right"
+           ng-repeat="exponent in vm.event.exponents | filter:search"
+           ui-sref="app.event.exponent({exponentId: exponent.uuid})">
+        <h2>{{exponent.name}}</h2>
+        <p>{{exponent.description}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

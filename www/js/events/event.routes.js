@@ -16,13 +16,13 @@
       }
     })
       .state('app.event', {
-      url: '/events/:uuid',
+      url: '/events/:eventId',
       abstract: true,
-      templateUrl: 'js/events/event-details.html',
-      controller: 'EventDetailsCtrl',
+      templateUrl: 'js/events/event.html',
+      controller: 'EventCtrl',
       resolve: {
         event: function($stateParams, EventSrv, IonicUtils){
-          return IonicUtils.withLoading(EventSrv.get($stateParams.uuid));
+          return IonicUtils.withLoading(EventSrv.get($stateParams.eventId));
         }
       }
     })
@@ -30,8 +30,8 @@
       url: '/infos',
       views: {
         'infos-tab': {
-          templateUrl: 'js/events/event-details-infos.html',
-          controller: 'EventDetailsInfosCtrl'
+          templateUrl: 'js/events/event-infos.html',
+          controller: 'EventInfosCtrl'
         }
       }
     })
@@ -39,8 +39,22 @@
       url: '/exponents',
       views: {
         'exponents-tab': {
-          templateUrl: 'js/events/event-details-exponents.html',
-          controller: 'EventDetailsExponentsCtrl'
+          templateUrl: 'js/events/event-exponents.html',
+          controller: 'EventExponentsCtrl'
+        }
+      }
+    })
+      .state('app.event.exponent', {
+      url: '/exponents/:exponentId',
+      views: {
+        'exponents-tab': {
+          templateUrl: 'js/events/event-exponent.html',
+          controller: 'EventExponentCtrl'
+        }
+      },
+      resolve: {
+        exponent: function($stateParams, EventSrv, IonicUtils){
+          return IonicUtils.withLoading(EventSrv.getExponent($stateParams.eventId, $stateParams.exponentId));
         }
       }
     })
@@ -48,8 +62,22 @@
       url: '/sessions',
       views: {
         'sessions-tab': {
-          templateUrl: 'js/events/event-details-sessions.html',
-          controller: 'EventDetailsSessionsCtrl'
+          templateUrl: 'js/events/event-sessions.html',
+          controller: 'EventSessionsCtrl'
+        }
+      }
+    })
+      .state('app.event.session', {
+      url: '/sessions/:sessionId',
+      views: {
+        'sessions-tab': {
+          templateUrl: 'js/events/event-session.html',
+          controller: 'EventSessionCtrl'
+        }
+      },
+      resolve: {
+        session: function($stateParams, EventSrv, IonicUtils){
+          return IonicUtils.withLoading(EventSrv.getSession($stateParams.eventId, $stateParams.sessionId));
         }
       }
     });

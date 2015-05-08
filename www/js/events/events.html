@@ -1,10 +1,10 @@
 <ion-view title="Evénements">
   <ion-content>
     <div class="list">
-      <div class="item item-thumbnail-left item-icon-right" ng-repeat="event in vm.events" ui-sref="app.event.infos({uuid: event.uuid})">
+      <div class="item item-thumbnail-left item-icon-right" ng-repeat="event in vm.events" ui-sref="app.event.infos({eventId: event.uuid})">
         <img ng-src="{{event.logo}}">
         <h2>{{event.name}}</h2>
-        <p>{{event.description}}</p>
+        <p class="multiline l2">{{event.description}}</p>
         <p>{{event.start | date}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
       </div>

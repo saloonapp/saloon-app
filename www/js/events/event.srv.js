@@ -3,12 +3,14 @@
   angular.module('app')
     .factory('EventSrv', EventSrv);
 
-  EventSrv.$inject = ['DataUtils'];
-  function EventSrv(DataUtils){
+  EventSrv.$inject = ['DataUtils', '_'];
+  function EventSrv(DataUtils, _){
     var storageKey = 'events';
     var service = {
       getAll: getAll,
-      get: get
+      get: get,
+      getExponent: getExponent,
+      getSession: getSession
     };
     return service;
 
@@ -18,6 +20,18 @@
 
     function get(eventId){
       return DataUtils.getOrFetch(storageKey+'-'+eventId, '/events/'+eventId+'/full');
+    }
+
+    function getExponent(eventId, exponentId){
+      return get(eventId).then(function(event){
+        return _.find(event.exponents, {uuid: exponentId});
+      });
+    }
+
+    function getSession(eventId, sessionId){
+      return get(eventId).then(function(event){
+        return _.find(event.sessions, {uuid: sessionId});
+      });
     }
   }
 })();
