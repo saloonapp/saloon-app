@@ -3,8 +3,8 @@
   angular.module('app')
     .controller('LoadingCtrl', LoadingCtrl);
 
-  LoadingCtrl.$inject = ['$scope', '$state', '$q', 'UserSrv', 'EventSrv'];
-  function LoadingCtrl($scope, $state, $q, UserSrv, EventSrv){
+  LoadingCtrl.$inject = ['$scope', '$state', '$q', '$ionicHistory', 'UserSrv', 'EventSrv'];
+  function LoadingCtrl($scope, $state, $q, $ionicHistory, UserSrv, EventSrv){
     var vm = {};
     $scope.vm = vm;
 
@@ -18,7 +18,12 @@
 
     function redirect(){
       $q.all([UserSrv.getUser(), EventSrv.getAll()]).then(function(results){
-        $state.go('app.twitts');
+        $ionicHistory.nextViewOptions({
+          disableAnimate: true,
+          disableBack: true,
+          historyRoot: true
+        });
+        $state.go('app.events');
       }, function(err){
         vm.error = err;
       });

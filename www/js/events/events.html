@@ -1,0 +1,9 @@
+<ion-view title="Evénements">
+  <ion-content>
+    <div class="list">
+      <div class="item" ng-repeat="event in vm.events" ui-sref="app.event({uuid: event.uuid})">
+        {{event.name}}
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

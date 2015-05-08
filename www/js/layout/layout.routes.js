@@ -5,16 +5,15 @@
 
   function configure($stateProvider){
     $stateProvider
-      .state('loading', {
-      url: '/loading',
-      templateUrl: 'js/layout/loading.html',
-      controller: 'LoadingCtrl'
-    })
       .state('app', {
       url: '/app',
       abstract: true,
-      templateUrl: 'js/layout/tabs.html',
-      controller: 'TabsCtrl'
+      templateUrl: 'js/layout/layout.html'
+    })
+      .state('app.loading', {
+      url: '/loading',
+      templateUrl: 'js/layout/loading.html',
+      controller: 'LoadingCtrl'
     });
   }
 })();

@@ -6,7 +6,7 @@
 
   configure.$inject = ['$urlRouterProvider', '$provide'];
   function configure($urlRouterProvider, $provide){
-    $urlRouterProvider.otherwise('/loading');
+    $urlRouterProvider.otherwise('/app/loading');
 
     // improve angular logger
     $provide.decorator('$log', ['$delegate', 'customLogger', function($delegate, customLogger){
