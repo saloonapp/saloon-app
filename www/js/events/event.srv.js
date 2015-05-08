@@ -10,7 +10,9 @@
       getAll: getAll,
       get: get,
       getExponent: getExponent,
-      getSession: getSession
+      getSession: getSession,
+      refreshEventList: refreshEventList,
+      refreshEvent: refreshEvent
     };
     return service;
 
@@ -32,6 +34,14 @@
       return get(eventId).then(function(event){
         return _.find(event.sessions, {uuid: sessionId});
       });
+    }
+
+    function refreshEventList(){
+      return DataUtils.refresh(storageKey, '/events/all');
+    }
+
+    function refreshEvent(eventId){
+      return DataUtils.refresh(storageKey, '/events/'+eventId+'/full');
     }
   }
 })();

@@ -1,5 +1,6 @@
 <ion-view title="Evénements">
   <ion-content>
+    <ion-refresher pulling-text="Pull to refresh..." on-refresh="vm.doRefresh()"></ion-refresher>
     <div class="list">
       <div class="item item-thumbnail-left item-icon-right" ng-repeat="event in vm.events" ui-sref="app.event.infos({eventId: event.uuid})">
         <img ng-src="{{event.logo}}">

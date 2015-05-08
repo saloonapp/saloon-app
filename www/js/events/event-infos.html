@@ -1,6 +1,9 @@
 <ion-view title="{{vm.event.name}}">
-  <ion-nav-buttons>
+  <ion-nav-buttons side="left">
     <button class="button back-button header-item button-clear button-icon ion-ios-arrow-back" ui-sref="app.events"> Evénements</button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-clear button-icon ion-loop" ng-class="{'fa-spin': vm.loading}" ng-click="vm.doRefresh()"></button>
   </ion-nav-buttons>
   <ion-content class="padding">
     <div>

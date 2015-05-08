@@ -7,6 +7,7 @@
   function DataUtils($http, LocalStorageUtils, Config){
     var service = {
       getOrFetch: getOrFetch,   // (storageKey, url, _absolute)     Get the data from storage and if does not exits, get it from serveur with url
+      refresh: refresh          // (storageKey, url, _absolute)     Get data serveur and update storage
     };
 
     function getOrFetch(storageKey, url, _absolute){
@@ -14,12 +15,16 @@
         if(data){
           return data;
         } else {
-          return $http.get(_absolute ? url : Config.backendUrl+url).then(function(res){
-            return LocalStorageUtils.set(storageKey, res.data).then(function(){
-              return res.data;
-            });
-          });
+          return refresh(storageKey, url, _absolute);
         }
+      });
+    }
+
+    function refresh(storageKey, url, _absolute){
+      return $http.get(_absolute ? url : Config.backendUrl+url).then(function(res){
+        return LocalStorageUtils.set(storageKey, res.data).then(function(){
+          return res.data;
+        });
       });
     }
 
