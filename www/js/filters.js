@@ -12,28 +12,28 @@
   function date(Utils, moment){
     return function(date, format){
       var jsDate = Utils.toDate(date);
-      return jsDate ? moment(jsDate).format(format ? format : 'll') : '<date>';
+      return jsDate ? moment(jsDate).format(format ? format : 'll') : '';
     };
   }
 
   function datetime(Utils, moment){
     return function(date, format){
       var jsDate = Utils.toDate(date);
-      return jsDate ? moment(jsDate).format(format ? format : 'D MMM YYYY, HH:mm:ss') : '<datetime>';
+      return jsDate ? moment(jsDate).format(format ? format : 'D MMM YYYY, HH:mm:ss') : '';
     };
   }
 
   function time(Utils, moment){
     return function(date, format){
       var jsDate = Utils.toDate(date);
-      return jsDate ? moment(jsDate).format(format ? format : 'LT') : '<time>';
+      return jsDate ? moment(jsDate).format(format ? format : 'LT') : '';
     };
   }
 
   function humanTime(Utils, moment){
     return function(date){
       var jsDate = Utils.toDate(date);
-      return jsDate ? moment(jsDate).fromNow(true) : '<humanTime>';
+      return jsDate ? moment(jsDate).fromNow(true) : '';
     };
   }
 
@@ -48,7 +48,7 @@
         }
       } else {
         $log.warn('Unable to format duration', seconds);
-        return '<duration>';
+        return '';
       }
     };
   }
