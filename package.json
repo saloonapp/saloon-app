@@ -22,5 +22,7 @@
     "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin",
     "org.apache.cordova.inappbrowser"
   ],
-  "cordovaPlatforms": []
+  "cordovaPlatforms": [
+    "android"
+  ]
 }

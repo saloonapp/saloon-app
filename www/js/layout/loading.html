@@ -3,7 +3,7 @@
     <div style="text-align: center; margin-top: 200px;">
       <div ng-if="!vm.error"><ion-spinner></ion-spinner></div>
       <div ng-if="vm.error">
-        L'application semble avoir du mal à se connecter à internet<span ng-show="vm.error.statusText">{{vm.error.statusText}}</span>.<br>
+        L'application semble avoir du mal à se connecter à internet<span ng-show="vm.error.statusText"> ({{vm.error.statusText}})</span>.<br>
         <br>
         Assurez-vous d'avoir accès au réseau et réessayez.<br>
         <br>
