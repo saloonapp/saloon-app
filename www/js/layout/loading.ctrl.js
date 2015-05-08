@@ -3,7 +3,7 @@
   angular.module('app')
     .controller('LoadingCtrl', LoadingCtrl);
 
-  function LoadingCtrl($scope, $q, $timeout, $state, AuthSrv){
+  function LoadingCtrl($scope, $q, $timeout, $state){
     var vm = {};
     $scope.vm = vm;
 
@@ -13,11 +13,7 @@
 
     function redirect(){
       $timeout(function(){
-        if(AuthSrv.isLogged()){
-          $state.go('app.tabs.twitts');
-        } else {
-          $state.go('login');
-        }
+        $state.go('app.tabs.twitts');
       }, 300);
     }
   }
