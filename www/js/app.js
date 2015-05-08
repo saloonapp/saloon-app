@@ -14,25 +14,7 @@
     }]);
   }
 
-  function runBlock(UserSrv, PushPlugin, ToastPlugin, Config){
-    setupPushNotifications();
+  function runBlock(){
 
-    ////////////////
-
-    function setupPushNotifications(){
-      // /!\ To use this, you should add Push plugin : ionic plugin add https://github.com/phonegap-build/PushPlugin
-      // registrationId should be uploaded to the server, it is required to send push notification
-      PushPlugin.register(Config.gcm.senderID).then(function(registrationId){
-        return UserSrv.get().then(function(user){
-          if(!user){ user = {}; }
-          user.pushId = registrationId;
-          return UserSrv.set(user);
-        });
-      });
-      PushPlugin.onNotification(function(notification){
-        ToastPlugin.show('Notification received: '+notification.payload.title);
-        console.log('Notification received', notification);
-      });
-    }
   }
 })();
