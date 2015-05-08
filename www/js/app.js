@@ -6,8 +6,6 @@
 
   configure.$inject = ['$urlRouterProvider', '$provide', '$httpProvider'];
   function configure($urlRouterProvider, $provide, $httpProvider){
-    // ParseUtilsProvider.initialize(Config.parse.applicationId, Config.parse.restApiKey);
-
     $urlRouterProvider.otherwise('/loading');
 
     // improve angular logger

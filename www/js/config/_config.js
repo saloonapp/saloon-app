@@ -9,10 +9,6 @@ var Config = (function(){
     storagePrefix: 'app-', // prefix all stoarge entries with this prefix
     emailSupport: 'exemple@mail.com',
     backendUrl: 'data', // 'http://myserver.com/api/v1',
-    parse: {
-      applicationId: '',
-      restApiKey: ''
-    },
     gcm: {
       // create project here : https://console.developers.google.com/
       senderID: '263462318850', // Google project number
