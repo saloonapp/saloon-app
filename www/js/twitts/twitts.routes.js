@@ -5,7 +5,7 @@
 
   function configure($stateProvider){
     $stateProvider
-      .state('app.tabs.twitts', {
+      .state('app.twitts', {
       url: '/twitts',
       views: {
         'twitts-tab': {
@@ -14,7 +14,7 @@
         }
       }
     })
-      .state('app.tabs.twitt', {
+      .state('app.twitt', {
       url: '/twitt/:twittId',
       views: {
         'twitts-tab': {

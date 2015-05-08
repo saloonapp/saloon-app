@@ -16,7 +16,7 @@
         if(twitt){
           vm.twitt = twitt;
         } else {
-          $state.go('app.tabs.twitts');
+          $state.go('app.twitts');
         }
       });
     }

@@ -13,7 +13,7 @@
 
     function redirect(){
       $timeout(function(){
-        $state.go('app.tabs.twitts');
+        $state.go('app.twitts');
       }, 300);
     }
   }

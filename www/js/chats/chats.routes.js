@@ -5,7 +5,7 @@
 
   function configure($stateProvider){
     $stateProvider
-      .state('app.tabs.chat', {
+      .state('app.chat', {
       url: '/chat',
       views: {
         'chat-tab': {
