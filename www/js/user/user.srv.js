@@ -3,8 +3,8 @@
   angular.module('app')
     .factory('UserSrv', UserSrv);
 
-  UserSrv.$inject = ['$http', 'LocalStorageUtils', 'DevicePlugin', 'Config'];
-  function UserSrv($http, LocalStorageUtils, DevicePlugin, Config){
+  UserSrv.$inject = ['$http', 'StorageUtils', 'DevicePlugin', 'Config'];
+  function UserSrv($http, StorageUtils, DevicePlugin, Config){
     var storageKey = 'user';
     var service = {
       getUser: getUser,
@@ -13,7 +13,7 @@
     return service;
 
     function getUser(){
-      return LocalStorageUtils.get(storageKey).then(function(user){
+      return StorageUtils.get(storageKey).then(function(user){
         if(user){
           return user;
         } else {
@@ -27,7 +27,7 @@
     }
 
     function setUser(user){
-      return LocalStorageUtils.set(storageKey, user);
+      return StorageUtils.set(storageKey, user);
     }
 
     function fetchUser(){
