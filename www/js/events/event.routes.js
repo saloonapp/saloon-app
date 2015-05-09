@@ -18,6 +18,7 @@
       .state('app.event', {
       url: '/events/:eventId',
       abstract: true,
+      cache: false, // see http://forum.ionicframework.com/t/problem-with-tabs-in-detail-view/22651
       templateUrl: 'js/events/event.html',
       controller: 'EventCtrl',
       resolve: {

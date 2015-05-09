@@ -19,7 +19,6 @@ To run the app on your android device :
 
 ## TODO
 
-- PROBLEM : tabs (exponents & sessions) keep reference on the first event visited !!! WTF !!! (see url) Problem posted on [forum](http://forum.ionicframework.com/t/problem-with-tabs-in-detail-view/22651) & [Playground](http://play.ionic.io/app/ecc5b2ab51a0)
 - enregistrer le pushId
 
 ## Infos
