@@ -3,10 +3,10 @@
   angular.module('app')
     .controller('EventCtrl', EventCtrl)
     .controller('EventInfosCtrl', EventInfosCtrl)
-    .controller('EventExponentsCtrl', EventExponentsCtrl)
-    .controller('EventExponentCtrl', EventExponentCtrl)
     .controller('EventSessionsCtrl', EventSessionsCtrl)
-    .controller('EventSessionCtrl', EventSessionCtrl);
+    .controller('EventSessionCtrl', EventSessionCtrl)
+    .controller('EventExponentsCtrl', EventExponentsCtrl)
+    .controller('EventExponentCtrl', EventExponentCtrl);
 
   function EventCtrl($scope, event){
     var vm = {};
@@ -34,20 +34,6 @@
     }
   }
 
-  function EventExponentsCtrl($scope, event){
-    var vm = {};
-    $scope.vm = vm;
-
-    vm.event = event;
-  }
-
-  function EventExponentCtrl($scope, exponent){
-    var vm = {};
-    $scope.vm = vm;
-
-    vm.exponent = exponent;
-  }
-
   function EventSessionsCtrl($scope, event){
     var vm = {};
     $scope.vm = vm;
@@ -60,5 +46,39 @@
     $scope.vm = vm;
 
     vm.session = session;
+
+    vm.isFav = isFav;
+    vm.toggleFav = toggleFav;
+
+    function isFav(session){
+      return false;
+    }
+    function toggleFav(session){
+
+    }
+  }
+
+  function EventExponentsCtrl($scope, event){
+    var vm = {};
+    $scope.vm = vm;
+
+    vm.event = event;
+  }
+
+  function EventExponentCtrl($scope, exponent){
+    var vm = {};
+    $scope.vm = vm;
+
+    vm.exponent = exponent;
+
+    vm.isFav = isFav;
+    vm.toggleFav = toggleFav;
+
+    function isFav(session){
+      return false;
+    }
+    function toggleFav(session){
+
+    }
   }
 })();

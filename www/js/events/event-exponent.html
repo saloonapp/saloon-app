@@ -1,5 +1,14 @@
 <ion-view title="{{vm.exponent.name}}">
   <ion-content>
-    {{vm.exponent}}
+    <div class="event-item-details">
+      <div class="pull-right fav" ng-class="{active: vm.isFav(vm.exponent)}" ng-click="vm.toggleFav(vm.exponent)">
+        <i class="icon ion-android-star-outline unstarred"></i>
+        <i class="icon ion-android-star starred"></i>
+      </div>
+      <h1>{{vm.exponent.name}}</h1>
+      <h3 class="assertive">@{{vm.exponent.place | place}}</h3>
+      <div btf-markdown="vm.exponent.description"></div>
+    </div>
+    <!--<pre>{{vm.exponent | json}}</pre>-->
   </ion-content>
 </ion-view>

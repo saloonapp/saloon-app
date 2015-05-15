@@ -41,7 +41,7 @@
     }
 
     function refreshEvent(eventId){
-      return DataUtils.refresh(storageKey, '/events/'+eventId+'/full');
+      return DataUtils.refresh(storageKey+'-'+eventId, '/events/'+eventId+'/full');
     }
   }
 })();

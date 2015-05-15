@@ -36,29 +36,6 @@
         }
       }
     })
-      .state('app.event.exponents', {
-      url: '/exponents',
-      views: {
-        'exponents-tab': {
-          templateUrl: 'js/events/event-exponents.html',
-          controller: 'EventExponentsCtrl'
-        }
-      }
-    })
-      .state('app.event.exponent', {
-      url: '/exponents/:exponentId',
-      views: {
-        'exponents-tab': {
-          templateUrl: 'js/events/event-exponent.html',
-          controller: 'EventExponentCtrl'
-        }
-      },
-      resolve: {
-        exponent: function($stateParams, EventSrv, IonicUtils){
-          return IonicUtils.withLoading(EventSrv.getExponent($stateParams.eventId, $stateParams.exponentId));
-        }
-      }
-    })
       .state('app.event.sessions', {
       url: '/sessions',
       views: {
@@ -79,6 +56,29 @@
       resolve: {
         session: function($stateParams, EventSrv, IonicUtils){
           return IonicUtils.withLoading(EventSrv.getSession($stateParams.eventId, $stateParams.sessionId));
+        }
+      }
+    })
+      .state('app.event.exponents', {
+      url: '/exponents',
+      views: {
+        'exponents-tab': {
+          templateUrl: 'js/events/event-exponents.html',
+          controller: 'EventExponentsCtrl'
+        }
+      }
+    })
+      .state('app.event.exponent', {
+      url: '/exponents/:exponentId',
+      views: {
+        'exponents-tab': {
+          templateUrl: 'js/events/event-exponent.html',
+          controller: 'EventExponentCtrl'
+        }
+      },
+      resolve: {
+        exponent: function($stateParams, EventSrv, IonicUtils){
+          return IonicUtils.withLoading(EventSrv.getExponent($stateParams.eventId, $stateParams.exponentId));
         }
       }
     });

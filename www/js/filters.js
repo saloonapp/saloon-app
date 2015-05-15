@@ -1,6 +1,7 @@
 (function(){
   'use strict';
   angular.module('app')
+    .filter('place', place)
     .filter('date', date)
     .filter('datetime', datetime)
     .filter('time', time)
@@ -8,6 +9,12 @@
     .filter('duration', duration)
     .filter('mynumber', mynumber)
     .filter('rating', rating);
+
+  function place(){
+    return function(place){
+      return place ? (place.name ? place.name : place.ref) : '';
+    };
+  }
 
   function date(Utils, moment){
     return function(date, format){

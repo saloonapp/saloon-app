@@ -3,7 +3,9 @@
   "description": "Optimisez vos événements !",
   "version": "0.0.1",
   "homepage": "http://saloonapp.co/",
-  "authors": [ "Loïc Knuchel <loicknuchel@gmail.com>" ],
+  "authors": [
+    "Loïc Knuchel <loicknuchel@gmail.com>"
+  ],
   "private": "true",
   "main": "www/index.html",
   "keywords": [
@@ -23,7 +25,8 @@
     "angular-localforage": "~1.2.2",
     "moment": "~2.9.0",
     "moment-duration-format": "~1.3.0",
-    "lodash": "~3.3.1"
+    "lodash": "~3.3.1",
+    "angular-markdown-directive": "~0.3.1"
   },
   "devDependencies": {
     "angular-mocks": "1.3.6",

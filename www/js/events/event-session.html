@@ -1,5 +1,14 @@
 <ion-view title="{{vm.session.title}}">
   <ion-content>
-    {{vm.session}}
+    <div class="event-item-details">
+      <div class="pull-right fav" ng-class="{active: vm.isFav(vm.session)}" ng-click="vm.toggleFav(vm.session)">
+        <i class="icon ion-android-star-outline unstarred"></i>
+        <i class="icon ion-android-star starred"></i>
+      </div>
+      <h1>[{{vm.session.format}}] {{vm.session.title}}</h1>
+      <h3 class="assertive">{{vm.session.start | time}}-{{vm.session.end | time}} @{{vm.session.place | place}}</h3>
+      <div btf-markdown="vm.session.summary"></div>
+    </div>
+    <!--<pre>{{vm.session | json}}</pre>-->
   </ion-content>
 </ion-view>

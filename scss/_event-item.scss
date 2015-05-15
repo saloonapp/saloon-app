@@ -1,0 +1,41 @@
+.list-session {
+  .item.fav {
+    background: #fff9c2;
+  }
+  .fav-counter {
+    padding-right: 5px;
+    .icon {
+      position: static;
+      display: inline;
+      font-size: 14px;
+      color: $energized;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      &:before {
+        display: inline;
+      }
+}
+  }
+}
+
+.event-item-details {
+  padding: 10px;
+  .fav {
+    font-size: 40px;
+    margin-right: 15px;
+    .starred    { display: none;      }
+    .starred    { color: $energized;  }
+    .unstarred  { color: #aaa;        }
+    &.active {
+      .starred    { display: block; }
+      .unstarred  { display: none;  }
+    }
+  }
+  h1 {
+    font-size: 20px;
+    margin-top: 0px;
+  }
+  h3 {
+    font-size: 16px;
+    text-align: right;
+  }
+}
