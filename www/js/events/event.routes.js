@@ -93,34 +93,33 @@
             controller: 'EventProgramCtrl'
           }
         }
-      }
-    };
-
-    var sessionDetailRoute = {
-      url: '/sessions/:sessionId',
-      views: {
-        'program-tab': {
-          templateUrl: 'js/events/event-session.html',
-          controller: 'EventSessionCtrl'
+      },
+      eventProgramSession: {
+        url: '/sessions/:sessionId',
+        views: {
+          'program-tab': {
+            templateUrl: 'js/events/event-session.html',
+            controller: 'EventSessionCtrl'
+          }
+        },
+        resolve: {
+          session: function($stateParams, EventSrv, IonicUtils){
+            return IonicUtils.withLoading(EventSrv.getSession($stateParams.eventId, $stateParams.sessionId));
+          }
         }
       },
-      resolve: {
-        session: function($stateParams, EventSrv, IonicUtils){
-          return IonicUtils.withLoading(EventSrv.getSession($stateParams.eventId, $stateParams.sessionId));
-        }
-      }
-    };
-    var exponentDetailRoute = {
-      url: '/exponents/:exponentId',
-      views: {
-        'program-tab': {
-          templateUrl: 'js/events/event-exponent.html',
-          controller: 'EventExponentCtrl'
-        }
-      },
-      resolve: {
-        exponent: function($stateParams, EventSrv, IonicUtils){
-          return IonicUtils.withLoading(EventSrv.getExponent($stateParams.eventId, $stateParams.exponentId));
+      eventProgramExponent: {
+        url: '/exponents/:exponentId',
+        views: {
+          'program-tab': {
+            templateUrl: 'js/events/event-exponent.html',
+            controller: 'EventExponentCtrl'
+          }
+        },
+        resolve: {
+          exponent: function($stateParams, EventSrv, IonicUtils){
+            return IonicUtils.withLoading(EventSrv.getExponent($stateParams.eventId, $stateParams.exponentId));
+          }
         }
       }
     };
@@ -134,7 +133,7 @@
       .state('app.event.exponents', routes.eventExponents)
       .state('app.event.exponent', routes.eventExponent)
       .state('app.event.program', routes.eventProgram)
-      .state('app.event.programSession', sessionDetailRoute)
-      .state('app.event.programExponent', exponentDetailRoute);
+      .state('app.event.programSession', routes.eventProgramSession)
+      .state('app.event.programExponent', routes.eventProgramExponent);
   }
 })();
