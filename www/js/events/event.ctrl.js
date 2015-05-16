@@ -6,7 +6,8 @@
     .controller('EventSessionsCtrl', EventSessionsCtrl)
     .controller('EventSessionCtrl', EventSessionCtrl)
     .controller('EventExponentsCtrl', EventExponentsCtrl)
-    .controller('EventExponentCtrl', EventExponentCtrl);
+    .controller('EventExponentCtrl', EventExponentCtrl)
+    .controller('EventProgramCtrl', EventProgramCtrl);
 
   function EventCtrl($scope, event, userData){
     var vm = {};
@@ -98,5 +99,16 @@
         });
       }
     }
+  }
+
+  function EventProgramCtrl($scope, EventUtils, event, userData){
+    var vm = {};
+    $scope.vm = vm;
+
+    vm.event = event;
+    $scope.$on('$ionicView.enter', function(){
+      vm.sessions = EventUtils.getFavoriteSessions(event, userData);
+      vm.exponents = EventUtils.getFavoriteExponents(event, userData);
+    });
   }
 })();

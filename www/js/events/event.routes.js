@@ -84,6 +84,15 @@
           return IonicUtils.withLoading(EventSrv.getExponent($stateParams.eventId, $stateParams.exponentId));
         }
       }
+    })
+      .state('app.event.program', {
+      url: '/program',
+      views: {
+        'program-tab': {
+          templateUrl: 'js/events/event-program.html',
+          controller: 'EventProgramCtrl'
+        }
+      }
     });
   }
 })();

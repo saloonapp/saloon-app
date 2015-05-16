@@ -18,10 +18,10 @@
       getUserData: getUserData,
       favoriteSession: function(elt){ return favorite(elt, 'sessions'); },
       unfavoriteSession: function(elt){ return unfavorite(elt, 'sessions'); },
-      toggleFavoriteSession: function(eventData, elt){ return toggleFavorite(eventData, elt, 'sessions'); },
+      toggleFavoriteSession: function(userData, elt){ return toggleFavorite(userData, elt, 'sessions'); },
       favoriteExponent: function(elt){ return favorite(elt, 'exponents'); },
       unfavoriteExponent: function(elt){ return unfavorite(elt, 'exponents'); },
-      toggleFavoriteExponent: function(eventData, elt){ return toggleFavorite(eventData, elt, 'exponents'); },
+      toggleFavoriteExponent: function(userData, elt){ return toggleFavorite(userData, elt, 'exponents'); },
       refreshEventList: refreshEventList,
       refreshEvent: refreshEvent
     };
@@ -47,10 +47,10 @@
       var key = userDataKey(elt.eventId);
       return UserSrv.getUser().then(function(user){
         return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/favorites', {}, {headers: {userId: user.uuid}}).then(function(res){
-          return getUserData(elt.eventId).then(function(eventData){
-            if(!EventUtils.isFavorite(eventData, elt)){
-              eventData.push(res.data);
-              return StorageUtils.set(key, eventData).then(function(){
+          return getUserData(elt.eventId).then(function(userData){
+            if(!EventUtils.isFavorite(userData, elt)){
+              userData.push(res.data);
+              return StorageUtils.set(key, userData).then(function(){
                 return res.data;
               });
             } else {
@@ -65,22 +65,22 @@
       var key = userDataKey(elt.eventId);
       return UserSrv.getUser().then(function(user){
         return $http.delete(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/favorites', {headers: {userId: user.uuid}}).then(function(res){
-          return getUserData(elt.eventId).then(function(eventData){
-            _.remove(eventData, {itemId: elt.uuid, action: {favorite: true}});
-            return StorageUtils.set(key, eventData);
+          return getUserData(elt.eventId).then(function(userData){
+            _.remove(userData, {itemId: elt.uuid, action: {favorite: true}});
+            return StorageUtils.set(key, userData);
           });
         });
       });
     }
 
-    function toggleFavorite(eventData, elt, eltType){
-      if(EventUtils.isFavorite(eventData, elt)){
+    function toggleFavorite(userData, elt, eltType){
+      if(EventUtils.isFavorite(userData, elt)){
         return unfavorite(elt, eltType).then(function(){
-          EventUtils.removeFavorite(eventData, elt);
+          EventUtils.removeFavorite(userData, elt);
         });
       } else {
         return favorite(elt, eltType).then(function(favData){
-          EventUtils.addFavorite(eventData, favData);
+          EventUtils.addFavorite(userData, favData);
         });
       }
     }
@@ -113,7 +113,9 @@
       isFavorite: isFavorite,
       addFavorite: addFavorite,
       removeFavorite: removeFavorite,
-      getComments: getComments
+      getComments: getComments,
+      getFavoriteExponents: getFavoriteExponents,
+      getFavoriteSessions: getFavoriteSessions
     };
     return service;
 
@@ -131,6 +133,18 @@
 
     function getComments(userData, elt){
       return _.filter(userData, {itemId: elt.uuid, action: {comment: true}});
+    }
+
+    function getFavoriteExponents(event, userData){
+      return _.map(_.filter(userData, {itemType: 'Exponents', action: {favorite: true}}), function(item){
+        return _.find(event.exponents, {uuid: item.itemId});
+      });
+    }
+
+    function getFavoriteSessions(event, userData){
+      return _.map(_.filter(userData, {itemType: 'Sessions', action: {favorite: true}}), function(item){
+        return _.find(event.sessions, {uuid: item.itemId});
+      });
     }
   }
 })();
