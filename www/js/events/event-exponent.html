@@ -1,9 +1,10 @@
 <ion-view title="{{vm.exponent.name}}">
   <ion-content>
     <div class="event-item-details">
-      <div class="pull-right fav" ng-class="{active: vm.isFav(vm.exponent)}" ng-click="vm.toggleFav(vm.exponent)">
+      <div class="pull-right fav" ng-class="{active: vm.isFav(vm.exponent), loading: vm.favLoading}" ng-click="vm.toggleFav(vm.exponent)">
         <i class="icon ion-android-star-outline unstarred"></i>
         <i class="icon ion-android-star starred"></i>
+        <ion-spinner></ion-spinner>
       </div>
       <h1>{{vm.exponent.name}}</h1>
       <h3 class="assertive">@{{vm.exponent.place | place}}</h3>

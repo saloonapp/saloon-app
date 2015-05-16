@@ -11,9 +11,9 @@
       <div btf-markdown="vm.session.summary"></div>
     </div>
 
-    <div class="list" ng-if="vm.similarSessions && vm.similarSessions.length > 0">
+    <div class="list" ng-if="vm.similar && vm.similar.length > 0">
       <div class="item item-divider">Sessions similaires :</div>
-      <div class="item" ng-repeat="session in vm.similarSessions"
+      <div class="item" ng-repeat="session in vm.similar"
            ui-sref="app.event.session({sessionId: session.uuid})">
         <h2>[{{session.format}}] {{session.title}}</h2>
         <p class="multiline l3">{{session.summary}}</p>
@@ -30,7 +30,7 @@
         <p>le 3 sept. 2014</p>
         <p class="multiline">Salut tout le monde, elle est géniale cette application ! Franchement, je vous la recommande très chaudement :)</p>
       </div>
-      <div class="item" ng-repeat="comment in vm.sessionComments">
+      <div class="item" ng-repeat="comment in vm.vomments">
         <p class="multiline">{{comment.action.text}}</p>
       </div>
     </div>

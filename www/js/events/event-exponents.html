@@ -7,8 +7,8 @@
     <button class="button button-clear" ng-click="search=''">Annuler</button>
   </div>
   <ion-content class="has-subheader">
-    <div class="list">
-      <div class="item item-icon-right"
+    <div class="list list-event-item">
+      <div class="item item-icon-right" ng-class="{fav: vm.isFav(exponent)}"
            ng-repeat="exponent in vm.event.exponents | filter:search"
            ui-sref="app.event.exponent({exponentId: exponent.uuid})">
         <h2>{{exponent.name}}</h2>

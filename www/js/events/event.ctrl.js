@@ -55,8 +55,8 @@
     vm.event = event;
     vm.session = session;
     vm.favLoading = false;
-    vm.similarSessions = [];
-    vm.sessionComments = EventUtils.getComments(userData, session);
+    vm.similar = [];
+    vm.comments = EventUtils.getComments(userData, session);
 
     vm.isFav = isFav;
     vm.toggleFav = toggleFav;
@@ -86,27 +86,55 @@
     }
   }
 
-  function EventExponentsCtrl($scope, event){
+  function EventExponentsCtrl($scope, EventUtils, event, userData){
     var vm = {};
     $scope.vm = vm;
 
     vm.event = event;
+
+    vm.isFav = isFav;
+
+    function isFav(exponent){
+      return EventUtils.isFavorite(userData, exponent);
+    }
   }
 
-  function EventExponentCtrl($scope, exponent){
+  function EventExponentCtrl($scope, EventSrv, EventUtils, event, userData, exponent){
     var vm = {};
     $scope.vm = vm;
 
+    vm.event = event;
     vm.exponent = exponent;
+    vm.favLoading = false;
+    vm.similar = [];
+    vm.comments = EventUtils.getComments(userData, exponent);
 
     vm.isFav = isFav;
     vm.toggleFav = toggleFav;
 
-    function isFav(session){
-      return false;
+    function isFav(exponent){
+      console.log('exponent', exponent);
+      return EventUtils.isFavorite(userData, exponent);
     }
-    function toggleFav(session){
-
+    function toggleFav(exponent){
+      if(!vm.favLoading){
+        vm.favLoading = true;
+        if(isFav(exponent)){
+          EventSrv.unfavoriteExponent(exponent).then(function(res){
+            EventUtils.removeFavorite(userData, exponent);
+            vm.favLoading = false;
+          }, function(err){
+            vm.favLoading = false;
+          });
+        } else {
+          EventSrv.favoriteExponent(exponent).then(function(favData){
+            EventUtils.addFavorite(userData, favData);
+            vm.favLoading = false;
+          }, function(err){
+            vm.favLoading = false;
+          });
+        }
+      }
     }
   }
 })();
