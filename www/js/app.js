@@ -14,7 +14,8 @@
     }]);
   }
 
-  function runBlock(){
-
+  function runBlock(KeyboardPlugin){
+    //hide "done, back, next" on iOS
+    KeyboardPlugin.hideFormAccessoryBar();
   }
 })();

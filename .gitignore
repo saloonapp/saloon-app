@@ -11,5 +11,5 @@ node_modules/
 
 # do not commit generated images
 /resources/android
-
+/resources/ios
 *~
