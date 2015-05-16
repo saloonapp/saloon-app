@@ -19,7 +19,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "ionic": "driftyco/ionic-bower#1.0.0-rc.5",
+    "ionic": "driftyco/ionic-bower#1.0.0",
     "ngCordova": "~0.1.12-alpha",
     "font-awesome": "~4.3.0",
     "angular-localforage": "~1.2.2",
