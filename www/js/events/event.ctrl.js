@@ -8,11 +8,12 @@
     .controller('EventExponentsCtrl', EventExponentsCtrl)
     .controller('EventExponentCtrl', EventExponentCtrl);
 
-  function EventCtrl($scope, event){
+  function EventCtrl($scope, event, userData){
     var vm = {};
     $scope.vm = vm;
 
     vm.event = event;
+    vm.userData = userData;
   }
 
   function EventInfosCtrl($scope, $stateParams, EventSrv, event){
@@ -34,27 +35,54 @@
     }
   }
 
-  function EventSessionsCtrl($scope, event){
+  function EventSessionsCtrl($scope, EventUtils, event, userData){
     var vm = {};
     $scope.vm = vm;
 
     vm.event = event;
+
+    vm.isFav = isFav;
+
+    function isFav(session){
+      return EventUtils.isFavorite(userData, session);
+    }
   }
 
-  function EventSessionCtrl($scope, session){
+  function EventSessionCtrl($scope, EventSrv, EventUtils, event, userData, session){
     var vm = {};
     $scope.vm = vm;
 
+    vm.event = event;
     vm.session = session;
+    vm.favLoading = false;
+    vm.similarSessions = [];
+    vm.sessionComments = EventUtils.getComments(userData, session);
 
     vm.isFav = isFav;
     vm.toggleFav = toggleFav;
 
     function isFav(session){
-      return false;
+      return EventUtils.isFavorite(userData, session);
     }
     function toggleFav(session){
-
+      if(!vm.favLoading){
+        vm.favLoading = true;
+        if(isFav(session)){
+          EventSrv.unfavoriteSession(session).then(function(res){
+            EventUtils.removeFavorite(userData, session);
+            vm.favLoading = false;
+          }, function(err){
+            vm.favLoading = false;
+          });
+        } else {
+          EventSrv.favoriteSession(session).then(function(favData){
+            EventUtils.addFavorite(userData, favData);
+            vm.favLoading = false;
+          }, function(err){
+            vm.favLoading = false;
+          });
+        }
+      }
     }
   }
 

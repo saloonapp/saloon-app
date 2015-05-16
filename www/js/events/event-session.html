@@ -1,14 +1,38 @@
 <ion-view title="{{vm.session.title}}">
   <ion-content>
     <div class="event-item-details">
-      <div class="pull-right fav" ng-class="{active: vm.isFav(vm.session)}" ng-click="vm.toggleFav(vm.session)">
+      <div class="pull-right fav" ng-class="{active: vm.isFav(vm.session), loading: vm.favLoading}" ng-click="vm.toggleFav(vm.session)">
         <i class="icon ion-android-star-outline unstarred"></i>
         <i class="icon ion-android-star starred"></i>
+        <ion-spinner></ion-spinner>
       </div>
       <h1>[{{vm.session.format}}] {{vm.session.title}}</h1>
       <h3 class="assertive">{{vm.session.start | time}}-{{vm.session.end | time}} @{{vm.session.place | place}}</h3>
       <div btf-markdown="vm.session.summary"></div>
     </div>
-    <!--<pre>{{vm.session | json}}</pre>-->
+
+    <div class="list" ng-if="vm.similarSessions && vm.similarSessions.length > 0">
+      <div class="item item-divider">Sessions similaires :</div>
+      <div class="item" ng-repeat="session in vm.similarSessions"
+           ui-sref="app.event.session({sessionId: session.uuid})">
+        <h2>[{{session.format}}] {{session.title}}</h2>
+        <p class="multiline l3">{{session.summary}}</p>
+      </div>
+    </div>
+
+    <div class="list card">
+      <div class="item item-divider">Vos commentaires :</div>
+      <label class="item item-input item-floating-label">
+        <span class="input-label">Email</span>
+        <textarea placeholder="Mes notes..."></textarea>
+      </label>
+      <div class="item">
+        <p>le 3 sept. 2014</p>
+        <p class="multiline">Salut tout le monde, elle est géniale cette application ! Franchement, je vous la recommande très chaudement :)</p>
+      </div>
+      <div class="item" ng-repeat="comment in vm.sessionComments">
+        <p class="multiline">{{comment.action.text}}</p>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

@@ -1,16 +1,25 @@
 (function(){
   'use strict';
   angular.module('app')
-    .factory('EventSrv', EventSrv);
+    .factory('EventSrv', EventSrv)
+    .factory('EventUtils', EventUtils);
 
-  EventSrv.$inject = ['DataUtils', '_'];
-  function EventSrv(DataUtils, _){
+  EventSrv.$inject = ['$q', '$http', 'UserSrv', 'EventUtils', 'DataUtils', 'StorageUtils', 'Config', '_'];
+  function EventSrv($q, $http, UserSrv, EventUtils, DataUtils, StorageUtils, Config, _){
     var storageKey = 'events';
+    function eventKey(eventId){ return storageKey+'-'+eventId; }
+    function userDataKey(eventId){ return storageKey+'-'+eventId+'-userData'; }
+
     var service = {
       getAll: getAll,
       get: get,
       getExponent: getExponent,
       getSession: getSession,
+      getUserData: getUserData,
+      favoriteSession: function(elt){ return favorite(elt, 'sessions'); },
+      unfavoriteSession: function(elt){ return unfavorite(elt, 'sessions'); },
+      favoriteExponent: function(elt){ return favorite(elt, 'exponents'); },
+      unfavoriteExponent: function(elt){ return unfavorite(elt, 'exponents'); },
       refreshEventList: refreshEventList,
       refreshEvent: refreshEvent
     };
@@ -21,7 +30,45 @@
     }
 
     function get(eventId){
-      return DataUtils.getOrFetch(storageKey+'-'+eventId, '/events/'+eventId+'/full');
+      var key = eventKey(eventId);
+      return DataUtils.getOrFetch(key, '/events/'+eventId+'/full');
+    }
+
+    function getUserData(eventId){
+      var key = userDataKey(eventId);
+      return UserSrv.getUser().then(function(user){
+        return DataUtils.getOrFetch(key, '/users/'+user.uuid+'/actions/'+eventId);
+      });
+    }
+
+    function favorite(elt, eltType){
+      var key = userDataKey(elt.eventId);
+      return UserSrv.getUser().then(function(user){
+        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/favorites', {}, {headers: {userId: user.uuid}}).then(function(res){
+          return getUserData(elt.eventId).then(function(eventData){
+            if(!EventUtils.isFavorite(eventData, elt)){
+              eventData.push(res.data);
+              return StorageUtils.set(key, eventData).then(function(){
+                return res.data;
+              });
+            } else {
+              return $q.when(res.data);
+            }
+          });
+        });
+      });
+    }
+
+    function unfavorite(elt, eltType){
+      var key = userDataKey(elt.eventId);
+      return UserSrv.getUser().then(function(user){
+        return $http.delete(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/favorites', {headers: {userId: user.uuid}}).then(function(res){
+          return getUserData(elt.eventId).then(function(eventData){
+            _.remove(eventData, {itemId: elt.uuid, action: {favorite: true}});
+            return StorageUtils.set(key, eventData);
+          });
+        });
+      });
     }
 
     function getExponent(eventId, exponentId){
@@ -41,7 +88,35 @@
     }
 
     function refreshEvent(eventId){
-      return DataUtils.refresh(storageKey+'-'+eventId, '/events/'+eventId+'/full');
+      var key = eventKey(eventId);
+      return DataUtils.refresh(key, '/events/'+eventId+'/full');
+    }
+  }
+
+  EventUtils.$inject = ['_'];
+  function EventUtils(_){
+    var service = {
+      isFavorite: isFavorite,
+      addFavorite: addFavorite,
+      removeFavorite: removeFavorite,
+      getComments: getComments
+    };
+    return service;
+
+    function isFavorite(userData, elt){
+      return _.find(userData, {itemId: elt.uuid, action: {favorite: true}}) !== undefined;
+    }
+
+    function addFavorite(userData, favData){
+      userData.push(favData);
+    }
+
+    function removeFavorite(userData, elt){
+      return _.remove(userData, {itemId: elt.uuid, action: {favorite: true}});
+    }
+
+    function getComments(userData, elt){
+      return _.filter(userData, {itemId: elt.uuid, action: {comment: true}});
     }
   }
 })();

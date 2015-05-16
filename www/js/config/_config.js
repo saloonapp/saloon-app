@@ -10,6 +10,7 @@ var Config = (function(){
     emailSupport: 'loicknuchel@gmail.com',
     backendUrl: 'https://dev-saloon.herokuapp.com/api/v1',
     //backendUrl: 'http://localhost:9000/api/v1',
+
     gcm: {
       // create project here : https://console.developers.google.com/
       senderID: '263462318850', // Google project number
