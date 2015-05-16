@@ -24,6 +24,9 @@
       resolve: {
         event: function($stateParams, EventSrv, IonicUtils){
           return IonicUtils.withLoading(EventSrv.get($stateParams.eventId));
+        },
+        userData: function($stateParams, EventSrv, IonicUtils){
+          return IonicUtils.withLoading(EventSrv.getUserData($stateParams.eventId));
         }
       }
     })

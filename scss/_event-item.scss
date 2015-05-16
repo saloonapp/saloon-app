@@ -1,4 +1,4 @@
-.list-session {
+.list-event-item {
   .item.fav {
     background: #fff9c2;
   }
@@ -20,14 +20,19 @@
 .event-item-details {
   padding: 10px;
   .fav {
+    width: 30px;
     font-size: 40px;
     margin-right: 15px;
-    .starred    { display: none;      }
-    .starred    { color: $energized;  }
-    .unstarred  { color: #aaa;        }
+    .starred    { display: none; color: $energized; }
+    .unstarred  { color: #aaa; }
+    .spinner    { display: none; margin-top: 7px; }
     &.active {
       .starred    { display: block; }
       .unstarred  { display: none;  }
+    }
+    &.loading {
+      .starred, .unstarred  { display: none;  }
+      .spinner              { display: block; }
     }
   }
   h1 {
