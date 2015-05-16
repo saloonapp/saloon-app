@@ -13,7 +13,6 @@
     $scope.vm = vm;
 
     vm.event = event;
-    vm.userData = userData;
   }
 
   function EventInfosCtrl($scope, $stateParams, EventSrv, event){
@@ -40,12 +39,7 @@
     $scope.vm = vm;
 
     vm.event = event;
-
-    vm.isFav = isFav;
-
-    function isFav(session){
-      return EventUtils.isFavorite(userData, session);
-    }
+    vm.isFav = function(elt){ return EventUtils.isFavorite(userData, elt); };
   }
 
   function EventSessionCtrl($scope, EventSrv, EventUtils, event, userData, session){
@@ -53,35 +47,22 @@
     $scope.vm = vm;
 
     vm.event = event;
-    vm.session = session;
+    vm.elt = session;
     vm.favLoading = false;
     vm.similar = [];
     vm.comments = EventUtils.getComments(userData, session);
 
-    vm.isFav = isFav;
+    vm.isFav = function(elt){ return EventUtils.isFavorite(userData, elt); };
     vm.toggleFav = toggleFav;
 
-    function isFav(session){
-      return EventUtils.isFavorite(userData, session);
-    }
-    function toggleFav(session){
+    function toggleFav(elt){
       if(!vm.favLoading){
         vm.favLoading = true;
-        if(isFav(session)){
-          EventSrv.unfavoriteSession(session).then(function(res){
-            EventUtils.removeFavorite(userData, session);
-            vm.favLoading = false;
-          }, function(err){
-            vm.favLoading = false;
-          });
-        } else {
-          EventSrv.favoriteSession(session).then(function(favData){
-            EventUtils.addFavorite(userData, favData);
-            vm.favLoading = false;
-          }, function(err){
-            vm.favLoading = false;
-          });
-        }
+        EventSrv.toggleFavoriteSession(userData, elt).then(function(){
+          vm.favLoading = false;
+        }, function(){
+          vm.favLoading = false;
+        });
       }
     }
   }
@@ -91,12 +72,7 @@
     $scope.vm = vm;
 
     vm.event = event;
-
-    vm.isFav = isFav;
-
-    function isFav(exponent){
-      return EventUtils.isFavorite(userData, exponent);
-    }
+    vm.isFav = function(elt){ return EventUtils.isFavorite(userData, elt); };
   }
 
   function EventExponentCtrl($scope, EventSrv, EventUtils, event, userData, exponent){
@@ -104,36 +80,22 @@
     $scope.vm = vm;
 
     vm.event = event;
-    vm.exponent = exponent;
+    vm.elt = exponent;
     vm.favLoading = false;
     vm.similar = [];
     vm.comments = EventUtils.getComments(userData, exponent);
 
-    vm.isFav = isFav;
+    vm.isFav = function(elt){ return EventUtils.isFavorite(userData, elt); };
     vm.toggleFav = toggleFav;
 
-    function isFav(exponent){
-      console.log('exponent', exponent);
-      return EventUtils.isFavorite(userData, exponent);
-    }
-    function toggleFav(exponent){
+    function toggleFav(elt){
       if(!vm.favLoading){
         vm.favLoading = true;
-        if(isFav(exponent)){
-          EventSrv.unfavoriteExponent(exponent).then(function(res){
-            EventUtils.removeFavorite(userData, exponent);
-            vm.favLoading = false;
-          }, function(err){
-            vm.favLoading = false;
-          });
-        } else {
-          EventSrv.favoriteExponent(exponent).then(function(favData){
-            EventUtils.addFavorite(userData, favData);
-            vm.favLoading = false;
-          }, function(err){
-            vm.favLoading = false;
-          });
-        }
+        EventSrv.toggleFavoriteExponent(userData, elt).then(function(){
+          vm.favLoading = false;
+        }, function(){
+          vm.favLoading = false;
+        });
       }
     }
   }

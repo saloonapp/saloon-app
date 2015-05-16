@@ -1,14 +1,14 @@
-<ion-view title="{{vm.session.title}}">
+<ion-view title="{{vm.elt.title}}">
   <ion-content>
     <div class="event-item-details">
-      <div class="pull-right fav" ng-class="{active: vm.isFav(vm.session), loading: vm.favLoading}" ng-click="vm.toggleFav(vm.session)">
+      <div class="pull-right fav" ng-class="{active: vm.isFav(vm.elt), loading: vm.favLoading}" ng-click="vm.toggleFav(vm.elt)">
         <i class="icon ion-android-star-outline unstarred"></i>
         <i class="icon ion-android-star starred"></i>
         <ion-spinner></ion-spinner>
       </div>
-      <h1>[{{vm.session.format}}] {{vm.session.title}}</h1>
-      <h3 class="assertive">{{vm.session.start | time}}-{{vm.session.end | time}} @{{vm.session.place | place}}</h3>
-      <div btf-markdown="vm.session.summary"></div>
+      <h1>[{{vm.elt.format}}] {{vm.elt.title}}</h1>
+      <h3 class="assertive">{{vm.elt.start | time}}-{{vm.elt.end | time}} @{{vm.elt.place | place}}</h3>
+      <div btf-markdown="vm.elt.summary"></div>
     </div>
 
     <div class="list" ng-if="vm.similar && vm.similar.length > 0">

@@ -1,15 +1,15 @@
-<ion-view title="{{vm.exponent.name}}">
+<ion-view title="{{vm.elt.name}}">
   <ion-content>
     <div class="event-item-details">
-      <div class="pull-right fav" ng-class="{active: vm.isFav(vm.exponent), loading: vm.favLoading}" ng-click="vm.toggleFav(vm.exponent)">
+      <div class="pull-right fav" ng-class="{active: vm.isFav(vm.elt), loading: vm.favLoading}" ng-click="vm.toggleFav(vm.elt)">
         <i class="icon ion-android-star-outline unstarred"></i>
         <i class="icon ion-android-star starred"></i>
         <ion-spinner></ion-spinner>
       </div>
-      <h1>{{vm.exponent.name}}</h1>
-      <h3 class="assertive">@{{vm.exponent.place | place}}</h3>
-      <div btf-markdown="vm.exponent.description"></div>
+      <h1>{{vm.elt.name}}</h1>
+      <h3 class="assertive">@{{vm.elt.place | place}}</h3>
+      <div btf-markdown="vm.elt.description"></div>
     </div>
-    <!--<pre>{{vm.exponent | json}}</pre>-->
+    <!--<pre>{{vm.elt | json}}</pre>-->
   </ion-content>
 </ion-view>

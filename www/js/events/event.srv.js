@@ -18,8 +18,10 @@
       getUserData: getUserData,
       favoriteSession: function(elt){ return favorite(elt, 'sessions'); },
       unfavoriteSession: function(elt){ return unfavorite(elt, 'sessions'); },
+      toggleFavoriteSession: function(eventData, elt){ return toggleFavorite(eventData, elt, 'sessions'); },
       favoriteExponent: function(elt){ return favorite(elt, 'exponents'); },
       unfavoriteExponent: function(elt){ return unfavorite(elt, 'exponents'); },
+      toggleFavoriteExponent: function(eventData, elt){ return toggleFavorite(eventData, elt, 'exponents'); },
       refreshEventList: refreshEventList,
       refreshEvent: refreshEvent
     };
@@ -69,6 +71,18 @@
           });
         });
       });
+    }
+
+    function toggleFavorite(eventData, elt, eltType){
+      if(EventUtils.isFavorite(eventData, elt)){
+        return unfavorite(elt, eltType).then(function(){
+          EventUtils.removeFavorite(eventData, elt);
+        });
+      } else {
+        return favorite(elt, eltType).then(function(favData){
+          EventUtils.addFavorite(eventData, favData);
+        });
+      }
     }
 
     function getExponent(eventId, exponentId){
