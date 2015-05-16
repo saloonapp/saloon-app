@@ -8,12 +8,19 @@
     var pluginName = 'Keyboard';
     var pluginTest = function(){ return $window.cordova && $window.cordova.plugins && $window.cordova.plugins.Keyboard; };
     var service = {
-      // TODO ...
+      hideFormAccessoryBar : hideFormAccessoryBar
     };
 
     return service;
+
+    function  hideFormAccessoryBar(){
+      return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+        $window.cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      });
+    }
   }
 
+ 
 
   /**************************
    *                        *
