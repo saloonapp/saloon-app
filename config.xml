@@ -3,7 +3,7 @@
   <name>dev-Saloon exploreur</name>
   <description>Optimisez vos événements !</description>
   <author email="loicknuchel@gmail.com" href="http://loic.knuchel.org/">Loïc Knuchel</author>
-  <content src="http://10.0.0.104:8100" original-src="index.html"/>
+  <content src="index.html"/>
   <access origin="*"/>
   <preference name="orientation" value="portrait"/>
   <preference name="webviewbounce" value="false"/>
