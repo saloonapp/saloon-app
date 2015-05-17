@@ -7,7 +7,7 @@
     .controller('EventSessionCtrl', EventSessionCtrl)
     .controller('EventExponentsCtrl', EventExponentsCtrl)
     .controller('EventExponentCtrl', EventExponentCtrl)
-    .controller('EventProgramCtrl', EventProgramCtrl);
+    .controller('EventScheduleCtrl', EventScheduleCtrl);
 
   function EventCtrl($scope, event, userData){
     var vm = {};
@@ -155,7 +155,7 @@
     }
   }
 
-  function EventProgramCtrl($scope, EventUtils, event, userData){
+  function EventScheduleCtrl($scope, EventUtils, event, userData){
     var vm = {};
     $scope.vm = vm;
 

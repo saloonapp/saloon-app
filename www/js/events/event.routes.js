@@ -85,19 +85,19 @@
           }
         }
       },
-      eventProgram: {
-        url: '/program',
+      eventSchedule: {
+        url: '/schedule',
         views: {
-          'program-tab': {
-            templateUrl: 'js/events/event-program.html',
-            controller: 'EventProgramCtrl'
+          'schedule-tab': {
+            templateUrl: 'js/events/event-schedule.html',
+            controller: 'EventScheduleCtrl'
           }
         }
       },
-      eventProgramSession: {
+      eventScheduleSession: {
         url: '/sessions/:sessionId',
         views: {
-          'program-tab': {
+          'schedule-tab': {
             templateUrl: 'js/events/event-session.html',
             controller: 'EventSessionCtrl'
           }
@@ -108,10 +108,10 @@
           }
         }
       },
-      eventProgramExponent: {
+      eventScheduleExponent: {
         url: '/exponents/:exponentId',
         views: {
-          'program-tab': {
+          'schedule-tab': {
             templateUrl: 'js/events/event-exponent.html',
             controller: 'EventExponentCtrl'
           }
@@ -132,8 +132,8 @@
       .state('app.event.session', routes.eventSession)
       .state('app.event.exponents', routes.eventExponents)
       .state('app.event.exponent', routes.eventExponent)
-      .state('app.event.program', routes.eventProgram)
-      .state('app.event.programSession', routes.eventProgramSession)
-      .state('app.event.programExponent', routes.eventProgramExponent);
+      .state('app.event.schedule', routes.eventSchedule)
+      .state('app.event.scheduleSession', routes.eventScheduleSession)
+      .state('app.event.scheduleExponent', routes.eventScheduleExponent);
   }
 })();
