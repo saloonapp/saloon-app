@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'btford.markdown'])
+  angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'btford.markdown', 'monospaced.elastic'])
     .config(configure)
     .run(runBlock);
 

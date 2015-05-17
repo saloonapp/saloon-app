@@ -29,8 +29,9 @@
       </div>
       <form ng-submit="vm.sendComment(vm.elt, vm.newComment)">
         <label class="item item-input item-floating-label item-writing" ng-class="{disabled: vm.commentSending}">
-          <textarea placeholder="Mes notes..." rows="3" ng-model="vm.newComment" ng-disabled="vm.commentSending"></textarea>
+          <textarea placeholder="Mes notes..." rows="3" msd-elastic="\n" ng-model="vm.newComment" ng-disabled="vm.commentSending"></textarea>
           <button class="button button-icon icon ion-paper-airplane"></button>
+          <ion-spinner></ion-spinner>
         </label>
       </form>
       <div class="item" ng-repeat="comment in vm.getComments(vm.elt) | orderBy:'updated':true">

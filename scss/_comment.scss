@@ -16,11 +16,20 @@
     position: relative;
     padding-bottom: 0;
     textarea { padding-right: 50px; }
-    .button {
+    .button, .spinner {
       position: absolute;
-      top: 5px;
+      bottom: 5px;
       right: 5px;
       color: #bbb;
+    }
+    .spinner {
+      display: none;
+      bottom: 10px;
+      right: 10px;
+    }
+    &.disabled {
+      .button   { display: none;  }
+      .spinner  { display: block; }
     }
   }
 }
