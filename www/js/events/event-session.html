@@ -34,9 +34,9 @@
           <ion-spinner></ion-spinner>
         </label>
       </form>
-      <div class="item" ng-repeat="comment in vm.getComments(vm.elt) | orderBy:'updated':true">
+      <div class="item item-comment" ng-repeat="comment in vm.getComments(vm.elt) | orderBy:'updated':true">
         <p>
-          <i class="icon pull-right" ng-class="{'ion-edit': comment !== vm.commentEdited, 'ion-close-round': comment === vm.commentEdited}"
+          <i class="icon edit-btn" ng-class="{'ion-edit': comment !== vm.commentEdited, 'ion-close-round': comment === vm.commentEdited}"
              ng-click="vm.toggleEditComment(comment)"></i>
           <b>{{comment.updated | commentDate}}</b>
         </p>
