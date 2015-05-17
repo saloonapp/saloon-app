@@ -17,5 +17,6 @@
   function runBlock(KeyboardPlugin){
     //hide "done, back, next" on iOS
     KeyboardPlugin.hideKeyboardAccessoryBar();
+    KeyboardPlugin.disableScroll(true);
   }
 })();

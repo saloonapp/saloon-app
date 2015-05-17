@@ -8,7 +8,8 @@
     var pluginName = 'Keyboard';
     var pluginTest = function(){ return $window.cordova && $window.cordova.plugins && $window.cordova.plugins.Keyboard; };
     var service = {
-      hideKeyboardAccessoryBar : hideKeyboardAccessoryBar
+      hideKeyboardAccessoryBar : hideKeyboardAccessoryBar,
+      disableScroll : disableScroll
     };
 
     return service;
@@ -16,6 +17,12 @@
     function  hideKeyboardAccessoryBar(){
       return PluginUtils.onReady(pluginName, pluginTest).then(function(){
         $window.cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      });
+    }
+
+    function disableScroll(shouldDisable){
+      return PluginUtils.onReady(pluginName, pluginTest).then(function(){
+        window.cordova.plugins.Keyboard.disableScroll(shouldDisable);
       });
     }
   }
