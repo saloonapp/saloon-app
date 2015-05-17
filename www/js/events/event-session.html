@@ -20,40 +20,6 @@
       </div>
     </div>
 
-    <div class="list card comment-card">
-      <div class="item item-divider">Mes commentaires :</div>
-      <div class="item row item-mood">
-        <div class="col bad" ng-class="{active: btn === 'ko'}" ng-click="btn = 'ko'"><i class="fa fa-frown-o"></i></div>
-        <div class="col middle" ng-class="{active: btn === 'bof'}" ng-click="btn = 'bof'"><i class="fa fa-meh-o"></i></div>
-        <div class="col good" ng-class="{active: btn === 'ok'}" ng-click="btn = 'ok'"><i class="fa fa-smile-o"></i></div>
-      </div>
-      <form ng-submit="vm.createComment(vm.elt, vm.newText)">
-        <label class="item item-input item-writing" ng-class="{disabled: vm.newCommentSaving}">
-          <textarea placeholder="Mes notes..." rows="3" msd-elastic="\n" ng-model="vm.newText" ng-disabled="vm.newCommentSaving"></textarea>
-          <button class="button button-icon icon ion-paper-airplane"></button>
-          <ion-spinner></ion-spinner>
-        </label>
-      </form>
-      <div class="item item-comment" ng-repeat="comment in vm.getComments(vm.elt) | orderBy:'updated':true">
-        <p>
-          <i class="icon edit-btn" ng-class="{'ion-edit': comment !== vm.commentEdited, 'ion-close-round': comment === vm.commentEdited}"
-             ng-click="vm.toggleEditComment(comment)"></i>
-          <b>{{comment.updated | commentDate}}</b>
-        </p>
-        <p class="multiline text" ng-show="comment !== vm.commentEdited">{{comment.action.text}}</p>
-
-        <form class="edit-form" ng-submit="vm.updateComment(comment, vm.editText)" ng-show="comment === vm.commentEdited">
-          <label>
-            <textarea rows="3" msd-elastic="\n" ng-model="vm.editText" ng-disabled="vm.editCommentSaving"></textarea>
-          </label>
-          <span class="pull-right">
-            <button class="button button-small button-stable" ng-click="vm.toggleEditComment(comment)" ng-disabled="vm.editCommentSaving">Annuler</button>
-            <button class="button button-small button-positive" ng-click="vm.updateComment(comment, vm.editText)"
-                    ng-disabled="!vm.editText || vm.editText === vm.commentEdited.action.text || vm.editCommentSaving">Enregistrer</button>
-          </span>
-          <button class="button button-small button-assertive" ng-click="vm.deleteComment(comment)" ng-disabled="vm.editCommentSaving">Supprimer</button>
-        </form>
-      </div>
-    </div>
+    <feedback-box user-data="vm.userData" elt="vm.elt"></feedback-box>
   </ion-content>
 </ion-view>
