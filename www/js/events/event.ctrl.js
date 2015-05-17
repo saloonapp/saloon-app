@@ -50,13 +50,18 @@
     vm.event = event;
     vm.elt = session;
     vm.favLoading = false;
-    vm.commentSending = false;
+    vm.newCommentSaving = false;
+    vm.editCommentSaving = false;
+    vm.commentEdited = undefined;
     vm.similar = [];
 
     vm.isFav = function(elt){ return EventUtils.isFavorite(userData, elt); };
     vm.getComments = function(elt){ return EventUtils.getComments(userData, elt); };
     vm.toggleFav = toggleFav;
-    vm.sendComment = sendComment;
+    vm.createComment = createComment;
+    vm.toggleEditComment = toggleEditComment;
+    vm.updateComment = updateComment;
+    vm.deleteComment = deleteComment;
 
     function toggleFav(elt){
       if(!vm.favLoading){
@@ -68,15 +73,50 @@
         });
       }
     }
-    function sendComment(elt, comment){
-      if(!vm.commentSending && comment){
-        vm.commentSending = true;
-        EventSrv.sendCommentSession(elt, comment).then(function(commentData){
+    function createComment(elt, newText){
+      if(!vm.newCommentSaving && newText){
+        vm.newCommentSaving = true;
+        EventSrv.createCommentSession(elt, newText).then(function(commentData){
           EventUtils.addComment(userData, commentData);
-          vm.commentSending = false;
-          vm.newComment = '';
+          vm.newCommentSaving = false;
+          vm.newText = '';
         }, function(){
-          vm.commentSending = false;
+          vm.newCommentSaving = false;
+        });
+      }
+    }
+    function toggleEditComment(comment){
+      if(vm.commentEdited === comment){
+        vm.commentEdited = undefined;
+        vm.editText = undefined;
+      } else {
+        vm.commentEdited = comment;
+        vm.editText = comment.action.text;
+      }
+    }
+    function updateComment(comment, editText){
+      if(!vm.editCommentSaving && editText && editText !== comment.action.text){
+        vm.editCommentSaving = true;
+        EventSrv.editCommentSession(comment, editText).then(function(commentData){
+          EventUtils.updateComment(userData, commentData);
+          vm.editCommentSaving = false;
+          vm.commentEdited = undefined;
+          vm.editText = undefined;
+        }, function(){
+          vm.editCommentSaving = false;
+        });
+      }
+    }
+    function deleteComment(comment){
+      if(!vm.editCommentSaving){
+        vm.editCommentSaving = true;
+        EventSrv.deleteCommentSession(comment).then(function(){
+          EventUtils.removeComment(userData, comment);
+          vm.editCommentSaving = false;
+          vm.commentEdited = undefined;
+          vm.editText = undefined;
+        }, function(){
+          vm.editCommentSaving = false;
         });
       }
     }

@@ -16,14 +16,21 @@
       getExponent: getExponent,
       getSession: getSession,
       getUserData: getUserData,
+
       favoriteSession: function(elt){ return favorite(elt, 'sessions'); },
       unfavoriteSession: function(elt){ return unfavorite(elt, 'sessions'); },
       toggleFavoriteSession: function(userData, elt){ return toggleFavorite(userData, elt, 'sessions'); },
+      createCommentSession: function(elt, comment){ return createComment(elt, 'sessions', comment); },
+      editCommentSession: function(comment, text){ return editComment(comment, text); },
+      deleteCommentSession: function(comment){ return deleteComment(comment); },
+
       favoriteExponent: function(elt){ return favorite(elt, 'exponents'); },
       unfavoriteExponent: function(elt){ return unfavorite(elt, 'exponents'); },
       toggleFavoriteExponent: function(userData, elt){ return toggleFavorite(userData, elt, 'exponents'); },
-      sendCommentSession: function(elt, comment){ return sendComment(elt, 'sessions', comment); },
-      sendCommentExponent: function(elt, comment){ return sendComment(elt, 'exponents', comment); },
+      createCommentExponent: function(elt, comment){ return createComment(elt, 'exponents', comment); },
+      editCommentExponent: function(comment, text){ return editComment(comment, text); },
+      deleteCommentExponent: function(comment){ return deleteComment(comment); },
+
       refreshEventList: refreshEventList,
       refreshEvent: refreshEvent
     };
@@ -50,13 +57,13 @@
       return UserSrv.getUser().then(function(user){
         return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/favorites', {}, {headers: {userId: user.uuid}}).then(function(res){
           return getUserData(elt.eventId).then(function(userData){
-            if(!EventUtils.isFavorite(userData, elt)){
-              userData.push(res.data);
+            if(EventUtils.isFavorite(userData, elt)){
+              return $q.when(res.data);
+            } else {
+              EventUtils.addFavorite(userData, res.data);
               return StorageUtils.set(key, userData).then(function(){
                 return res.data;
               });
-            } else {
-              return $q.when(res.data);
             }
           });
         });
@@ -68,7 +75,7 @@
       return UserSrv.getUser().then(function(user){
         return $http.delete(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/favorites', {headers: {userId: user.uuid}}).then(function(res){
           return getUserData(elt.eventId).then(function(userData){
-            _.remove(userData, {itemId: elt.uuid, action: {favorite: true}});
+            EventUtils.removeFavorite(userData, elt);
             return StorageUtils.set(key, userData);
           });
         });
@@ -87,15 +94,43 @@
       }
     }
 
-    function sendComment(elt, eltType, comment){
+    function createComment(elt, eltType, text){
       var key = userDataKey(elt.eventId);
       return UserSrv.getUser().then(function(user){
-        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/comments', {text: comment}, {headers: {userId: user.uuid}}).then(function(res){
+        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/comments', {text: text}, {headers: {userId: user.uuid}}).then(function(res){
           return getUserData(elt.eventId).then(function(userData){
-            userData.push(res.data);
+            EventUtils.addComment(userData, res.data);
             return StorageUtils.set(key, userData).then(function(){
               return res.data;
             });
+          });
+        });
+      });
+    }
+
+    function editComment(comment, text){
+      var key = userDataKey(comment.eventId);
+      return UserSrv.getUser().then(function(user){
+        var eltType = comment.itemType.toLowerCase();
+        return $http.put(Config.backendUrl+'/events/'+comment.eventId+'/'+eltType+'/'+comment.itemId+'/comments/'+comment.uuid, {text: text}, {headers: {userId: user.uuid}}).then(function(res){
+          return getUserData(comment.eventId).then(function(userData){
+            EventUtils.updateComment(userData, res.data);
+            return StorageUtils.set(key, userData).then(function(){
+              return res.data;
+            });
+          });
+        });
+      });
+    }
+
+    function deleteComment(comment){
+      var key = userDataKey(comment.eventId);
+      return UserSrv.getUser().then(function(user){
+        var eltType = comment.itemType.toLowerCase();
+        return $http.delete(Config.backendUrl+'/events/'+comment.eventId+'/'+eltType+'/'+comment.itemId+'/comments/'+comment.uuid, {headers: {userId: user.uuid}}).then(function(){
+          return getUserData(comment.eventId).then(function(userData){
+            EventUtils.removeComment(userData, comment);
+            return StorageUtils.set(key, userData);
           });
         });
       });
@@ -130,6 +165,8 @@
       addFavorite: addFavorite,
       removeFavorite: removeFavorite,
       addComment: addComment,
+      updateComment: updateComment,
+      removeComment: removeComment,
       getComments: getComments,
       getFavoriteExponents: getFavoriteExponents,
       getFavoriteSessions: getFavoriteSessions
@@ -150,6 +187,15 @@
 
     function addComment(userData, commentData){
       userData.push(commentData);
+    }
+
+    function updateComment(userData, commentData){
+      var oldComment = _.find(userData, {uuid: commentData.uuid, action: {comment: true}});
+      angular.extend(oldComment, commentData);
+    }
+
+    function removeComment(userData, comment){
+      return _.remove(userData, {uuid: comment.uuid, action: {comment: true}});
     }
 
     function getComments(userData, elt){
