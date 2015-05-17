@@ -17,19 +17,12 @@
       getSession: getSession,
       getUserData: getUserData,
 
-      favoriteSession: function(elt){ return favorite(elt, 'sessions'); },
-      unfavoriteSession: function(elt){ return unfavorite(elt, 'sessions'); },
-      toggleFavoriteSession: function(userData, elt){ return toggleFavorite(userData, elt, 'sessions'); },
-      createCommentSession: function(elt, comment){ return createComment(elt, 'sessions', comment); },
-      editCommentSession: function(comment, text){ return editComment(comment, text); },
-      deleteCommentSession: function(comment){ return deleteComment(comment); },
-
-      favoriteExponent: function(elt){ return favorite(elt, 'exponents'); },
-      unfavoriteExponent: function(elt){ return unfavorite(elt, 'exponents'); },
-      toggleFavoriteExponent: function(userData, elt){ return toggleFavorite(userData, elt, 'exponents'); },
-      createCommentExponent: function(elt, comment){ return createComment(elt, 'exponents', comment); },
-      editCommentExponent: function(comment, text){ return editComment(comment, text); },
-      deleteCommentExponent: function(comment){ return deleteComment(comment); },
+      favorite: favorite,
+      unfavorite: unfavorite,
+      toggleFavorite: toggleFavorite,
+      createComment: createComment,
+      editComment: editComment,
+      deleteComment: deleteComment,
 
       refreshEventList: refreshEventList,
       refreshEvent: refreshEvent

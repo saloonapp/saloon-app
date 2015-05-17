@@ -1,11 +1,7 @@
 <ion-view title="{{vm.elt.title}}">
   <ion-content>
     <div class="event-item-details">
-      <div class="pull-right fav" ng-class="{active: vm.isFav(vm.elt), loading: vm.favLoading}" ng-click="vm.toggleFav(vm.elt)">
-        <i class="icon ion-android-star-outline unstarred"></i>
-        <i class="icon ion-android-star starred"></i>
-        <ion-spinner></ion-spinner>
-      </div>
+      <favorite user-data="vm.userData" elt="vm.elt" elt-type="session" class="pull-right"></favorite>
       <h1>[{{vm.elt.format}}] {{vm.elt.title}}</h1>
       <h3 class="assertive">{{vm.elt.start | time}}-{{vm.elt.end | time}} @{{vm.elt.place | place}}</h3>
       <div btf-markdown="vm.elt.summary"></div>
@@ -20,6 +16,6 @@
       </div>
     </div>
 
-    <feedback-box user-data="vm.userData" elt="vm.elt"></feedback-box>
+    <feedback-box user-data="vm.userData" elt="vm.elt" elt-type="session"></feedback-box>
   </ion-content>
 </ion-view>

@@ -19,23 +19,6 @@
 
 .event-item-details {
   padding: 10px;
-  .fav {
-    width: 30px;
-    font-size: 40px;
-    margin-left: 5px;
-    margin-right: 15px;
-    .starred    { display: none; color: $energized; }
-    .unstarred  { color: #aaa; }
-    .spinner    { display: none; margin-top: 7px; }
-    &.active {
-      .starred    { display: block; }
-      .unstarred  { display: none;  }
-    }
-    &.loading {
-      .starred, .unstarred  { display: none;  }
-      .spinner              { display: block; }
-    }
-  }
   h1 {
     font-size: 20px;
     margin-top: 0px;

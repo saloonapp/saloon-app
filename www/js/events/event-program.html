@@ -9,12 +9,12 @@
   <ion-content class="has-subheader">
     <div class="list list-event-item">
       <div ng-repeat="elt in vm.getProgram() | filter:search | orderBy:vm.programOrder">
-        <div class="item item-icon-right" ng-class="{fav: vm.isFav(elt)}" ui-sref="app.event.session({sessionId: elt.uuid})" ng-if="elt.title">
+        <div class="item item-icon-right" ng-class="{fav: vm.isFavorite(elt)}" ui-sref="app.event.session({sessionId: elt.uuid})" ng-if="elt.title">
           <h2>{{elt.title}}</h2>
           <p class="multiline l3">{{elt.summary}}</p>
           <i class="icon ion-chevron-right icon-accessory"></i>
         </div>
-        <div class="item item-icon-right" ng-class="{fav: vm.isFav(elt)}" ui-sref="app.event.exponent({exponentId: elt.uuid})" ng-if="elt.name">
+        <div class="item item-icon-right" ng-class="{fav: vm.isFavorite(elt)}" ui-sref="app.event.exponent({exponentId: elt.uuid})" ng-if="elt.name">
           <h2>{{elt.name}}</h2>
           <p>{{elt.description}}</p>
           <i class="icon ion-chevron-right icon-accessory"></i>

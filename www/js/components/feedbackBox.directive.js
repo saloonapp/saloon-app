@@ -9,15 +9,15 @@
       templateUrl: 'js/components/feedbackBox.html',
       scope: {
         userData: '=userData',
-        elt: '=elt'
+        elt: '=elt',
+        eltType: '@eltType'
       },
       link: link
     };
     return directive;
 
     function link(scope, element, attrs){
-      if(!scope.elt){ console.error('Directive feedback-box need a "elt" argument ! (session or exponent)'); return; }
-      if(!scope.userData){ console.error('Directive feedback-box need a "userData" argument !'); return; }
+      if(!checkParams(scope)){ return; }
       var vm = {};
       scope.vm = vm;
 
@@ -35,7 +35,7 @@
       function createComment(elt, newText){
         if(!vm.newCommentSaving && newText){
           vm.newCommentSaving = true;
-          EventSrv.createCommentSession(elt, newText).then(function(commentData){
+          EventSrv.createComment(elt, getType(scope.eltType), newText).then(function(commentData){
             EventUtils.addComment(scope.userData, commentData);
             vm.newCommentSaving = false;
             vm.newText = '';
@@ -56,7 +56,7 @@
       function updateComment(comment, editText){
         if(!vm.editCommentSaving && editText && editText !== comment.action.text){
           vm.editCommentSaving = true;
-          EventSrv.editCommentSession(comment, editText).then(function(commentData){
+          EventSrv.editComment(comment, editText).then(function(commentData){
             EventUtils.updateComment(scope.userData, commentData);
             vm.editCommentSaving = false;
             vm.commentEdited = undefined;
@@ -69,7 +69,7 @@
       function deleteComment(comment){
         if(!vm.editCommentSaving){
           vm.editCommentSaving = true;
-          EventSrv.deleteCommentSession(comment).then(function(){
+          EventSrv.deleteComment(comment).then(function(){
             EventUtils.removeComment(scope.userData, comment);
             vm.editCommentSaving = false;
             vm.commentEdited = undefined;
@@ -80,5 +80,18 @@
         }
       }
     }
+  }
+
+  function checkParams(scope){
+    if(!scope.userData){ console.error('Directive "feedback-box" need a "userData" argument !'); return false; }
+    if(!scope.elt){ console.error('Directive "feedback-box" need a "elt" argument ! (session or exponent)'); return false; }
+    if(!scope.eltType){ console.error('Directive "feedback-box" need a "eltType" argument ! (session or exponent)'); return false; }
+    if(!getType(scope.eltType)){ console.error('Attribute "eltType" of directive "feedback-box" should be in : session, sessions, exponent, exponents !!!'); return false; }
+    return true;
+  }
+
+  function getType(eltType){
+    if(eltType === 'session' || eltType === 'sessions'){ return 'sessions'; }
+    else if(eltType === 'exponent' || eltType === 'exponents'){ return 'exponents'; }
   }
 })();
