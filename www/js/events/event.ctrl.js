@@ -50,11 +50,13 @@
     vm.event = event;
     vm.elt = session;
     vm.favLoading = false;
+    vm.commentSending = false;
     vm.similar = [];
-    vm.comments = EventUtils.getComments(userData, session);
 
     vm.isFav = function(elt){ return EventUtils.isFavorite(userData, elt); };
+    vm.getComments = function(elt){ return EventUtils.getComments(userData, elt); };
     vm.toggleFav = toggleFav;
+    vm.sendComment = sendComment;
 
     function toggleFav(elt){
       if(!vm.favLoading){
@@ -63,6 +65,18 @@
           vm.favLoading = false;
         }, function(){
           vm.favLoading = false;
+        });
+      }
+    }
+    function sendComment(elt, comment){
+      if(!vm.commentSending && comment){
+        vm.commentSending = true;
+        EventSrv.sendCommentSession(elt, comment).then(function(commentData){
+          EventUtils.addComment(userData, commentData);
+          vm.commentSending = false;
+          vm.newComment = '';
+        }, function(){
+          vm.commentSending = false;
         });
       }
     }

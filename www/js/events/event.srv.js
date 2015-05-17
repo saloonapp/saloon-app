@@ -22,6 +22,8 @@
       favoriteExponent: function(elt){ return favorite(elt, 'exponents'); },
       unfavoriteExponent: function(elt){ return unfavorite(elt, 'exponents'); },
       toggleFavoriteExponent: function(userData, elt){ return toggleFavorite(userData, elt, 'exponents'); },
+      sendCommentSession: function(elt, comment){ return sendComment(elt, 'sessions', comment); },
+      sendCommentExponent: function(elt, comment){ return sendComment(elt, 'exponents', comment); },
       refreshEventList: refreshEventList,
       refreshEvent: refreshEvent
     };
@@ -85,6 +87,20 @@
       }
     }
 
+    function sendComment(elt, eltType, comment){
+      var key = userDataKey(elt.eventId);
+      return UserSrv.getUser().then(function(user){
+        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/comments', {text: comment}, {headers: {userId: user.uuid}}).then(function(res){
+          return getUserData(elt.eventId).then(function(userData){
+            userData.push(res.data);
+            return StorageUtils.set(key, userData).then(function(){
+              return res.data;
+            });
+          });
+        });
+      });
+    }
+
     function getExponent(eventId, exponentId){
       return get(eventId).then(function(event){
         return _.find(event.exponents, {uuid: exponentId});
@@ -113,6 +129,7 @@
       isFavorite: isFavorite,
       addFavorite: addFavorite,
       removeFavorite: removeFavorite,
+      addComment: addComment,
       getComments: getComments,
       getFavoriteExponents: getFavoriteExponents,
       getFavoriteSessions: getFavoriteSessions
@@ -129,6 +146,10 @@
 
     function removeFavorite(userData, elt){
       return _.remove(userData, {itemId: elt.uuid, action: {favorite: true}});
+    }
+
+    function addComment(userData, commentData){
+      userData.push(commentData);
     }
 
     function getComments(userData, elt){

@@ -2,6 +2,8 @@
   'use strict';
   angular.module('app')
     .filter('place', place)
+    .filter('commentDate', commentDate)
+
     .filter('date', date)
     .filter('datetime', datetime)
     .filter('time', time)
@@ -10,11 +12,22 @@
     .filter('mynumber', mynumber)
     .filter('rating', rating);
 
+  // project filters
+
   function place(){
     return function(place){
       return place ? (place.name ? place.name : place.ref) : '';
     };
   }
+
+  function commentDate(Utils, moment){
+    return function(date, format){
+      var jsDate = Utils.toDate(date);
+      return jsDate ? moment(jsDate).format(format ? format : '[le] D MMM YYYY à HH:mm') : '';
+    };
+  }
+
+  // common filters
 
   function date(Utils, moment){
     return function(date, format){
