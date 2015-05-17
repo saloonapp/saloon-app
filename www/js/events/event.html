@@ -3,22 +3,11 @@
     <ion-nav-view name="infos-tab"></ion-nav-view>
   </ion-tab>
 
-  <ion-tab title="Participants" icon-on="ion-ios-people" icon-off="ion-ios-people-outline" ui-sref="app.event.people"
-           ng-if="vm.event.people && vm.event.people.length > 0">
-    <ion-nav-view name="users-tab"></ion-nav-view>
+  <ion-tab title="Programme" icon-on="ion-ios-list" icon-off="ion-ios-list-outline" ui-sref="app.event.program">
+    <ion-nav-view name="program-tab"></ion-nav-view>
   </ion-tab>
 
-  <ion-tab title="Sessions" icon-on="ion-ios-list" icon-off="ion-ios-list-outline" ui-sref="app.event.sessions"
-           ng-if="vm.event.sessions && vm.event.sessions.length > 0">
-    <ion-nav-view name="sessions-tab"></ion-nav-view>
-  </ion-tab>
-
-  <ion-tab title="Exposants" icon-on="ion-ios-briefcase" icon-off="ion-ios-briefcase-outline" ui-sref="app.event.exponents"
-           ng-if="vm.event.exponents && vm.event.exponents.length > 0">
-    <ion-nav-view name="exponents-tab"></ion-nav-view>
-  </ion-tab>
-
-  <ion-tab title="Ma Visite" icon-on="ion-ios-bookmarks" icon-off="ion-ios-bookmarks-outline" ui-sref="app.event.schedule" ng-if="true">
+  <ion-tab title="Ma Visite" icon-on="ion-ios-bookmarks" icon-off="ion-ios-bookmarks-outline" ui-sref="app.event.schedule">
     <ion-nav-view name="schedule-tab"></ion-nav-view>
   </ion-tab>
 </ion-tabs>

@@ -39,19 +39,19 @@
           }
         }
       },
-      eventSessions: {
-        url: '/sessions',
+      eventProgram: {
+        url: '/program',
         views: {
-          'sessions-tab': {
-            templateUrl: 'js/events/event-sessions.html',
-            controller: 'EventSessionsCtrl'
+          'program-tab': {
+            templateUrl: 'js/events/event-program.html',
+            controller: 'EventProgramCtrl'
           }
         }
       },
       eventSession: {
         url: '/sessions/:sessionId',
         views: {
-          'sessions-tab': {
+          'program-tab': {
             templateUrl: 'js/events/event-session.html',
             controller: 'EventSessionCtrl'
           }
@@ -62,19 +62,10 @@
           }
         }
       },
-      eventExponents: {
-        url: '/exponents',
-        views: {
-          'exponents-tab': {
-            templateUrl: 'js/events/event-exponents.html',
-            controller: 'EventExponentsCtrl'
-          }
-        }
-      },
       eventExponent: {
         url: '/exponents/:exponentId',
         views: {
-          'exponents-tab': {
+          'program-tab': {
             templateUrl: 'js/events/event-exponent.html',
             controller: 'EventExponentCtrl'
           }
@@ -128,9 +119,8 @@
       .state('app.events', routes.events)
       .state('app.event', routes.event)
       .state('app.event.infos', routes.eventInfo)
-      .state('app.event.sessions', routes.eventSessions)
+      .state('app.event.program', routes.eventProgram)
       .state('app.event.session', routes.eventSession)
-      .state('app.event.exponents', routes.eventExponents)
       .state('app.event.exponent', routes.eventExponent)
       .state('app.event.schedule', routes.eventSchedule)
       .state('app.event.scheduleSession', routes.eventScheduleSession)

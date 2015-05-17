@@ -3,9 +3,8 @@
   angular.module('app')
     .controller('EventCtrl', EventCtrl)
     .controller('EventInfosCtrl', EventInfosCtrl)
-    .controller('EventSessionsCtrl', EventSessionsCtrl)
+    .controller('EventProgramCtrl', EventProgramCtrl)
     .controller('EventSessionCtrl', EventSessionCtrl)
-    .controller('EventExponentsCtrl', EventExponentsCtrl)
     .controller('EventExponentCtrl', EventExponentCtrl)
     .controller('EventScheduleCtrl', EventScheduleCtrl);
 
@@ -35,11 +34,14 @@
     }
   }
 
-  function EventSessionsCtrl($scope, EventUtils, event, userData){
+  function EventProgramCtrl($scope, EventUtils, event, userData){
     var vm = {};
     $scope.vm = vm;
 
     vm.event = event;
+
+    vm.getProgram = function(){ return [].concat(event.sessions, event.exponents); };
+    vm.programOrder = function(elt){ return elt.name ? elt.name : elt.title; };
     vm.isFav = function(elt){ return EventUtils.isFavorite(userData, elt); };
   }
 
@@ -120,14 +122,6 @@
         });
       }
     }
-  }
-
-  function EventExponentsCtrl($scope, EventUtils, event, userData){
-    var vm = {};
-    $scope.vm = vm;
-
-    vm.event = event;
-    vm.isFav = function(elt){ return EventUtils.isFavorite(userData, elt); };
   }
 
   function EventExponentCtrl($scope, EventSrv, EventUtils, event, userData, exponent){

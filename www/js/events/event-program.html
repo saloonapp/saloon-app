@@ -1,0 +1,25 @@
+<ion-view title="Programme">
+  <div class="bar bar-subheader has-tabs-top item-input-inset">
+    <label class="item-input-wrapper">
+      <i class="icon ion-search placeholder-icon"></i>
+      <input type="search" placeholder="Rechercher ..." ng-model="search">
+    </label>
+    <button class="button button-clear" ng-click="search=''">Annuler</button>
+  </div>
+  <ion-content class="has-subheader">
+    <div class="list list-event-item">
+      <div ng-repeat="elt in vm.getProgram() | filter:search | orderBy:vm.programOrder">
+        <div class="item item-icon-right" ng-class="{fav: vm.isFav(elt)}" ui-sref="app.event.session({sessionId: elt.uuid})" ng-if="elt.title">
+          <h2>{{elt.title}}</h2>
+          <p class="multiline l3">{{elt.summary}}</p>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </div>
+        <div class="item item-icon-right" ng-class="{fav: vm.isFav(elt)}" ui-sref="app.event.exponent({exponentId: elt.uuid})" ng-if="elt.name">
+          <h2>{{elt.name}}</h2>
+          <p>{{elt.description}}</p>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
