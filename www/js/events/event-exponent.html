@@ -6,6 +6,7 @@
       <h3 class="assertive">@{{vm.elt.place | place}}</h3>
       <div btf-markdown="vm.elt.description"></div>
     </div>
-    <!--<pre>{{vm.elt | json}}</pre>-->
+
+    <feedback-box user-data="vm.userData" elt="vm.elt" elt-type="exponent"></feedback-box>
   </ion-content>
 </ion-view>
