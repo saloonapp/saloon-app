@@ -22,16 +22,30 @@
       scope.vm = vm;
 
       vm.elt = scope.elt;
+      vm.moodSaving = false;
       vm.newCommentSaving = false;
       vm.editCommentSaving = false;
       vm.commentEdited = undefined;
 
+      vm.isMood = function(elt, mood){ return EventUtils.isMood(scope.userData, elt, mood); };
+      vm.setMood = setMood;
       vm.getComments = function(elt){ return EventUtils.getComments(scope.userData, elt); };
       vm.createComment = createComment;
       vm.toggleEditComment = toggleEditComment;
       vm.updateComment = updateComment;
       vm.deleteComment = deleteComment;
 
+      function setMood(elt, mood){
+        if(!vm.moodSaving){
+          vm.moodSaving = true;
+          EventSrv.setMood(elt, getType(scope.eltType), mood).then(function(moodData){
+            EventUtils.setMood(scope.userData, moodData);
+            vm.moodSaving = false;
+          }, function(){
+            vm.moodSaving = false;
+          });
+        }
+      }
       function createComment(elt, newText){
         if(!vm.newCommentSaving && newText){
           vm.newCommentSaving = true;

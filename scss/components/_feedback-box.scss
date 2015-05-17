@@ -11,6 +11,9 @@
       &.good { color: $balanced; }
       &.good.active { color: $light; background-color: $balanced; }
     }
+    &.loading .col {
+      &.bad, &.middle, &.good { color: $dark; }
+    }
   }
   .item-writing {
     position: relative;

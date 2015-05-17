@@ -1,9 +1,9 @@
 <div class="list card feedback-box">
   <div class="item item-divider">Mes commentaires :</div>
-  <div class="item row item-mood">
-    <div class="col bad" ng-class="{active: btn === 'ko'}" ng-click="btn = 'ko'"><i class="fa fa-frown-o"></i></div>
-    <div class="col middle" ng-class="{active: btn === 'bof'}" ng-click="btn = 'bof'"><i class="fa fa-meh-o"></i></div>
-    <div class="col good" ng-class="{active: btn === 'ok'}" ng-click="btn = 'ok'"><i class="fa fa-smile-o"></i></div>
+  <div class="item row item-mood" ng-class="{loading: vm.moodSaving}">
+    <div class="col bad" ng-class="{active: vm.isMood(vm.elt, 'ko')}" ng-click="vm.setMood(vm.elt, 'ko')"><i class="fa fa-frown-o"></i></div>
+    <div class="col middle" ng-class="{active: vm.isMood(vm.elt, 'bof')}" ng-click="vm.setMood(vm.elt, 'bof')"><i class="fa fa-meh-o"></i></div>
+    <div class="col good" ng-class="{active: vm.isMood(vm.elt, 'ok')}" ng-click="vm.setMood(vm.elt, 'ok')"><i class="fa fa-smile-o"></i></div>
   </div>
   <form ng-submit="vm.createComment(vm.elt, vm.newText)">
     <label class="item item-input item-writing" ng-class="{disabled: vm.newCommentSaving}">

@@ -20,6 +20,7 @@
       favorite: favorite,
       unfavorite: unfavorite,
       toggleFavorite: toggleFavorite,
+      setMood: setMood,
       createComment: createComment,
       editComment: editComment,
       deleteComment: deleteComment,
@@ -85,6 +86,20 @@
           EventUtils.addFavorite(userData, favData);
         });
       }
+    }
+
+    function setMood(elt, eltType, rating){
+      var key = userDataKey(elt.eventId);
+      return UserSrv.getUser().then(function(user){
+        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/mood', {rating: rating}, {headers: {userId: user.uuid}}).then(function(res){
+          return getUserData(elt.eventId).then(function(userData){
+            EventUtils.setMood(userData, res.data);
+            return StorageUtils.set(key, userData).then(function(){
+              return res.data;
+            });
+          });
+        });
+      });
     }
 
     function createComment(elt, eltType, text){
@@ -157,6 +172,8 @@
       isFavorite: isFavorite,
       addFavorite: addFavorite,
       removeFavorite: removeFavorite,
+      isMood: isMood,
+      setMood: setMood,
       addComment: addComment,
       updateComment: updateComment,
       removeComment: removeComment,
@@ -176,6 +193,20 @@
 
     function removeFavorite(userData, elt){
       return _.remove(userData, {itemId: elt.uuid, action: {favorite: true}});
+    }
+
+    function isMood(userData, elt, mood){
+      var data = _.find(userData, {itemId: elt.uuid, action: {mood: true}});
+      return data !== undefined && data.action.rating === mood;
+    }
+
+    function setMood(userData, moodData){
+      var oldMood = _.find(userData, {uuid: moodData.uuid, action: {mood: true}});
+      if(oldMood){
+        angular.extend(oldMood, moodData);
+      } else {
+        userData.push(moodData);
+      }
     }
 
     function addComment(userData, commentData){
