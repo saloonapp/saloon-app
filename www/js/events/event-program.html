@@ -8,17 +8,12 @@
   </div>
   <ion-content class="has-subheader">
     <div class="list list-event-item">
-      <div class="item item-icon-right" ng-class="{fav: vm.isFavorite(elt)}" collection-repeat="elt in vm.getProgram() | filter:search | orderBy:vm.programOrder">
-        <div ui-sref="app.event.session({sessionId: elt.uuid})" ng-if="elt.title" style="height: 59px;">
-          <h2>{{elt.title}}</h2>
-          <p class="multiline l2">{{elt.summary}}</p>
-          <i class="icon ion-chevron-right icon-accessory"></i>
-        </div>
-        <div ui-sref="app.event.exponent({exponentId: elt.uuid})" ng-if="elt.name" style="height: 59px;">
-          <h2>{{elt.name}}</h2>
-          <p class="multiline l2">{{elt.description}}</p>
-          <i class="icon ion-chevron-right icon-accessory"></i>
-        </div>
+      <div class="item item-icon-right" ng-class="{fav: vm.isFavorite(elt)}"
+           collection-repeat="elt in vm.getProgram() | filter:search | orderBy:'name'"
+           ng-click="vm.goProgramElt(elt)">
+        <h2>{{elt.name}}</h2>
+        <p class="multiline l2">{{elt.description}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
       </div>
     </div>
   </ion-content>
