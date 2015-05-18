@@ -36,7 +36,7 @@
 
     function get(eventId){
       var key = eventKey(eventId);
-      return DataUtils.getOrFetch(key, '/events/'+eventId+'/full');
+      return DataUtils.getOrFetch(key, '/events/'+eventId+'/full', false, _formatEvent);
     }
 
     function getUserData(eventId){
@@ -162,7 +162,23 @@
 
     function refreshEvent(eventId){
       var key = eventKey(eventId);
-      return DataUtils.refresh(key, '/events/'+eventId+'/full');
+      return DataUtils.refresh(key, '/events/'+eventId+'/full', false, _formatEvent);
+    }
+
+    // TODO : remove this function when changes are made in the backend !!!
+    function _formatEvent(event){
+      event.className = 'events';
+      _.map(event.sessions, function(session){
+        session.className = 'sessions';
+        session.name = session.name ? session.name : session.title;
+        session.description = session.description ? session.description : session.summary;
+        delete session.title;
+        delete session.summary;
+      });
+      _.map(event.exponents, function(exponent){
+        exponent.className = 'exponents';
+      });
+      return event;
     }
   }
 

@@ -8,7 +8,7 @@
   </div>
   <ion-content class="has-subheader">
     <div class="list list-event-item">
-      <div class="item item-icon-right" ng-class="{fav: vm.isFavorite(elt)}"
+      <div class="item item-icon-right" ng-class="{fav: vm.isFavorite(elt)}" item-height="96px"
            collection-repeat="elt in vm.getProgram() | filter:search | orderBy:'name'"
            ng-click="vm.goProgramElt(elt)">
         <h2>{{elt.name}}</h2>

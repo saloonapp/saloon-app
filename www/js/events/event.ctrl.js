@@ -40,28 +40,14 @@
 
     vm.event = event;
 
-    vm.getProgram = getProgram;
+    vm.getProgram = function(){ return [].concat(event.sessions, event.exponents); };
     vm.goProgramElt = goProgramElt;
     vm.programOrder = function(elt){ return elt.name ? elt.name : elt.title; };
     vm.isFavorite = function(elt){ return elt ? EventUtils.isFavorite(userData, elt) : false; };
 
-    function getProgram(){
-      return [].concat(
-        _.map(event.sessions, function(elt){
-          elt.className = 'Sessions';
-          elt.name = elt.title;
-          elt.description = elt.summary;
-          return elt;
-        }),
-        _.map(event.exponents, function(elt){
-          elt.className = 'Exponents';
-          return elt;
-        })
-      );
-    }
     function goProgramElt(elt){
-      if(elt.className === 'Sessions'){ $state.go('app.event.session', {sessionId: elt.uuid}); }
-      else if(elt.className === 'Exponents'){ $state.go('app.event.exponent', {exponentId: elt.uuid}); }
+      if(elt.className === 'sessions'){ $state.go('app.event.session', {sessionId: elt.uuid}); }
+      else if(elt.className === 'exponents'){ $state.go('app.event.exponent', {exponentId: elt.uuid}); }
       else { console.error('Unknown elt', elt); }
     }
   }
