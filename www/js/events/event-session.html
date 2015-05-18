@@ -8,11 +8,12 @@
     </div>
 
     <div class="list" ng-if="vm.similar && vm.similar.length > 0">
-      <div class="item item-divider">Sessions similaires :</div>
-      <div class="item" ng-repeat="session in vm.similar"
-           ui-sref="app.event.session({sessionId: session.uuid})">
-        <h2>[{{session.format}}] {{session.name}}</h2>
-        <p class="multiline l3">{{session.description}}</p>
+      <div class="item item-divider">A voir aussi :</div>
+      <!-- TODO : generic ui-sref (for sessions & exponents) -->
+      <div class="item" ng-repeat="elt in vm.similar"
+           ui-sref="app.event.session({sessionId: elt.uuid})">
+        <h2>{{elt.name}}</h2>
+        <p class="multiline l3">{{elt.description}}</p>
       </div>
     </div>
 
