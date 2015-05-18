@@ -1,16 +1,16 @@
 <ion-view title="Ma Visite">
   <ion-content>
-    <div class="list list-event-item">
-      <div class="item item-icon-right" ng-repeat="session in vm.sessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
+    <div class="list">
+      <div class="item" ng-repeat="session in vm.sessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
         <h2>{{session.title}}</h2>
         <p>{{session.summary}}</p>
-        <i class="icon ion-chevron-right icon-accessory"></i>
       </div>
-      
-      <div class="item item-icon-right" ng-repeat="exponent in vm.exponents" ui-sref="app.event.scheduleExponent({exponentId: exponent.uuid})">
+    </div>
+
+    <div class="list">
+      <div class="item" ng-repeat="exponent in vm.exponents" ui-sref="app.event.scheduleExponent({exponentId: exponent.uuid})">
         <h2>{{exponent.name}}</h2>
         <p>{{exponent.description}}</p>
-        <i class="icon ion-chevron-right icon-accessory"></i>
       </div>
     </div>
   </ion-content>
