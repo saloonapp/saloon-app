@@ -42,7 +42,7 @@
 
     vm.getProgram = function(){ return [].concat(event.sessions, event.exponents); };
     vm.programOrder = function(elt){ return elt.name ? elt.name : elt.title; };
-    vm.isFavorite = function(elt){ return EventUtils.isFavorite(userData, elt); };
+    vm.isFavorite = function(elt){ return elt ? EventUtils.isFavorite(userData, elt) : false; };
   }
 
   function EventSessionCtrl($scope, userData, session){
