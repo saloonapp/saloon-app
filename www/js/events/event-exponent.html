@@ -1,12 +1,12 @@
 <ion-view title="{{vm.elt.name}}">
   <ion-content>
     <div class="event-item-details">
-      <favorite user-data="vm.userData" elt="vm.elt" elt-type="exponent" class="pull-right"></favorite>
+      <favorite user-data="vm.userData" elt="vm.elt" class="pull-right"></favorite>
       <h1>{{vm.elt.name}}</h1>
       <h3 class="assertive">@{{vm.elt.place | place}}</h3>
       <div btf-markdown="vm.elt.description"></div>
     </div>
 
-    <feedback-box user-data="vm.userData" elt="vm.elt" elt-type="exponent"></feedback-box>
+    <feedback-box user-data="vm.userData" elt="vm.elt"></feedback-box>
   </ion-content>
 </ion-view>

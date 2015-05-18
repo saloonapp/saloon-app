@@ -1,21 +1,21 @@
-<ion-view title="{{vm.elt.title}}">
+<ion-view title="{{vm.elt.name}}">
   <ion-content>
     <div class="event-item-details">
-      <favorite user-data="vm.userData" elt="vm.elt" elt-type="session" class="pull-right"></favorite>
-      <h1>[{{vm.elt.format}}] {{vm.elt.title}}</h1>
+      <favorite user-data="vm.userData" elt="vm.elt" class="pull-right"></favorite>
+      <h1>[{{vm.elt.format}}] {{vm.elt.name}}</h1>
       <h3 class="assertive">{{vm.elt.start | time}}-{{vm.elt.end | time}} @{{vm.elt.place | place}}</h3>
-      <div btf-markdown="vm.elt.summary"></div>
+      <div btf-markdown="vm.elt.description"></div>
     </div>
 
     <div class="list" ng-if="vm.similar && vm.similar.length > 0">
       <div class="item item-divider">Sessions similaires :</div>
       <div class="item" ng-repeat="session in vm.similar"
            ui-sref="app.event.session({sessionId: session.uuid})">
-        <h2>[{{session.format}}] {{session.title}}</h2>
-        <p class="multiline l3">{{session.summary}}</p>
+        <h2>[{{session.format}}] {{session.name}}</h2>
+        <p class="multiline l3">{{session.description}}</p>
       </div>
     </div>
 
-    <feedback-box user-data="vm.userData" elt="vm.elt" elt-type="session"></feedback-box>
+    <feedback-box user-data="vm.userData" elt="vm.elt"></feedback-box>
   </ion-content>
 </ion-view>

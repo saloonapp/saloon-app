@@ -46,10 +46,10 @@
       });
     }
 
-    function favorite(elt, eltType){
+    function favorite(elt){
       var key = userDataKey(elt.eventId);
       return UserSrv.getUser().then(function(user){
-        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/favorites', {}, {headers: {userId: user.uuid}}).then(function(res){
+        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+elt.className+'/'+elt.uuid+'/favorites', {}, {headers: {userId: user.uuid}}).then(function(res){
           return getUserData(elt.eventId).then(function(userData){
             if(EventUtils.isFavorite(userData, elt)){
               return $q.when(res.data);
@@ -64,10 +64,10 @@
       });
     }
 
-    function unfavorite(elt, eltType){
+    function unfavorite(elt){
       var key = userDataKey(elt.eventId);
       return UserSrv.getUser().then(function(user){
-        return $http.delete(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/favorites', {headers: {userId: user.uuid}}).then(function(res){
+        return $http.delete(Config.backendUrl+'/events/'+elt.eventId+'/'+elt.className+'/'+elt.uuid+'/favorites', {headers: {userId: user.uuid}}).then(function(res){
           return getUserData(elt.eventId).then(function(userData){
             EventUtils.removeFavorite(userData, elt);
             return StorageUtils.set(key, userData);
@@ -76,22 +76,22 @@
       });
     }
 
-    function toggleFavorite(userData, elt, eltType){
+    function toggleFavorite(userData, elt){
       if(EventUtils.isFavorite(userData, elt)){
-        return unfavorite(elt, eltType).then(function(){
+        return unfavorite(elt).then(function(){
           EventUtils.removeFavorite(userData, elt);
         });
       } else {
-        return favorite(elt, eltType).then(function(favData){
+        return favorite(elt).then(function(favData){
           EventUtils.addFavorite(userData, favData);
         });
       }
     }
 
-    function setMood(elt, eltType, rating){
+    function setMood(elt, rating){
       var key = userDataKey(elt.eventId);
       return UserSrv.getUser().then(function(user){
-        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/mood', {rating: rating}, {headers: {userId: user.uuid}}).then(function(res){
+        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+elt.className+'/'+elt.uuid+'/mood', {rating: rating}, {headers: {userId: user.uuid}}).then(function(res){
           return getUserData(elt.eventId).then(function(userData){
             EventUtils.setMood(userData, res.data);
             return StorageUtils.set(key, userData).then(function(){
@@ -102,10 +102,10 @@
       });
     }
 
-    function createComment(elt, eltType, text){
+    function createComment(elt, text){
       var key = userDataKey(elt.eventId);
       return UserSrv.getUser().then(function(user){
-        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+eltType+'/'+elt.uuid+'/comments', {text: text}, {headers: {userId: user.uuid}}).then(function(res){
+        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+elt.className+'/'+elt.uuid+'/comments', {text: text}, {headers: {userId: user.uuid}}).then(function(res){
           return getUserData(elt.eventId).then(function(userData){
             EventUtils.addComment(userData, res.data);
             return StorageUtils.set(key, userData).then(function(){

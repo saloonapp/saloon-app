@@ -2,8 +2,8 @@
   <ion-content>
     <div class="list">
       <div class="item" ng-repeat="session in vm.sessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
-        <h2>{{session.title}}</h2>
-        <p>{{session.summary}}</p>
+        <h2>{{session.name}}</h2>
+        <p>{{session.description}}</p>
       </div>
     </div>
 

@@ -1,16 +1,15 @@
 (function(){
   'use strict';
   angular.module('app')
-    .directive('favorite', favorite);
+    .directive('favorite', favoriteDirective);
 
-  function favorite(EventSrv, EventUtils){
+  function favoriteDirective(EventSrv, EventUtils){
     var directive = {
       restrict: 'E',
       templateUrl: 'js/components/favorite.html',
       scope: {
         userData: '=userData',
-        elt: '=elt',
-        eltType: '@eltType'
+        elt: '=elt'
       },
       link: link
     };
@@ -30,7 +29,7 @@
       function toggleFavorite(elt){
         if(!vm.favoriteLoading){
           vm.favoriteLoading = true;
-          EventSrv.toggleFavorite(scope.userData, elt, getType(scope.eltType)).then(function(){
+          EventSrv.toggleFavorite(scope.userData, elt).then(function(){
             vm.favoriteLoading = false;
           }, function(){
             vm.favoriteLoading = false;
@@ -43,13 +42,6 @@
   function checkParams(scope){
     if(!scope.userData){ console.error('Directive "favorite" need a "userData" argument !'); return false; }
     if(!scope.elt){ console.error('Directive "favorite" need a "elt" argument ! (session or exponent)'); return false; }
-    if(!scope.eltType){ console.error('Directive "favorite" need a "eltType" argument ! (session or exponent)'); return false; }
-    if(!getType(scope.eltType)){ console.error('Attribute "eltType" of directive "favorite" should be in : session, sessions, exponent, exponents !!!'); return false; }
     return true;
-  }
-
-  function getType(eltType){
-    if(eltType === 'session' || eltType === 'sessions'){ return 'sessions'; }
-    else if(eltType === 'exponent' || eltType === 'exponents'){ return 'exponents'; }
   }
 })();

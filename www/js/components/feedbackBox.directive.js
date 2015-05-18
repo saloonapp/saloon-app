@@ -1,16 +1,15 @@
 (function(){
   'use strict';
   angular.module('app')
-    .directive('feedbackBox', feedbackBox);
+    .directive('feedbackBox', feedbackBoxDirective);
 
-  function feedbackBox(EventSrv, EventUtils){
+  function feedbackBoxDirective(EventSrv, EventUtils){
     var directive = {
       restrict: 'E',
       templateUrl: 'js/components/feedbackBox.html',
       scope: {
         userData: '=userData',
-        elt: '=elt',
-        eltType: '@eltType'
+        elt: '=elt'
       },
       link: link
     };
@@ -38,7 +37,7 @@
       function setMood(elt, mood){
         if(!vm.moodSaving){
           vm.moodSaving = true;
-          EventSrv.setMood(elt, getType(scope.eltType), mood).then(function(moodData){
+          EventSrv.setMood(elt, mood).then(function(moodData){
             EventUtils.setMood(scope.userData, moodData);
             vm.moodSaving = false;
           }, function(){
@@ -49,7 +48,7 @@
       function createComment(elt, newText){
         if(!vm.newCommentSaving && newText){
           vm.newCommentSaving = true;
-          EventSrv.createComment(elt, getType(scope.eltType), newText).then(function(commentData){
+          EventSrv.createComment(elt, newText).then(function(commentData){
             EventUtils.addComment(scope.userData, commentData);
             vm.newCommentSaving = false;
             vm.newText = '';
@@ -99,13 +98,6 @@
   function checkParams(scope){
     if(!scope.userData){ console.error('Directive "feedback-box" need a "userData" argument !'); return false; }
     if(!scope.elt){ console.error('Directive "feedback-box" need a "elt" argument ! (session or exponent)'); return false; }
-    if(!scope.eltType){ console.error('Directive "feedback-box" need a "eltType" argument ! (session or exponent)'); return false; }
-    if(!getType(scope.eltType)){ console.error('Attribute "eltType" of directive "feedback-box" should be in : session, sessions, exponent, exponents !!!'); return false; }
     return true;
-  }
-
-  function getType(eltType){
-    if(eltType === 'session' || eltType === 'sessions'){ return 'sessions'; }
-    else if(eltType === 'exponent' || eltType === 'exponents'){ return 'exponents'; }
   }
 })();
