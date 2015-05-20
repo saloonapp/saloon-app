@@ -3,7 +3,7 @@
     <ion-refresher pulling-text="Pull to refresh..." on-refresh="vm.doRefresh()"></ion-refresher>
     <div class="list">
       <div class="item item-thumbnail-left item-icon-right" ng-repeat="event in vm.events | orderBy:'start':true" ui-sref="app.event.infos({eventId: event.uuid})">
-        <img ng-src="{{event.logo}}">
+        <img ng-src="{{event.image}}">
         <h2>{{event.name}}</h2>
         <p class="multiline l2">{{event.description}}</p>
         <p>{{event.start | date}}</p>
