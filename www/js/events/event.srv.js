@@ -4,8 +4,8 @@
     .factory('EventSrv', EventSrv)
     .factory('EventUtils', EventUtils);
 
-  EventSrv.$inject = ['$q', '$http', 'UserSrv', 'EventUtils', 'DataUtils', 'StorageUtils', 'Config', '_'];
-  function EventSrv($q, $http, UserSrv, EventUtils, DataUtils, StorageUtils, Config, _){
+  EventSrv.$inject = ['$q', '$http', 'UserSrv', 'UserActionSync', 'EventUtils', 'DataUtils', 'StorageUtils', 'Config', '_'];
+  function EventSrv($q, $http, UserSrv, UserActionSync, EventUtils, DataUtils, StorageUtils, Config, _){
     var storageKey = 'events';
     function eventKey(eventId){ return storageKey+'-'+eventId; }
     function userDataKey(eventId){ return storageKey+'-'+eventId+'-userData'; }
@@ -47,6 +47,19 @@
     }
 
     function favorite(elt){
+      /*var actionCfg = {
+        action: 'favorite',
+        elt: elt,
+        tmpAction: {
+          eventId: elt.eventId,
+          itemType: elt.className,
+          itemId: elt.uuid,
+          action: {favorite: true}
+        }
+      }
+      UserActionSync.put(actionCfg);
+      return $q.when(actionCfg.tmpAction);*/
+
       var key = userDataKey(elt.eventId);
       return UserSrv.getUser().then(function(user){
         return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+elt.className+'/'+elt.uuid+'/favorites', {}, {headers: {userId: user.uuid}}).then(function(res){
@@ -227,13 +240,13 @@
     }
 
     function getFavoriteExponents(event, userData){
-      return _.map(_.filter(userData.actions, {itemType: 'Exponents', action: {favorite: true}}), function(item){
+      return _.map(_.filter(userData.actions, {itemType: 'exponents', action: {favorite: true}}), function(item){
         return _.find(event.exponents, {uuid: item.itemId});
       });
     }
 
     function getFavoriteSessions(event, userData){
-      return _.map(_.filter(userData.actions, {itemType: 'Sessions', action: {favorite: true}}), function(item){
+      return _.map(_.filter(userData.actions, {itemType: 'sessions', action: {favorite: true}}), function(item){
         return _.find(event.sessions, {uuid: item.itemId});
       });
     }
