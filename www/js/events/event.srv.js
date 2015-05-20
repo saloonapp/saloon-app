@@ -47,19 +47,17 @@
     }
 
     function favorite(elt){
-      /*var actionCfg = {
-        action: 'favorite',
-        elt: elt,
-        tmpAction: {
-          eventId: elt.eventId,
-          itemType: elt.className,
-          itemId: elt.uuid,
-          action: {favorite: true}
+      /*return UserSrv.getUser().then(function(user){
+        var actionCfg = {
+          action: 'favorite',
+          elt: {eventId: elt.eventId, className: elt.className, uuid: elt.uuid},
+          userId: user.uuid,
+          storageKey: userDataKey(elt.eventId),
+          tmpAction: {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, action: {favorite: true}}
         }
-      }
-      UserActionSync.put(actionCfg);
-      return $q.when(actionCfg.tmpAction);*/
-
+        UserActionSync.put(actionCfg);
+        return angular.copy(actionCfg.tmpAction);
+      });*/
       var key = userDataKey(elt.eventId);
       return UserSrv.getUser().then(function(user){
         return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+elt.className+'/'+elt.uuid+'/favorites', {}, {headers: {userId: user.uuid}}).then(function(res){
@@ -67,7 +65,7 @@
             if(EventUtils.isFavorite(userData, elt)){
               return $q.when(res.data);
             } else {
-              EventUtils.addFavorite(userData, res.data);
+              EventUtils.setFavorite(userData, res.data);
               return StorageUtils.set(key, userData).then(function(){
                 return res.data;
               });
@@ -96,7 +94,7 @@
         });
       } else {
         return favorite(elt).then(function(favData){
-          EventUtils.addFavorite(userData, favData);
+          EventUtils.setFavorite(userData, favData);
         });
       }
     }
@@ -183,7 +181,7 @@
   function EventUtils(_){
     var service = {
       isFavorite: isFavorite,
-      addFavorite: addFavorite,
+      setFavorite: setFavorite,
       removeFavorite: removeFavorite,
       isMood: isMood,
       setMood: setMood,
@@ -200,8 +198,18 @@
       return _.find(userData.actions, {itemId: elt.uuid, action: {favorite: true}}) !== undefined;
     }
 
-    function addFavorite(userData, favData){
-      userData.actions.push(favData);
+    function setFavorite(userData, favData){
+      var oldFavorite = _.find(userData.actions, {
+        eventId: favData.eventId,
+        itemType: favData.itemType,
+        itemId: favData.itemId,
+        action: {favorite: true}
+      });
+      if(oldFavorite){
+        angular.extend(oldFavorite, favData);
+      } else {
+        userData.actions.push(favData);
+      }
     }
 
     function removeFavorite(userData, elt){
@@ -218,7 +226,7 @@
       if(oldMood){
         angular.extend(oldMood, moodData);
       } else {
-        userData.push(moodData);
+        userData.actions.push(moodData);
       }
     }
 
