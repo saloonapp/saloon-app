@@ -8,7 +8,7 @@
     .controller('EventExponentCtrl', EventExponentCtrl)
     .controller('EventScheduleCtrl', EventScheduleCtrl);
 
-  function EventCtrl($scope, event, userData){
+  function EventCtrl($scope, event){
     var vm = {};
     $scope.vm = vm;
 

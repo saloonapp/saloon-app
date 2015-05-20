@@ -184,24 +184,24 @@
     return service;
 
     function isFavorite(userData, elt){
-      return _.find(userData, {itemId: elt.uuid, action: {favorite: true}}) !== undefined;
+      return _.find(userData.actions, {itemId: elt.uuid, action: {favorite: true}}) !== undefined;
     }
 
     function addFavorite(userData, favData){
-      userData.push(favData);
+      userData.actions.push(favData);
     }
 
     function removeFavorite(userData, elt){
-      return _.remove(userData, {itemId: elt.uuid, action: {favorite: true}});
+      return _.remove(userData.actions, {itemId: elt.uuid, action: {favorite: true}});
     }
 
     function isMood(userData, elt, mood){
-      var data = _.find(userData, {itemId: elt.uuid, action: {mood: true}});
+      var data = _.find(userData.actions, {itemId: elt.uuid, action: {mood: true}});
       return data !== undefined && data.action.rating === mood;
     }
 
     function setMood(userData, moodData){
-      var oldMood = _.find(userData, {uuid: moodData.uuid, action: {mood: true}});
+      var oldMood = _.find(userData.actions, {uuid: moodData.uuid, action: {mood: true}});
       if(oldMood){
         angular.extend(oldMood, moodData);
       } else {
@@ -210,30 +210,30 @@
     }
 
     function addComment(userData, commentData){
-      userData.push(commentData);
+      userData.actions.push(commentData);
     }
 
     function updateComment(userData, commentData){
-      var oldComment = _.find(userData, {uuid: commentData.uuid, action: {comment: true}});
+      var oldComment = _.find(userData.actions, {uuid: commentData.uuid, action: {comment: true}});
       angular.extend(oldComment, commentData);
     }
 
     function removeComment(userData, comment){
-      return _.remove(userData, {uuid: comment.uuid, action: {comment: true}});
+      return _.remove(userData.actions, {uuid: comment.uuid, action: {comment: true}});
     }
 
     function getComments(userData, elt){
-      return _.filter(userData, {itemId: elt.uuid, action: {comment: true}});
+      return _.filter(userData.actions, {itemId: elt.uuid, action: {comment: true}});
     }
 
     function getFavoriteExponents(event, userData){
-      return _.map(_.filter(userData, {itemType: 'Exponents', action: {favorite: true}}), function(item){
+      return _.map(_.filter(userData.actions, {itemType: 'Exponents', action: {favorite: true}}), function(item){
         return _.find(event.exponents, {uuid: item.itemId});
       });
     }
 
     function getFavoriteSessions(event, userData){
-      return _.map(_.filter(userData, {itemType: 'Sessions', action: {favorite: true}}), function(item){
+      return _.map(_.filter(userData.actions, {itemType: 'Sessions', action: {favorite: true}}), function(item){
         return _.find(event.sessions, {uuid: item.itemId});
       });
     }

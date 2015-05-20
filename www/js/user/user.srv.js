@@ -1,7 +1,8 @@
 (function(){
   'use strict';
   angular.module('app')
-    .factory('UserSrv', UserSrv);
+    .factory('UserSrv', UserSrv)
+    .factory('UserActionSync', UserActionSync);
 
   UserSrv.$inject = ['$http', 'StorageUtils', 'DevicePlugin', 'Config'];
   function UserSrv($http, StorageUtils, DevicePlugin, Config){
@@ -38,6 +39,38 @@
       }).then(function(res){
         return res.data;
       });
+    }
+  }
+
+  UserActionSync.$inject = ['$http', 'StorageUtils', 'Config'];
+  function UserActionSync($http, StorageUtils, Config){
+    var storageKey = 'sync-actions';
+    var dataLoaded = false;
+    var actionQueue = [];
+    initialize();
+
+    var service = {
+      put: put
+    };
+    return service;
+
+    function initialize(){
+      StorageUtils.get(storageKey).then(function(actions){
+        if(actionQueue.length > 0){
+          actionQueue = actions.concat(actionQueue);
+          StorageUtils.set(storageKey, actionQueue);
+        } else {
+          actionQueue = actions;
+        }
+        dataLoaded = true;
+      });
+    }
+
+    function put(config){
+      actionQueue.push(config);
+      if(dataLoaded){
+        StorageUtils.set(storageKey, actionQueue);
+      }
     }
   }
 })();
