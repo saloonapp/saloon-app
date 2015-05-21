@@ -19,7 +19,6 @@
 
       favorite: favorite,
       unfavorite: unfavorite,
-      toggleFavorite: toggleFavorite,
       setMood: setMood,
       createComment: createComment,
       editComment: editComment,
@@ -98,18 +97,6 @@
           });
         });
       });*/
-    }
-
-    function toggleFavorite(userData, elt){
-      if(EventUtils.isFavorite(userData, elt)){
-        return unfavorite(elt).then(function(data){
-          EventUtils.setUnfavorite(userData, data);
-        });
-      } else {
-        return favorite(elt).then(function(data){
-          EventUtils.setFavorite(userData, data);
-        });
-      }
     }
 
     function setMood(elt, rating){
@@ -274,7 +261,7 @@
     return service;
 
     function isFavorite(userData, elt){
-      return _.find(userData.actions, {itemId: elt.uuid, action: {favorite: true}}) !== undefined;
+      return elt && elt.uuid && _.find(userData.actions, {itemId: elt.uuid, action: {favorite: true}}) !== undefined;
     }
 
     function setFavorite(userData, data){

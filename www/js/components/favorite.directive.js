@@ -16,20 +16,33 @@
     return directive;
 
     function link(scope, element, attrs){
-      if(!checkParams(scope)){ return; }
+      if(!checkParams(attrs)){ return; }
       var vm = {};
       scope.vm = vm;
 
-      vm.elt = scope.elt;
       vm.favoriteLoading = false;
 
       vm.isFavorite = function(elt){ return EventUtils.isFavorite(scope.userData, elt); };
-      vm.toggleFavorite = toggleFavorite;
+      vm.favorite = favorite;
+      vm.unfavorite = unfavorite;
 
-      function toggleFavorite(elt){
+      function favorite(elt){
         if(!vm.favoriteLoading){
           vm.favoriteLoading = true;
-          EventSrv.toggleFavorite(scope.userData, elt).then(function(){
+          return EventSrv.favorite(elt).then(function(data){
+            EventUtils.setFavorite(scope.userData, data);
+            vm.favoriteLoading = false;
+          }, function(){
+            vm.favoriteLoading = false;
+          });
+        }
+      }
+
+      function unfavorite(elt){
+        if(!vm.favoriteLoading){
+          vm.favoriteLoading = true;
+          return EventSrv.unfavorite(elt).then(function(data){
+            EventUtils.setUnfavorite(scope.userData, data);
             vm.favoriteLoading = false;
           }, function(){
             vm.favoriteLoading = false;
@@ -39,9 +52,9 @@
     }
   }
 
-  function checkParams(scope){
-    if(!scope.userData){ console.error('Directive "favorite" need a "userData" argument !'); return false; }
-    if(!scope.elt){ console.error('Directive "favorite" need a "elt" argument ! (session or exponent)'); return false; }
+  function checkParams(attrs){
+    if(!attrs.userData){ console.error('Directive "favorite" need a "userData" argument !'); return false; }
+    if(!attrs.elt){ console.error('Directive "favorite" need a "elt" argument ! (session or exponent)'); return false; }
     return true;
   }
 })();

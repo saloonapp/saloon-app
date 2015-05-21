@@ -1,10 +1,22 @@
 (function(){
   'use strict';
   angular.module('app')
+    .directive('stopEvent', stopEvent)
     .directive('href', href)
     .directive('debounce', debounce)
     .directive('blurOnKeyboardOut', blurOnKeyboardOut)
     .directive('focusOnKeyboardOpen', focusOnKeyboardOpen);
+
+  function stopEvent(){
+    return {
+      restrict: 'A',
+      link: function(scope, element, attr){
+        element.bind(attr.stopEvent, function(e){
+          e.stopPropagation();
+        });
+      }
+    };
+  }
 
   // open external links (starting with http:// or https://) outside the app
   function href($window){

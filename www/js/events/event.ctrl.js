@@ -38,6 +38,7 @@
     var vm = {};
     $scope.vm = vm;
 
+    vm.userData = userData;
     vm.event = event;
 
     vm.getProgram = function(){ return [].concat(event.sessions, event.exponents); };
