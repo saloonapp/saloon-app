@@ -7,14 +7,30 @@
     <button class="button button-clear" ng-click="search=''">Annuler</button>
   </div>
   <ion-content class="has-subheader">
-    <div class="list list-event-item">
-      <div class="item item-icon-right" ng-class="{fav: vm.isFavorite(elt)}" item-height="96px"
+
+    <div class="row card-grid" ng-repeat="row in vm.getProgram() | filter:search | orderBy:'name' | inSlicesOf:2">
+      <div class="col col-50" ng-repeat="elt in row" ng-click="vm.goProgramElt(elt)">
+        <div class="list card list-event-item">
+          <div class="item item-image">
+            <img ng-src="{{elt.image ? elt.image : (elt.className === 'sessions' ? 'http://meetingtomorrow.com/wp-content/uploads/2015/02/sound-packages-press-conference-1-layout-main-cropped-BIG.jpg' : 'http://willamettecollegian.com/main/wp-content/uploads/2014/12/free-speech_1.jpg')}}" style="height: 80px;">
+          </div>
+          <div class="item" ng-class="{fav: vm.isFavorite(elt)}" style="padding: 10px;">
+            <h2 class="multiline l2">{{elt.name}}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--<div class="list list-event-item">
+      <div class="item item-thumbnail-left item-icon-right" ng-class="{fav: vm.isFavorite(elt)}" item-height="96px"
            collection-repeat="elt in vm.getProgram() | filter:search | orderBy:'name'"
            ng-click="vm.goProgramElt(elt)">
+        <img ng-src="{{elt.image ? elt.image : (elt.className === 'sessions' ? 'http://meetingtomorrow.com/wp-content/uploads/2015/02/sound-packages-press-conference-1-layout-main-cropped-BIG.jpg' : 'http://willamettecollegian.com/main/wp-content/uploads/2014/12/free-speech_1.jpg')}}">
         <h2>{{elt.name}}</h2>
         <p class="multiline l2">{{elt.description}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
       </div>
-    </div>
+    </div>-->
+
   </ion-content>
 </ion-view>

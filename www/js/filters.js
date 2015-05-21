@@ -4,6 +4,7 @@
     .filter('place', place)
     .filter('commentDate', commentDate)
 
+    .filter('inSlicesOf', inSlicesOf)
     .filter('date', date)
     .filter('datetime', datetime)
     .filter('time', time)
@@ -28,6 +29,28 @@
   }
 
   // common filters
+
+  function inSlicesOf($rootScope){
+    return function(items, count){
+      if(!angular.isArray(items) && !angular.isString(items)) return items;
+      if(!count){ count = 3; }
+      var array = [];
+      for(var i = 0; i < items.length; i++){
+        var chunkIndex = parseInt(i / count, 10);
+        var isFirst = (i % count === 0);
+        if(isFirst){ array[chunkIndex] = []; }
+        array[chunkIndex].push(items[i]);
+      }
+
+      if(angular.equals($rootScope.arrayinSliceOf, array)){
+        return $rootScope.arrayinSliceOf;
+      } else {
+        $rootScope.arrayinSliceOf = array;
+      }
+
+      return array;
+    };
+  }
 
   function date(Utils, moment){
     return function(date, format){
