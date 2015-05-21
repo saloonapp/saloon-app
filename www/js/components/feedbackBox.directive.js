@@ -82,8 +82,8 @@
       function deleteComment(comment){
         if(!vm.editCommentSaving){
           vm.editCommentSaving = true;
-          EventSrv.deleteComment(comment).then(function(){
-            EventUtils.removeComment(scope.userData, comment);
+          EventSrv.deleteComment(comment).then(function(commentData){
+            EventUtils.removeComment(scope.userData, commentData);
             vm.editCommentSaving = false;
             vm.commentEdited = undefined;
             vm.editText = undefined;

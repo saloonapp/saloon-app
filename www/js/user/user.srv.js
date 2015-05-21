@@ -42,81 +42,113 @@
     }
   }
 
-  UserActionSync.$inject = ['$http', 'EventUtils', 'DataUtils', 'StorageUtils', 'Config'];
-  function UserActionSync($http, EventUtils, DataUtils, StorageUtils, Config){
-    var storageKey = 'sync-actions';
-    var dataLoaded = false;
-    var syncRunning = false;
-    var actionQueue = [];
-    initialize();
-
+  UserActionSync.$inject = ['$http', '$q', 'StorageUtils', 'Config', '_'];
+  function UserActionSync($http, $q, StorageUtils, Config, _){
     var service = {
-      put: put,
-      sync: sync
+      syncUserAction: syncUserAction
     };
     return service;
 
-    function initialize(){
-      StorageUtils.get(storageKey, []).then(function(actions){
-        if(actionQueue.length > 0){
-          actionQueue = actions.concat(actionQueue);
-          StorageUtils.set(storageKey, actionQueue);
-        } else {
-          actionQueue = actions;
-        }
-        console.log('actionQueue', actionQueue);
-        dataLoaded = true;
-      });
-    }
-
-    function put(config){
-      actionQueue.push(config);
-      if(dataLoaded){
-        StorageUtils.set(storageKey, actionQueue);
-      }
-      sync();
-    }
-
-    function sync(){
-      if(!syncRunning && dataLoaded && actionQueue.length > 0){
-        syncRunning = true;
-        execSync(actionQueue[0]).then(function(){
-          var action = actionQueue.shift();
-          StorageUtils.set(storageKey, actionQueue);
-          if(actionQueue.length > 0){
-            sync();
-          } else {
-            syncRunning = false;
-          }
-        }, function(err){
-          syncRunning = false; // if error => will try later... TODO : NOT GOOD AT ALL, will be blocked !!!!
-          if(err.status === 0){ } // no internet => will try later...
-          //else if(err.status === 404){} // error in request => ???
-          //else if(err.status === 500){} // bug in server => ???
-          else { console.log('err', err); }
-        })
-      }
-    }
-
-    function execSync(config){
-      if(config.action === 'favorite'){ return execFavorite(config); }
-      else { return $q.when(); }
-    }
-
-    function execFavorite(config){
-      console.log('execFav', config);
-      return $http.post(Config.backendUrl+'/events/'+config.elt.eventId+'/'+config.elt.className+'/'+config.elt.uuid+'/favorites', {}, {headers: {userId: config.userId}}).then(function(res){
-        return getUserData(config.elt.eventId).then(function(userData){
-          EventUtils.setFavorite(userData, res.data);
-          return StorageUtils.set(config.storageKey, userData).then(function(){
-            return res.data;
+    function syncUserAction(storageKey){
+      StorageUtils.get(storageKey).then(function(userData){
+        var toSync = _.find(userData.actions, {dirty: true});
+        if(toSync){
+          syncAction(toSync).then(function(res){
+            StorageUtils.get(storageKey).then(function(userData){
+              if(res){
+                var synced = _.find(userData.actions, {dirty: true, created: toSync.created, userId: toSync.userId, itemType: toSync.itemType, itemId: toSync.itemId});
+                if(synced){
+                  angular.copy(res, synced);
+                  return StorageUtils.set(storageKey, userData).then(function(){
+                    syncUserAction(storageKey);
+                  });
+                } else {
+                  syncUserAction(storageKey);
+                }
+              } else {
+                _.remove(userData.actions, {dirty: true, created: toSync.created, userId: toSync.userId, itemType: toSync.itemType, itemId: toSync.itemId});
+                return StorageUtils.set(storageKey, userData).then(function(){
+                  syncUserAction(storageKey);
+                });
+              }
+            });
+          }, function(err){
+            if(err.status === 0){} // no internet => nothing to do, will be relaunched later...
+            else { // error in request => move action to error...
+              StorageUtils.get(storageKey).then(function(userData){
+                var synced = _.find(userData.actions, {dirty: true, created: toSync.created, userId: toSync.userId, itemType: toSync.itemType, itemId: toSync.itemId});
+                if(synced){
+                  delete synced.dirty;
+                  synced.error = err;
+                  return StorageUtils.set(storageKey, userData).then(function(){
+                    syncUserAction(storageKey);
+                  });
+                } else {
+                  syncUserAction(storageKey);
+                }
+              });
+            }
           });
-        });
+        } else {
+          // check if data is correct
+          var firstAction = userData.actions[0];
+          if(firstAction){
+            $http.get(Config.backendUrl+'/users/'+firstAction.userId+'/actions/'+firstAction.eventId).then(function(res){
+              if(!angular.equals(res.data, userData)){
+                console.error('ERROR in UserAction... :(');
+              }
+            });
+          }
+        }
       });
     }
 
-    function getUserData(userId, eventId, key){
-      return DataUtils.getOrFetch(key, '/users/'+userId+'/actions/'+eventId);
+    function syncAction(toSync){
+      if(toSync && toSync.action){
+        if(toSync.action.favorite === true){ return syncFavorite(toSync); }
+        if(toSync.action.favorite === false){ return syncUnfavorite(toSync); }
+        if(toSync.action.mood === true){ return syncMood(toSync); }
+        if(toSync.action.comment === true && !toSync.uuid){ return syncCommentAdd(toSync); }
+        if(toSync.action.comment === true && toSync.uuid){ return syncCommentEdit(toSync); }
+        if(toSync.action.comment === false){ return syncCommentDelete(toSync); }
+      }
+      return $q.reject({status: 404, message: 'unknown action :('})
+    }
+
+    function syncFavorite(toSync){
+      return $http.post(Config.backendUrl+'/events/'+toSync.eventId+'/'+toSync.itemType+'/'+toSync.itemId+'/favorites', {}, {headers: {userId: toSync.userId, timestamp: toSync.created}}).then(function(res){
+        return res.data;
+      });
+    }
+
+    function syncUnfavorite(toSync){
+      return $http.delete(Config.backendUrl+'/events/'+toSync.eventId+'/'+toSync.itemType+'/'+toSync.itemId+'/favorites', {headers: {userId: toSync.userId}}).then(function(res){
+        return res.data;
+      });
+    }
+
+    function syncMood(toSync){
+      return $http.post(Config.backendUrl+'/events/'+toSync.eventId+'/'+toSync.itemType+'/'+toSync.itemId+'/mood', {rating: toSync.action.rating}, {headers: {userId: toSync.userId, timestamp: toSync.created}}).then(function(res){
+        return res.data;
+      });
+    }
+
+    function syncCommentAdd(toSync){
+      return $http.post(Config.backendUrl+'/events/'+toSync.eventId+'/'+toSync.itemType+'/'+toSync.itemId+'/comments', {text: toSync.action.text}, {headers: {userId: toSync.userId, timestamp: toSync.created}}).then(function(res){
+        return res.data;
+      });
+    }
+
+    function syncCommentEdit(toSync){
+      return $http.put(Config.backendUrl+'/events/'+toSync.eventId+'/'+toSync.itemType+'/'+toSync.itemId+'/comments/'+toSync.uuid, {text: toSync.action.text}, {headers: {userId: toSync.userId, timestamp: toSync.updated}}).then(function(res){
+        return res.data;
+      });
+    }
+
+    function syncCommentDelete(toSync){
+      return $http.delete(Config.backendUrl+'/events/'+toSync.eventId+'/'+toSync.itemType+'/'+toSync.itemId+'/comments/'+toSync.uuid, {headers: {userId: toSync.userId}}).then(function(res){
+        return res.data;
+      });
     }
   }
 })();
