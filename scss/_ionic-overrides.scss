@@ -91,3 +91,16 @@
 .item.disabled {
   background-color: #f8f8f8;
 }
+
+.item-thumbnail-left.big-thumbnail {
+  & > img:first-child,
+  & .item-image,
+  & .item-content > img:first-child,
+  & .item-content .item-image {
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    max-width: 100px;
+    max-height: initial;
+  }
+}

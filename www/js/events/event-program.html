@@ -22,7 +22,7 @@
     </div>-->
 
     <div class="list list-event-item">
-      <div class="item item-thumbnail-left item-icon-right" ng-class="{fav: vm.isFavorite(elt)}"
+      <div class="item item-thumbnail-left big-thumbnail item-icon-right" ng-class="{fav: vm.isFavorite(elt)}"
            collection-repeat="elt in vm.getProgram() | filter:search | orderBy:'name'" item-height="96px"
            ng-click="vm.goProgramElt(elt)">
         <img ng-src="{{elt.image ? elt.image : (elt.className === 'sessions' ? 'http://meetingtomorrow.com/wp-content/uploads/2015/02/sound-packages-press-conference-1-layout-main-cropped-BIG.jpg' : 'http://willamettecollegian.com/main/wp-content/uploads/2014/12/free-speech_1.jpg')}}">
