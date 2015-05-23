@@ -1,16 +1,18 @@
 <ion-view title="Ma Visite">
   <ion-content>
-    <div class="list">
-      <div class="item" ng-repeat="session in vm.sessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
+    <div class="list list-timeline">
+      <div class="item item-timeline" ng-repeat="session in vm.sessions | orderBy:'start'" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
         <h2>{{session.name}}</h2>
-        <p>{{session.description}}</p>
+        <p>{{session.start | humanTime}} - {{session.start | humanDuration:session.end}} - {{session.place | place}}</p>
+        <i class="bullet bullet-positive"></i>
       </div>
     </div>
 
     <div class="list">
+      <div class="item item-divider">Exposant à aller voir :</div>
       <div class="item" ng-repeat="exponent in vm.exponents" ui-sref="app.event.scheduleExponent({exponentId: exponent.uuid})">
         <h2>{{exponent.name}}</h2>
-        <p>{{exponent.description}}</p>
+        <p>{{exponent.place | place}} - {{exponent.description}}</p>
       </div>
     </div>
   </ion-content>

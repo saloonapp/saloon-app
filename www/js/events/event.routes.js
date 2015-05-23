@@ -80,7 +80,7 @@
         url: '/schedule',
         views: {
           'schedule-tab': {
-            templateUrl: 'js/events/event-schedule2.html',
+            templateUrl: 'js/events/event-schedule.html',
             controller: 'EventScheduleCtrl'
           }
         }
