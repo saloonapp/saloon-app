@@ -22,6 +22,7 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 @import "www/lib/ionic/scss/ionic";
 @import '_ionic-overrides';
 @import "_common";
-@import "_event-item";
 @import "components/_favorite";
 @import "components/_feedback-box";
+@import "_event-item";
+@import "_timeline";

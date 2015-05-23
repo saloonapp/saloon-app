@@ -10,6 +10,7 @@
     .filter('time', time)
     .filter('humanTime', humanTime)
     .filter('duration', duration)
+    .filter('humanDuration', humanDuration)
     .filter('mynumber', mynumber)
     .filter('rating', rating);
 
@@ -74,9 +75,9 @@
   }
 
   function humanTime(Utils, moment){
-    return function(date){
+    return function(date, suffix){
       var jsDate = Utils.toDate(date);
-      return jsDate ? moment(jsDate).fromNow(true) : '';
+      return jsDate ? moment(jsDate).fromNow(suffix === true) : '';
     };
   }
 
@@ -93,6 +94,13 @@
         $log.warn('Unable to format duration', seconds);
         return '';
       }
+    };
+  }
+
+  function humanDuration(moment){
+    return function(start, end, humanize){
+      var millis = end - start;
+      return moment.duration(millis/1000, 'seconds').humanize();
     };
   }
 
