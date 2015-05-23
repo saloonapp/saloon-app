@@ -3,25 +3,18 @@
 $ok-color: #5be225;
 $ko-color: #ff3927;
 
-@mixin bullet-before($color){
-  /*@include background-image(linear-gradient(fade-out($color,1),$color));*/
+@mixin bg-gradient($startColor, $endColor){
   background-size: 100%;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, transparent), color-stop(100%, $color));
-  background-image: -moz-linear-gradient(transparent, $color);
-  background-image: -webkit-linear-gradient(transparent, $color);
-  background-image: linear-gradient(transparent, $color);
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, $startColor), color-stop(100%, $endColor));
+  background-image: -moz-linear-gradient($startColor, $endColor);
+  background-image: -webkit-linear-gradient($startColor, $endColor);
+  background-image: linear-gradient($startColor, $endColor);
+}
+@mixin bullet-before($color){
+  @include bg-gradient(transparent, $color);
 }
 @mixin bullet-after($color){
-  /*@include background-image(linear-gradient($color, fade-out($color,1)));*/
-  background-size: 100%;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, $color), color-stop(100%, transparent));
-  background-image: -moz-linear-gradient($color, transparent);
-  background-image: -webkit-linear-gradient($color, transparent);
-  background-image: linear-gradient($color, transparent);
-}
-
-.list-timeline {
-  padding-top: 15px;
+  @include bg-gradient($color, transparent);
 }
 
 .item-timeline {
@@ -31,13 +24,17 @@ $ko-color: #ff3927;
   border: none;
   overflow: visible;
 
+  &:last-child .bullet::after { display: none; }
+}
+
+.item-timeline, .item-timeline-image {
   .bullet {
     display: block;
     position: absolute;
-    left: 20px;
     top: 15px;
-    height: 11px;
+    left: 20px;
     width: 11px;
+    height: 11px;
     background-color: hsl(0,0%,65%);
     border-radius: 50%;
     color: transparent;
@@ -50,11 +47,10 @@ $ko-color: #ff3927;
       position: absolute;
       left: 5px;
       width: 1px;
-      height: 40px;
       z-index: -1;
     }
-    &::before { top: -40px;     }
-    &::after  { bottom: -40px;  }
+    &::before { height: 40px; top: -40px;     }
+    &::after  { height: 40px; bottom: -40px;  }
 
     &.bullet-ok         { background-color: $ok-color;  &::before { @include bullet-before($ok-color); }  &::after { @include bullet-after($ok-color); }  }
     &.bullet-ko         { background-color: $ko-color;  &::before { @include bullet-before($ko-color); }  &::after { @include bullet-after($ko-color); }  }
@@ -69,18 +65,17 @@ $ko-color: #ff3927;
     &.bullet-dark       { background-color: $dark;      &::before { @include bullet-before($dark); }      &::after { @include bullet-after($dark); }      }
 
     &.bullet-icon {
+      top: 10px;
+      left: 15px;
       width: 21px;
       height: 21px;
-      left: 15px;
-      top: 10px;
       background-size: cover;
       &::before,
       &::after {
-        height: 35px;
         left: 10px;
       }
-      &::before { top: -35px;     }
-      &::after  { bottom: -35px;  }
+      &::before { height: 35px; top: -35px;     }
+      &::after  { height: 35px; bottom: -35px;  }
     }
     &.icon-archive      { background-image: url('../img/timeline-icon/archive.png');      }
     &.icon-bell         { background-image: url('../img/timeline-icon/bell.png');         }
@@ -100,6 +95,53 @@ $ko-color: #ff3927;
     &.icon-tag          { background-image: url('../img/timeline-icon/tag.png');          }
     &.icon-user         { background-image: url('../img/timeline-icon/user.png');         }
   }
+}
 
-  &:last-child .bullet::after { display: none; }
+.item-timeline-image {
+  position: relative;
+  height: 140px;
+  padding: 0px;
+  border: none;
+  background-color: black;
+  background-size: cover;
+  background-position: center center;
+  //background-image: url('https://pbs.twimg.com/profile_banners/141737249/1386009093/1500x500');
+  &::before, &::after {
+    content: '';
+    display: block;
+    height: 50%;
+  }
+  &::before { @include bg-gradient(rgba(0,0,0,.8), transparent); }
+  &::after  { @include bg-gradient(transparent, rgba(0,0,0,.8)); }
+
+  .darker {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0,.4);
+  }
+  h2, p {
+    position: absolute;
+    left: 50px;
+  }
+  h2 {
+    top: 70px;
+    color: white;
+  }
+  p {
+    top: 92px;
+    color: rgba(255,255,255,.8);
+  }
+  .bullet {
+    top: 76px;
+    &::before { height: 110px; top: -110px;   }
+    &::after  { height: 80px; bottom: -80px;  }
+    &.bullet-icon {
+      top: 71px;
+      &::before { height: 105px; top: -105px;   }
+      &::after  { height: 75px; bottom: -75px;  }
+    }
+  }
 }
