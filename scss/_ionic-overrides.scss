@@ -97,10 +97,12 @@
   & .item-image,
   & .item-content > img:first-child,
   & .item-content .item-image {
-    top: 0px;
-    bottom: 0px;
+    top: 50%;
     left: 0px;
+    margin-top: -50px;
     max-width: 100px;
-    max-height: initial;
+    max-height: 100px;
+    width: 100px;
+    height: 100px;
   }
 }

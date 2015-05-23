@@ -35,6 +35,10 @@
   }
 
   function EventProgramCtrl($scope, $state, EventUtils, event, userData){
+    // Onglets : Info, Program, Exposants, Personnes, Live, Ma visite => menu more à la place des onglets ?
+    // TODO : sort program elts with sessions at the begining & exponents after
+    // TODO : add a header button in program to go to current sessions
+    // TODO : unifying sessions & exponents, is it really smart ? (timed vs non-timed !)
     var vm = {};
     $scope.vm = vm;
 
