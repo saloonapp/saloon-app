@@ -4,7 +4,7 @@
       <div class="item item-timeline" ng-repeat="session in vm.sessions | orderBy:'start'" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
         <h2>{{session.name}}</h2>
         <p>{{session.start | humanTime}} - {{session.start | humanDuration:session.end}} - {{session.place | place}}</p>
-        <i class="bullet bullet-icon icon-clock" ng-class="{'bullet-assertive': $even, 'bullet-dark': $odd}"></i>
+        <i class="bullet bullet-positive"></i>
       </div>
     </div>
 

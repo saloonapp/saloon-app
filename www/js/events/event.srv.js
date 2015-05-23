@@ -315,15 +315,21 @@
     }
 
     function getFavoriteExponents(event, userData){
-      return _.map(_.filter(userData.actions, {itemType: 'exponents', action: {favorite: true}}), function(item){
-        return _.find(event.exponents, {uuid: item.itemId});
+      var userFavs = _.filter(userData.actions, {itemType: 'exponents', action: {favorite: true}});
+      var favorites = _.map(userFavs, function(fav){
+        var elt = _.find(event.exponents, {uuid: fav.itemId});
+        return elt;
       });
+      return _.filter(favorites, function(s){ return !!s; });
     }
 
     function getFavoriteSessions(event, userData){
-      return _.map(_.filter(userData.actions, {itemType: 'sessions', action: {favorite: true}}), function(item){
-        return _.find(event.sessions, {uuid: item.itemId});
+      var userFavs = _.filter(userData.actions, {itemType: 'sessions', action: {favorite: true}});
+      var favorites = _.map(userFavs, function(fav){
+        var elt = _.find(event.sessions, {uuid: fav.itemId});
+        return elt;
       });
+      return _.filter(favorites, function(s){ return !!s; });
     }
   }
 })();
