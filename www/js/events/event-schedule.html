@@ -15,5 +15,11 @@
         <p>{{exponent.place | place}} - {{exponent.description}}</p>
       </div>
     </div>
+
+    <div class="padding" style="text-align: center;"
+         ng-if="(!vm.sessions || vm.sessions.length === 0) && (!vm.exponents || vm.exponents.length === 0)">
+      <p style="margin-top: 30px;">Vous n'avez encore rien planifié pour cet énénement...</p>
+      <button class="button button-positive" style="margin-top: 30px;" ui-sref="app.event.program">Accéder au programme</button>
+    </div>
   </ion-content>
 </ion-view>
