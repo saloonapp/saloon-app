@@ -42,6 +42,12 @@
 
     vm.event = event;
     vm.days = EventUtils.getSessionDays(event.sessions);
+    vm.bgSessions = [
+      'img/event/sessions1.jpg',
+      'img/event/sessions2.jpg',
+      'img/event/sessions3.jpg'
+    ];
+    vm.bgExponents = 'img/event/exponents.jpg';
   }
 
   function EventSessionsCtrl($scope, $stateParams, EventUtils, event, userData){
@@ -63,6 +69,17 @@
 
     vm.event = event;
     vm.userData = userData;
+    vm.bgExponents = [
+      'img/event/exponent1.jpg',
+      'img/event/exponent2.jpg',
+      'img/event/exponent3.jpg',
+      'img/event/exponent4.jpg',
+      'img/event/exponent5.jpg',
+      'img/event/exponent6.jpg',
+      'img/event/exponent7.jpg',
+      'img/event/exponent8.jpg',
+      'img/event/exponent9.jpg'
+    ];
 
     vm.isFavorite = function(elt){ return elt ? EventUtils.isFavorite(userData, elt) : false; };
   }

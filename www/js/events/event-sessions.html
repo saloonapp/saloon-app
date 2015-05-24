@@ -1,4 +1,4 @@
-<ion-view title="Sessions du {{vm.day | date}}">
+<ion-view title="Conférences du {{vm.day | date:'dddd'}}">
   <div class="bar bar-subheader has-tabs-top item-input-inset">
     <label class="item-input-wrapper">
       <i class="icon ion-search placeholder-icon"></i>
@@ -10,7 +10,7 @@
 
     <div class="list list-event-item">
       <div class="item item-icon-right" ng-class="{fav: vm.isFavorite(elt)}"
-           ng-repeat="elt in vm.sessions | filter:search | orderBy:'start'" item-height="96px"
+           collection-repeat="elt in vm.sessions | filter:search | orderBy:'start'" item-height="118px"
            ui-sref="app.event.session({sessionId: elt.uuid})">
         <favorite user-data="vm.userData" elt="elt"></favorite>
         <h2>{{elt.name}}</h2>

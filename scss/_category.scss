@@ -1,0 +1,58 @@
+@mixin bg-gradient($startColor, $endColor){
+  background-size: 100%;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, $startColor), color-stop(100%, $endColor));
+  background-image: -moz-linear-gradient($startColor, $endColor);
+  background-image: -webkit-linear-gradient($startColor, $endColor);
+  background-image: linear-gradient($startColor, $endColor);
+}
+
+.item-category {
+  height: 120px;
+  padding: 0px;
+  border: none;
+  background-color: black;
+  background-size: cover;
+  background-position: center center;
+  background-image: url('https://pbs.twimg.com/profile_banners/141737249/1386009093/1500x500');
+  background-image: url('http://www.psdgraphics.com/file/orange-background.jpg');
+  background-image: url('http://images.naldzgraphics.net/2015/04/8-pink-low-poly-background.jpg');
+  background-image: url('http://www.psdgraphics.com/file/orange-waves-background.jpg');
+  background-image: url('http://gkvprom.com/wp-content/uploads/2015/04/Polygon-twitter-header-background.jpg');
+  background-image: url('http://www.psdgraphics.com/file/abstract-rings-background.jpg');
+  background-image: url('http://images6.fanpop.com/image/photos/33500000/Background-pretty-little-liars-tv-show-33571722-1920-1440.jpg');
+  background-image: url('http://www.wallceo.com/wp-content/uploads/2015/05/red_background_137_abstract_wallpaper_hd.jpg');
+  background-image: url('http://static.hdw.eweb4.com/media/wallpapers_dl/1/106/1054873-abstract-background.jpg');
+  background-image: url('http://images.naldzgraphics.net/2015/04/3-orange-low-poly-background.jpg');
+  background-image: url('http://ak4.picdn.net/shutterstock/videos/1334512/preview/stock-footage-molecular-background.jpg');
+  background-image: url('http://ak.picdn.net/shutterstock/videos/1838695/preview/stock-footage-molecular-background.jpg');
+  background-image: url('http://ak3.picdn.net/shutterstock/videos/1838707/preview/stock-footage-molecular-background.jpg');
+  background-image: url('http://corrupteddevelopment.com/wp-content/uploads/2013/07/orange-bokeh-background.jpg');
+  background-image: url('http://cdns2.freepik.com/free-photo/_393051.jpg');
+  background-image: url('http://www.photocase.com/stock-photos/119800-stock-photo-fruit-beverage-orange-background-picture-air-bubble-partially-visible.jpg');
+  background-image: url('http://ak.picdn.net/shutterstock/videos/6241517/preview/stock-footage-cola-background-cola-with-ice-and-bubbles-in-glass-food-background-stock-full-hd-video-footage.jpg');
+  background-image: url('http://ak.picdn.net/shutterstock/videos/1121038/preview/stock-footage-abstract-background-citrus-soda-close-up-with-bubbles.jpg');
+  background-image: url('../img/item-category-default-bg.jpg');
+  &::before, &::after {
+    content: '';
+    display: block;
+    height: 50%;
+  }
+  &::before { @include bg-gradient(rgba(0,0,0,.4), transparent); }
+  &::after  { @include bg-gradient(transparent, rgba(0,0,0,.8)); }
+  .darker {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0,.3);
+  }
+  h2 {
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    position: absolute;
+    bottom: 15px;
+    right: 40px
+  }
+}

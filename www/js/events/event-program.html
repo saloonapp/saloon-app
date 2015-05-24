@@ -1,12 +1,16 @@
 <ion-view title="Programme">
   <ion-content>
     <div class="list">
-      <div class="item item-icon-right" ng-repeat="day in vm.days" ui-sref="app.event.sessions({day: day})">
-        <h2>{{day | date}}</h2>
+      <div class="item item-category item-icon-right" ng-repeat="day in vm.days | orderBy" ui-sref="app.event.sessions({day: day})"
+           ng-style="{'background-image': 'url('+vm.bgSessions[$index%vm.bgSessions.length]+')'}">
+        <div class="darker"></div>
+        <h2>Conférences du {{day | date:'dddd'}}</h2>
         <i class="icon ion-chevron-right icon-accessory"></i>
       </div>
-      <div class="item item-icon-right" ui-sref="app.event.exponents" ng-if="vm.event.exponents && vm.event.exponents.length > 0">
-        <h2>Exposants</h2>
+      <div class="item item-category item-icon-right" ui-sref="app.event.exponents" ng-if="vm.event.exponents && vm.event.exponents.length > 0"
+           ng-style="{'background-image': 'url('+vm.bgExponents+')'}">
+        <div class="darker"></div>
+        <h2>Liste des exposants</h2>
         <i class="icon ion-chevron-right icon-accessory"></i>
       </div>
     </div>
