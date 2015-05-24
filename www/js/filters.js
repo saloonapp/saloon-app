@@ -3,6 +3,7 @@
   angular.module('app')
     .filter('place', place)
     .filter('commentDate', commentDate)
+    .filter('customDate', customDate)
 
     .filter('inSlicesOf', inSlicesOf)
     .filter('date', date)
@@ -26,6 +27,21 @@
     return function(date, format){
       var jsDate = Utils.toDate(date);
       return jsDate ? moment(jsDate).format(format ? format : '[le] D MMM YYYY à HH:mm') : '';
+    };
+  }
+
+  function customDate(Utils, moment){
+    return function(date){
+      var jsDate = Utils.toDate(date);
+      if(jsDate){
+        var momentDate = moment(jsDate);
+        if(momentDate.isAfter(moment().subtract(1, 'days')) && momentDate.isBefore(moment().add(1, 'days'))){
+          return moment(jsDate).fromNow();
+        } else {
+          return moment(jsDate).format('[le] DD MMM à HH[h]mm');
+        }
+      }
+      return date;
     };
   }
 
@@ -77,7 +93,7 @@
   function humanTime(Utils, moment){
     return function(date, suffix){
       var jsDate = Utils.toDate(date);
-      return jsDate ? moment(jsDate).fromNow(suffix === true) : '';
+      return jsDate ? moment(jsDate).fromNow(suffix === true) : date;
     };
   }
 

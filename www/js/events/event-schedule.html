@@ -3,7 +3,7 @@
     <div class="list" ng-if="vm.sessions && vm.sessions.length > 0">
       <div class="item item-timeline" ng-repeat="session in vm.sessions | orderBy:'start'" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
         <h2>{{session.name}}</h2>
-        <p>{{session.start | humanTime}} - {{session.start | humanDuration:session.end}} - {{session.place | place}}</p>
+        <p>{{session.start | customDate}} - {{session.place | place}} ({{session.start | humanDuration:session.end}})</p>
         <i class="bullet bullet-positive"></i>
       </div>
     </div>
