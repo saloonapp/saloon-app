@@ -1,0 +1,24 @@
+<ion-view title="Sessions du {{vm.day | date}}">
+  <div class="bar bar-subheader has-tabs-top item-input-inset">
+    <label class="item-input-wrapper">
+      <i class="icon ion-search placeholder-icon"></i>
+      <input type="search" placeholder="Rechercher ..." ng-model="search">
+    </label>
+    <button class="button button-clear" ng-click="search=''">Annuler</button>
+  </div>
+  <ion-content class="has-subheader">
+
+    <div class="list list-event-item">
+      <div class="item item-icon-right" ng-class="{fav: vm.isFavorite(elt)}"
+           ng-repeat="elt in vm.sessions | filter:search | orderBy:'start'" item-height="96px"
+           ui-sref="app.event.session({sessionId: elt.uuid})">
+        <favorite user-data="vm.userData" elt="elt"></favorite>
+        <h2>{{elt.name}}</h2>
+        <p class="multiline l2 fixe">{{elt.description}}</p>
+        <p>{{elt.start | time}}-{{elt.end | time}} - {{elt.place | place}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>

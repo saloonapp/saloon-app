@@ -48,6 +48,15 @@
           }
         }
       },
+      eventSessions: {
+        url: '/sessions/day/:day',
+        views: {
+          'program-tab': {
+            templateUrl: 'js/events/event-sessions.html',
+            controller: 'EventSessionsCtrl'
+          }
+        }
+      },
       eventSession: {
         url: '/sessions/:sessionId',
         views: {
@@ -59,6 +68,15 @@
         resolve: {
           session: function($stateParams, EventSrv, IonicUtils){
             return IonicUtils.withLoading(EventSrv.getSession($stateParams.eventId, $stateParams.sessionId));
+          }
+        }
+      },
+      eventExponents: {
+        url: '/exponents',
+        views: {
+          'program-tab': {
+            templateUrl: 'js/events/event-exponents.html',
+            controller: 'EventExponentsCtrl'
           }
         }
       },
@@ -120,6 +138,8 @@
       .state('app.event', routes.event)
       .state('app.event.infos', routes.eventInfo)
       .state('app.event.program', routes.eventProgram)
+      .state('app.event.sessions', routes.eventSessions)
+      .state('app.event.exponents', routes.eventExponents)
       .state('app.event.session', routes.eventSession)
       .state('app.event.exponent', routes.eventExponent)
       .state('app.event.schedule', routes.eventSchedule)

@@ -243,9 +243,11 @@
     }
   }
 
-  EventUtils.$inject = ['_'];
-  function EventUtils(_){
+  EventUtils.$inject = ['moment', '_'];
+  function EventUtils(moment, _){
     var service = {
+      getSessionDays: getSessionDays,
+      getSessionsForDay: getSessionsForDay,
       isFavorite: isFavorite,
       setFavorite: setFavorite,
       setUnfavorite: setUnfavorite,
@@ -259,6 +261,32 @@
       getFavoriteSessions: getFavoriteSessions
     };
     return service;
+
+    function getSessionDays(sessions){
+      var days = {};
+      _.map(sessions, function(session){
+        if(session.start){
+          var day = moment(new Date(session.start)).format('MM/DD/YYYY');
+          if(!days[day] || days[day] > session.start){
+            days[day] = session.start;
+          }
+        }
+      });
+      return _.map(days, function(day){
+        return day;
+      });
+    }
+
+    function getSessionsForDay(sessions, day){
+      var daySessions = [];
+      var dayStr = moment(new Date(day)).format('MM/DD/YYYY');
+      _.map(sessions, function(session){
+        if(session.start && moment(new Date(session.start)).format('MM/DD/YYYY') === dayStr){
+          daySessions.push(session);
+        }
+      });
+      return daySessions;
+    }
 
     function isFavorite(userData, elt){
       return elt && elt.uuid && _.find(userData.actions, {itemId: elt.uuid, action: {favorite: true}}) !== undefined;

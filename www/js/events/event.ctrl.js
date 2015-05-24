@@ -4,6 +4,8 @@
     .controller('EventCtrl', EventCtrl)
     .controller('EventInfosCtrl', EventInfosCtrl)
     .controller('EventProgramCtrl', EventProgramCtrl)
+    .controller('EventSessionsCtrl', EventSessionsCtrl)
+    .controller('EventExponentsCtrl', EventExponentsCtrl)
     .controller('EventSessionCtrl', EventSessionCtrl)
     .controller('EventExponentCtrl', EventExponentCtrl)
     .controller('EventScheduleCtrl', EventScheduleCtrl);
@@ -34,27 +36,35 @@
     }
   }
 
-  function EventProgramCtrl($scope, $state, EventUtils, event, userData){
-    // Onglets : Info, Program, Exposants, Personnes, Live, Ma visite => menu more à la place des onglets ?
-    // TODO : sort program elts with sessions at the begining & exponents after
-    // TODO : add a header button in program to go to current sessions
-    // TODO : unifying sessions & exponents, is it really smart ? (timed vs non-timed !)
+  function EventProgramCtrl($scope, EventUtils, event){
     var vm = {};
     $scope.vm = vm;
 
-    vm.userData = userData;
     vm.event = event;
+    vm.days = EventUtils.getSessionDays(event.sessions);
+  }
 
-    vm.getProgram = function(){ return [].concat(event.sessions, event.exponents); };
-    vm.goProgramElt = goProgramElt;
-    vm.programOrder = function(elt){ return elt.name ? elt.name : elt.title; };
+  function EventSessionsCtrl($scope, $stateParams, EventUtils, event, userData){
+    // TODO : add header button to go to current session
+    var vm = {};
+    $scope.vm = vm;
+
+    vm.event = event;
+    vm.userData = userData;
+    vm.day = parseInt($stateParams.day);
+    vm.sessions = EventUtils.getSessionsForDay(event.sessions, vm.day);
+
     vm.isFavorite = function(elt){ return elt ? EventUtils.isFavorite(userData, elt) : false; };
+  }
 
-    function goProgramElt(elt){
-      if(elt.className === 'sessions'){ $state.go('app.event.session', {sessionId: elt.uuid}); }
-      else if(elt.className === 'exponents'){ $state.go('app.event.exponent', {exponentId: elt.uuid}); }
-      else { console.error('Unknown elt', elt); }
-    }
+  function EventExponentsCtrl($scope, EventUtils, event, userData){
+    var vm = {};
+    $scope.vm = vm;
+
+    vm.event = event;
+    vm.userData = userData;
+
+    vm.isFavorite = function(elt){ return elt ? EventUtils.isFavorite(userData, elt) : false; };
   }
 
   function EventSessionCtrl($scope, userData, session){

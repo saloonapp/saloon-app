@@ -1,0 +1,25 @@
+<ion-view title="Exposants">
+  <div class="bar bar-subheader has-tabs-top item-input-inset">
+    <label class="item-input-wrapper">
+      <i class="icon ion-search placeholder-icon"></i>
+      <input type="search" placeholder="Rechercher ..." ng-model="search">
+    </label>
+    <button class="button button-clear" ng-click="search=''">Annuler</button>
+  </div>
+  <ion-content class="has-subheader">
+
+    <div class="row card-grid" ng-repeat="row in vm.event.exponents | filter:search | orderBy:'name' | inSlicesOf:2">
+      <div class="col col-50" ng-repeat="elt in row" ui-sref="app.event.exponent({exponentId: elt.uuid})">
+        <div class="list card list-event-item">
+          <div class="item item-image">
+            <img ng-src="{{elt.image ? elt.image : 'http://willamettecollegian.com/main/wp-content/uploads/2014/12/free-speech_1.jpg'}}" style="height: 80px;">
+          </div>
+          <div class="item" ng-class="{fav: vm.isFavorite(elt)}" style="padding: 10px;">
+            <h2 class="multiline l2 fixe">{{elt.name}}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>

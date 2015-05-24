@@ -1,37 +1,14 @@
 <ion-view title="Programme">
-  <div class="bar bar-subheader has-tabs-top item-input-inset">
-    <label class="item-input-wrapper">
-      <i class="icon ion-search placeholder-icon"></i>
-      <input type="search" placeholder="Rechercher ..." ng-model="search">
-    </label>
-    <button class="button button-clear" ng-click="search=''">Annuler</button>
-  </div>
-  <ion-content class="has-subheader">
-
-    <!--<div class="row card-grid" ng-repeat="row in vm.getProgram() | filter:search | orderBy:'name' | inSlicesOf:2">
-      <div class="col col-50" ng-repeat="elt in row" ng-click="vm.goProgramElt(elt)">
-        <div class="list card list-event-item">
-          <div class="item item-image">
-            <img ng-src="{{elt.image ? elt.image : (elt.className === 'sessions' ? 'http://meetingtomorrow.com/wp-content/uploads/2015/02/sound-packages-press-conference-1-layout-main-cropped-BIG.jpg' : 'http://willamettecollegian.com/main/wp-content/uploads/2014/12/free-speech_1.jpg')}}" style="height: 80px;">
-          </div>
-          <div class="item" ng-class="{fav: vm.isFavorite(elt)}" style="padding: 10px;">
-            <h2 class="multiline l2">{{elt.name}}</h2>
-          </div>
-        </div>
+  <ion-content>
+    <div class="list">
+      <div class="item item-icon-right" ng-repeat="day in vm.days" ui-sref="app.event.sessions({day: day})">
+        <h2>{{day | date}}</h2>
+        <i class="icon ion-chevron-right icon-accessory"></i>
       </div>
-    </div>-->
-
-    <div class="list list-event-item">
-      <div class="item item-thumbnail-left big-thumbnail item-icon-right" ng-class="{fav: vm.isFavorite(elt)}"
-           collection-repeat="elt in vm.getProgram() | filter:search | orderBy:'name'" item-height="96px"
-           ng-click="vm.goProgramElt(elt)">
-        <img ng-src="{{elt.image ? elt.image : (elt.className === 'sessions' ? 'http://meetingtomorrow.com/wp-content/uploads/2015/02/sound-packages-press-conference-1-layout-main-cropped-BIG.jpg' : 'http://willamettecollegian.com/main/wp-content/uploads/2014/12/free-speech_1.jpg')}}">
-        <favorite user-data="vm.userData" elt="elt"></favorite>
-        <h2>{{elt.name}}</h2>
-        <p class="multiline l2">{{elt.description}}</p>
+      <div class="item item-icon-right" ui-sref="app.event.exponents" ng-if="vm.event.exponents && vm.event.exponents.length > 0">
+        <h2>Exposants</h2>
         <i class="icon ion-chevron-right icon-accessory"></i>
       </div>
     </div>
-
   </ion-content>
 </ion-view>
