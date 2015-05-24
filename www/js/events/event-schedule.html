@@ -1,6 +1,6 @@
 <ion-view title="Ma Visite">
   <ion-content>
-    <div class="list">
+    <div class="list" ng-if="vm.sessions && vm.sessions.length > 0">
       <div class="item item-timeline" ng-repeat="session in vm.sessions | orderBy:'start'" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
         <h2>{{session.name}}</h2>
         <p>{{session.start | humanTime}} - {{session.start | humanDuration:session.end}} - {{session.place | place}}</p>
