@@ -109,6 +109,8 @@
     vm.event = event;
     vm.userData = userData;
 
+    vm.isDone = function(elt){ return elt ? EventUtils.isDone(userData, elt) : false; };
+
     $scope.$on('$ionicView.enter', function(){
       vm.sessions = EventUtils.getFavoriteSessions(event, userData);
       vm.exponents = EventUtils.getFavoriteExponents(event, userData);
