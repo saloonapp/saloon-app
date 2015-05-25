@@ -1,13 +1,37 @@
 <ion-view title="Evénements">
   <ion-content>
     <ion-refresher pulling-text="Pull to refresh..." on-refresh="vm.doRefresh()"></ion-refresher>
-    <div class="list">
-      <div class="item item-thumbnail-left big-thumbnail item-icon-right" ng-repeat="event in vm.events | orderBy:'start':true" ui-sref="app.event.infos({eventId: event.uuid})">
+    <!--<div class="list">
+<div class="item item-thumbnail-left big-thumbnail item-icon-right" ng-repeat="event in vm.events | orderBy:'start':true" ui-sref="app.event.infos({eventId: event.uuid})">
+<img ng-src="{{event.image}}">
+<h2>{{event.name}}</h2>
+<p class="multiline l2">{{event.description}}</p>
+<p>{{event.start | date}}</p>
+<i class="icon ion-chevron-right icon-accessory"></i>
+</div>
+</div>-->
+    <div class="list card" ng-repeat="event in vm.events | orderBy:'start':true" ui-sref="app.event.infos({eventId: event.uuid})">
+      <div class="item item-avatar">
         <img ng-src="{{event.image}}">
         <h2>{{event.name}}</h2>
-        <p class="multiline l2">{{event.description}}</p>
         <p>{{event.start | date}}</p>
-        <i class="icon ion-chevron-right icon-accessory"></i>
+      </div>
+      <div class="item item-body">
+        <p>{{event.description}}</p>
+        <div ng-if="event.address.name">
+          <a href="http://maps.google.com/?q={{event.address.name}}" stop-event="click" style="margin: 0 -16px;">
+            <img ng-src="{{vm.mapUrl(event.address.name, 150)}}">
+          </a>
+          <p class="subdued">{{event.address.name}}</p>
+        </div>
+      </div>
+      <div class="item tabs tabs-secondary tabs-icon-left">
+        <a class="tab-item" href="#"><i class="icon ion-chatboxes"></i> {{event.sessionCount}} sessions</a>
+        <a class="tab-item" href="#"><i class="icon ion-briefcase"></i> {{event.exponentCount}} exposants</a>
+        <span class="tab-item" ng-if="event.twitterHashtag">
+          <i class="icon ion-social-twitter"></i>
+          <a href="https://twitter.com/hashtag/{{event.twitterHashtag}}" target="_blank" stop-event="click">#{{event.twitterHashtag}}</a>
+        </span>
       </div>
     </div>
   </ion-content>
