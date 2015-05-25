@@ -87,6 +87,7 @@
   function EventSessionCtrl($scope, userData, session){
     var vm = {};
     $scope.vm = vm;
+
     vm.userData = userData;
     vm.elt = session;
     vm.similar = [];
@@ -95,6 +96,7 @@
   function EventExponentCtrl($scope, userData, exponent){
     var vm = {};
     $scope.vm = vm;
+
     vm.userData = userData;
     vm.elt = exponent;
     vm.similar = [];
@@ -105,6 +107,8 @@
     $scope.vm = vm;
 
     vm.event = event;
+    vm.userData = userData;
+
     $scope.$on('$ionicView.enter', function(){
       vm.sessions = EventUtils.getFavoriteSessions(event, userData);
       vm.exponents = EventUtils.getFavoriteExponents(event, userData);

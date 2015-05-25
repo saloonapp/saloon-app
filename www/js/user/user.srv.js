@@ -107,6 +107,8 @@
       if(toSync && toSync.action){
         if(toSync.action.favorite === true){ return syncFavorite(toSync); }
         if(toSync.action.favorite === false){ return syncUnfavorite(toSync); }
+        if(toSync.action.done === true){ return syncDone(toSync); }
+        if(toSync.action.done === false){ return syncUndone(toSync); }
         if(toSync.action.mood === true){ return syncMood(toSync); }
         if(toSync.action.comment === true && !toSync.uuid){ return syncCommentAdd(toSync); }
         if(toSync.action.comment === true && toSync.uuid){ return syncCommentEdit(toSync); }
@@ -123,6 +125,18 @@
 
     function syncUnfavorite(toSync){
       return $http.delete(Config.backendUrl+'/events/'+toSync.eventId+'/'+toSync.itemType+'/'+toSync.itemId+'/favorites', {headers: {userId: toSync.userId}}).then(function(res){
+        return res.data;
+      });
+    }
+
+    function syncDone(toSync){
+      return $http.post(Config.backendUrl+'/events/'+toSync.eventId+'/'+toSync.itemType+'/'+toSync.itemId+'/dones', {}, {headers: {userId: toSync.userId, timestamp: toSync.created}}).then(function(res){
+        return res.data;
+      });
+    }
+
+    function syncUndone(toSync){
+      return $http.delete(Config.backendUrl+'/events/'+toSync.eventId+'/'+toSync.itemType+'/'+toSync.itemId+'/dones', {headers: {userId: toSync.userId}}).then(function(res){
         return res.data;
       });
     }

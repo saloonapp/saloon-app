@@ -1,0 +1,17 @@
+.done {
+  width: 30px;
+  font-size: 40px;
+  .icon { position: static; width: 26px; }
+  .icon:before { width: 0px; }
+  .checked    { display: none; color: $balanced; }
+  .unchecked  { color: #aaa; }
+  .spinner    { display: none; margin-top: 7px; }
+  &.active {
+    .checked    { display: block; }
+    .unchecked  { display: none;  }
+  }
+  &.loading {
+    .checked, .unchecked  { display: none;  }
+    .spinner              { display: block; }
+  }
+}

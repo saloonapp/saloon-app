@@ -19,6 +19,8 @@
 
       favorite: favorite,
       unfavorite: unfavorite,
+      done: done,
+      undone: undone,
       setMood: setMood,
       createComment: createComment,
       editComment: editComment,
@@ -97,6 +99,34 @@
           });
         });
       });*/
+    }
+
+    function done(elt){
+      return UserSrv.getUser().then(function(user){
+        var tmpAction = _createTmpAction(user, elt, {done: true});
+        var key = userDataKey(elt.eventId);
+        return getUserData(elt.eventId).then(function(userData){
+          EventUtils.setDone(userData, tmpAction);
+          return StorageUtils.set(key, userData).then(function(){
+            UserActionSync.syncUserAction(key);
+            return tmpAction;
+          });
+        });
+      });
+    }
+
+    function undone(elt){
+      return UserSrv.getUser().then(function(user){
+        var tmpAction = _createTmpAction(user, elt, {done: false});
+        var key = userDataKey(elt.eventId);
+        return getUserData(elt.eventId).then(function(userData){
+          EventUtils.setUndone(userData, tmpAction);
+          return StorageUtils.set(key, userData).then(function(){
+            UserActionSync.syncUserAction(key);
+            return tmpAction;
+          });
+        });
+      });
     }
 
     function setMood(elt, rating){
@@ -251,6 +281,9 @@
       isFavorite: isFavorite,
       setFavorite: setFavorite,
       setUnfavorite: setUnfavorite,
+      isDone: isDone,
+      setDone: setDone,
+      setUndone: setUndone,
       isMood: isMood,
       setMood: setMood,
       addComment: addComment,
@@ -304,6 +337,26 @@
       _.remove(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {favorite: true}});
       var oldUnfavorite = _.find(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {favorite: false}});
       if(!oldUnfavorite){
+        userData.actions.push(data);
+      }
+    }
+
+    function isDone(userData, elt){
+      return elt && elt.uuid && _.find(userData.actions, {itemId: elt.uuid, action: {done: true}}) !== undefined;
+    }
+
+    function setDone(userData, data){
+      _.remove(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {done: false}});
+      var oldDone = _.find(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {done: true}});
+      if(!oldDone){
+        userData.actions.push(data);
+      }
+    }
+
+    function setUndone(userData, data){
+      _.remove(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {done: true}});
+      var oldUndone = _.find(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {done: false}});
+      if(!oldUndone){
         userData.actions.push(data);
       }
     }
