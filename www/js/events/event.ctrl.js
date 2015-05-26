@@ -113,7 +113,16 @@
 
     $scope.$on('$ionicView.enter', function(){
       vm.sessions = EventUtils.getFavoriteSessions(event, userData);
-      vm.exponents = EventUtils.getFavoriteExponents(event, userData);
+      vm.exponents = EventUtils.getFavoriteExponents(event, userData).sort(function(a, b){
+        var aDone = vm.isDone(a);
+        var bDone = vm.isDone(b);
+        if(aDone === bDone){
+          if (a.name > b.name) return 1;
+          if (a.name < b.name) return -1;
+          return 0;
+        } else if(aDone){ return 1; }
+        else { return -1; }
+      });
     });
   }
 })();

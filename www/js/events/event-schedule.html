@@ -10,7 +10,7 @@
 
     <div class="list list-event-item" ng-if="vm.exponents && vm.exponents.length > 0">
       <div class="item item-divider">Exposant à aller voir :</div>
-      <div class="item item-icon-right" ng-repeat="exponent in vm.exponents | orderBy:[vm.isDone,'name']"
+      <div class="item item-icon-right" ng-repeat="exponent in vm.exponents"
            ui-sref="app.event.scheduleExponent({exponentId: exponent.uuid})">
         <done user-data="vm.userData" elt="exponent"></done>
         <div>
