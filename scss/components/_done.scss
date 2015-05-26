@@ -3,7 +3,7 @@
   font-size: 40px;
   .icon { position: static; width: 26px; }
   .icon:before { width: 0px; }
-  .checked    { display: none; color: $balanced; }
+  .checked    { display: none; color: $positive; }
   .unchecked  { color: #aaa; }
   .spinner    { display: none; margin-top: 7px; }
   &.active {

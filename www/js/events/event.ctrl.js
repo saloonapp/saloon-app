@@ -114,10 +114,33 @@
     vm.exponentDone = exponentDone;
 
     $scope.$on('$ionicView.enter', function(){
-      vm.sessions = EventUtils.getFavoriteSessions(event, userData);
+      vm.sessions = EventUtils.getFavoriteSessions(event, userData).sort(sortSessions);
+      // TODO : do this only during event
+      // TODO : add icon 'moins' for timeline
+      /*console.log(vm.sessions);
+      var now = new Date('06/11/2015').getTime();
+      var currentSessionIndex = _.findIndex(vm.sessions, function(s){ return s.end > now; }); // sessions should be sorted by start:end:name
+      vm.finishedSessions = _.take(vm.sessions, currentSessionIndex);
+      vm.currentSession = vm.sessions[currentSessionIndex];
+      var tmp = _.partition(_.drop(vm.sessions, currentSessionIndex+1), function(s){ return s.start <= vm.currentSession.end; });
+      vm.nearSessions = tmp[0];
+      vm.farSessions = tmp[1];
+      console.log('finishedSessions', vm.finishedSessions);
+      console.log('currentSession', vm.currentSession);
+      console.log('nearSessions', vm.nearSessions);
+      console.log('farSessions', vm.farSessions);
+      vm.showFarSessions = false;*/
+
       vm.exponents = EventUtils.getFavoriteExponents(event, userData).sort(sortExponents);
     });
 
+    function sortSessions(a, b){
+      if(a.start !== b.start) return a.start - b.start;
+      else if(a.end !== b.end) return a.end - b.end;
+      else if (a.name > b.name) return 1;
+      else if (a.name < b.name) return -1;
+      return 0;
+    }
     function sortExponents(a, b){
       var aDone = vm.isDone(a);
       var bDone = vm.isDone(b);

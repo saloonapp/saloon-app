@@ -1,12 +1,41 @@
 <ion-view title="Ma Visite">
   <ion-content>
     <div class="list" ng-if="vm.sessions && vm.sessions.length > 0">
-      <div class="item item-timeline" ng-repeat="session in vm.sessions | orderBy:'start'" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
+      <div class="item item-timeline" ng-repeat="session in vm.sessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
         <h2>{{session.name}}</h2>
         <p>{{session.start | customDate}} - {{session.place | place}} ({{session.start | humanDuration:session.end}})</p>
         <i class="bullet bullet-positive"></i>
       </div>
     </div>
+
+    <!--<div class="list" ng-if="vm.sessions && vm.sessions.length > 0">
+      <div class="item item-timeline" ng-repeat="session in vm.finishedSessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
+        <h2>{{session.name}}</h2>
+        <p>{{session.start | customDate}} - {{session.place | place}} ({{session.start | humanDuration:session.end}})</p>
+        <i class="bullet bullet-positive"></i>
+      </div>
+
+      <div class="item item-timeline-image" ui-sref="app.event.scheduleSession({sessionId: vm.currentSession.uuid})">
+        <h2>{{vm.currentSession.name}}</h2>
+        <p>{{vm.currentSession.start | customDate}} - {{vm.currentSession.place | place}} ({{vm.currentSession.start | humanDuration:vm.currentSession.end}})</p>
+        <i class="bullet bullet-positive"></i>
+      </div>
+      <div class="item item-timeline" ng-repeat="session in vm.nearSessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
+        <h2>{{session.name}}</h2>
+        <p>{{session.start | customDate}} - {{session.place | place}} ({{session.start | humanDuration:session.end}})</p>
+        <i class="bullet bullet-positive"></i>
+      </div>
+
+      <div class="item item-timeline" ng-repeat="session in vm.farSessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})" ng-show="vm.showFarSessions && vm.farSessions && vm.farSessions.length > 0">
+        <h2>{{session.name}}</h2>
+        <p>{{session.start | customDate}} - {{session.place | place}} ({{session.start | humanDuration:session.end}})</p>
+        <i class="bullet bullet-positive"></i>
+      </div>
+      <div class="item item-timeline" ng-click="vm.showFarSessions=!vm.showFarSessions" ng-if="vm.farSessions && vm.farSessions.length > 0">
+        <h2>{{vm.showFarSessions ? 'Masquer les sessions lointaines' : 'Voir les sessions suivantes'}}</h2>
+        <i class="bullet bullet-positive bullet-icon" ng-class="{'icon-moins': !vm.showFarSessions, 'icon-plus': !vm.showFarSessions}"></i>
+      </div>
+    </div>-->
 
     <div class="list list-event-item" ng-if="vm.exponents && vm.exponents.length > 0">
       <div class="item item-divider">Exposant à aller voir :</div>
