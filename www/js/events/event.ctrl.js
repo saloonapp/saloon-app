@@ -102,27 +102,40 @@
     vm.similar = [];
   }
 
-  function EventScheduleCtrl($scope, EventUtils, event, userData){
+  function EventScheduleCtrl($scope, $timeout, EventUtils, event, userData){
     var vm = {};
     $scope.vm = vm;
 
     vm.event = event;
     vm.userData = userData;
+    vm.showMoodBars = [];
 
     vm.isDone = function(elt){ return elt ? EventUtils.isDone(userData, elt) : false; };
+    vm.exponentDone = exponentDone;
 
     $scope.$on('$ionicView.enter', function(){
       vm.sessions = EventUtils.getFavoriteSessions(event, userData);
-      vm.exponents = EventUtils.getFavoriteExponents(event, userData).sort(function(a, b){
-        var aDone = vm.isDone(a);
-        var bDone = vm.isDone(b);
-        if(aDone === bDone){
-          if (a.name > b.name) return 1;
-          if (a.name < b.name) return -1;
-          return 0;
-        } else if(aDone){ return 1; }
-        else { return -1; }
-      });
+      vm.exponents = EventUtils.getFavoriteExponents(event, userData).sort(sortExponents);
     });
+
+    function sortExponents(a, b){
+      var aDone = vm.isDone(a);
+      var bDone = vm.isDone(b);
+      if(aDone === bDone){
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0;
+      } else if(aDone){ return 1; }
+      else { return -1; }
+    }
+
+    function exponentDone(value, index){
+      if(value && !vm.showMoodBars[index]){
+        $timeout(function(){
+          vm.showMoodBars[index] = false;
+        }, 3000);
+      }
+      vm.showMoodBars[index] = value;
+    }
   }
 })();

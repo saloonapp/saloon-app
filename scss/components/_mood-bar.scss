@@ -1,0 +1,16 @@
+.mood-bar {
+  font-size: 30px;
+  padding: 0px;
+  .col {
+    text-align: center;
+    &.bad { color: $assertive; }
+    &.bad.active { color: $light; background-color: $assertive; }
+    &.middle { color: $energized; }
+    &.middle.active { color: $light; background-color: $energized; }
+    &.good { color: $balanced; }
+    &.good.active { color: $light; background-color: $balanced; }
+  }
+  &.loading .col {
+    &.bad, &.middle, &.good { color: $dark; }
+  }
+}

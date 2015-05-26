@@ -1,0 +1,5 @@
+<div class="row mood-bar" ng-class="{loading: vm.moodSaving}">
+  <div class="col bad" ng-class="{active: vm.isMood(vm.elt, 'ko')}" ng-click="vm.setMood(vm.elt, 'ko')" stop-event="click"><i class="fa fa-frown-o"></i></div>
+  <div class="col middle" ng-class="{active: vm.isMood(vm.elt, 'bof')}" ng-click="vm.setMood(vm.elt, 'bof')" stop-event="click"><i class="fa fa-meh-o"></i></div>
+  <div class="col good" ng-class="{active: vm.isMood(vm.elt, 'ok')}" ng-click="vm.setMood(vm.elt, 'ok')" stop-event="click"><i class="fa fa-smile-o"></i></div>
+</div>

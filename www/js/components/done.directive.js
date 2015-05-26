@@ -8,8 +8,9 @@
       restrict: 'E',
       templateUrl: 'js/components/done.html',
       scope: {
-        userData: '=userData',
-        elt: '=elt'
+        userData: '=',
+        elt: '=',
+        click: '&'
       },
       link: link
     };
@@ -30,8 +31,9 @@
         if(!vm.doneLoading){
           vm.doneLoading = true;
           return EventSrv.done(elt).then(function(data){
-            EventUtils.setDone(scope.userData, data);
             vm.doneLoading = false;
+            EventUtils.setDone(scope.userData, data);
+            scope.click({value: true});
           }, function(){
             vm.doneLoading = false;
           });
@@ -42,8 +44,9 @@
         if(!vm.doneLoading){
           vm.doneLoading = true;
           return EventSrv.undone(elt).then(function(data){
-            EventUtils.setUndone(scope.userData, data);
             vm.doneLoading = false;
+            EventUtils.setUndone(scope.userData, data);
+            scope.click({value: false});
           }, function(){
             vm.doneLoading = false;
           });

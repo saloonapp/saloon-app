@@ -23,6 +23,21 @@
       padding: 20px 20px 20px 30px;
     }
   }
+  .mood-bar {
+    position: absolute;
+    bottom: 0;
+    right: 50px;
+    left: 0px;
+    width: auto;
+    background: white;
+    height: 0px;
+    transition-property: height;
+    transition-duration: .5s;
+    transition-timing-function: ease-out;
+  }
+  .shown .mood-bar {
+    height: 40px;
+  }
   .fav-counter {
     padding-right: 5px;
     .icon {
