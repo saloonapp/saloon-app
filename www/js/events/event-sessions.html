@@ -1,12 +1,13 @@
 <ion-view title="Conférences du {{vm.day | date:'dddd'}}">
   <div class="bar bar-subheader has-tabs-top item-input-inset">
+  
     <label class="item-input-wrapper">
       <i class="icon ion-search placeholder-icon"></i>
       <input type="search" placeholder="Rechercher ..." ng-model="search">
     </label>
     <button class="button button-clear" ng-click="search=''">Annuler</button>
   </div>
-  <ion-content class="has-subheader">
+  <ion-content class="has-subheader" >
 
     <div class="list list-event-item">
       <div class="item item-icon-right" ng-class="{fav: vm.isFavorite(elt)}"
@@ -19,6 +20,7 @@
         <i class="icon ion-chevron-right icon-accessory"></i>
       </div>
     </div>
-
+    <ion-footer keyboard-attach></ion-footer>
   </ion-content>
+
 </ion-view>
