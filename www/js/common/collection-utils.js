@@ -98,8 +98,10 @@
     function size(col){
       if(Array.isArray(col)){
         return col.length;
-      } else {
+      } else if(col) {
         return Object.keys(col).length;
+      } else {
+        return 0;
       }
     }
 

@@ -31,7 +31,7 @@
             var handle = scrollElt.attr('delegate-handle');
             var $scroll = handle ? $ionicScrollDelegate.$getByHandle(handle) : $ionicScrollDelegate;
             var scroll = $scroll.getScrollPosition();
-            $scroll.scrollTo(scroll.left, eltOffset.top-scrollOffset.top, _shouldAnimate);
+            $scroll.scrollTo(scroll.left, scroll.top+eltOffset.top-scrollOffset.top, _shouldAnimate);
           } catch(e){
             console.warn('scrollTo('+className+') error :(', e);
           }
