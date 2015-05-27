@@ -17,13 +17,18 @@
     vm.event = event;
   }
 
-  function EventInfosCtrl($scope, $stateParams, EventSrv, event){
+  function EventInfosCtrl($scope, $stateParams, $ionicModal, EventSrv, EventUtils, event, userData){
     var vm = {};
     $scope.vm = vm;
 
     vm.loading = false;
+    vm.crLoading = false;
     vm.event = event;
     vm.doRefresh = doRefresh;
+    vm.askCR = askCR;
+    vm.cancelAskCR = cancelAskCR;
+    vm.confirmCR = confirmCR;
+    vm.isSubscribed = function(elt){ return EventUtils.isSubscribe(userData, elt); }
 
     function doRefresh(){
       vm.loading = true;
@@ -34,6 +39,43 @@
         vm.loading = false;
       });
     }
+
+    var crModal;
+    $ionicModal.fromTemplateUrl('js/events/partials/cr-modal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal){
+      crModal = modal;
+    });
+
+    function askCR(){
+      vm.crLoading = true;
+      var subscribed = EventUtils.getSubscribe(userData, event);
+      if(subscribed && subscribed.action){
+        vm.crForm = {email: subscribed.action.email, filter: subscribed.action.filter};
+      } else {
+        vm.crForm = {email: '', filter: 'all'};
+      }
+      crModal.show();
+    }
+    function cancelAskCR(){
+      crModal.hide().then(function(){
+        vm.crLoading = false;
+      });
+    }
+    function confirmCR(){
+      crModal.hide().then(function(){
+        EventSrv.subscribe(vm.event, vm.crForm).then(function(data){
+          EventUtils.setSubscribe(userData, data);
+          vm.crLoading = false;
+        });
+      });
+    }
+
+    //Cleanup the modal when we're done with it!
+    $scope.$on('$destroy', function(){
+      crModal.remove();
+    });
   }
 
   function EventProgramCtrl($scope, EventUtils, event){

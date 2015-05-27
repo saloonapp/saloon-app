@@ -25,6 +25,7 @@
       createComment: createComment,
       editComment: editComment,
       deleteComment: deleteComment,
+      subscribe: subscribe,
 
       refreshEventList: refreshEventList,
       refreshEvent: refreshEvent
@@ -238,6 +239,20 @@
       });*/
     }
 
+    function subscribe(event, form){
+      return UserSrv.getUser().then(function(user){
+        var tmpAction = _createTmpAction(user, event, {email: form.email, filter: form.filter, subscribe: true}, event.uuid);
+        var key = userDataKey(event.uuid);
+        return getUserData(event.uuid).then(function(userData){
+          EventUtils.setSubscribe(userData, tmpAction);
+          return StorageUtils.set(key, userData).then(function(){
+            UserActionSync.syncUserAction(key);
+            return tmpAction;
+          });
+        });
+      });
+    }
+
     function getExponent(eventId, exponentId){
       return get(eventId).then(function(event){
         return _.find(event.exponents, {uuid: exponentId});
@@ -259,14 +274,14 @@
       return DataUtils.refresh(key, '/events/'+eventId+'/full');
     }
 
-    function _createTmpAction(user, elt, action){
+    function _createTmpAction(user, elt, action, _eventId){
       return {
         dirty: true,
         userId: user.uuid,
         action: action,
         itemType: elt.className,
         itemId: elt.uuid,
-        eventId: elt.eventId,
+        eventId: _eventId ? _eventId : elt.eventId,
         created: Date.now(),
         updated: Date.now()
       };
@@ -291,6 +306,9 @@
       addComment: addComment,
       updateComment: updateComment,
       removeComment: removeComment,
+      isSubscribe: isSubscribe,
+      getSubscribe: getSubscribe,
+      setSubscribe: setSubscribe,
       getComments: getComments,
       getFavoriteExponents: getFavoriteExponents,
       getFavoriteSessions: getFavoriteSessions
@@ -411,6 +429,23 @@
 
     function getComments(userData, elt){
       return _.filter(userData.actions, {itemId: elt.uuid, action: {comment: true}});
+    }
+
+    function isSubscribe(userData, elt){
+      return _.find(userData.actions, {itemId: elt.uuid, action: {subscribe: true}}) !== undefined;
+    }
+
+    function getSubscribe(userData, elt){
+      return _.find(userData.actions, {itemId: elt.uuid, action: {subscribe: true}});
+    }
+
+    function setSubscribe(userData, data){
+      var oldSubscribe = _.find(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {subscribe: true}});
+      if(oldSubscribe){
+        angular.extend(oldSubscribe, data);
+      } else {
+        userData.actions.push(data);
+      }
     }
 
     function getFavoriteExponents(event, userData){
