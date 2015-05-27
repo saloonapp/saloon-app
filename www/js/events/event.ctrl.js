@@ -103,6 +103,8 @@
   }
 
   function EventScheduleCtrl($scope, $timeout, EventUtils, IonicUtils, CollectionUtils, event, userData){
+    var eventPadding = 4*60*60*1000; // 4h
+    var sessionPadding = 10*60*1000; // 10min
     var vm = {};
     $scope.vm = vm;
 
@@ -119,21 +121,25 @@
 
     $scope.$on('$ionicView.enter', function(){
       vm.sessions = EventUtils.getFavoriteSessions(event, userData).sort(sortSessions);
-      //var now = new Date('06/11/2015').getTime();
+      //var now = new Date('06/11/2015 10:30').getTime();
       var now = Date.now();
-      if(event.start < now && now < event.end){
+      if(event.start-eventPadding < now && now < event.end+eventPadding){
         vm.runningEvent = true;
         var currentSessionIndex = _.findIndex(vm.sessions, function(s){ return s.end > now; }); // sessions should be sorted by start:end:name
-        vm.finishedSessions = _.take(vm.sessions, currentSessionIndex);
-        vm.currentSession = vm.sessions[currentSessionIndex];
-        var tmp = _.partition(_.drop(vm.sessions, currentSessionIndex+1), function(s){ return s.start < vm.currentSession.end + 10*60*1000; });
-        vm.nearSessions = tmp[0];
-        vm.farSessions = tmp[1];
-        vm.bgCurrentSession = 'img/event/currentSession.jpg';
-        vm.showFarSessions = false;
-        $timeout(function(){
-          IonicUtils.scrollTo('current-session', false);
-        }, 0);
+        if(currentSessionIndex === -1){
+          vm.finishedSessions = vm.sessions;
+        } else {
+          vm.finishedSessions = _.take(vm.sessions, currentSessionIndex);
+          vm.currentSession = vm.sessions[currentSessionIndex];
+          var tmp = _.partition(_.drop(vm.sessions, currentSessionIndex+1), function(s){ return s.start < vm.currentSession.end + sessionPadding; });
+          vm.nearSessions = tmp[0];
+          vm.farSessions = tmp[1];
+          $timeout(function(){
+            IonicUtils.scrollTo('current-session', false);
+          }, 0);
+          vm.bgCurrentSession = 'img/event/currentSession.jpg';
+          vm.showFarSessions = false;
+        }
       } else {
         vm.runningEvent = false;
       }
