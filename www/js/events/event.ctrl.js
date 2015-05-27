@@ -102,7 +102,7 @@
     vm.similar = [];
   }
 
-  function EventScheduleCtrl($scope, $timeout, EventUtils, IonicUtils, CollectionUtils, event, userData){
+  function EventScheduleCtrl($scope, $timeout, $ionicScrollDelegate, EventUtils, IonicUtils, CollectionUtils, event, userData){
     var eventPadding = 4*60*60*1000; // 4h
     var sessionPadding = 10*60*1000; // 10min
     var vm = {};
@@ -111,11 +111,15 @@
     vm.event = event;
     vm.userData = userData;
     vm.showMoodBars = [];
+    vm.showPreviousSessions = false;
+    vm.showFarSessions = false;
 
     vm.isDone = function(elt){ return elt ? EventUtils.isDone(userData, elt) : false; };
     vm.exponentDone = exponentDone;
     vm.goToSessions = function(){ if(vm.runningEvent){ IonicUtils.scrollTo('current-session', true); } else { IonicUtils.scrollTo('sessions', true); } };
     vm.goToExponents = function(){ IonicUtils.scrollTo('exponents', true); };
+    vm.togglePreviousSessions = togglePreviousSessions;
+    vm.toggleFarSessions = toggleFarSessions;
     vm.isEmpty = CollectionUtils.isEmpty
     vm.notEmpty = CollectionUtils.isNotEmpty
 
@@ -127,18 +131,14 @@
         vm.runningEvent = true;
         var currentSessionIndex = _.findIndex(vm.sessions, function(s){ return s.end > now; }); // sessions should be sorted by start:end:name
         if(currentSessionIndex === -1){
-          vm.finishedSessions = vm.sessions;
+          vm.previousSessions = vm.sessions;
         } else {
-          vm.finishedSessions = _.take(vm.sessions, currentSessionIndex);
+          vm.previousSessions = _.take(vm.sessions, currentSessionIndex);
           vm.currentSession = vm.sessions[currentSessionIndex];
           var tmp = _.partition(_.drop(vm.sessions, currentSessionIndex+1), function(s){ return s.start < vm.currentSession.end + sessionPadding; });
           vm.nearSessions = tmp[0];
           vm.farSessions = tmp[1];
-          $timeout(function(){
-            IonicUtils.scrollTo('current-session', false);
-          }, 0);
           vm.bgCurrentSession = 'img/event/currentSession.jpg';
-          vm.showFarSessions = false;
         }
       } else {
         vm.runningEvent = false;
@@ -146,6 +146,21 @@
 
       vm.exponents = EventUtils.getFavoriteExponents(event, userData).sort(sortExponents);
     });
+
+    function togglePreviousSessions(){
+      vm.showPreviousSessions = !vm.showPreviousSessions;
+      $ionicScrollDelegate.resize();
+      if(!vm.showPreviousSessions){
+        IonicUtils.scrollTo('previousSessions');
+      }
+    }
+    function toggleFarSessions(){
+      vm.showFarSessions = !vm.showFarSessions;
+      $ionicScrollDelegate.resize();
+      if(!vm.showFarSessions){
+        IonicUtils.scrollTo('current-session');
+      }
+    }
 
     function exponentDone(value, index){
       if(value && !vm.showMoodBars[index]){

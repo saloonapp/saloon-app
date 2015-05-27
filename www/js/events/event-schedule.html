@@ -13,10 +13,18 @@
     </div>
 
     <div class="list" ng-if="vm.runningEvent && vm.notEmpty(vm.sessions)">
-      <div class="item item-timeline" ng-repeat="session in vm.finishedSessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
+      <div class="item item-timeline previousSessions" ng-click="vm.togglePreviousSessions()" ng-if="vm.notEmpty(vm.previousSessions)">
+        <h2>{{vm.showPreviousSessions ? 'Masquer les sessions passées' : 'Voir les sessions passées'}}</h2>
+        <i class="bullet bullet-positive bullet-icon" ng-class="{'icon-minus': vm.showPreviousSessions, 'icon-plus': !vm.showPreviousSessions}"></i>
+      </div>
+      <div class="item item-timeline" ng-repeat="session in vm.previousSessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})" ng-show="vm.showPreviousSessions && vm.notEmpty(vm.previousSessions)">
         <h2>{{session.name}}</h2>
         <p>{{session.start | customDate}} - {{session.place | place}} ({{session.start | humanDuration:session.end}})</p>
         <i class="bullet bullet-positive"></i>
+      </div>
+      <div class="item item-timeline" ng-click="vm.togglePreviousSessions()" ng-if="vm.showPreviousSessions && vm.notEmpty(vm.previousSessions)">
+        <h2>Masquer les sessions passées</h2>
+        <i class="bullet bullet-positive bullet-icon icon-minus"></i>
       </div>
 
       <div class="item item-timeline-image current-session" ng-style="{'background-image': 'url('+vm.bgCurrentSession+')'}"
@@ -32,8 +40,8 @@
         <i class="bullet bullet-positive"></i>
       </div>
 
-      <div class="item item-timeline" ng-click="vm.showFarSessions=!vm.showFarSessions" ng-if="vm.showFarSessions && vm.notEmpty(vm.farSessions)">
-        <h2>Masquer les sessions lointaines</h2>
+      <div class="item item-timeline nextSessions" ng-click="vm.toggleFarSessions()" ng-if="vm.showFarSessions && vm.notEmpty(vm.farSessions)">
+        <h2>Masquer les sessions suivantes</h2>
         <i class="bullet bullet-positive bullet-icon icon-minus"></i>
       </div>
       <div class="item item-timeline" ng-repeat="session in vm.farSessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})" ng-show="vm.showFarSessions && vm.notEmpty(vm.farSessions)">
@@ -41,8 +49,8 @@
         <p>{{session.start | customDate}} - {{session.place | place}} ({{session.start | humanDuration:session.end}})</p>
         <i class="bullet bullet-positive"></i>
       </div>
-      <div class="item item-timeline" ng-click="vm.showFarSessions=!vm.showFarSessions" ng-if="vm.notEmpty(vm.farSessions)">
-        <h2>{{vm.showFarSessions ? 'Masquer les sessions lointaines' : 'Voir les sessions suivantes'}}</h2>
+      <div class="item item-timeline" ng-click="vm.toggleFarSessions()" ng-if="vm.notEmpty(vm.farSessions)">
+        <h2>{{vm.showFarSessions ? 'Masquer les sessions suivantes' : 'Voir les sessions suivantes'}}</h2>
         <i class="bullet bullet-positive bullet-icon" ng-class="{'icon-minus': vm.showFarSessions, 'icon-plus': !vm.showFarSessions}"></i>
       </div>
     </div>
