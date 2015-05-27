@@ -1,7 +1,7 @@
 <ion-view title="Ma Visite">
   <ion-nav-buttons side="primary">
-    <button class="button button-icon ion-calendar" ng-click="vm.goToSessions()"></button>
-    <button class="button button-icon ion-briefcase" ng-click="vm.goToExponents()"></button>
+    <button class="button button-icon ion-calendar" ng-click="vm.goToSessions()" ng-if="vm.notEmpty(vm.sessions)"></button>
+    <button class="button button-icon ion-briefcase" ng-click="vm.goToExponents()" ng-if="vm.notEmpty(vm.exponents)"></button>
   </ion-nav-buttons>
   <ion-content>
     <div class="list sessions" ng-if="!vm.runningEvent && vm.notEmpty(vm.sessions)">
