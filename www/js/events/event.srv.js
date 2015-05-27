@@ -285,7 +285,9 @@
       setDone: setDone,
       setUndone: setUndone,
       isMood: isMood,
+      getMood: getMood,
       setMood: setMood,
+      getMoodFor: getMoodFor,
       addComment: addComment,
       updateComment: updateComment,
       removeComment: removeComment,
@@ -362,8 +364,15 @@
     }
 
     function isMood(userData, elt, mood){
-      var data = _.find(userData.actions, {itemId: elt.uuid, action: {mood: true}});
+      var uuid = typeof elt === 'object' ? elt.uuid : elt;
+      var data = _.find(userData.actions, {itemId: uuid, action: {mood: true}});
       return data !== undefined && data.action.rating === mood;
+    }
+
+    function getMood(userData, elt){
+      var uuid = typeof elt === 'object' ? elt.uuid : elt;
+      var data = _.find(userData.actions, {itemId: uuid, action: {mood: true}});
+      return data !== undefined ? data.action.rating : undefined;
     }
 
     function setMood(userData, data){
@@ -373,6 +382,15 @@
       } else {
         userData.actions.push(data);
       }
+    }
+
+    function getMoodFor(userData, elts){
+      var moods = {};
+      _.map(elts, function(elt){
+        var uuid = typeof elt === 'object' ? elt.uuid : elt;
+        moods[uuid] = getMood(userData, elt);
+      });
+      return moods;
     }
 
     function addComment(userData, data){

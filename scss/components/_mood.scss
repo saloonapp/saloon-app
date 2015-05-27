@@ -1,0 +1,5 @@
+.mood {
+  &.bad { color: $assertive; }
+  &.middle { color: $energized; }
+  &.good { color: $balanced; }
+}

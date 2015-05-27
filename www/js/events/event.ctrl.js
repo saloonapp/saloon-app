@@ -110,6 +110,8 @@
 
     vm.event = event;
     vm.userData = userData;
+    vm.sessionMoods = {};
+    vm.exponentMoods = {};
     vm.showMoodBars = [];
     vm.showPreviousSessions = false;
     vm.showFarSessions = false;
@@ -125,6 +127,7 @@
 
     $scope.$on('$ionicView.enter', function(){
       vm.sessions = EventUtils.getFavoriteSessions(event, userData).sort(sortSessions);
+      vm.sessionMoods = EventUtils.getMoodFor(userData, vm.sessions);
       //var now = new Date('06/11/2015 10:30').getTime();
       var now = Date.now();
       if(event.start-eventPadding < now && now < event.end+eventPadding){
@@ -145,6 +148,7 @@
       }
 
       vm.exponents = EventUtils.getFavoriteExponents(event, userData).sort(sortExponents);
+      vm.exponentMoods = EventUtils.getMoodFor(userData, vm.exponents);
     });
 
     function togglePreviousSessions(){
