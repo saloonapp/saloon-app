@@ -1,24 +1,52 @@
+
 .event-info {
-  img.landing {
-    width: 100%;
+  .event-image {
+    position : relative; 
+    img.landing {
+      width: 100%;
+    } 
+    .hashtag {
+      position : absolute; 
+      right : 0;
+      bottom : 0;
+      background: $positive;
+      color : $light;
+      padding-left: 10px;
+      padding-right: 10px;
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+    } 
+    
   }
+  
   .infos {
-    background: $positive;
-    color: $light;
+    background: $dark-white;
+    color: $grey;
+      
     margin-top: -5px;
     a {
-      color: $light;
+      color: $grey;
     }
     .section {
-      border-bottom: 1px solid white;
+      border-bottom: 1px solid $grey;
       padding: 5px;
       margin: 0px;
-      &.main { padding: 10px; }
+      &.main { 
+        padding: 10px; 
+      }
+      &.details, &.stats {
+        height : 80px;
+        font-weight: bold;
+        align-items: center;
+        justify-content: center;
+      }
       &.details {
         text-align: center;
+        font-size: 15px;
         i {
           font-size: 25px;
           margin-right: 5px;
+          vertical-align: middle;
         }
         a {
           text-decoration: none;
@@ -34,6 +62,7 @@
       }
       &.cr {
         padding: 10px 30px;
+        border : 0px;
         button i { margin-right: 10px; }
       }
     }

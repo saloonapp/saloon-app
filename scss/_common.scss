@@ -16,22 +16,23 @@
 .item-avatar-event {
 	height : 115px;
 	border-color : #b5b5b5;
-	background : #fafafa;
+	background : $dark-white;
 	img:first-child {
 		width : 80px;
 		height : 80px;
 	}
 
 	h2 {
-		color : #4d4d4d;
+		color : $grey;
 		font-size: 20px;
+		font-weight: 500;
 	}
 	.multiline.l2 {
 		min-height: 38px;
 	}
 	p:first-child {
 		font-weight: 200;
-		color : #4d4d4d;
+		color : $grey;
 	}
 	p.infos {
 		margin-top : 10px;
@@ -43,7 +44,7 @@
 		}
 		i {
 			margin-right: 5px;
-			
+
 		}
 	}
 

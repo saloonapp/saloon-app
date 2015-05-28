@@ -27,7 +27,10 @@ Recevoir le compte rendu de cet événement
 </div>
 </ion-content>-->
   <ion-content class="event-info">
-    <img src="http://bestofweb.paris/images/header_big.jpg" class="landing">
+    <div class="event-image">
+      <img src="http://bestofweb.paris/images/header_big.jpg" class="landing" />
+      <div class="hashtag">#bestofweb</div>
+    </div>
     <div class="infos">
       <div class="section main">
         <div>{{vm.event.description}}</div>
@@ -35,8 +38,16 @@ Recevoir le compte rendu de cet événement
         <div class="clearfix"></div>
       </div>
       <div class="row section details">
-        <div class="col"><i class="icon ion-ios-calendar-outline"></i> {{vm.event.start | date:'D MMM'}}</div>
-        <div class="col"><a href="http://maps.google.com/?q={{vm.event.address.name}}"><i class="icon ion-ios-location-outline"></i> Paris 75116</a></div>
+        <div class="col">
+          <i class="icon ion-ios-calendar-outline"></i> 
+          <span>{{vm.event.start | date:'D MMM'}}</span>
+        </div>
+        <div class="col">
+          <a href="http://maps.google.com/?q={{vm.event.address.name}}">
+            <i class="icon ion-ios-location-outline"></i>
+            <span>Paris</span>
+          </a>
+        </div>
         <div class="col"><a href="http://bestofweb.paris/#tickets"><i class="icon ion-ios-pricetag-outline"></i> 15€ - 50€</a></div>
       </div>
       <div class="row section stats">
@@ -52,7 +63,7 @@ Recevoir le compte rendu de cet événement
       </div>
     </div>
     <div class="sponsors">
-      Sponsors :
+      Sponsors 
       <div class="row">
         <div class="col"><a href="http://eleven-labs.com/"><img src="http://bestofweb.paris/images/sponsors/eleven-labs.png"></a></div>
         <div class="col"><a href="http://www.sfeir.com/"><img src="http://bestofweb.paris/images/sponsors/sfeir.jpg"></a></div>
