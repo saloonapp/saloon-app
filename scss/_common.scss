@@ -12,3 +12,39 @@
     margin: 0px;
   }
 }
+
+.item-avatar-event {
+	height : 115px;
+	border-color : #b5b5b5;
+	background : #fafafa;
+	img:first-child {
+		width : 80px;
+		height : 80px;
+	}
+
+	h2 {
+		color : #4d4d4d;
+		font-size: 20px;
+	}
+	.multiline.l2 {
+		min-height: 38px;
+	}
+	p:first-child {
+		font-weight: 200;
+		color : #4d4d4d;
+	}
+	p.infos {
+		margin-top : 10px;
+		font-style: italic;
+		width: 100%;
+		span {
+			width : 45%;
+			display: inline-block;
+		}
+		i {
+			margin-right: 5px;
+			
+		}
+	}
+
+}
