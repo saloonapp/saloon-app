@@ -1,0 +1,46 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-positive">
+    <h1 class="title">Compte rendu</h1>
+    <button class="button button-clear" ng-click="vm.cancelAskCR()">Annuler</button>
+  </ion-header-bar>
+  <ion-content>
+    <div class="padding">
+      <p>Vous souhaitez recevoir le contenu du <b>{{vm.event.name}}</b></p>
+      Dès qu'il sera disponible, nous vous enverrons par mail le compte rendu de l'événement.<br>
+      Ceci inclu :
+      <ul>
+        <li>Vos notes et appréciations prises avec SalooN</li>
+        <li>Les slides et vidéos si disponibles</li>
+      </ul>
+      Vous souhaitez recevoir ce  compte rendu pour :
+    </div>
+
+    <div class="list">
+      <div class="item item-checkbox">
+        <label class="checkbox">
+          <input type="radio" name="cr-filter" value="all" ng-model="vm.crForm.filter">
+        </label>
+        Compte rendu complet
+      </div>
+      <div class="item item-checkbox">
+        <label class="checkbox">
+          <input type="radio" name="cr-filter" value="favorites" ng-model="vm.crForm.filter">
+        </label>
+        Seulement les éléments en favoris
+      </div>
+    </div>
+
+    <div class="list">
+      <label class="item item-input item-floating-label">
+        <span class="input-label">Votre mail</span>
+        <input type="email" placeholder="Votre mail" ng-model="vm.crForm.email">
+      </label>
+    </div>
+
+    <div class="padding">
+      <button class="button button-positive button-block" ng-click="vm.confirmCR()" ng-disabled="!vm.crForm.email">
+        {{vm.isSubscribed(vm.event) ? 'Modifier' : 'Confirmer'}}
+      </button>
+    </div>
+  </ion-content>
+</ion-modal-view>

@@ -17,7 +17,10 @@
       <u>Lieu</u>: {{vm.event.address.name}}<br>
       <u>Inscription</u>: ???<br>
     </div>
-    <button class="button button-block button-positive">Gérer ma visite</button>
+    <button class="button button-block button-positive" ng-click="vm.askCR()" ng-disabled="vm.crLoading">
+      <i class="icon ion-checkmark-circled" ng-if="vm.isSubscribed(vm.event)"></i>
+      Recevoir le compte rendu de cet événement
+    </button>
     <div>
       <h2>Sponsors</h2>
       ...
