@@ -5,25 +5,59 @@
   <ion-nav-buttons side="right">
     <button class="button button-clear button-icon ion-loop" ng-class="{'fa-spin': vm.loading}" ng-click="vm.doRefresh()"></button>
   </ion-nav-buttons>
-  <ion-content class="padding">
-    <div>
-      <img ng-src="{{vm.event.image}}" style="margin: 0 10px 10px 0; max-width: 100px; float: left;">
-      {{vm.event.description}}
-      <div class="clearfix"></div>
+  <!--<ion-content class="padding">
+<div>
+<img ng-src="{{vm.event.image}}" style="margin: 0 10px 10px 0; max-width: 100px; float: left;">
+{{vm.event.description}}
+<div class="clearfix"></div>
+</div>
+<div>
+<u>Date</u>: {{vm.event.start | date}}<br>
+<u>Horaires</u>: {{vm.event.start | time}} - {{vm.event.end | time}}<br>
+<u>Lieu</u>: {{vm.event.address.name}}<br>
+<u>Inscription</u>: ???<br>
+</div>
+<button class="button button-block button-positive" ng-click="vm.askCR()" ng-disabled="vm.crLoading">
+<i class="icon ion-checkmark-circled" ng-if="vm.isSubscribed(vm.event)"></i>
+Recevoir le compte rendu de cet événement
+</button>
+<div>
+<h2>Sponsors</h2>
+...
+</div>
+</ion-content>-->
+  <ion-content class="event-info">
+    <img src="http://bestofweb.paris/images/header_big.jpg" class="landing">
+    <div class="infos">
+      <div class="section main">
+        <div>{{vm.event.description}}</div>
+        <a href="http://bestofweb.paris/" class="pull-right">http://bestofweb.paris/</a>
+        <div class="clearfix"></div>
+      </div>
+      <div class="row section details">
+        <div class="col"><i class="icon ion-ios-calendar-outline"></i> {{vm.event.start | date:'D MMM'}}</div>
+        <div class="col"><a href="http://maps.google.com/?q={{vm.event.address.name}}"><i class="icon ion-ios-location-outline"></i> Paris 75116</a></div>
+        <div class="col"><a href="http://bestofweb.paris/#tickets"><i class="icon ion-ios-pricetag-outline"></i> 15€ - 50€</a></div>
+      </div>
+      <div class="row section stats">
+        <div class="col"><strong>500</strong> participants</div>
+        <div class="col" ng-if="vm.event.sessions && vm.event.sessions.length > 0"><strong>{{vm.event.sessions.length}}</strong> sessions</div>
+        <div class="col" ng-if="vm.event.exponents && vm.event.exponents.length > 0"><strong>{{vm.event.exponents.length}}</strong> exposants</div>
+      </div>
+      <div class="section cr">
+        <button class="button button-block button-positive" ng-click="vm.askCR()" ng-disabled="vm.crLoading">
+          <i class="icon" ng-class="{'ion-checkmark-circled': vm.isSubscribed(vm.event), 'ion-paper-airplane': !vm.isSubscribed(vm.event)}"></i>
+          Recevoir le compte rendu
+        </button>
+      </div>
     </div>
-    <div>
-      <u>Date</u>: {{vm.event.start | date}}<br>
-      <u>Horaires</u>: {{vm.event.start | time}} - {{vm.event.end | time}}<br>
-      <u>Lieu</u>: {{vm.event.address.name}}<br>
-      <u>Inscription</u>: ???<br>
-    </div>
-    <button class="button button-block button-positive" ng-click="vm.askCR()" ng-disabled="vm.crLoading">
-      <i class="icon ion-checkmark-circled" ng-if="vm.isSubscribed(vm.event)"></i>
-      Recevoir le compte rendu de cet événement
-    </button>
-    <div>
-      <h2>Sponsors</h2>
-      ...
+    <div class="sponsors">
+      Sponsors :
+      <div class="row">
+        <div class="col"><a href="http://eleven-labs.com/"><img src="http://bestofweb.paris/images/sponsors/eleven-labs.png"></a></div>
+        <div class="col"><a href="http://www.sfeir.com/"><img src="http://bestofweb.paris/images/sponsors/sfeir.jpg"></a></div>
+        <div class="col"><a href="http://www.soat.fr/carriere/developpeur-web-rejoignez-nous/?context=77"><img src="http://bestofweb.paris/images/sponsors/soat.png"></a></div>
+      </div>
     </div>
   </ion-content>
 </ion-view>

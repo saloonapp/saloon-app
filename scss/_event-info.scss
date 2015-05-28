@@ -1,0 +1,47 @@
+.event-info {
+  img.landing {
+    width: 100%;
+  }
+  .infos {
+    background: $positive;
+    color: $light;
+    margin-top: -5px;
+    a {
+      color: $light;
+    }
+    .section {
+      border-bottom: 1px solid white;
+      padding: 5px;
+      margin: 0px;
+      &.main { padding: 10px; }
+      &.details {
+        text-align: center;
+        i {
+          font-size: 25px;
+          margin-right: 5px;
+        }
+        a {
+          text-decoration: none;
+        }
+      }
+      &.stats {
+        text-align: center;
+        strong {
+          display: block;
+          font-size: 25px;
+          margin: 5px 0px;
+        }
+      }
+      &.cr {
+        padding: 10px 30px;
+        button i { margin-right: 10px; }
+      }
+    }
+  }
+  .sponsors {
+    padding: 10px;
+    img {
+      width: 100%;
+    }
+  }
+}
