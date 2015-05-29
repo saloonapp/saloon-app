@@ -1,4 +1,7 @@
 <ion-view title="Evénements">
+  <ion-nav-buttons side="right">
+    <button class="button button-clear button-icon ion-more" ng-click="vm.showPopover($event)"></button>
+  </ion-nav-buttons>
   <ion-content>
     <ion-refresher pulling-text="Mettre à jour la liste..." on-refresh="vm.doRefresh()"></ion-refresher>
     <div class="list">

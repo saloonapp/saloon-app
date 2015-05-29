@@ -5,9 +5,12 @@
     .config(fixiOS8)
     .run(runBlock);
 
-  configure.$inject = ['$urlRouterProvider', '$provide'];
-  function configure($urlRouterProvider, $provide){
+  configure.$inject = ['$urlRouterProvider', '$compileProvider', '$provide'];
+  function configure($urlRouterProvider, $compileProvider, $provide){
     $urlRouterProvider.otherwise('/app/loading');
+
+    // allow more url scheme (otherwise angular will add 'unsafe:')
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|sms|geo|file):/);
 
     // improve angular logger
     $provide.decorator('$log', ['$delegate', 'customLogger', function($delegate, customLogger){
@@ -15,7 +18,7 @@
     }]);
   }
 
-//https://github.com/angular/angular.js/issues/9128
+  //https://github.com/angular/angular.js/issues/9128
   fixiOS8.$inject = ['$provide'];
   function fixiOS8($provide){
     // Minification-safe hack.
@@ -56,7 +59,7 @@
           if (!this.$$ChildScope) {
             this[$$ChildScope] = function ChildScope() {
               this[$$watchers] = this[$$nextSibling] =
-                  this[$$childHead] = this[$$childTail] = null;
+                this[$$childHead] = this[$$childTail] = null;
               this[$$listeners] = {};
               this[$$listenerCount] = {};
               this[$id] = nextUid();

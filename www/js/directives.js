@@ -20,7 +20,7 @@
 
   // open external links (starting with http:// or https://) outside the app
   function href($window){
-    var externePrefixes = ['http:', 'https:', 'tel:', 'sms:'];
+    var externePrefixes = ['http:', 'https:', 'mailto:', 'tel:', 'sms:', 'geo:'];
     function isExterneUrl(url){
       if(url){
         for(var i in externePrefixes){

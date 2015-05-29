@@ -7,7 +7,7 @@ var Config = (function(){
     track: false, // should send tracking events to a server
     storage: true, // should save data to browser storage
     storagePrefix: 'saloon-', // prefix all stoarge entries with this prefix
-    emailSupport: 'loicknuchel@gmail.com',
+    emailSupport: 'contact@saloonapp.co',
     backendUrl: 'https://dev-saloon.herokuapp.com/api/v1',
     //backendUrl: 'http://localhost:9000/api/v1',
 
