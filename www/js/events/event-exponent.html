@@ -1,10 +1,14 @@
 <ion-view title="{{vm.elt.name}}">
   <ion-content>
     <div class="event-item-details">
-      <favorite user-data="vm.userData" elt="vm.elt" class="pull-right"></favorite>
-      <h1>{{vm.elt.name}}</h1>
+
+      <div class="header">
+        <favorite user-data="vm.userData" elt="vm.elt" class="pull-left"></favorite>
+         <img src="{{vm.elt.landingUrl}}" ng-if="vm.elt.landingUrl != ''"/>
+        <h1 ng-if="vm.elt.landingUrl == ''"><span ng-show="vm.elt.format">[{{vm.elt.format}}] </span>{{vm.elt.name}}</h1>
+      </div>      
       <h3 class="assertive" ng-show="vm.elt.place">@{{vm.elt.place}}</h3>
-      <div btf-markdown="vm.elt.description"></div>
+      <div class="padding" btf-markdown="vm.elt.description"></div>
     </div>
 
     <div class="list" ng-if="vm.elt.team && vm.elt.team.length > 0">

@@ -103,5 +103,23 @@ feedback-box {
   .item-divider {
     color: $grey; 
   }
+}
 
+.item-event {
+  position : relative; 
+  favorite {
+    color  : red;
+    position : absolute; 
+    left : 0px;
+
+  }
+  .favorite {
+    position: absolute;
+    left: 16px;
+    bottom: 20px;
+    top : 35px;
+    .icon {
+      padding : 0;
+    }
+  }
 }
