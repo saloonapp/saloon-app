@@ -5,9 +5,9 @@
   </ion-header-bar>
   <ion-content>
     <div class="padding">
-      <h2>Un événement continue de vivre !</h2>
-      <p>Pour cette raison, vous pouvez recevoir le compte rendu du salon <b>{{vm.event.name}}</b>.</p>
-      <p>Il se présente sous la forme d’un email contenant notamment : (<a href="http://saloonapp.co/exemples/cr.html">voir un exemple complet</a>)</p>
+      <h2>L'événement continue !</h2>
+      <p>SalooN vous offre la possibilité de recevoir le compte rendu du salon <b>{{vm.event.name}}</b>.</p>
+      <p>Celui-ci se présente sous la forme d’un email contenant notamment : </p>
       <div class="list">
         <div class="item item-icon-left">
           <i class="icon ion-checkmark-round"></i>
@@ -22,9 +22,10 @@
           Les slides et vidéos des sessions 
         </div>
       </div>
+      <p class="exemple"><a href="http://saloonapp.co/exemples/cr.html">Exemple</a></p>
 
 
-<p>Il vous suffit de sélectionner le contenu qui vous intéresse et d’indiquer votre adresse email </p>
+    <p style="clear : both">Pour cela, il vous suffit de sélectionner le contenu qui vous intéresse et d’indiquer votre adresse email </p>
     </div>
 
     <div class="list">
@@ -45,13 +46,17 @@
     <div class="list">
       <label class="item item-input item-floating-label">
         <span class="input-label">Votre mail</span>
-        <input type="email" placeholder="Votre mail" ng-model="vm.crForm.email">
+        <input type="email" placeholder="Votre email" ng-model="vm.crForm.email">
       </label>
     </div>
 
     <div class="padding">
       <button class="button button-positive button-block" ng-click="vm.confirmCR()" ng-disabled="!vm.crForm.email">
         {{vm.isSubscribed(vm.event) ? 'Modifier' : 'Le recevoir'}}
+      </button>
+
+      <button class="button button-netagive button-block" ng-click="" ng-if="vm.isSubscribed(vm.event)">
+        Me désinscrire
       </button>
     </div>
   </ion-content>
