@@ -18,15 +18,15 @@
         <div class="clearfix"></div>
       </div>
       <div class="row section details" ng-if="vm.event.start || vm.event.address.city || vm.event.price">
-        <div class="col" ng-if="vm.event.start">
-          <i class="icon ion-ios-calendar-outline"></i>
-          <span>{{vm.event.start | date:'D MMM'}}</span>
-        </div>
         <div class="col" ng-if="vm.event.address.city">
           <a href="http://maps.google.com/?q={{vm.event.address | address}}">
             <i class="icon ion-ios-location-outline"></i>
             <span>{{vm.event.address.city}}</span>
           </a>
+        </div>
+        <div class="col" ng-if="vm.event.start">
+          <i class="icon ion-ios-calendar-outline"></i>
+          <span>{{vm.event.start | date:'D MMM'}}</span>
         </div>
         <div class="col" ng-if="vm.event.price">
           <a href="{{vm.event.priceUrl}}">
