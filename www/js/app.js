@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'btford.markdown', 'monospaced.elastic'])
+  angular.module('app', ['ionic', 'ngCordova', 'LocalForageModule', 'btford.markdown', 'monospaced.elastic', 'angulartics', 'angulartics.segment.io'])
     .config(configure)
     .config(fixiOS8)
     .run(runBlock);
