@@ -106,19 +106,13 @@ feedback-box {
 }
 
 .item-event {
-  position : relative; 
-  favorite {
-    color  : red;
-    position : absolute; 
-    left : 0px;
 
-  }
   .favorite {
-    position: absolute;
-    left: 16px;
-    bottom: 20px;
-    top : 35px;
+    position : initial;
     .icon {
+      padding : 0;
+    }
+    .spinner {
       padding : 0;
     }
   }
