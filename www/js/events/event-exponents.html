@@ -9,8 +9,8 @@
   <ion-content class="has-subheader">
 
     <div class="list list-event-item">
-      <div class="item item-avatar item-event" collection-repeat="elt in vm.event.exponents | filter:search | orderBy:'name'" ui-sref="app.event.exponent({exponentId: elt.uuid})">
-        <img ng-src="{{elt.logoUrl}}" ng-if="elt.logoUrl">
+      <div class="item item-event" collection-repeat="elt in vm.event.exponents | filter:search | orderBy:'name'" ui-sref="app.event.exponent({exponentId: elt.uuid})">
+        
         <favorite user-data="vm.userData" elt="elt"></favorite>
         <h2>{{elt.name}}</h2>
         <p class="multiline l2 fixe">{{elt.description}}</p>
