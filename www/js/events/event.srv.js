@@ -27,6 +27,7 @@
       editComment: editComment,
       deleteComment: deleteComment,
       subscribe: subscribe,
+      unsubscribe: unsubscribe,
 
       refreshEventList: refreshEventList,
       refreshEvent: refreshEvent
@@ -254,6 +255,20 @@
       });
     }
 
+    function unsubscribe(event){
+      return UserSrv.getUser().then(function(user){
+        var tmpAction = _createTmpAction(user, event, {subscribe: false}, event.uuid);
+        var key = userDataKey(event.uuid);
+        return getUserData(event.uuid).then(function(userData){
+          EventUtils.setSubscribe(userData, tmpAction);
+          return StorageUtils.set(key, userData).then(function(){
+            UserActionSync.syncUserAction(key);
+            return tmpAction;
+          });
+        });
+      });
+    }
+
     function getExponent(eventId, exponentId){
       return get(eventId).then(function(event){
         return _.find(event.exponents, {uuid: exponentId});
@@ -334,6 +349,7 @@
       isSubscribe: isSubscribe,
       getSubscribe: getSubscribe,
       setSubscribe: setSubscribe,
+      setUnsubscribe: setUnsubscribe,
       getComments: getComments,
       getFavoriteExponents: getFavoriteExponents,
       getFavoriteSessions: getFavoriteSessions
@@ -465,10 +481,19 @@
     }
 
     function setSubscribe(userData, data){
+      _.remove(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {subscribe: false}});
       var oldSubscribe = _.find(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {subscribe: true}});
       if(oldSubscribe){
         angular.extend(oldSubscribe, data);
       } else {
+        userData.actions.push(data);
+      }
+    }
+
+    function setUnsubscribe(userData, data){
+      _.remove(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {subscribe: true}});
+      var oldUnsubscribe = _.find(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {subscribe: false}});
+      if(!oldUnsubscribe){
         userData.actions.push(data);
       }
     }

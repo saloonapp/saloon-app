@@ -1,7 +1,7 @@
 <ion-modal-view>
   <ion-header-bar class="bar-positive">
     <h1 class="title">Compte rendu</h1>
-    <button class="button button-clear" ng-click="vm.cancelAskCR()">Annuler</button>
+    <button class="button button-clear" ng-click="vm.cancelSubscribeReport()">Annuler</button>
   </ion-header-bar>
   <ion-content>
     <div class="padding">
@@ -51,11 +51,11 @@
     </div>
 
     <div class="padding">
-      <button class="button button-positive button-block" ng-click="vm.confirmCR()" ng-disabled="!vm.crForm.email">
+      <button class="button button-positive button-block" ng-click="vm.subscribeReport()" ng-disabled="!vm.crForm.email">
         {{vm.isSubscribed(vm.event) ? 'Modifier' : 'Le recevoir'}}
       </button>
 
-      <button class="button button-netagive button-block" ng-click="" ng-if="vm.isSubscribed(vm.event)">
+      <button class="button button-netagive button-block" ng-click="vm.unsubscribeReport()" ng-if="vm.isSubscribed(vm.event)">
         Me désinscrire
       </button>
     </div>

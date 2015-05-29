@@ -114,6 +114,7 @@
         if(toSync.action.comment === true && toSync.uuid){ return syncCommentEdit(toSync); }
         if(toSync.action.comment === false){ return syncCommentDelete(toSync); }
         if(toSync.action.subscribe === true){ return syncSubscribe(toSync); }
+        if(toSync.action.subscribe === false){ return syncUnsubscribe(toSync); }
       }
       return $q.reject({status: 404, message: 'unknown action :('})
     }
@@ -168,6 +169,12 @@
 
     function syncSubscribe(toSync){
       return $http.post(Config.backendUrl+'/events/'+toSync.eventId+'/subscribe', {email: toSync.action.email, filter: toSync.action.filter}, {headers: {userId: toSync.userId, timestamp: toSync.created}}).then(function(res){
+        return res.data;
+      });
+    }
+
+    function syncUnsubscribe(toSync){
+      return $http.delete(Config.backendUrl+'/events/'+toSync.eventId+'/subscribe', {headers: {userId: toSync.userId, timestamp: toSync.created}}).then(function(res){
         return res.data;
       });
     }

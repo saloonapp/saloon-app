@@ -37,9 +37,10 @@
     //vm.loading = false;
     //vm.doRefresh = doRefresh;
     vm.crLoading = false;
-    vm.askCR = askCR;
-    vm.cancelAskCR = cancelAskCR;
-    vm.confirmCR = confirmCR;
+    vm.showSubscribeReport = showSubscribeReport;
+    vm.cancelSubscribeReport = cancelSubscribeReport;
+    vm.subscribeReport = subscribeReport;
+    vm.unsubscribeReport = unsubscribeReport;
     vm.isSubscribed = function(elt){ return EventUtils.isSubscribe(userData, elt); }
 
     /*function doRefresh(){
@@ -60,7 +61,7 @@
       crModal = modal;
     });
 
-    function askCR(){
+    function showSubscribeReport(){
       vm.crLoading = true;
       var subscribed = EventUtils.getSubscribe(userData, event);
       if(subscribed && subscribed.action){
@@ -71,17 +72,26 @@
       crModal.show();
       $analytics.eventTrack('reportModalOpened', {eventId: event.uuid, eventName: event.name});
     }
-    function cancelAskCR(){
+    function cancelSubscribeReport(){
       crModal.hide().then(function(){
         vm.crLoading = false;
       });
     }
-    function confirmCR(){
+    function subscribeReport(){
       crModal.hide().then(function(){
         EventSrv.subscribe(vm.event, vm.crForm).then(function(data){
           EventUtils.setSubscribe(userData, data);
           vm.crLoading = false;
           $analytics.eventTrack('reportSubcribed', {eventId: event.uuid, eventName: event.name});
+        });
+      });
+    }
+    function unsubscribeReport(){
+      crModal.hide().then(function(){
+        EventSrv.unsubscribe(vm.event).then(function(data){
+          EventUtils.setUnsubscribe(userData, data);
+          vm.crLoading = false;
+          $analytics.eventTrack('reportUnsubcribed', {eventId: event.uuid, eventName: event.name});
         });
       });
     }
