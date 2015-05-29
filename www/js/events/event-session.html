@@ -1,8 +1,10 @@
 <ion-view title="{{vm.elt.name}}">
   <ion-content>
     <div class="event-item-details">
-      <favorite user-data="vm.userData" elt="vm.elt" class="pull-right"></favorite>
-      <h1><span ng-show="vm.elt.format">[{{vm.elt.format}}] </span>{{vm.elt.name}}</h1>
+    <div class="header">
+        <favorite user-data="vm.userData" elt="vm.elt" class="pull-left"></favorite>
+        <h1><span ng-show="vm.elt.format">[{{vm.elt.format}}] </span>{{vm.elt.name}}</h1>
+      </div>
       <h3 class="assertive">{{vm.elt.start | time}}-{{vm.elt.end | time}}<span ng-show="vm.elt.place"> @{{vm.elt.place}}</span></h3>
       <div btf-markdown="vm.elt.description"></div>
     </div>
