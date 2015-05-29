@@ -5,14 +5,26 @@
   </ion-header-bar>
   <ion-content>
     <div class="padding">
-      <p>Vous souhaitez recevoir le contenu du <b>{{vm.event.name}}</b></p>
-      Dès qu'il sera disponible, nous vous enverrons par mail le compte rendu de l'événement.<br>
-      Ceci inclu :
-      <ul>
-        <li>Vos notes et appréciations prises avec SalooN</li>
-        <li>Les slides et vidéos si disponibles</li>
-      </ul>
-      Vous souhaitez recevoir ce  compte rendu pour :
+      <h2>Un événement continue de vivre !</h2>
+      <p>Pour cette raison, vous pouvez recevoir le compte rendu du salon <b>{{vm.event.name}}</b>.</p>
+      <p>Il se présente sous la forme d’un email contenant notamment : (<a href="http://saloonapp.co/exemples/cr.html">voir un exemple complet</a>)</p>
+      <div class="list">
+        <div class="item item-icon-left">
+          <i class="icon ion-checkmark-round"></i>
+          Le bilan de votre visite ( vu / pas vu)
+        </div>
+        <div class="item item-icon-left">
+          <i class="icon ion-compose"></i>
+          Les notes et appréciations prises
+        </div>
+        <div class="item item-icon-left">
+          <i class="icon ion-social-youtube-outline"></i>
+          Les slides et vidéos des sessions 
+        </div>
+      </div>
+
+
+<p>Il vous suffit de sélectionner le contenu qui vous intéresse et d’indiquer votre adresse email </p>
     </div>
 
     <div class="list">
@@ -39,7 +51,7 @@
 
     <div class="padding">
       <button class="button button-positive button-block" ng-click="vm.confirmCR()" ng-disabled="!vm.crForm.email">
-        {{vm.isSubscribed(vm.event) ? 'Modifier' : 'Confirmer'}}
+        {{vm.isSubscribed(vm.event) ? 'Modifier' : 'Le recevoir'}}
       </button>
     </div>
   </ion-content>
