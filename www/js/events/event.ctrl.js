@@ -21,6 +21,7 @@
     var vm = {};
     $scope.vm = vm;
 
+    vm.sponsors = _.filter(event.exponents, {sponsor: true});
     vm.loading = false;
     vm.crLoading = false;
     vm.event = event;
@@ -33,7 +34,7 @@
     function doRefresh(){
       vm.loading = true;
       EventSrv.refreshEvent($stateParams.eventId).then(function(event){
-        vm.event = event;
+        angular.copy(event, vm.event);
         vm.loading = false;
       }, function(err){
         vm.loading = false;

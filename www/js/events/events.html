@@ -3,11 +3,11 @@
     <ion-refresher pulling-text="Pull to refresh..." on-refresh="vm.doRefresh()"></ion-refresher>
     <div class="list">
       <div class="item item-avatar item-avatar-event" ng-repeat="event in vm.events | orderBy:'start':true" ui-sref="app.event.infos({eventId: event.uuid})">
-        <img ng-src="{{event.image}}">
+        <img ng-src="{{event.logoUrl}}">
         <h2>{{event.name}}</h2>
         <p class="multiline l2">{{event.description}}</p>
         <p class="infos">
-          <span><i class="ion-ios-location-outline"></i>Paris</span>
+          <span><i class="ion-ios-location-outline"></i>{{event.address.city}}</span>
           <span><i class="ion-android-calendar"></i>{{event.start | date}}</span>
         </p>
         <!--<i class="icon ion-chevron-right icon-accessory"></i>-->

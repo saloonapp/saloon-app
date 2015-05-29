@@ -7,7 +7,7 @@
     <div class="list sessions" ng-if="!vm.runningEvent && vm.notEmpty(vm.sessions)">
       <div class="item item-timeline" ng-repeat="session in vm.sessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
         <h2>{{session.name}}</h2>
-        <p>{{session.start | customDate}} - {{session.place | place}} ({{session.start | humanDuration:session.end}})</p>
+        <p>{{session.start | customDate}} - {{session.place}} ({{session.start | humanDuration:session.end}})</p>
         <i class="bullet bullet-positive"></i>
       </div>
     </div>
@@ -19,7 +19,7 @@
       </div>
       <div class="item item-timeline" ng-repeat="session in vm.previousSessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})" ng-show="vm.showPreviousSessions && vm.notEmpty(vm.previousSessions)">
         <h2><span mood="vm.sessionMoods[session.uuid]"></span> {{session.name}}</h2>
-        <p>{{session.start | customDate}} - {{session.place | place}} ({{session.start | humanDuration:session.end}})</p>
+        <p>{{session.start | customDate}} - {{session.place}} ({{session.start | humanDuration:session.end}})</p>
         <i class="bullet bullet-positive"></i>
       </div>
       <div class="item item-timeline" ng-click="vm.togglePreviousSessions()" ng-if="vm.showPreviousSessions && vm.notEmpty(vm.previousSessions)">
@@ -31,12 +31,12 @@
            ui-sref="app.event.scheduleSession({sessionId: vm.currentSession.uuid})" ng-if="vm.currentSession">
         <div class="darker"></div>
         <h2><span mood="vm.sessionMoods[vm.currentSession.uuid]"></span> {{vm.currentSession.name}}</h2>
-        <p>{{vm.currentSession.start | customDate}} - {{vm.currentSession.place | place}} ({{vm.currentSession.start | humanDuration:vm.currentSession.end}})</p>
+        <p>{{vm.currentSession.start | customDate}} - {{vm.currentSession.place}} ({{vm.currentSession.start | humanDuration:vm.currentSession.end}})</p>
         <i class="bullet bullet-positive"></i>
       </div>
       <div class="item item-timeline" ng-repeat="session in vm.nearSessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
         <h2><span mood="vm.sessionMoods[session.uuid]"></span> {{session.name}}</h2>
-        <p>{{session.start | customDate}} - {{session.place | place}} ({{session.start | humanDuration:session.end}})</p>
+        <p>{{session.start | customDate}} - {{session.place}} ({{session.start | humanDuration:session.end}})</p>
         <i class="bullet bullet-positive"></i>
       </div>
 
@@ -46,7 +46,7 @@
       </div>
       <div class="item item-timeline" ng-repeat="session in vm.farSessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})" ng-show="vm.showFarSessions && vm.notEmpty(vm.farSessions)">
         <h2><span mood="vm.sessionMoods[session.uuid]"></span> {{session.name}}</h2>
-        <p>{{session.start | customDate}} - {{session.place | place}} ({{session.start | humanDuration:session.end}})</p>
+        <p>{{session.start | customDate}} - {{session.place}} ({{session.start | humanDuration:session.end}})</p>
         <i class="bullet bullet-positive"></i>
       </div>
       <div class="item item-timeline" ng-click="vm.toggleFarSessions()" ng-if="vm.notEmpty(vm.farSessions)">
@@ -62,7 +62,7 @@
         <done user-data="vm.userData" elt="exponent" click="vm.exponentDone(value, $index)"></done>
         <div>
           <h2><span mood="vm.exponentMoods[exponent.uuid]"></span> {{exponent.name}}</h2>
-          <p>{{exponent.place | place}} - {{exponent.description}}</p>
+          <p>{{exponent.place}} - {{exponent.description}}</p>
         </div>
         <div ng-class="{shown: vm.showMoodBars[$index]}"><mood-bar user-data="vm.userData" elt="exponent"></mood-bar></div>
       </div>

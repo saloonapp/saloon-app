@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   angular.module('app')
-    .filter('place', place)
+    .filter('address', address)
     .filter('commentDate', commentDate)
     .filter('customDate', customDate)
 
@@ -17,9 +17,15 @@
 
   // project filters
 
-  function place(){
-    return function(place){
-      return place ? (place.name ? place.name : place.ref) : '';
+  function address(){
+    return function(address){
+      if(address){
+         return (address.name ? address.name+', ' : '') +
+           address.street +
+           (address.zipCode ? ' '+address.zipCode : '') +
+           (address.city ? ' '+address.city : '');
+      }
+      return address;
     };
   }
 

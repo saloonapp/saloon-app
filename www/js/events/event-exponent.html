@@ -3,8 +3,17 @@
     <div class="event-item-details">
       <favorite user-data="vm.userData" elt="vm.elt" class="pull-right"></favorite>
       <h1>{{vm.elt.name}}</h1>
-      <h3 class="assertive">@{{vm.elt.place | place}}</h3>
+      <h3 class="assertive" ng-show="vm.elt.place">@{{vm.elt.place}}</h3>
       <div btf-markdown="vm.elt.description"></div>
+    </div>
+
+    <div class="list" ng-if="vm.elt.team && vm.elt.team.length > 0">
+      <div class="item item-divider">Equipe :</div>
+      <div class="item item-avatar" ng-repeat="person in vm.elt.team">
+        <img ng-src="{{person.avatar}}">
+        <h2>{{person.name}}</h2>
+        <p class="multiline l3">{{person.description}}</p>
+      </div>
     </div>
 
     <feedback-box user-data="vm.userData" elt="vm.elt"></feedback-box>

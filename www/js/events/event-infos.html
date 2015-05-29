@@ -28,13 +28,14 @@ Recevoir le compte rendu de cet événement
 </ion-content>-->
   <ion-content class="event-info">
     <div class="event-image">
-      <img src="http://bestofweb.paris/images/header_big.jpg" class="landing" />
-      <div class="hashtag">#bestofweb</div>
+      <img ng-src="{{vm.event.landingUrl}}" class="landing" />
+      <a class="hashtag" ng-show="vm.event.twitterHashtag" href="https://twitter.com/hashtag/{{vm.event.twitterHashtag}}">#{{vm.event.twitterHashtag}}</a>
+      <a class="hashtag" ng-show="!vm.event.twitterHashtag && vm.event.twitterAccount" href="https://twitter.com/{{vm.event.twitterAccount}}">@{{vm.event.twitterAccount}}</a>
     </div>
     <div class="infos">
       <div class="section main">
         <div>{{vm.event.description}}</div>
-        <a href="http://bestofweb.paris/" class="pull-right">http://bestofweb.paris/</a>
+        <a href="{{vm.event.siteUrl}}" class="pull-right" ng-show="vm.event.siteUrl">{{vm.event.siteUrl}}</a>
         <div class="clearfix"></div>
       </div>
       <div class="row section details">
@@ -43,15 +44,15 @@ Recevoir le compte rendu de cet événement
           <span>{{vm.event.start | date:'D MMM'}}</span>
         </div>
         <div class="col">
-          <a href="http://maps.google.com/?q={{vm.event.address.name}}">
+          <a href="http://maps.google.com/?q={{vm.event.address | address}}">
             <i class="icon ion-ios-location-outline"></i>
-            <span>Paris</span>
+            <span>{{vm.event.address.city}}</span>
           </a>
         </div>
-        <div class="col"><a href="http://bestofweb.paris/#tickets"><i class="icon ion-ios-pricetag-outline"></i> 15€ - 50€</a></div>
+        <div class="col"><a href="{{vm.event.priceUrl}}"><i class="icon ion-ios-pricetag-outline"></i> {{vm.event.price}}</a></div>
       </div>
       <div class="row section stats">
-        <div class="col"><strong>500</strong> participants</div>
+        <!--<div class="col"><strong>500</strong> participants</div>-->
         <div class="col" ng-if="vm.event.sessions && vm.event.sessions.length > 0"><strong>{{vm.event.sessions.length}}</strong> sessions</div>
         <div class="col" ng-if="vm.event.exponents && vm.event.exponents.length > 0"><strong>{{vm.event.exponents.length}}</strong> exposants</div>
       </div>
@@ -62,12 +63,12 @@ Recevoir le compte rendu de cet événement
         </button>
       </div>
     </div>
-    <div class="sponsors">
+    <div class="sponsors" ng-if="vm.sponsors && vm.sponsors.length > 0">
       Sponsors 
       <div class="row">
-        <div class="col"><a href="http://eleven-labs.com/"><img src="http://bestofweb.paris/images/sponsors/eleven-labs.png"></a></div>
-        <div class="col"><a href="http://www.sfeir.com/"><img src="http://bestofweb.paris/images/sponsors/sfeir.jpg"></a></div>
-        <div class="col"><a href="http://www.soat.fr/carriere/developpeur-web-rejoignez-nous/?context=77"><img src="http://bestofweb.paris/images/sponsors/soat.png"></a></div>
+        <div class="col" ng-repeat="sponsor in vm.sponsors">
+          <a href="{{sponsor.siteUrl}}"><img ng-src="{{sponsor.logoUrl}}"></a>
+        </div>
       </div>
     </div>
   </ion-content>

@@ -2,14 +2,22 @@
   <ion-content>
     <div class="event-item-details">
       <favorite user-data="vm.userData" elt="vm.elt" class="pull-right"></favorite>
-      <h1>[{{vm.elt.format}}] {{vm.elt.name}}</h1>
-      <h3 class="assertive">{{vm.elt.start | time}}-{{vm.elt.end | time}} @{{vm.elt.place | place}}</h3>
+      <h1><span ng-show="vm.elt.format">[{{vm.elt.format}}] </span>{{vm.elt.name}}</h1>
+      <h3 class="assertive">{{vm.elt.start | time}}-{{vm.elt.end | time}}<span ng-show="vm.elt.place"> @{{vm.elt.place}}</span></h3>
       <div btf-markdown="vm.elt.description"></div>
+    </div>
+
+    <div class="list" ng-if="vm.elt.speakers && vm.elt.speakers.length > 0">
+      <div class="item item-divider">Speakers :</div>
+      <div class="item item-avatar" ng-repeat="speaker in vm.elt.speakers">
+        <img ng-src="{{speaker.avatar}}">
+        <h2>{{speaker.name}}</h2>
+        <p class="multiline l3">{{speaker.description}}</p>
+      </div>
     </div>
 
     <div class="list" ng-if="vm.similar && vm.similar.length > 0">
       <div class="item item-divider">A voir aussi :</div>
-      <!-- TODO : generic ui-sref (for sessions & exponents) -->
       <div class="item" ng-repeat="elt in vm.similar"
            ui-sref="app.event.session({sessionId: elt.uuid})">
         <h2>{{elt.name}}</h2>

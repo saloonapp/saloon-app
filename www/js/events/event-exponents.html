@@ -12,7 +12,7 @@
       <div class="col col-50" ng-repeat="elt in row" ui-sref="app.event.exponent({exponentId: elt.uuid})">
         <div class="list card list-event-item">
           <div class="item item-image">
-            <img ng-src="{{elt.image ? elt.image : vm.bgExponents[($parent.$index*2+$index)%vm.bgExponents.length]}}" style="height: 90px;">
+            <img ng-src="{{elt.landingUrl ? elt.landingUrl : vm.bgExponents[($parent.$index*2+$index)%vm.bgExponents.length]}}" style="height: 90px;">
           </div>
           <div class="item" ng-class="{fav: vm.isFavorite(elt)}" style="padding: 10px;">
             <h2 class="multiline l2 fixe">{{elt.name}}</h2>
@@ -20,6 +20,7 @@
         </div>
       </div>
     </div>
-    <ion-footer keyboard-attach></ion-footer>
+
   </ion-content>
+  <ion-footer keyboard-attach></ion-footer>
 </ion-view>
