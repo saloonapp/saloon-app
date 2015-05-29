@@ -1,7 +1,29 @@
 .list-event-item {
-  .item.fav {
-    background: #fff9c2;
+  .item {
+
+    background: $dark-white;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    .multiline.l2.fixe {
+      font-style: italic;
+    }
+    h2 {
+      color: $grey;
+      //font-weight: bold;
+      font-weight: 500;
+    }
   }
+  
+
+  .item.fav {
+    //background: #b80303;
+  }
+  favorite {
+      float: left;
+    width: 40px;
+    height: 100%;
+    position: relative;
+  }
+  
   .favorite {
     position: absolute;
     right: 0px;
