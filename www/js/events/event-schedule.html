@@ -6,8 +6,8 @@
   <ion-content>
     <div class="list sessions" ng-if="!vm.runningEvent && vm.notEmpty(vm.sessions)">
       <div class="item item-timeline" ng-repeat="session in vm.sessions" ui-sref="app.event.scheduleSession({sessionId: session.uuid})">
-        <h2>{{session.name}}</h2>
-        <p>{{session.start | customDate}} - {{session.place}} ({{session.start | humanDuration:session.end}})</p>
+        <h2><span mood="vm.sessionMoods[session.uuid]"></span> {{session.name}}</h2>
+        <p>{{session.start | customDate}}<span ng-if="session.place"> - {{session.place}}</span> ({{session.start | humanDuration:session.end}})</p>
         <i class="bullet bullet-positive"></i>
       </div>
     </div>
@@ -62,7 +62,7 @@
         <done user-data="vm.userData" elt="exponent" click="vm.exponentDone(value, $index)"></done>
         <div>
           <h2><span mood="vm.exponentMoods[exponent.uuid]"></span> {{exponent.name}}</h2>
-          <p>{{exponent.place}} - {{exponent.description}}</p>
+          <p><span ng-if="exponent.place">{{exponent.place}} - </span>{{exponent.description}}</p>
         </div>
         <div ng-class="{shown: vm.showMoodBars[$index]}"><mood-bar user-data="vm.userData" elt="exponent"></mood-bar></div>
       </div>
