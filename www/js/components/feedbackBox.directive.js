@@ -3,7 +3,7 @@
   angular.module('app')
     .directive('feedbackBox', feedbackBoxDirective);
 
-  function feedbackBoxDirective(EventSrv, EventUtils){
+  function feedbackBoxDirective($analytics, EventSrv, EventUtils){
     var directive = {
       restrict: 'E',
       templateUrl: 'js/components/feedbackBox.html',
@@ -38,6 +38,7 @@
             EventUtils.addComment(scope.userData, commentData);
             vm.newCommentSaving = false;
             vm.newText = '';
+            $analytics.eventTrack('itemCommented', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
           }, function(){
             vm.newCommentSaving = false;
           });
@@ -60,6 +61,7 @@
             vm.editCommentSaving = false;
             vm.commentEdited = undefined;
             vm.editText = undefined;
+            $analytics.eventTrack('itemCommented', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
           }, function(){
             vm.editCommentSaving = false;
           });
@@ -73,6 +75,7 @@
             vm.editCommentSaving = false;
             vm.commentEdited = undefined;
             vm.editText = undefined;
+            $analytics.eventTrack('itemUncommented', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
           }, function(){
             vm.editCommentSaving = false;
           });

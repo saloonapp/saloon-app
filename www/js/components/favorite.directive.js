@@ -3,7 +3,7 @@
   angular.module('app')
     .directive('favorite', favoriteDirective);
 
-  function favoriteDirective(EventSrv, EventUtils){
+  function favoriteDirective($analytics, EventSrv, EventUtils){
     var directive = {
       restrict: 'E',
       templateUrl: 'js/components/favorite.html',
@@ -30,8 +30,9 @@
         if(!vm.favoriteLoading){
           vm.favoriteLoading = true;
           return EventSrv.favorite(elt).then(function(data){
-            EventUtils.setFavorite(scope.userData, data);
             vm.favoriteLoading = false;
+            EventUtils.setFavorite(scope.userData, data);
+            $analytics.eventTrack('itemFavorited', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
           }, function(){
             vm.favoriteLoading = false;
           });
@@ -42,8 +43,9 @@
         if(!vm.favoriteLoading){
           vm.favoriteLoading = true;
           return EventSrv.unfavorite(elt).then(function(data){
-            EventUtils.setUnfavorite(scope.userData, data);
             vm.favoriteLoading = false;
+            EventUtils.setUnfavorite(scope.userData, data);
+            $analytics.eventTrack('itemUnfavorited', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
           }, function(){
             vm.favoriteLoading = false;
           });
