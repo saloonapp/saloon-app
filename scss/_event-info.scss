@@ -27,7 +27,7 @@
       color: $grey;
     }
     .section {
-      border-bottom: 1px solid $grey;
+      border-bottom: 1px solid rgba(0,0,0,0.15);      
       padding: 5px;
       margin: 0px;
       &.main { 
@@ -44,8 +44,8 @@
         font-size: 15px;
         i {
           font-size: 25px;
+          font-weight: normal;
           margin-right: 5px;
-          vertical-align: middle;
         }
         a {
           text-decoration: none;
@@ -53,10 +53,14 @@
       }
       &.stats {
         text-align: center;
+        font-weight: normal;
+        color : #bdb9b9;
         strong {
+          font-weight: bold;
           display: block;
-          font-size: 25px;
+          font-size: 40px;
           margin: 5px 0px;
+          color: $positive;
         }
       }
       &.cr {
