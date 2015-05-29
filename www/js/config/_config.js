@@ -4,18 +4,12 @@ var Config = (function(){
     appVersion: '~',
     debug: true, // to toggle features between dev & prod
     verbose: true, // should log in console more infos
-    track: false, // should send tracking events to a server
+    track: false, // should send tracking events & crashs to the server
     storage: true, // should save data to browser storage
     storagePrefix: 'saloon-', // prefix all stoarge entries with this prefix
-    emailSupport: 'contact@saloonapp.co',
     backendUrl: 'https://dev-saloon.herokuapp.com/api/v1',
     //backendUrl: 'http://localhost:9000/api/v1',
-
-    gcm: {
-      // create project here : https://console.developers.google.com/
-      senderID: '263462318850', // Google project number
-      apiServerKey: 'AIzaSyDzM4XzyW9HWJNol9OePz4cAXi7QbVANOs' // used only to send notifications
-    }
+    emailSupport: 'contact@saloonapp.co'
   };
   return cfg;
 })();
