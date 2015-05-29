@@ -13,3 +13,7 @@ node_modules/
 /resources/android
 /resources/ios
 *~
+
+
+#OSX 
+.DS_Store
