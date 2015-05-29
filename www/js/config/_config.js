@@ -4,7 +4,7 @@ var Config = (function(){
     appVersion: '~',
     debug: true, // to toggle features between dev & prod
     verbose: true, // should log in console more infos
-    track: true, // should send tracking events & crashs to the server
+    track: false, // should send tracking events & crashs to the server
     storage: true, // should save data to browser storage
     storagePrefix: 'saloon-', // prefix all stoarge entries with this prefix
     backendUrl: 'https://dev-saloon.herokuapp.com/api/v1',

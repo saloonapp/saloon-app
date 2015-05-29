@@ -111,7 +111,8 @@
 
     vm.event = event;
     vm.userData = userData;
-    vm.day = parseInt($stateParams.day);
+    var days = EventUtils.getSessionDays(event.sessions);
+    vm.day = days[parseInt($stateParams.day)];
     vm.sessions = EventUtils.getSessionsForDay(event.sessions, vm.day);
 
     vm.isFavorite = function(elt){ return elt ? EventUtils.isFavorite(userData, elt) : false; };
