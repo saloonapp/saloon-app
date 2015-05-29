@@ -7,16 +7,16 @@
     <button class="button button-clear" ng-click="search=''">Annuler</button>
   </div>
   <ion-content class="has-subheader">
+
     <div class="list list-event-item">
-      <div class="item item-avatar item-event" collection-repeat="row in vm.event.exponents | filter:search | orderBy:'name'" ui-sref="app.event.exponent({exponentId: row.uuid})">
-        <img ng-src="{{row.logoUrl}}" ng-if="row.logoUrl != ''">
-        <favorite user-data="vm.userData" elt="row"></favorite>
-        <h2>{{row.name}}</h2>
-        <p class="multiline l2 fixe">{{row.description}}</p>
-        <p class="positive"><span ng-show="row.place"> {{row.place}}</span></p>
+      <div class="item item-avatar item-event" collection-repeat="elt in vm.event.exponents | filter:search | orderBy:'name'" ui-sref="app.event.exponent({exponentId: elt.uuid})">
+        <img ng-src="{{elt.logoUrl}}" ng-if="elt.logoUrl">
+        <favorite user-data="vm.userData" elt="elt"></favorite>
+        <h2>{{elt.name}}</h2>
+        <p class="multiline l2 fixe">{{elt.description}}</p>
+        <p class="positive"><span ng-show="elt.place"> {{elt.place}}</span></p>
+      </div>
     </div>
-    </div>
-      
 
   </ion-content>
   <ion-footer keyboard-attach></ion-footer>
