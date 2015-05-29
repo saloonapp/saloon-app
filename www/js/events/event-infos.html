@@ -29,13 +29,19 @@
           </a>
         </div>
         <div class="col" ng-if="vm.event.price">
-          <a href="{{vm.event.priceUrl}}"><i class="icon ion-ios-pricetag-outline"></i> {{vm.event.price}}</a>
+          <a href="{{vm.event.priceUrl}}">
+            <i class="icon ion-ios-pricetag-outline"></i> {{vm.event.price}}
+          </a>
         </div>
       </div>
       <div class="row section stats" ng-if="(vm.event.sessions && vm.event.sessions.length > 0) || (vm.event.exponents && vm.event.exponents.length > 0)">
         <!--<div class="col"><strong>500</strong> participants</div>-->
-        <div class="col" ng-if="vm.event.sessions && vm.event.sessions.length > 0"><strong>{{vm.event.sessions.length}}</strong> sessions</div>
-        <div class="col" ng-if="vm.event.exponents && vm.event.exponents.length > 0"><strong>{{vm.event.exponents.length}}</strong> exposants</div>
+        <div class="col" ng-if="vm.event.sessions && vm.event.sessions.length > 0">
+          <strong>{{vm.event.sessions.length}}</strong> sessions
+        </div>
+        <div class="col" ng-if="vm.event.exponents && vm.event.exponents.length > 0">
+          <strong>{{vm.event.exponents.length}}</strong> exposants
+        </div>
       </div>
       <div class="section cr">
         <button class="button button-block button-positive" ng-click="vm.askCR()" ng-disabled="vm.crLoading">
