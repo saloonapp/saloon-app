@@ -1,187 +1,203 @@
 // Define Logger
 var Logger = (function(){
   'use strict';
+  var cfg = {
+    track: Config.track,
+    backendUrl: Config.backendUrl,
+    storagePrefix: Config.storagePrefix,
+    storageCrashKey:   'sync-crashs',
+    storageCrashIdKey: 'sync-crashs-clientId',
+    storageEventKey:   'sync-events',
+    storageEventIdKey: 'sync-events-clientId',
+  };
+  var cache = {
+    crashs: getLocalStorage(cfg.storageCrashKey) || [],
+    currentCrashId: getLocalStorage(cfg.storageCrashIdKey),
+    syncCrashRunning: false,
+    events: getLocalStorage(cfg.storageEventKey) || [],
+    currentEventId: getLocalStorage(cfg.storageEventIdKey),
+    syncEventRunning: false
+  };
+  var $http;
+  getHttpSrv(function(srv){
+    $http = srv;
+    sync();
+  });
+  var service = {
+    track: track,
+    crash: crash,
+    sync: sync
+  };
+  return service;
+
+  function track(name, data){
+    var formattedData = formatEvent(name, data);
+    console.log('$[TRACK]', formattedData);
+    if(cfg.track){
+      cache.events.push(formattedData);
+      setLocalStorage(cfg.storageEventKey, cache.events);
+      syncEvents();
+    } else {
+    }
+  }
+
+  function crash(data){
+    var formattedData = formatCrash(data);
+    console.log('$[CRASH]', formattedData);
+    if(cfg.track){
+      cache.crashs.push(formattedData);
+      setLocalStorage(cfg.storageCrashKey, cache.crashs);
+      syncCrashs();
+    } else {
+    }
+  }
+
+  function sync(){
+    syncEvents();
+    syncCrashs();
+  }
+
+  function formatEvent(name, data){
+    var d = copy(data);
+    d.name = name;
+    d.clientId = createUuid();
+    d.previousClientId = cache.currentEventId;
+    cache.currentEventId = d.clientId;
+    setLocalStorage(cfg.storageEventIdKey, cache.currentEventId);
+    d.time = Date.now();
+    d.userId = getLocalUserId();
+    d.deviceId = getDeviceId();
+    d.application = getApplicationCfg();
+    return d;
+  }
+
+  function formatCrash(data){
+    var d = copy(data);
+    d.clientId = createUuid();
+    d.previousClientId = cache.currentCrashId;
+    cache.currentCrashId = d.clientId;
+    setLocalStorage(cfg.storageCrashIdKey, cache.currentCrashId);
+    d.time = Date.now();
+    d.userId = getLocalUserId();
+    d.device = getDevice();
+    d.navigator = getNavigatorLite();
+    d.application = getApplicationCfg();
+    d.url = location ? location.href : undefined;
+    return d;
+  }
+
+  function syncEvents(){
+    if(!cache.syncEventRunning && cache.events.length > 0 && $http){
+      var toSync = [];
+      for(var i=0; i<cache.events.length && i<10; i++){
+        toSync[i] = cache.events[i];
+      }
+      $http.post(cfg.backendUrl+'/tools/events/batch', toSync).then(function(res){
+        if(res.data.inserted !== toSync.length){ console.warn(res.data.inserted+' events inserted while sending '+toSync.length+' events !'); }
+        for(var i=0; i<toSync.length; i++){
+          var removed = cache.events.shift();
+          if(removed.clientId !== toSync[i].clientId){ console.warn('Remove event '+removed.clientId+' instead of event '+toSync[i].clientId); }
+        }
+        setLocalStorage(cfg.storageEventKey, cache.events);
+        cache.syncEventRunning = false;
+        syncEvents();
+      }, function(err){
+        console.warn('cant sync event ('+cache.events.length+' remaining)', err);
+        cache.syncEventRunning = false;
+      });
+    }
+  }
+
+  function syncCrashs(){
+    if(!cache.syncCrashRunning && cache.crashs.length > 0 && $http){
+      var toSync = [];
+      for(var i=0; i<cache.crashs.length && i<10; i++){
+        toSync[i] = cache.crashs[i];
+      }
+      $http.post(cfg.backendUrl+'/tools/crashs/batch', toSync).then(function(res){
+        if(res.data.inserted !== toSync.length){ console.warn(res.data.inserted+' crashs inserted while sending '+toSync.length+' crashs !'); }
+        for(var i=0; i<toSync.length; i++){
+          var removed = cache.crashs.shift();
+          if(removed.clientId !== toSync[i].clientId){ console.warn('Remove crash '+removed.clientId+' instead of crash '+toSync[i].clientId); }
+        }
+        setLocalStorage(cfg.storageCrashKey, cache.crashs);
+        cache.syncCrashRunning = false;
+        syncCrashs();
+      }, function(err){
+        console.warn('cant sync crash ('+cache.crashs.length+' remaining)', err);
+        cache.syncCrashRunning = false;
+      });
+    }
+  }
+
+  // because it takes time to setup...
+  function getHttpSrv(callback){
+    try {
+      callback(angular.element(document.body).injector().get('$http'));
+    } catch(e) {
+      setTimeout(function(){
+        getHttpSrv(callback);
+      }, 300);
+    }
+  }
+
+  function getApplicationCfg(){
+    var ret = {};
+    ret.appVersion = Config.appVersion;
+    return ret;
+  }
+
+  function getLocalUserId(){
+    var user = getLocalUser();
+    return user ? user.uuid : undefined;
+  }
+
+  function getLocalUser(){
+    return getLocalStorage('user');
+  }
+
+  function getDeviceId(){
+    var device = getDevice();
+    return device ? device.uuid : undefined;
+  }
+
+  function getDevice(){
+    return window.device ? copy(window.device) : undefined;
+  }
+
+  function getNavigatorLite(){
+    var ret = {};
+    ret.userAgent = navigator.userAgent;
+    ret.platform = navigator.platform;
+    ret.vendor = navigator.vendor;
+    ret.appCodeName = navigator.appCodeName;
+    ret.appName = navigator.appName;
+    ret.appVersion = navigator.appVersion;
+    ret.product = navigator.product;
+    return ret;
+  }
+
+  function getLocalStorage(key){
+    if(localStorage){
+      return JSON.parse(localStorage.getItem(cfg.storagePrefix+key));
+    }
+  }
+
+  function setLocalStorage(key, value){
+    if(localStorage){
+      localStorage.setItem(cfg.storagePrefix+key, JSON.stringify(value));
+    }
+  }
+
   function createUuid(){
     function S4(){ return (((1+Math.random())*0x10000)|0).toString(16).substring(1); }
     return (S4() + S4() + '-' + S4() + '-4' + S4().substr(0,3) + '-' + S4() + '-' + S4() + S4() + S4()).toLowerCase();
   }
 
-  var Scheduler = (function(){
-    var events = [];
-    var eventSender = null;
-
-    function init(){
-      if(localStorage){
-        events = _getEvents() || [];
-        if(events.length > 0){ _startScheduler(); }
-      }
-    }
-
-    function schedule(event){
-      _addEvent(event);
-      _startScheduler();
-    }
-
-    function send(event, callback){
-      // TODO : send one event to the server
-      /*$.ajax({
-        type: 'POST',
-        url: config.backendUrl+'/api/v1/track/event',
-        data: JSON.stringify(event),
-        contentType: 'application/json'
-      })
-      .done(function(data, textStatus, jqXHR)       { if(callback){callback('ok');} })
-      .fail(function(jqXHR, textStatus, errorThrown){ if(callback){callback('ko');} });*/
-      if(callback){callback('ok');}
-    }
-
-    function sendAll(events, callback){
-      // TODO : send array of events to the server
-      /*$.ajax({
-        type: 'POST',
-        url: config.backendUrl+'/api/v1/track/events',
-        data: JSON.stringify(events),
-        contentType: 'application/json'
-      })
-      .done(function(data, textStatus, jqXHR)       { if(callback){callback('ok');} })
-      .fail(function(jqXHR, textStatus, errorThrown){ if(callback){callback('ko');} });*/
-      if(callback){callback('ok');}
-    }
-
-    function _startScheduler(){
-      if(eventSender === null && events.length > 0){
-        // when scheduler starts, all events are not sending !
-        for(var i=0; i<events.length; i++){
-          events[i].sending = false;
-        }
-        eventSender = window.setInterval(function(){
-          if(events.length === 0){
-            _stopScheduler();
-          } else if(events.length === 1){
-            var event = events[0];
-            _resetEvents();
-            send(event, function(status){
-              if(status === 'ko'){
-                _addEvent(event);
-                _stopScheduler();
-              }
-            });
-          } else {
-            var toSend = events;
-            _resetEvents();
-            sendAll(toSend, function(status){
-              if(status === 'ko'){
-                _addEvents(toSend);
-                _stopScheduler();
-              }
-            });
-          }
-        }, config.scheduler.interval);
-      }
-    }
-
-    function _stopScheduler(){
-      if(eventSender !== null){
-        window.clearInterval(eventSender);
-        eventSender = null;
-      }
-    }
-
-    function _addEvent(event){
-      events.push(event);
-      _setEvents(events);
-    }
-    function _addEvents(eventsToAdd){
-      events = events.concat(eventsToAdd);
-      _setEvents(events);
-    }
-    function _resetEvents(){
-      events = [];
-      _setEvents(events);
-    }
-
-    function _setEvents(events){ if(localStorage){ localStorage.setItem(config.scheduler.storageKey, JSON.stringify(events)); } }
-    function _getEvents(){ if(localStorage){ return JSON.parse(localStorage.getItem(config.scheduler.storageKey)); } }
-
-    return {
-      init: init,
-      schedule: schedule,
-      send: send
-    };
-  })();
-
-  var config = {
-    storagePrefix: Config.storagePrefix,
-    backendUrl: Config.backendUrl,
-    verbose: Config.verbose,
-    debug: Config.debug,
-    track: Config.track,
-    async: true,
-    scheduler: {
-      storageKey: 'tracking-events-cache',
-      interval: 3000
-    }
-  };
-  var cache = {currentEventId: null, userId: null, deviceId: null};
-  Scheduler.init();
-
-  function track(name, event, _allowNoUser){
-    if(typeof event === 'string')                       { event = {messgae: event};                 }
-    if(!event.name)                                     { event.name = name;                        }
-    if(!event.time)                                     { event.time = Date.now();                  }
-    if(!event.user)                                     { event.user = _getUserId();                }
-    if(!event.appVersion && Config)                     { event.appVersion = Config.appVersion;     }
-    if(!event.source)                                   { event.source = {};                        }
-    if(!event.source.url && window && window.location)  { event.source.url = window.location.href;  }
-    if(!event.id){
-      event.id = createUuid();
-      event.prevId = cache.currentEventId;
-      cache.currentEventId = event.id;
-    }
-
-    if(!event.user && !_allowNoUser){
-      window.setTimeout(function(){
-        track(name, event, true);
-      }, 2000);
-    } else {
-      if(config.verbose){ console.log('$[track] '+name, event); }
-      if(config.track){
-        if(config.async && event.name !== 'exception'){
-          Scheduler.schedule(event);
-        } else {
-          Scheduler.send(event, function(status){
-            if(status === 'ko'){Scheduler.schedule(event);}
-          });
-        }
-      }
-      if(name === 'error' && config.debug && event.data.error){
-        var msg = event.data && event.data.error ? (event.data.error.message ? event.data.error.message : event.data.error) : '';
-        window.alert('Error: '+event.data.type+'\n'+msg+'\nPlease contact: '+Config.emailSupport);
-      }
-      if(name === 'exception'){
-        var msg = event.data && event.data.message ? event.data.message : event.message;
-        window.alert('Exception: '+msg+'\nPlease contact: '+Config.emailSupport);
-      }
-    }
+  function copy(data){
+    return JSON.parse(JSON.stringify(data));
   }
-
-  function _getUserId(){
-    if(cache && cache.userId){
-      return cache.userId;
-    } else if(localStorage){
-      var user = JSON.parse(localStorage.getItem(config.storagePrefix+'user'));
-      if(user && user.id){
-        cache.userId = user.id;
-        return user.id;
-      }
-    }
-  }
-
-  return {
-    track: track
-  };
 })();
-
 
 
 // catch exceptions
@@ -191,24 +207,13 @@ window.onerror = function(message, url, line, col, error){
   var data = {
     type: 'javascript'
   };
-  if(message)       { data.message      = message;      }
-  if(url)           { data.fileName     = url;          }
-  if(line)          { data.lineNumber   = line;         }
-  if(col)           { data.columnNumber = col;          }
-  if(error){
-    if(error.name)  { data.name         = error.name;   }
-    if(error.stack) { data.stack        = error.stack;  }
-  }
-  if(navigator){
-    if(navigator.userAgent)   { data['navigator.userAgent']     = navigator.userAgent;    }
-    if(navigator.platform)    { data['navigator.platform']      = navigator.platform;     }
-    if(navigator.vendor)      { data['navigator.vendor']        = navigator.vendor;       }
-    if(navigator.appCodeName) { data['navigator.appCodeName']   = navigator.appCodeName;  }
-    if(navigator.appName)     { data['navigator.appName']       = navigator.appName;      }
-    if(navigator.appVersion)  { data['navigator.appVersion']    = navigator.appVersion;   }
-    if(navigator.product)     { data['navigator.product']       = navigator.product;      }
-  }
+  if(error && error.name)   { data.name         = error.name;   }
+  if(message)               { data.message      = message;      }
+  if(url)                   { data.fileName     = url;          }
+  if(line)                  { data.lineNumber   = line;         }
+  if(col)                   { data.columnNumber = col;          }
+  if(error && error.stack)  { data.stack        = error.stack;  }
 
-  Logger.track('exception', {data: data});
+  Logger.crash({error: data});
   return stopPropagation;
 };
