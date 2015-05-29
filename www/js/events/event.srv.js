@@ -2,6 +2,7 @@
   'use strict';
   angular.module('app')
     .factory('EventSrv', EventSrv)
+    .factory('EventLastRefresh', EventLastRefresh)
     .factory('EventUtils', EventUtils);
 
   EventSrv.$inject = ['$q', '$http', 'UserSrv', 'UserActionSync', 'EventUtils', 'DataUtils', 'StorageUtils', 'Config', '_'];
@@ -285,6 +286,30 @@
         created: Date.now(),
         updated: Date.now()
       };
+    }
+  }
+
+  EventLastRefresh.$inject = ['StorageUtils'];
+  function EventLastRefresh(StorageUtils){
+    var storageKey = 'events-last-refresh';
+    var refreshRate = 60*60*1000; // one hour
+    var service = {
+      shouldRefresh: shouldRefresh,
+      refresed: refresed
+    };
+    return service;
+
+    function shouldRefresh(eventId){
+      return StorageUtils.get(storageKey, {}).then(function(refreshData){
+        // refresh every hour...
+        return !refreshData[eventId] || refreshData[eventId] < Date.now()-refreshRate;
+      });
+    }
+    function refresed(eventId){
+      return StorageUtils.get(storageKey, {}).then(function(refreshData){
+        refreshData[eventId] = Date.now();
+        return StorageUtils.set(storageKey, refreshData);
+      });
     }
   }
 

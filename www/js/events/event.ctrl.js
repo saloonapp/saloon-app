@@ -10,36 +10,47 @@
     .controller('EventExponentCtrl', EventExponentCtrl)
     .controller('EventScheduleCtrl', EventScheduleCtrl);
 
-  function EventCtrl($scope, event){
+  function EventCtrl($scope, EventSrv, EventLastRefresh, event){
     var vm = {};
     $scope.vm = vm;
 
     vm.event = event;
+
+    // refresh event when needed
+    // if it fails, we keep local data
+    EventLastRefresh.shouldRefresh(event.uuid).then(function(shouldRefresh){
+      if(shouldRefresh){
+        EventSrv.refreshEvent(event.uuid).then(function(event){
+          angular.copy(event, vm.event);
+          EventLastRefresh.refresed(event.uuid);
+        });
+      }
+    });
   }
 
-  function EventInfosCtrl($scope, $stateParams, $ionicModal, EventSrv, EventUtils, event, userData){
+  function EventInfosCtrl($scope, $ionicModal, EventSrv, EventUtils, event, userData){
     var vm = {};
     $scope.vm = vm;
 
     vm.sponsors = _.filter(event.exponents, {sponsor: true});
-    vm.loading = false;
-    vm.crLoading = false;
     vm.event = event;
-    vm.doRefresh = doRefresh;
+    //vm.loading = false;
+    //vm.doRefresh = doRefresh;
+    vm.crLoading = false;
     vm.askCR = askCR;
     vm.cancelAskCR = cancelAskCR;
     vm.confirmCR = confirmCR;
     vm.isSubscribed = function(elt){ return EventUtils.isSubscribe(userData, elt); }
 
-    function doRefresh(){
+    /*function doRefresh(){
       vm.loading = true;
-      EventSrv.refreshEvent($stateParams.eventId).then(function(event){
+      EventSrv.refreshEvent(event.uuid).then(function(event){
         angular.copy(event, vm.event);
         vm.loading = false;
       }, function(err){
         vm.loading = false;
       });
-    }
+    }*/
 
     var crModal;
     $ionicModal.fromTemplateUrl('js/events/partials/cr-modal.html', {
