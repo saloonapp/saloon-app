@@ -64,7 +64,7 @@
           <h2><span mood="vm.exponentMoods[exponent.uuid]"></span> {{exponent.name}}</h2>
           <p><span ng-if="exponent.place">{{exponent.place}} - </span>{{exponent.description}}</p>
         </div>
-        <div ng-class="{shown: vm.showMoodBars[$index]}"><mood-bar user-data="vm.userData" elt="exponent"></mood-bar></div>
+        <div ng-class="{shown: vm.showMoodBars[$index]}"><mood-bar user-data="vm.userData" elt="exponent" click="vm.exponentMood(value, $index)"></mood-bar></div>
       </div>
     </div>
 

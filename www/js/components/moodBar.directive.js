@@ -3,14 +3,15 @@
   angular.module('app')
     .directive('moodBar', moodBarDirective);
 
-  function moodBarDirective(EventSrv, EventUtils){
+  function moodBarDirective($analytics, EventSrv, EventUtils){
     var directive = {
       restrict: 'E',
       replace: true,
       templateUrl: 'js/components/moodBar.html',
       scope: {
         userData: '=userData',
-        elt: '=elt'
+        elt: '=elt',
+        click: '&'
       },
       link: link
     };
@@ -33,6 +34,8 @@
           EventSrv.setMood(elt, mood).then(function(moodData){
             EventUtils.setMood(scope.userData, moodData);
             vm.moodSaving = false;
+            scope.click({value: mood});
+            $analytics.eventTrack('itemRated', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name, rating: mood});
           }, function(){
             vm.moodSaving = false;
           });

@@ -3,7 +3,7 @@
   angular.module('app')
     .directive('done', doneDirective);
 
-  function doneDirective(EventSrv, EventUtils){
+  function doneDirective($analytics, EventSrv, EventUtils){
     var directive = {
       restrict: 'E',
       templateUrl: 'js/components/done.html',
@@ -34,6 +34,7 @@
             vm.doneLoading = false;
             EventUtils.setDone(scope.userData, data);
             scope.click({value: true});
+            $analytics.eventTrack('itemDone', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
           }, function(){
             vm.doneLoading = false;
           });
@@ -47,6 +48,7 @@
             vm.doneLoading = false;
             EventUtils.setUndone(scope.userData, data);
             scope.click({value: false});
+            $analytics.eventTrack('itemUndone', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
           }, function(){
             vm.doneLoading = false;
           });

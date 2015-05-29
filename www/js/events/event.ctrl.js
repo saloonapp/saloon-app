@@ -28,7 +28,7 @@
     });
   }
 
-  function EventInfosCtrl($scope, $ionicModal, EventSrv, EventUtils, event, userData){
+  function EventInfosCtrl($scope, $ionicModal, $analytics, EventSrv, EventUtils, event, userData){
     var vm = {};
     $scope.vm = vm;
 
@@ -69,6 +69,7 @@
         vm.crForm = {email: '', filter: 'all'};
       }
       crModal.show();
+      $analytics.eventTrack('reportModalOpened', {eventId: event.uuid, eventName: event.name});
     }
     function cancelAskCR(){
       crModal.hide().then(function(){
@@ -80,6 +81,7 @@
         EventSrv.subscribe(vm.event, vm.crForm).then(function(data){
           EventUtils.setSubscribe(userData, data);
           vm.crLoading = false;
+          $analytics.eventTrack('reportSubcribed', {eventId: event.uuid, eventName: event.name});
         });
       });
     }
@@ -173,6 +175,7 @@
 
     vm.isDone = function(elt){ return elt ? EventUtils.isDone(userData, elt) : false; };
     vm.exponentDone = exponentDone;
+    vm.exponentMood = exponentMood;
     vm.goToSessions = function(){ if(vm.runningEvent){ IonicUtils.scrollTo('current-session', true); } else { IonicUtils.scrollTo('sessions', true); } };
     vm.goToExponents = function(){ IonicUtils.scrollTo('exponents', true); };
     vm.togglePreviousSessions = togglePreviousSessions;
@@ -228,6 +231,9 @@
         }, 3000);
       }
       vm.showMoodBars[index] = value;
+    }
+    function exponentMood(value, index){
+      vm.exponentMoods[index] = value;
     }
 
     function sortSessions(a, b){
