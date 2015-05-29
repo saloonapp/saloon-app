@@ -16,7 +16,7 @@
         <favorite user-data="vm.userData" elt="elt"></favorite>
         <h2>{{elt.name}}</h2>
         <p class="multiline l2 fixe">{{elt.description}}</p>
-        <p class="positive">{{elt.start | time}}-{{elt.end | time}} - {{elt.place}}</p>
+        <p class="positive">{{elt.start | time}}-{{elt.end | time}}<span ng-show="elt.place"> - {{elt.place}}</span></p>
         <i class="icon ion-chevron-right icon-accessory"></i>
       </div>
     </div>

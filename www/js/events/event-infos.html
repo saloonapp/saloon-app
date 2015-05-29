@@ -2,60 +2,39 @@
   <ion-nav-buttons side="left">
     <button class="button back-button header-item button-clear button-icon ion-ios-arrow-back" ui-sref="app.events"> Evénements</button>
   </ion-nav-buttons>
-  <ion-nav-buttons side="right">
+  <!--<ion-nav-buttons side="right">
     <button class="button button-clear button-icon ion-loop" ng-class="{'fa-spin': vm.loading}" ng-click="vm.doRefresh()"></button>
-  </ion-nav-buttons>
-  <!--<ion-content class="padding">
-<div>
-<img ng-src="{{vm.event.image}}" style="margin: 0 10px 10px 0; max-width: 100px; float: left;">
-{{vm.event.description}}
-<div class="clearfix"></div>
-</div>
-<div>
-<u>Date</u>: {{vm.event.start | date}}<br>
-<u>Horaires</u>: {{vm.event.start | time}} - {{vm.event.end | time}}<br>
-<u>Lieu</u>: {{vm.event.address.name}}<br>
-<u>Inscription</u>: ???<br>
-</div>
-<button class="button button-block button-positive" ng-click="vm.askCR()" ng-disabled="vm.crLoading">
-<i class="icon ion-checkmark-circled" ng-if="vm.isSubscribed(vm.event)"></i>
-Recevoir le compte rendu de cet événement
-</button>
-<div>
-<h2>Sponsors</h2>
-...
-</div>
-</ion-content>-->
+  </ion-nav-buttons>-->
   <ion-content class="event-info">
-    <div class="event-image">
-      <img ng-src="{{vm.event.landingUrl}}" class="landing" />
+    <div class="event-image" ng-if="vm.event.landingUrl">
+      <img ng-src="{{vm.event.landingUrl}}" class="landing" ng-if="vm.event.landingUrl">
       <a class="hashtag" ng-show="vm.event.twitterHashtag" href="https://twitter.com/hashtag/{{vm.event.twitterHashtag}}">#{{vm.event.twitterHashtag}}</a>
       <a class="hashtag" ng-show="!vm.event.twitterHashtag && vm.event.twitterAccount" href="https://twitter.com/{{vm.event.twitterAccount}}">@{{vm.event.twitterAccount}}</a>
     </div>
     <div class="infos">
-      <div class="section main">
+      <div class="section main" ng-if="vm.event.description || vm.event.siteUrl">
         <div>{{vm.event.description}}</div>
         <a href="{{vm.event.siteUrl}}" class="pull-right" ng-show="vm.event.siteUrl">{{vm.event.siteUrl}}</a>
         <div class="clearfix"></div>
       </div>
-      <div class="row section details">
-        <div class="col">
-          <i class="icon ion-ios-calendar-outline"></i> 
+      <div class="row section details" ng-if="vm.event.start || vm.event.address.city || vm.event.price">
+        <div class="col" ng-if="vm.event.start">
+          <i class="icon ion-ios-calendar-outline"></i>
           <span>{{vm.event.start | date:'D MMM'}}</span>
         </div>
-        <div class="col">
+        <div class="col" ng-if="vm.event.address.city">
           <a href="http://maps.google.com/?q={{vm.event.address | address}}">
             <i class="icon ion-ios-location-outline"></i>
             <span>{{vm.event.address.city}}</span>
           </a>
         </div>
-        <div class="col">
+        <div class="col" ng-if="vm.event.price">
           <a href="{{vm.event.priceUrl}}">
             <i class="icon ion-ios-pricetag-outline"></i> {{vm.event.price}}
           </a>
         </div>
       </div>
-      <div class="row section stats">
+      <div class="row section stats" ng-if="(vm.event.sessions && vm.event.sessions.length > 0) || (vm.event.exponents && vm.event.exponents.length > 0)">
         <!--<div class="col"><strong>500</strong> participants</div>-->
         <div class="col" ng-if="vm.event.sessions && vm.event.sessions.length > 0">
           <strong>{{vm.event.sessions.length}}</strong> sessions

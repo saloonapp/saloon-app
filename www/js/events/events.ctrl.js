@@ -12,6 +12,12 @@
     vm.doRefresh = doRefresh;
     vm.mapUrl = mapUrl;
 
+    // refresh event list everytime it's loaded (once by app launch)
+    // if it fails, we keep local data
+    EventSrv.refreshEventList().then(function(events){
+      vm.events = events;
+    });
+
     function doRefresh(){
       EventSrv.refreshEventList().then(function(events){
         vm.events = events;
