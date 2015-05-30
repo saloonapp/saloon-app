@@ -88,12 +88,22 @@
   .header {
     height : 40px;
     display: table;
+    width: 100%;
+    padding-left: 18px;
     h1 {
       font-size: 20px;
       margin-top: 0px;
       display: table-cell;
       color: $grey;
       vertical-align: middle;
+    }
+    img {
+      width : 100%;
+    }
+    favorite {
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   }
 }
