@@ -5,7 +5,7 @@
   <ion-content>
     <ion-refresher pulling-text="Mettre à jour la liste..." on-refresh="vm.doRefresh()"></ion-refresher>
     <div class="list">
-      <div class="item item-avatar item-avatar-event" collection-repeat="event in vm.events | orderBy:'start':true" ui-sref="app.event.infos({eventId: event.uuid})">
+      <div class="item item-avatar item-avatar-event" ng-repeat="event in vm.events | orderBy:'start'" ui-sref="app.event.infos({eventId: event.uuid})" ng-show="vm.showPastEvents || vm.isNotFinished(event)">
         <img ng-src="{{event.logoUrl}}" ng-if="event.logoUrl">
         <h2>{{event.name}}</h2>
         <p class="multiline l2">{{event.description}}</p>

@@ -9,9 +9,12 @@
 
     vm.events = events;
     vm.emailSupport = Config.emailSupport;
+    vm.showPastEvents = false;
 
     vm.doRefresh = doRefresh;
     vm.showPopover = function($event){ morePopover.show($event); };
+    vm.togglePastEvents = function(){ vm.showPastEvents = !vm.showPastEvents; morePopover.hide(); }
+    vm.isNotFinished = function(elt){ return elt && elt.end > Date.now(); }
     vm.mapUrl = mapUrl;
 
     // refresh event list everytime it's loaded (once by app launch)
