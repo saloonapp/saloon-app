@@ -36,7 +36,6 @@
     vm.event = event;
     //vm.loading = false;
     //vm.doRefresh = doRefresh;
-    vm.crLoading = false;
     vm.showSubscribeReport = showSubscribeReport;
     vm.cancelSubscribeReport = cancelSubscribeReport;
     vm.subscribeReport = subscribeReport;
@@ -62,7 +61,6 @@
     });
 
     function showSubscribeReport(){
-      vm.crLoading = true;
       var subscribed = EventUtils.getSubscribe(userData, event);
       if(subscribed && subscribed.action){
         vm.crForm = {email: subscribed.action.email, filter: subscribed.action.filter};
@@ -73,15 +71,12 @@
       $analytics.eventTrack('reportModalOpened', {eventId: event.uuid, eventName: event.name});
     }
     function cancelSubscribeReport(){
-      crModal.hide().then(function(){
-        vm.crLoading = false;
-      });
+      crModal.hide();
     }
     function subscribeReport(){
       crModal.hide().then(function(){
         EventSrv.subscribe(vm.event, vm.crForm).then(function(data){
           EventUtils.setSubscribe(userData, data);
-          vm.crLoading = false;
           $analytics.eventTrack('reportSubcribed', {eventId: event.uuid, eventName: event.name});
         });
       });
@@ -90,7 +85,6 @@
       crModal.hide().then(function(){
         EventSrv.unsubscribe(vm.event).then(function(data){
           EventUtils.setUnsubscribe(userData, data);
-          vm.crLoading = false;
           $analytics.eventTrack('reportUnsubcribed', {eventId: event.uuid, eventName: event.name});
         });
       });
