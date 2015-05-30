@@ -44,7 +44,7 @@
         </div>
       </div>
       <div class="section cr">
-        <button class="button button-block button-positive" ng-click="vm.showSubscribeReport()" ng-disabled="vm.crLoading">
+        <button class="button button-block button-positive" ng-click="vm.showSubscribeReport()">
           <i class="icon" ng-class="{'ion-checkmark-circled': vm.isSubscribed(vm.event), 'ion-paper-airplane': !vm.isSubscribed(vm.event)}"></i>
           {{vm.isSubscribed(vm.event) ? 'Inscrit pour le compte rendu' : 'Recevoir le compte rendu'}}
         </button>
