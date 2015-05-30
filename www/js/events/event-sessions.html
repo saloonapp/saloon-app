@@ -9,12 +9,12 @@
   </div>
   <ion-content class="has-subheader" >
 
-    <div class="list list-event-item">
-      <div class="item item-icon-right" ng-class="{fav: vm.isFavorite(elt)}"
+    <div class="list">
+      <div class="item item-favorite item-icon-right" ng-class="{fav: vm.isFavorite(elt)}"
            collection-repeat="elt in vm.sessions | filter:search | orderBy:'start'" item-height="118px"
            ui-sref="app.event.session({sessionId: elt.uuid})">
         <favorite user-data="vm.userData" elt="elt"></favorite>
-        <h2>{{elt.name}}</h2>
+        <h2><span mood="vm.sessionMoods[elt.uuid]"></span> {{elt.name}}</h2>
         <p class="multiline l2 fixe">{{elt.description}}</p>
         <p class="positive">{{elt.start | time}}-{{elt.end | time}}<span ng-show="elt.place"> - {{elt.place}}</span></p>
       </div>

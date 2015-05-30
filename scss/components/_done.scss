@@ -1,17 +1,32 @@
-.done {
+/*.done {
   width: 30px;
   font-size: 40px;
   .icon { position: static; width: 26px; }
   .icon:before { width: 0px; }
-  .checked    { display: none; color: $positive; }
-  .unchecked  { color: #aaa; }
+  .seted    { display: none; color: $positive; }
+  .unseted  { color: #aaa; }
   .spinner    { display: none; margin-top: 7px; }
   &.active {
-    .checked    { display: block; }
-    .unchecked  { display: none;  }
+    .seted    { display: block; }
+    .unseted  { display: none;  }
   }
   &.loading {
-    .checked, .unchecked  { display: none;  }
+    .seted, .unseted  { display: none;  }
+    .spinner              { display: block; }
+  }
+}*/
+.done {
+  width: 32px;
+  .button { font-size: 32px; color: #aaa; }
+  .seted, .seted:hover      { display: none; color: $positive; }
+  .unseted, .unseted:hover  {}
+  .spinner, .spinner:hover      { display: none; margin-top: 10px; }
+  &.active {
+    .seted    { display: block; }
+    .unseted  { display: none;  }
+  }
+  &.loading {
+    .seted, .unseted  { display: none;  }
     .spinner              { display: block; }
   }
 }

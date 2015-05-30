@@ -1,5 +1,5 @@
-<div class="done" ng-class="{active: vm.isDone(elt), loading: vm.doneLoading}">
-  <i class="icon ion-android-checkbox-outline-blank unchecked" ng-click="vm.done(elt)" stop-event="click"></i>
-  <i class="icon ion-android-checkbox-outline checked" ng-click="vm.undone(elt)" stop-event="click"></i>
+<div class="done" ng-class="{active: vm.isSet(elt), loading: vm.loading}">
+  <button class="button button-icon ion-android-checkbox-outline-blank unseted" ng-click="vm.set(elt)" stop-event="click"></button>
+  <button class="button button-icon ion-android-checkbox-outline seted" ng-click="vm.unset(elt)" stop-event="click"></button>
   <ion-spinner></ion-spinner>
 </div>

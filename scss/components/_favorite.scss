@@ -1,17 +1,22 @@
 .favorite {
-  width: 30px;
-  font-size: 40px;
-  .icon { position: static; width: 26px; }
-  .icon:before { width: 0px; }
-  .starred    { display: none; color: $energized; }
-  .unstarred  { color: #aaa; }
-  .spinner    { display: none; margin-top: 7px; }
+  width: 32px;
+  .button { font-size: 32px; color: #aaa; }
+  .seted, .seted:hover      { display: none; color: $energized; }
+  .unseted, .unseted:hover  {}
+  .spinner, .spinner:hover      { display: none; margin-top: 10px; }
   &.active {
-    .starred    { display: block; }
-    .unstarred  { display: none;  }
+    .seted    { display: block; }
+    .unseted  { display: none;  }
   }
   &.loading {
-    .starred, .unstarred  { display: none;  }
+    .seted, .unseted  { display: none;  }
     .spinner              { display: block; }
   }
+}
+.bar-header .favorite {
+  width: auto;
+  .button { color: $light; }
+  .seted, .seted:hover      { color: $energized; }
+  .unseted, .unseted:hover  { }
+  .spinner, .spinner:hover      { stroke: $light; margin-top: 4px; margin-right: 10px; }
 }

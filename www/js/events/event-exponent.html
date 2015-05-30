@@ -1,15 +1,17 @@
 <ion-view title="{{vm.elt.name}}">
+  <ion-nav-buttons side="right">
+    <favorite user-data="vm.userData" elt="vm.elt"></favorite>
+  </ion-nav-buttons>
   <ion-content>
     <div class="event-item-details">
-
-      <div class="header">
-              <favorite user-data="vm.userData" elt="vm.elt" class="pull-left"></favorite>
-
-        <img ng-src="{{vm.elt.landingUrl}}" ng-if="vm.elt.landingUrl"/>
+      <div class="img-container" ng-if="vm.elt.landingUrl">
+        <img ng-src="{{vm.elt.landingUrl}}">
+      </div>
+      <div class="padding">
         <h1 ng-if="!vm.elt.landingUrl">{{vm.elt.name}}</h1>
-      </div>      
-      <h3 class="assertive" ng-show="vm.elt.place">@{{vm.elt.place}}</h3>
-      <div class="padding" btf-markdown="vm.elt.description"></div>
+        <h3 class="assertive" ng-if="vm.elt.place">@{{vm.elt.place}}</h3>
+        <div btf-markdown="vm.elt.description"></div>
+      </div>
     </div>
 
     <div class="list" ng-if="vm.elt.team && vm.elt.team.length > 0">

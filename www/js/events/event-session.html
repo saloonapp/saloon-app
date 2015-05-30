@@ -1,12 +1,14 @@
 <ion-view title="{{vm.elt.name}}">
+  <ion-nav-buttons side="right">
+    <favorite user-data="vm.userData" elt="vm.elt"></favorite>
+  </ion-nav-buttons>
   <ion-content>
     <div class="event-item-details">
-    <div class="header">
-        <favorite user-data="vm.userData" elt="vm.elt" class="pull-left"></favorite>
+      <div class="padding">
         <h1><span ng-show="vm.elt.format">[{{vm.elt.format}}] </span>{{vm.elt.name}}</h1>
+        <h3 class="assertive">{{vm.elt.start | time}}-{{vm.elt.end | time}}<span ng-show="vm.elt.place"> @{{vm.elt.place}}</span></h3>
+        <div btf-markdown="vm.elt.description"></div>
       </div>
-      <h3 class="assertive">{{vm.elt.start | time}}-{{vm.elt.end | time}}<span ng-show="vm.elt.place"> @{{vm.elt.place}}</span></h3>
-      <div btf-markdown="vm.elt.description"></div>
     </div>
 
     <div class="list" ng-if="vm.elt.speakers && vm.elt.speakers.length > 0">

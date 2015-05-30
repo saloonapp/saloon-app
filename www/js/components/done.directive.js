@@ -21,36 +21,36 @@
       var vm = {};
       scope.vm = vm;
 
-      vm.doneLoading = false;
+      vm.loading = false;
 
-      vm.isDone = function(elt){ return EventUtils.isDone(scope.userData, elt); };
-      vm.done = done;
-      vm.undone = undone;
+      vm.isSet = function(elt){ return EventUtils.isDone(scope.userData, elt); };
+      vm.set = set;
+      vm.unset = unset;
 
-      function done(elt){
-        if(!vm.doneLoading){
-          vm.doneLoading = true;
+      function set(elt){
+        if(!vm.loading){
+          vm.loading = true;
           return EventSrv.done(elt).then(function(data){
-            vm.doneLoading = false;
+            vm.loading = false;
             EventUtils.setDone(scope.userData, data);
             scope.click({value: true});
             $analytics.eventTrack('itemDone', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
           }, function(){
-            vm.doneLoading = false;
+            vm.loading = false;
           });
         }
       }
 
-      function undone(elt){
-        if(!vm.doneLoading){
-          vm.doneLoading = true;
+      function unset(elt){
+        if(!vm.loading){
+          vm.loading = true;
           return EventSrv.undone(elt).then(function(data){
-            vm.doneLoading = false;
+            vm.loading = false;
             EventUtils.setUndone(scope.userData, data);
             scope.click({value: false});
             $analytics.eventTrack('itemUndone', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
           }, function(){
-            vm.doneLoading = false;
+            vm.loading = false;
           });
         }
       }

@@ -1,5 +1,5 @@
-<div class="favorite" ng-class="{active: vm.isFavorite(elt), loading: vm.favoriteLoading}">
-  <i class="icon ion-android-star-outline unstarred" ng-click="vm.favorite(elt)" stop-event="click"></i>
-  <i class="icon ion-android-star starred" ng-click="vm.unfavorite(elt)" stop-event="click"></i>
+<div class="favorite" ng-class="{active: vm.isSet(elt), loading: vm.loading}">
+  <button class="button button-icon ion-android-star-outline unseted" ng-click="vm.set(elt)" stop-event="click"></button>
+  <button class="button button-icon ion-android-star seted" ng-click="vm.unset(elt)" stop-event="click"></button>
   <ion-spinner></ion-spinner>
 </div>

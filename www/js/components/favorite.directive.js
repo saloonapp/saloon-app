@@ -6,6 +6,7 @@
   function favoriteDirective($analytics, EventSrv, EventUtils){
     var directive = {
       restrict: 'E',
+      replace: true,
       templateUrl: 'js/components/favorite.html',
       scope: {
         userData: '=userData',
@@ -20,34 +21,34 @@
       var vm = {};
       scope.vm = vm;
 
-      vm.favoriteLoading = false;
+      vm.loading = false;
 
-      vm.isFavorite = function(elt){ return EventUtils.isFavorite(scope.userData, elt); };
-      vm.favorite = favorite;
-      vm.unfavorite = unfavorite;
+      vm.isSet = function(elt){ return EventUtils.isFavorite(scope.userData, elt); };
+      vm.set = set;
+      vm.unset = unset;
 
-      function favorite(elt){
-        if(!vm.favoriteLoading){
-          vm.favoriteLoading = true;
+      function set(elt){
+        if(!vm.loading){
+          vm.loading = true;
           return EventSrv.favorite(elt).then(function(data){
-            vm.favoriteLoading = false;
+            vm.loading = false;
             EventUtils.setFavorite(scope.userData, data);
             $analytics.eventTrack('itemFavorited', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
           }, function(){
-            vm.favoriteLoading = false;
+            vm.loading = false;
           });
         }
       }
 
-      function unfavorite(elt){
-        if(!vm.favoriteLoading){
-          vm.favoriteLoading = true;
+      function unset(elt){
+        if(!vm.loading){
+          vm.loading = true;
           return EventSrv.unfavorite(elt).then(function(data){
-            vm.favoriteLoading = false;
+            vm.loading = false;
             EventUtils.setUnfavorite(scope.userData, data);
             $analytics.eventTrack('itemUnfavorited', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
           }, function(){
-            vm.favoriteLoading = false;
+            vm.loading = false;
           });
         }
       }

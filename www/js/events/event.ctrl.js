@@ -120,6 +120,7 @@
     var days = EventUtils.getSessionDays(event.sessions);
     vm.day = days[parseInt($stateParams.day)];
     vm.sessions = EventUtils.getSessionsForDay(event.sessions, vm.day);
+    vm.sessionMoods = EventUtils.getMoodFor(userData, vm.sessions);
 
     vm.isFavorite = function(elt){ return elt ? EventUtils.isFavorite(userData, elt) : false; };
   }
@@ -130,6 +131,7 @@
 
     vm.event = event;
     vm.userData = userData;
+    vm.exponentMoods = EventUtils.getMoodFor(userData, event.exponents);
     vm.bgExponents = [
       'img/event/exponent1.jpg',
       'img/event/exponent2.jpg',

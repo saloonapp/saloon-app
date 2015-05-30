@@ -55,9 +55,9 @@
       </div>
     </div>
 
-    <div class="list list-event-item exponents" ng-if="vm.notEmpty(vm.exponents)">
+    <div class="list exponents" ng-if="vm.notEmpty(vm.exponents)">
       <div class="item item-divider">Exposants à aller voir :</div>
-      <div class="item item-icon-right" ng-repeat="exponent in vm.exponents"
+      <div class="item item-done item-icon-right" ng-repeat="exponent in vm.exponents"
            ui-sref="app.event.scheduleExponent({exponentId: exponent.uuid})">
         <done user-data="vm.userData" elt="exponent" click="vm.exponentDone(value, $index)"></done>
         <div>
