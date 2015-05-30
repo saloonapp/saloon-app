@@ -9,11 +9,14 @@ node_modules/
 /www/css/
 /www/lib/
 
-# do not commit generated images
+# do not commit generated files
 /resources/android
 /resources/ios
 *~
+*.apk
 
+# sensible files
+*.keystore
 
-#OSX 
+# OSX
 .DS_Store
