@@ -3,7 +3,8 @@
     <div class="event-item-details">
 
       <div class="header">
-        <favorite user-data="vm.userData" elt="vm.elt" class="pull-left"></favorite>
+              <favorite user-data="vm.userData" elt="vm.elt" class="pull-left"></favorite>
+
         <img ng-src="{{vm.elt.landingUrl}}" ng-if="vm.elt.landingUrl"/>
         <h1 ng-if="!vm.elt.landingUrl">{{vm.elt.name}}</h1>
       </div>      

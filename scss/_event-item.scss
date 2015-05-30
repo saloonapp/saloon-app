@@ -86,10 +86,16 @@
     margin-right: 15px;
   }
   .header {
-    height : 40px;
-    display: table;
-    width: 100%;
-    padding-left: 18px;
+    
+    /* display: table-cell; */
+  width: 100%;
+  text-align: center;
+  height: 150px;
+  /* vertical-align: bottom; */
+  line-height: 200px;
+  position: relative;
+
+
     h1 {
       font-size: 20px;
       margin-top: 0px;
@@ -98,12 +104,18 @@
       vertical-align: middle;
     }
     img {
-      width : 100%;
+        max-width: 100%;
+  margin: auto;
+  max-height: 150px;
+    padding-left: 30px;
     }
     favorite {
-      position: absolute;
-      top: 0;
-      left: 0;
+        position: absolute;
+  top: 0;
+  //Une loic ! 
+  left: -10px;
+  line-height: 15px;
+  float: none;
     }
   }
 }
