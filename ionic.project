@@ -1,6 +1,6 @@
 {
-  "name": "Optimisez vos événements !",
-  "app_id": "",
+  "name": "dev-SalooN",
+  "app_id": "4971c69a",
   "gulpStartupTasks": [
     "sass",
     "watch"

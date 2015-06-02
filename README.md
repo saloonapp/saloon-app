@@ -20,6 +20,7 @@ To run the app on your android device :
 ## TODO
 
 - enregistrer le pushId
+- improve ng-repeat performance with "track by"
 
 ## Infos
 
