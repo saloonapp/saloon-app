@@ -6,8 +6,8 @@
 
 appName='SalooN'
 appPackage='co.saloonapp.eventexplorer'
-devId='4971c69a'
-prodId='290eadf8'
+devId='2b7767d0'
+prodId='e57ea86a'
 
 configApk='config.xml'
 configApp='www/js/config/_config.js'

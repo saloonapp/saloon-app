@@ -1,6 +1,6 @@
 {
   "name": "dev-SalooN",
-  "app_id": "4971c69a",
+  "app_id": "",
   "gulpStartupTasks": [
     "sass",
     "watch"
