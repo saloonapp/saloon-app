@@ -21,6 +21,7 @@ To run the app on your android device :
 
 - enregistrer le pushId
 - improve ng-repeat performance with "track by"
+- mieux gérer le cache (chargement, refresh, LocalStorage vs SQLite...)
 
 ## Infos
 

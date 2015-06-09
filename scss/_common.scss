@@ -14,38 +14,56 @@
 }
 
 .item-avatar-event {
-	height : 115px;
-	border-color : #b5b5b5;
-	background : $dark-white;
-	img:first-child {
-		width : 80px;
-		height : 80px;
-	}
+  height : 115px;
+  border-color : #b5b5b5;
+  background : $dark-white;
+  img:first-child {
+    width : 80px;
+    height : 80px;
+  }
 
-	h2 {
-		color : $grey;
-		font-size: 20px;
-		font-weight: 500;
-	}
-	.multiline.l2 {
-		min-height: 38px;
-	}
-	p:first-child {
-		font-weight: 200;
-		color : $grey;
-	}
-	p.infos {
-		margin-top : 10px;
-		font-style: italic;
-		width: 100%;
-		span {
-			width : 45%;
-			display: inline-block;
-		}
-		i {
-			margin-right: 5px;
+  h2 {
+    color : $grey;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .multiline.l2 {
+    min-height: 38px;
+  }
+  p:first-child {
+    font-weight: 200;
+    color : $grey;
+  }
+  p.infos {
+    margin-top : 10px;
+    font-style: italic;
+    width: 100%;
+    span {
+      width : 45%;
+      display: inline-block;
+    }
+    i {
+      margin-right: 5px;
 
-		}
-	}
+    }
+  }
+}
 
+div[btf-markdown] {
+  h1, h2, h3, h4, h5, h6 {
+    color: #000;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  h1 { font-size: 36px; }
+  h3 { font-size: 24px; }
+  ul, ol {
+    padding-left: 20px;
+    margin-bottom: 10px;
+  }
+  ul { list-style: disc; }
+  ol { list-style: decimal; }
+  em {
+    font-style: italic;
+  }
 }
