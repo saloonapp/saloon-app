@@ -13,6 +13,9 @@
   function EventCtrl($scope, EventSrv, EventLastRefresh, event){
     var vm = {};
     $scope.vm = vm;
+    $scope.tabBadge = {
+      program: 0
+    };
 
     vm.event = event;
 
@@ -41,6 +44,10 @@
     vm.subscribeReport = subscribeReport;
     vm.unsubscribeReport = unsubscribeReport;
     vm.isSubscribed = function(elt){ return EventUtils.isSubscribe(userData, elt); }
+
+    $scope.$on('$ionicView.enter', function(){
+      $scope.tabBadge.program = 0;
+    });
 
     /*function doRefresh(){
       vm.loading = true;
@@ -108,6 +115,9 @@
       'img/event/sessions3.jpg'
     ];
     vm.bgExponents = 'img/event/exponents.jpg';
+    $scope.$on('$ionicView.enter', function(){
+      $scope.tabBadge.program = 0;
+    });
   }
 
   function EventSessionsCtrl($scope, $stateParams, EventUtils, event, userData){
@@ -121,6 +131,7 @@
     vm.day = days[parseInt($stateParams.day)];
     vm.sessions = EventUtils.getSessionsForDay(event.sessions, vm.day);
     $scope.$on('$ionicView.enter', function(){
+      $scope.tabBadge.program = 0;
       vm.sessionMoods = EventUtils.getMoodFor(userData, vm.sessions);
     });
 
@@ -144,7 +155,12 @@
       'img/event/exponent8.jpg',
       'img/event/exponent9.jpg'
     ];
+    $scope.filtered = {data: []};
+    $scope.$watch('filtered.data.length', function(value){
+      $scope.tabBadge.program = value;
+    });
     $scope.$on('$ionicView.enter', function(){
+      $scope.tabBadge.program = $scope.filtered.data.length;
       vm.exponentMoods = EventUtils.getMoodFor(userData, event.exponents);
     });
 
@@ -158,6 +174,10 @@
     vm.userData = userData;
     vm.elt = session;
     vm.similar = [];
+
+    $scope.$on('$ionicView.enter', function(){
+      $scope.tabBadge.program = 0;
+    });
   }
 
   function EventExponentCtrl($scope, userData, exponent){
@@ -167,6 +187,10 @@
     vm.userData = userData;
     vm.elt = exponent;
     vm.similar = [];
+
+    $scope.$on('$ionicView.enter', function(){
+      $scope.tabBadge.program = 0;
+    });
   }
 
   function EventScheduleCtrl($scope, $timeout, $ionicScrollDelegate, EventUtils, IonicUtils, CollectionUtils, event, userData){
@@ -194,6 +218,7 @@
     vm.notEmpty = CollectionUtils.isNotEmpty
 
     $scope.$on('$ionicView.enter', function(){
+      $scope.tabBadge.program = 0;
       vm.sessions = EventUtils.getFavoriteSessions(event, userData).sort(sortSessions);
       vm.sessionMoods = EventUtils.getMoodFor(userData, vm.sessions);
       //var now = new Date('06/11/2015 10:30').getTime();

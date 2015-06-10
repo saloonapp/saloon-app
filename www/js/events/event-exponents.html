@@ -7,14 +7,13 @@
     <button class="button button-clear" ng-click="search=''">Annuler</button>
   </div>
   <ion-content class="has-subheader">
-
     <div class="list">
-      <div class="item item-favorite" collection-repeat="elt in vm.event.exponents | filter:search | orderBy:'name'"
+      <div class="item item-favorite" collection-repeat="elt in filtered.data = (vm.event.exponents | filter:search | orderBy:'name')" item-height="115px"
            ui-sref="app.event.exponent({exponentId: elt.uuid})">
         <favorite user-data="vm.userData" elt="elt"></favorite>
         <h2><span mood="vm.exponentMoods[elt.uuid]"></span> {{elt.name}}</h2>
         <p class="multiline l2 fixe" btf-markdown="elt.description"></p>
-        <p class="positive"><span ng-show="elt.place"> {{elt.place}}</span></p>
+        <p class="positive"><span ng-show="elt.place">{{elt.place}}</span></p>
       </div>
     </div>
 

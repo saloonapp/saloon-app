@@ -16,18 +16,23 @@
   font-size: 12px;
   color: #666;
 }
-.item .multiline      { white-space: normal;  }
-.item .multiline.text { white-space: pre;     }
-.item .multiline.l2   { max-height: 38px;     }
-.item .multiline.l3   { max-height: 57px;     }
-.item .multiline.l4   { max-height: 76px;     }
-.item .multiline.l5   { max-height: 95px;     }
-.item .multiline.l6   { max-height: 114px;    }
-.item .multiline.l2.fixe  { height: 38px;     }
-.item .multiline.l3.fixe  { height: 57px;     }
-.item .multiline.l4.fixe  { height: 76px;     }
-.item .multiline.l5.fixe  { height: 95px;     }
-.item .multiline.l6.fixe  { height: 114px;    }
+
+.item .multiline {
+  white-space: normal;
+  &.text { white-space: pre;  }
+  &.l2   { max-height: 38px;  }
+  &.l3   { max-height: 57px;  }
+  &.l4   { max-height: 76px;  }
+  &.l5   { max-height: 95px;  }
+  &.l6   { max-height: 114px; }
+  &.l2.fixe  { height: 38px;  }
+  &.l3.fixe  { height: 57px;  }
+  &.l4.fixe  { height: 76px;  }
+  &.l5.fixe  { height: 95px;  }
+  &.l6.fixe  { height: 114px; }
+}
+.item .multiline p      { white-space: normal;  }
+.item .multiline.text p { white-space: pre;     }
 
 .list.small {
   margin-bottom: 10px;
