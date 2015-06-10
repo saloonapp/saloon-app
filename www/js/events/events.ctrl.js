@@ -4,6 +4,7 @@
     .controller('EventsCtrl', EventsCtrl);
 
   function EventsCtrl($scope, $window, $ionicPopover, EventSrv, Config, events){
+    var oneWeek = 7*24*60*60*1000;
     var vm = {};
     $scope.vm = vm;
 
@@ -14,7 +15,7 @@
     vm.doRefresh = doRefresh;
     vm.showPopover = function($event){ morePopover.show($event); };
     vm.togglePastEvents = function(){ vm.showPastEvents = !vm.showPastEvents; morePopover.hide(); }
-    vm.isNotFinished = function(elt){ return elt && elt.end > Date.now(); }
+    vm.isNotFinished = function(elt){ return elt && elt.end+oneWeek > Date.now(); }
     vm.mapUrl = mapUrl;
 
     // refresh event list everytime it's loaded (once by app launch)

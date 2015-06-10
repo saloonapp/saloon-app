@@ -12,10 +12,14 @@
       <a class="hashtag" ng-show="!vm.event.twitterHashtag && vm.event.twitterAccount" href="https://twitter.com/{{vm.event.twitterAccount}}">@{{vm.event.twitterAccount}}</a>
     </div>
     <div class="infos">
-      <div class="section main" ng-if="vm.event.description || vm.event.siteUrl">
-        <div btf-markdown="vm.event.description"></div>
-        <a href="{{vm.event.siteUrl}}" class="pull-right" ng-show="vm.event.siteUrl">{{vm.event.siteUrl}}</a>
-        <div class="clearfix"></div>
+      <div class="row section stats" ng-if="(vm.event.sessions && vm.event.sessions.length > 0) || (vm.event.exponents && vm.event.exponents.length > 0)">
+        <!--<div class="col"><strong>500</strong> participants</div>-->
+        <div class="col" ng-if="vm.event.sessions && vm.event.sessions.length > 0">
+          <strong>{{vm.event.sessions.length}}</strong> sessions
+        </div>
+        <div class="col" ng-if="vm.event.exponents && vm.event.exponents.length > 0">
+          <strong>{{vm.event.exponents.length}}</strong> exposants
+        </div>
       </div>
       <div class="row section details" ng-if="vm.event.start || vm.event.address.city || vm.event.price">
         <div class="col" ng-if="vm.event.address.city">
@@ -34,20 +38,16 @@
           </a>
         </div>
       </div>
-      <div class="row section stats" ng-if="(vm.event.sessions && vm.event.sessions.length > 0) || (vm.event.exponents && vm.event.exponents.length > 0)">
-        <!--<div class="col"><strong>500</strong> participants</div>-->
-        <div class="col" ng-if="vm.event.sessions && vm.event.sessions.length > 0">
-          <strong>{{vm.event.sessions.length}}</strong> sessions
-        </div>
-        <div class="col" ng-if="vm.event.exponents && vm.event.exponents.length > 0">
-          <strong>{{vm.event.exponents.length}}</strong> exposants
-        </div>
-      </div>
       <div class="section cr">
         <button class="button button-block button-positive" ng-click="vm.showSubscribeReport()">
           <i class="icon" ng-class="{'ion-checkmark-circled': vm.isSubscribed(vm.event), 'ion-paper-airplane': !vm.isSubscribed(vm.event)}"></i>
-          {{vm.isSubscribed(vm.event) ? 'Inscrit pour le compte rendu' : 'Recevoir le compte rendu'}}
+          {{vm.isSubscribed(vm.event) ? 'Inscrit pour mon compte rendu' : 'Recevoir mon compte rendu'}}
         </button>
+      </div>
+      <div class="section main" ng-if="vm.event.description || vm.event.siteUrl">
+        <div btf-markdown="vm.event.description"></div>
+        <a href="{{vm.event.siteUrl}}" class="pull-right" ng-show="vm.event.siteUrl">{{vm.event.siteUrl}}</a>
+        <div class="clearfix"></div>
       </div>
     </div>
     <div class="sponsors" ng-if="vm.sponsors && vm.sponsors.length > 0">
