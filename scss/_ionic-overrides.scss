@@ -94,6 +94,10 @@
   }
 }
 
+.tab-item {
+  // for continuity with .tab-item.has-badge (otherwise the badge will jump horizontally on hide)
+  position: relative;
+}
 .tab-item .badge {
   right: 20%;
 }
