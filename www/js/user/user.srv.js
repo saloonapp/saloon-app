@@ -94,8 +94,14 @@
           var firstAction = userData.actions[0];
           if(firstAction){
             $http.get(Config.backendUrl+'/users/'+firstAction.userId+'/actions/'+firstAction.eventId).then(function(res){
-              if(!angular.equals(res.data, userData)){
+              var syncData = {actions: _.filter(userData.actions, function(a){return !a.dirty;}).sort(function(a, b){return a.created - b.created;})};
+              if(!angular.equals(res.data, syncData)){
                 console.error('ERROR in UserAction... :(');
+                console.log('server data', res.data);
+                console.log('local data', syncData);
+                $http.post(Config.backendUrl+'/users/'+firstAction.userId+'/actions/'+firstAction.eventId+'/sync', syncData).then(function(){
+                  syncUserAction(storageKey); // for last check !
+                });
               }
             });
           }
