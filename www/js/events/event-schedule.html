@@ -62,7 +62,7 @@
         <done user-data="vm.userData" elt="exponent" click="vm.exponentDone(value, $index)"></done>
         <div>
           <h2><span mood="vm.exponentMoods[exponent.uuid]"></span> {{exponent.name}}</h2>
-          <p><span ng-if="exponent.place">{{exponent.place}} - </span>{{exponent.description}}</p>
+          <p btf-markdown="(exponent.place ? exponent.place+' - ' : '')+exponent.description" class="multiline l1"></p>
         </div>
         <div ng-class="{shown: vm.showMoodBars[$index]}"><mood-bar user-data="vm.userData" elt="exponent" click="vm.exponentMood(value, $index)"></mood-bar></div>
       </div>

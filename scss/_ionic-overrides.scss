@@ -20,6 +20,7 @@
 .item .multiline {
   white-space: normal;
   &.text { white-space: pre;  }
+  &.l1   { max-height: 19px;  }
   &.l2   { max-height: 38px;  }
   &.l3   { max-height: 57px;  }
   &.l4   { max-height: 76px;  }
