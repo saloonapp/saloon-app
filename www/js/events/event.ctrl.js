@@ -37,8 +37,7 @@
 
     vm.sponsors = _.filter(event.exponents, {sponsor: true});
     vm.event = event;
-    //vm.loading = false;
-    //vm.doRefresh = doRefresh;
+    vm.doRefresh = doRefresh;
     vm.showSubscribeReport = showSubscribeReport;
     vm.cancelSubscribeReport = cancelSubscribeReport;
     vm.subscribeReport = subscribeReport;
@@ -49,15 +48,14 @@
       $scope.tabBadge.program = 0;
     });
 
-    /*function doRefresh(){
-      vm.loading = true;
+    function doRefresh(){
       EventSrv.refreshEvent(event.uuid).then(function(event){
         angular.copy(event, vm.event);
-        vm.loading = false;
+        $scope.$broadcast('scroll.refreshComplete');
       }, function(err){
-        vm.loading = false;
+        $scope.$broadcast('scroll.refreshComplete');
       });
-    }*/
+    }
 
     var crModal;
     $ionicModal.fromTemplateUrl('js/events/partials/report-modal.html', {

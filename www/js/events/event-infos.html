@@ -6,6 +6,8 @@
     <button class="button button-clear button-icon ion-loop" ng-class="{'fa-spin': vm.loading}" ng-click="vm.doRefresh()"></button>
   </ion-nav-buttons>-->
   <ion-content class="event-info">
+    <ion-refresher pulling-text="Mettre à jour l'événement..." on-refresh="vm.doRefresh()"></ion-refresher>
+
     <div class="event-image" ng-if="vm.event.landingUrl">
       <img ng-src="{{vm.event.landingUrl}}" class="landing" ng-if="vm.event.landingUrl">
       <a class="hashtag" ng-show="vm.event.twitterHashtag" href="https://twitter.com/hashtag/{{vm.event.twitterHashtag}}">#{{vm.event.twitterHashtag}}</a>

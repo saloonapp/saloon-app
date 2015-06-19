@@ -35,6 +35,8 @@
       EventSrv.refreshEventList().then(function(events){
         assignEvents(events);
         $scope.$broadcast('scroll.refreshComplete');
+      }, function(err){
+        $scope.$broadcast('scroll.refreshComplete');
       });
     }
     function assignEvents(events){
