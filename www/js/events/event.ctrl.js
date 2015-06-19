@@ -60,7 +60,7 @@
     }*/
 
     var crModal;
-    $ionicModal.fromTemplateUrl('js/events/partials/cr-modal.html', {
+    $ionicModal.fromTemplateUrl('js/events/partials/report-modal.html', {
       scope: $scope,
       animation: 'slide-in-up'
     }).then(function(modal){

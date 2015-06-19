@@ -4,8 +4,9 @@
   </ion-nav-buttons>
   <ion-content>
     <ion-refresher pulling-text="Mettre à jour la liste..." on-refresh="vm.doRefresh()"></ion-refresher>
-    <div class="list">
-      <div class="item item-avatar item-avatar-event" ng-repeat="event in vm.events | orderBy:'-start'" ui-sref="app.event.infos({eventId: event.uuid})" ng-show="vm.showPastEvents || vm.isNotFinished(event)">
+
+    <div class="list list-inset" ng-show="vm.runningEvents.length > 0">
+      <div class="item item-avatar item-avatar-event" ng-repeat="event in vm.runningEvents | orderBy:'name'" ui-sref="app.event.infos({eventId: event.uuid})">
         <img ng-src="{{event.logoUrl}}" ng-if="event.logoUrl">
         <h2>{{event.name}}</h2>
         <p class="multiline l2">{{event.description}}</p>
@@ -14,6 +15,22 @@
           <span ng-if="event.start"><i class="ion-android-calendar"></i>{{event.start | date}}</span>
         </p>
       </div>
+    </div>
+
+    <div class="list">
+      <div class="item item-avatar item-avatar-event" ng-repeat="event in vm.events | orderBy:'-start'" ui-sref="app.event.infos({eventId: event.uuid})" ng-show="vm.showPastEvents || vm.isNear(event)">
+        <img ng-src="{{event.logoUrl}}" ng-if="event.logoUrl">
+        <h2>{{event.name}}</h2>
+        <p class="multiline l2">{{event.description}}</p>
+        <p class="infos">
+          <span ng-if="event.address.city"><i class="ion-ios-location-outline"></i>{{event.address.city}}</span>
+          <span ng-if="event.start"><i class="ion-android-calendar"></i>{{event.start | date}}</span>
+        </p>
+      </div>
+    </div>
+    
+    <div class="padding">
+      <button class="button button-block" ng-click="vm.togglePastEvents()">{{vm.showPastEvents ? 'Masquer' : 'Voir'}} les événements passés</button>
     </div>
   </ion-content>
 </ion-view>
