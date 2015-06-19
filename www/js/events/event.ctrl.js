@@ -120,7 +120,7 @@
     });
   }
 
-  function EventSessionsCtrl($scope, $stateParams, EventUtils, event, userData){
+  function EventSessionsCtrl($scope, $stateParams, EventUtils, IonicUtils, event, userData){
     // TODO : add header button to go to current session
     var vm = {};
     $scope.vm = vm;
@@ -136,6 +136,21 @@
     });
 
     vm.isFavorite = function(elt){ return elt ? EventUtils.isFavorite(userData, elt) : false; };
+    vm.isToday = isToday;
+    vm.goToNow = goToNow;
+
+    function isToday(){
+      return moment(vm.day).format('DD/MM/YYYY') === moment().format('DD/MM/YYYY')
+    }
+    function goToNow(){
+      // fail if collection-repeat (elements does not exist !)
+      for(var i in vm.filtered){
+        if(vm.filtered && vm.filtered[i] && vm.filtered[i].end && vm.filtered[i].end > Date.now()){
+          IonicUtils.scrollTo('session-'+vm.filtered[i].uuid, true);
+          break;
+        }
+      }
+    }
   }
 
   function EventExponentsCtrl($scope, EventUtils, event, userData){

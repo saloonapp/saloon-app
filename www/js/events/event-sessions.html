@@ -1,6 +1,8 @@
 <ion-view title="Conférences du {{vm.day | date:'dddd'}}">
+  <ion-nav-buttons side="primary">
+    <button class="button button-icon ion-clock" ng-click="vm.goToNow()" ng-if="vm.isToday()"></button>
+  </ion-nav-buttons>
   <div class="bar bar-subheader has-tabs-top item-input-inset">
-  
     <label class="item-input-wrapper">
       <i class="icon ion-search placeholder-icon"></i>
       <input type="search" placeholder="Rechercher ..." ng-model="search">
@@ -10,8 +12,8 @@
   <ion-content class="has-subheader" >
 
     <div class="list">
-      <div class="item item-favorite item-icon-right" ng-class="{fav: vm.isFavorite(elt)}"
-           collection-repeat="elt in vm.sessions | filter:search | orderBy:'start'" item-height="115px"
+      <div class="item item-favorite item-icon-right session-{{elt.uuid}}" ng-class="{fav: vm.isFavorite(elt)}"
+           ng-repeat="elt in vm.filtered = (vm.sessions | filter:search | orderBy:'start')"
            ui-sref="app.event.session({sessionId: elt.uuid})">
         <favorite user-data="vm.userData" elt="elt"></favorite>
         <h2><span mood="vm.sessionMoods[elt.uuid]"></span> {{elt.name}}</h2>
