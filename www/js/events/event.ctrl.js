@@ -72,7 +72,7 @@
       if(subscribed && subscribed.action){
         vm.crForm = {email: subscribed.action.email, filter: subscribed.action.filter};
       } else {
-        vm.crForm = {email: '', filter: 'all'};
+        vm.crForm = {email: '', filter: 'favorites'};
       }
       crModal.show();
       $analytics.eventTrack('reportModalOpened', {eventId: event.uuid, eventName: event.name});

@@ -3,10 +3,10 @@
   <mood-bar class="item" user-data="userData" elt="vm.elt"></mood-bar>
 </div>
 <div class="list card feedback-box">
-  <div class="item item-divider">Mes commentaires :</div>
+  <div class="item item-divider">Notes personnelles :</div>
   <form ng-submit="vm.createComment(vm.elt, vm.newText)">
     <label class="item item-input item-writing" ng-class="{disabled: vm.newCommentSaving}">
-      <textarea placeholder="Mes notes..." rows="3" msd-elastic="\n" ng-model="vm.newText" ng-disabled="vm.newCommentSaving"></textarea>
+      <textarea placeholder="Super session, j'ai adoré. Penser à tester..." rows="3" msd-elastic="\n" ng-model="vm.newText" ng-disabled="vm.newCommentSaving"></textarea>
       <button class="button button-icon icon ion-paper-airplane"></button>
       <ion-spinner></ion-spinner>
     </label>
