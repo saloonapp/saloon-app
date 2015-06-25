@@ -5,7 +5,7 @@
   <ion-content>
     <div class="event-item-details">
       <div class="padding">
-        <h1><span ng-show="vm.elt.format">[{{vm.elt.format}}] </span>{{vm.elt.name}}</h1>
+        <h1><span ng-show="vm.elt.category" class="label label-positive pull-right">{{vm.elt.category}}</span><span ng-show="vm.elt.format">[{{vm.elt.format}}] </span>{{vm.elt.name}}</h1>
         <h3 class="assertive">{{vm.elt.start | time}}-{{vm.elt.end | time}}<span ng-show="vm.elt.place"> @{{vm.elt.place}}</span></h3>
         <div btf-markdown="vm.elt.description"></div>
       </div>
