@@ -16,6 +16,7 @@
     vm.showPopover = function($event){ morePopover.show($event); };
     vm.togglePastEvents = togglePastEvents;
     vm.isNear = isNear;
+    vm.tagColor = tagColor;
     vm.mapUrl = mapUrl;
 
     // refresh event list everytime it's loaded (once by app launch)
@@ -62,6 +63,12 @@
       if(!vm.showPastEvents){
         $ionicScrollDelegate.scrollTop(true);
       }
+    }
+    function tagColor(tag){
+      if(tag === 'tech') return 'label-calm';
+      if(tag === 'emploi') return 'label-energized';
+      if(tag === 'business') return 'label-royal';
+      return 'label-positive';
     }
     function mapUrl(address, height){
       if(!height){ height = 250; }

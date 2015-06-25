@@ -51,6 +51,26 @@
   }
 }
 
+.event-item {
+  border-color : #b5b5b5;
+  background : $dark-white;
+  padding-top: 10px;
+  padding-bottom: 0px;
+  h2 {
+    color : $grey;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .meta {
+    color : #666;
+    font-style: italic;
+    font-size: 14px;
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+
 .event-item-details {
   .img-container {
     width: 100%;
