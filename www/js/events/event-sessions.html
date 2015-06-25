@@ -12,8 +12,9 @@
   <ion-content class="has-subheader" >
 
     <div class="list">
+      <!-- no collection-repeat because of goNow() ! -->
       <div class="item item-favorite item-icon-right session-{{elt.uuid}}" ng-class="{fav: vm.isFavorite(elt)}"
-           ng-repeat="elt in vm.filtered = (vm.sessions | filter:search | orderBy:'start')"
+           ng-repeat="elt in filtered.data = (vm.sessions | filter:search | orderBy:'start')"
            ui-sref="app.event.session({sessionId: elt.uuid})">
         <favorite user-data="vm.userData" elt="elt"></favorite>
         <h2><span mood="vm.sessionMoods[elt.uuid]"></span> {{elt.name}}</h2>

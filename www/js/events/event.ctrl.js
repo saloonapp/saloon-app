@@ -128,8 +128,12 @@
     var days = EventUtils.getSessionDays(event.sessions);
     vm.day = days[parseInt($stateParams.day)];
     vm.sessions = EventUtils.getSessionsForDay(event.sessions, vm.day);
+    $scope.filtered = {data: []};
+    $scope.$watch('filtered.data.length', function(value){
+      $scope.tabBadge.program = value;
+    });
     $scope.$on('$ionicView.enter', function(){
-      $scope.tabBadge.program = 0;
+      $scope.tabBadge.program = $scope.filtered.data.length;
       vm.sessionMoods = EventUtils.getMoodFor(userData, vm.sessions);
     });
 
@@ -142,9 +146,10 @@
     }
     function goToNow(){
       // fail if collection-repeat (elements does not exist !)
-      for(var i in vm.filtered){
-        if(vm.filtered && vm.filtered[i] && vm.filtered[i].end && vm.filtered[i].end > Date.now()){
-          IonicUtils.scrollTo('session-'+vm.filtered[i].uuid, true);
+      var filtered = $scope.filtered.data;
+      for(var i in filtered){
+        if(filtered && filtered[i] && filtered[i].end && filtered[i].end > Date.now()){
+          IonicUtils.scrollTo('session-'+filtered[i].uuid, true);
           break;
         }
       }

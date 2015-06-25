@@ -11,6 +11,7 @@
         <h1 ng-if="!vm.elt.landingUrl">{{vm.elt.name}}</h1>
         <h3 class="assertive" ng-if="vm.elt.place">@{{vm.elt.place}}</h3>
         <div btf-markdown="vm.elt.description"></div>
+        <p ng-if="vm.elt.siteUrl"><a href="{{vm.elt.siteUrl}}" class="pull-right">{{vm.elt.siteUrl}}</a></p>
       </div>
     </div>
 

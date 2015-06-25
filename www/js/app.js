@@ -5,12 +5,18 @@
     .config(fixiOS8)
     .run(runBlock);
 
-  configure.$inject = ['$urlRouterProvider', '$compileProvider', '$provide'];
-  function configure($urlRouterProvider, $compileProvider, $provide){
+  configure.$inject = ['$urlRouterProvider', '$compileProvider', '$provide', 'markdownConverterProvider'];
+  function configure($urlRouterProvider, $compileProvider, $provide, markdownConverterProvider){
     $urlRouterProvider.otherwise('/app/loading');
 
     // allow more url scheme (otherwise angular will add 'unsafe:')
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|sms|geo|file):/);
+
+    // configure markdown directive
+    markdownConverterProvider.config({
+      parseImgDimensions: true,
+      headerLevelStart: 3
+    });
 
     // improve angular logger
     $provide.decorator('$log', ['$delegate', 'customLogger', function($delegate, customLogger){
