@@ -1,12 +1,12 @@
 (function(){
   'use strict';
   angular.module('app')
-    .directive('feedbackBox', feedbackBoxDirective);
+    .directive('memoBox', memoBoxDirective);
 
-  function feedbackBoxDirective($analytics, EventSrv, EventUtils){
+  function memoBoxDirective($analytics, EventSrv, EventUtils){
     var directive = {
       restrict: 'E',
-      templateUrl: 'js/components/feedbackBox.html',
+      templateUrl: 'js/components/memoBox.html',
       scope: {
         userData: '=userData',
         elt: '=elt'
@@ -85,8 +85,8 @@
   }
 
   function checkParams(scope){
-    if(!scope.userData){ console.error('Directive "feedback-box" need a "userData" argument !'); return false; }
-    if(!scope.elt){ console.error('Directive "feedback-box" need a "elt" argument ! (session or exponent)'); return false; }
+    if(!scope.userData){ console.error('Directive "memo-box" need a "userData" argument !'); return false; }
+    if(!scope.elt){ console.error('Directive "memo-box" need a "elt" argument ! (session or exponent)'); return false; }
     return true;
   }
 })();
