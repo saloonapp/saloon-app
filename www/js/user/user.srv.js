@@ -116,6 +116,7 @@
         if(toSync.action.done === true){ return syncDone(toSync); }
         if(toSync.action.done === false){ return syncUndone(toSync); }
         if(toSync.action.mood === true){ return syncMood(toSync); }
+        if(toSync.action.mood === false){ return syncMoodDelete(toSync); }
         if(toSync.action.comment === true && !toSync.uuid){ return syncCommentAdd(toSync); }
         if(toSync.action.comment === true && toSync.uuid){ return syncCommentEdit(toSync); }
         if(toSync.action.comment === false){ return syncCommentDelete(toSync); }
@@ -151,6 +152,12 @@
 
     function syncMood(toSync){
       return $http.post(Config.backendUrl+'/events/'+toSync.eventId+'/'+toSync.itemType+'/'+toSync.itemId+'/mood', {rating: toSync.action.rating}, {headers: {userId: toSync.userId, timestamp: toSync.created}}).then(function(res){
+        return res.data;
+      });
+    }
+
+    function syncMoodDelete(toSync){
+      return $http.delete(Config.backendUrl+'/events/'+toSync.eventId+'/'+toSync.itemType+'/'+toSync.itemId+'/mood', {headers: {userId: toSync.userId}}).then(function(res){
         return res.data;
       });
     }

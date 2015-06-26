@@ -31,14 +31,25 @@
       function setMood(elt, mood){
         if(!vm.moodSaving){
           vm.moodSaving = true;
-          EventSrv.setMood(elt, mood).then(function(moodData){
-            EventUtils.setMood(scope.userData, moodData);
-            vm.moodSaving = false;
-            scope.click({value: mood});
-            $analytics.eventTrack('itemRated', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name, rating: mood});
-          }, function(){
-            vm.moodSaving = false;
-          });
+          if(vm.isMood(elt, mood)){ // unset
+            EventSrv.deleteMood(elt).then(function(moodData){
+              EventUtils.removeMood(scope.userData, moodData);
+              vm.moodSaving = false;
+              scope.click({value: undefined});
+              $analytics.eventTrack('itemUnrated', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name, rating: mood});
+            }, function(){
+              vm.moodSaving = false;
+            });
+          } else { // set
+            EventSrv.setMood(elt, mood).then(function(moodData){
+              EventUtils.setMood(scope.userData, moodData);
+              vm.moodSaving = false;
+              scope.click({value: mood});
+              $analytics.eventTrack('itemRated', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name, rating: mood});
+            }, function(){
+              vm.moodSaving = false;
+            });
+          }
         }
       }
     }

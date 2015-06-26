@@ -281,12 +281,15 @@
       if(value && !vm.showMoodBars[index]){
         $timeout(function(){
           vm.showMoodBars[index] = false;
-        }, 3000);
+        }, 4000);
       }
       vm.showMoodBars[index] = value;
     }
     function exponentMood(value, index){
-      vm.exponentMoods[index] = value;
+      if(index < vm.exponents.length){
+        var exponentUuid = vm.exponents[index].uuid;
+        vm.exponentMoods[exponentUuid] = value;
+      }
     }
 
     function sortSessions(a, b){

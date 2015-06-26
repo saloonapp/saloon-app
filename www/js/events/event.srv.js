@@ -23,6 +23,7 @@
       done: done,
       undone: undone,
       setMood: setMood,
+      deleteMood: deleteMood,
       createComment: createComment,
       editComment: editComment,
       deleteComment: deleteComment,
@@ -112,6 +113,20 @@
         var key = userDataKey(elt.eventId);
         return getUserData(elt.eventId).then(function(userData){
           EventUtils.setMood(userData, tmpAction);
+          return StorageUtils.set(key, userData).then(function(){
+            UserActionSync.syncUserAction(key);
+            return tmpAction;
+          });
+        });
+      });
+    }
+
+    function deleteMood(elt){
+      return UserSrv.getUser().then(function(user){
+        var tmpAction = _createTmpAction(user, elt, {mood: false});
+        var key = userDataKey(elt.eventId);
+        return getUserData(elt.eventId).then(function(userData){
+          EventUtils.removeMood(userData, tmpAction);
           return StorageUtils.set(key, userData).then(function(){
             UserActionSync.syncUserAction(key);
             return tmpAction;
@@ -268,6 +283,7 @@
       isMood: isMood,
       getMood: getMood,
       setMood: setMood,
+      removeMood: removeMood,
       getMoodFor: getMoodFor,
       addComment: addComment,
       updateComment: updateComment,
@@ -365,6 +381,14 @@
       if(oldMood){
         angular.extend(oldMood, data);
       } else {
+        userData.actions.push(data);
+      }
+    }
+
+    function removeMood(userData, data){
+      _.remove(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {mood: true}});
+      var oldUnmood = _.find(userData.actions, {eventId: data.eventId, itemType: data.itemType, itemId: data.itemId, action: {mood: false}});
+      if(!oldUnmood){
         userData.actions.push(data);
       }
     }
