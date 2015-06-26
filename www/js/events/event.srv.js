@@ -62,22 +62,6 @@
           });
         });
       });
-
-      /*var key = userDataKey(elt.eventId);
-      return UserSrv.getUser().then(function(user){
-        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+elt.className+'/'+elt.uuid+'/favorites', {}, {headers: {userId: user.uuid}}).then(function(res){
-          return getUserData(elt.eventId).then(function(userData){
-            if(EventUtils.isFavorite(userData, elt)){
-              return $q.when(res.data);
-            } else {
-              EventUtils.setFavorite(userData, res.data);
-              return StorageUtils.set(key, userData).then(function(){
-                return res.data;
-              });
-            }
-          });
-        });
-      });*/
     }
 
     function unfavorite(elt){
@@ -92,16 +76,6 @@
           });
         });
       });
-
-      /*var key = userDataKey(elt.eventId);
-      return UserSrv.getUser().then(function(user){
-        return $http.delete(Config.backendUrl+'/events/'+elt.eventId+'/'+elt.className+'/'+elt.uuid+'/favorites', {headers: {userId: user.uuid}}).then(function(res){
-          return getUserData(elt.eventId).then(function(userData){
-            EventUtils.removeFavorite(userData, elt);
-            return StorageUtils.set(key, userData);
-          });
-        });
-      });*/
     }
 
     function done(elt){
@@ -144,18 +118,6 @@
           });
         });
       });
-
-      /*var key = userDataKey(elt.eventId);
-      return UserSrv.getUser().then(function(user){
-        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+elt.className+'/'+elt.uuid+'/mood', {rating: rating}, {headers: {userId: user.uuid}}).then(function(res){
-          return getUserData(elt.eventId).then(function(userData){
-            EventUtils.setMood(userData, res.data);
-            return StorageUtils.set(key, userData).then(function(){
-              return res.data;
-            });
-          });
-        });
-      });*/
     }
 
     function createComment(elt, text){
@@ -170,18 +132,6 @@
           });
         });
       });
-
-      /*var key = userDataKey(elt.eventId);
-      return UserSrv.getUser().then(function(user){
-        return $http.post(Config.backendUrl+'/events/'+elt.eventId+'/'+elt.className+'/'+elt.uuid+'/comments', {text: text}, {headers: {userId: user.uuid}}).then(function(res){
-          return getUserData(elt.eventId).then(function(userData){
-            EventUtils.addComment(userData, res.data);
-            return StorageUtils.set(key, userData).then(function(){
-              return res.data;
-            });
-          });
-        });
-      });*/
     }
 
     function editComment(comment, text){
@@ -199,19 +149,6 @@
           });
         });
       });
-
-      /*var key = userDataKey(comment.eventId);
-      return UserSrv.getUser().then(function(user){
-        var eltType = comment.itemType.toLowerCase();
-        return $http.put(Config.backendUrl+'/events/'+comment.eventId+'/'+eltType+'/'+comment.itemId+'/comments/'+comment.uuid, {text: text}, {headers: {userId: user.uuid}}).then(function(res){
-          return getUserData(comment.eventId).then(function(userData){
-            EventUtils.updateComment(userData, res.data);
-            return StorageUtils.set(key, userData).then(function(){
-              return res.data;
-            });
-          });
-        });
-      });*/
     }
 
     function deleteComment(comment){
@@ -228,17 +165,6 @@
           });
         });
       });
-
-      /*var key = userDataKey(comment.eventId);
-      return UserSrv.getUser().then(function(user){
-        var eltType = comment.itemType.toLowerCase();
-        return $http.delete(Config.backendUrl+'/events/'+comment.eventId+'/'+eltType+'/'+comment.itemId+'/comments/'+comment.uuid, {headers: {userId: user.uuid}}).then(function(){
-          return getUserData(comment.eventId).then(function(userData){
-            EventUtils.removeComment(userData, comment);
-            return StorageUtils.set(key, userData);
-          });
-        });
-      });*/
     }
 
     function subscribe(event, form){
