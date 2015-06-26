@@ -3,10 +3,14 @@
   .item-divider {
     color: $grey;
   }
-  .item-writing {
+  .item-memo {
     position: relative;
     padding-bottom: 0;
-    textarea { padding-right: 50px; }
+    background: rgba(255, 201, 0, 0.3);
+    textarea {
+      padding-right: 50px;
+      background: transparent;
+    }
     .button, .spinner {
       position: absolute;
       bottom: 5px;
@@ -23,6 +27,7 @@
       .spinner  { display: block; }
     }
   }
+
   .item-comment {
     position: relative;
     .edit-btn {

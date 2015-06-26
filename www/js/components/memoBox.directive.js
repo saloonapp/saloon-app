@@ -3,7 +3,7 @@
   angular.module('app')
     .directive('memoBox', memoBoxDirective);
 
-  function memoBoxDirective($analytics, EventSrv, EventUtils){
+  function memoBoxDirective($analytics, EventSrv, EventUtils, ToastPlugin){
     var directive = {
       restrict: 'E',
       templateUrl: 'js/components/memoBox.html',
@@ -21,63 +21,56 @@
       scope.vm = vm;
 
       vm.elt = scope.elt;
-      vm.newCommentSaving = false;
-      vm.editCommentSaving = false;
-      vm.commentEdited = undefined;
+      vm.memoSaving = false;
+      vm.comments = EventUtils.getComments(scope.userData, vm.elt);
+      vm.memo = vm.comments.length > 0 ? vm.comments[0] : undefined;
+      vm.memoText = vm.memo ? vm.memo.action.text : '';
 
-      vm.getComments = function(elt){ return EventUtils.getComments(scope.userData, elt); };
-      vm.createComment = createComment;
-      vm.toggleEditComment = toggleEditComment;
-      vm.updateComment = updateComment;
-      vm.deleteComment = deleteComment;
+      vm.saveMemo = saveMemo;
 
-      function createComment(elt, newText){
-        if(!vm.newCommentSaving && newText){
-          vm.newCommentSaving = true;
-          EventSrv.createComment(elt, newText).then(function(commentData){
-            EventUtils.addComment(scope.userData, commentData);
-            vm.newCommentSaving = false;
-            vm.newText = '';
-            $analytics.eventTrack('itemCommented', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
+      function saveMemo(){
+        console.log('save memo');
+        if(!vm.memo && vm.memoText && !vm.memoSaving){ // create
+          console.log('create comment');
+          vm.memoSaving = true;
+          EventSrv.createComment(vm.elt, vm.memoText).then(function(memoData){
+            EventUtils.addComment(scope.userData, memoData);
+            vm.comments = EventUtils.getComments(scope.userData, vm.elt);
+            vm.memo = vm.comments.length > 0 ? vm.comments[0] : undefined;
+            vm.memoText = vm.memo ? vm.memo.action.text : '';
+            vm.memoSaving = false;
+            $analytics.eventTrack('itemCommented', {eventId: vm.elt.eventId, itemType: vm.elt.className, itemId: vm.elt.uuid, itemName: vm.elt.name});
+            ToastPlugin.show('✓ Notes personnelles enregistrées !');
           }, function(){
-            vm.newCommentSaving = false;
+            vm.memoSaving = false;
           });
-        }
-      }
-      function toggleEditComment(comment){
-        if(vm.commentEdited === comment){
-          vm.commentEdited = undefined;
-          vm.editText = undefined;
-        } else {
-          vm.commentEdited = comment;
-          vm.editText = comment.action.text;
-        }
-      }
-      function updateComment(comment, editText){
-        if(!vm.editCommentSaving && editText && editText !== comment.action.text){
-          vm.editCommentSaving = true;
-          EventSrv.editComment(comment, editText).then(function(commentData){
-            EventUtils.updateComment(scope.userData, commentData);
-            vm.editCommentSaving = false;
-            vm.commentEdited = undefined;
-            vm.editText = undefined;
-            $analytics.eventTrack('itemCommented', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
+        } else if(vm.memo && vm.memo.action && vm.memoText && vm.memo.action.text !== vm.memoText && !vm.memoSaving){ // update
+          console.log('update comment');
+          vm.memoSaving = true;
+          EventSrv.editComment(vm.memo, vm.memoText).then(function(memoData){
+            EventUtils.updateComment(scope.userData, memoData);
+            vm.comments = EventUtils.getComments(scope.userData, vm.elt);
+            vm.memo = vm.comments.length > 0 ? vm.comments[0] : undefined;
+            vm.memoText = vm.memo ? vm.memo.action.text : '';
+            vm.memoSaving = false;
+            $analytics.eventTrack('itemCommented', {eventId: vm.elt.eventId, itemType: vm.elt.className, itemId: vm.elt.uuid, itemName: vm.elt.name});
+            ToastPlugin.show('✓ Notes personnelles enregistrées !');
           }, function(){
-            vm.editCommentSaving = false;
+            vm.memoSaving = false;
           });
-        }
-      }
-      function deleteComment(comment){
-        if(!vm.editCommentSaving){
-          vm.editCommentSaving = true;
-          EventSrv.deleteComment(comment).then(function(commentData){
-            EventUtils.removeComment(scope.userData, commentData);
-            vm.editCommentSaving = false;
-            vm.commentEdited = undefined;
-            vm.editText = undefined;
-            $analytics.eventTrack('itemUncommented', {eventId: elt.eventId, itemType: elt.className, itemId: elt.uuid, itemName: elt.name});
+        } else if(vm.memo && vm.memo.action && !vm.memoText && !vm.memoSaving){ // delete
+          console.log('delete comment');
+          vm.memoSaving = true;
+          EventSrv.deleteComment(vm.memo).then(function(memoData){
+            EventUtils.removeComment(scope.userData, memoData);
+            vm.comments = EventUtils.getComments(scope.userData, vm.elt);
+            vm.memo = vm.comments.length > 0 ? vm.comments[0] : undefined;
+            vm.memoText = vm.memo ? vm.memo.action.text : '';
+            vm.memoSaving = false;
+            $analytics.eventTrack('itemUncommented', {eventId: vm.elt.eventId, itemType: vm.elt.className, itemId: vm.elt.uuid, itemName: vm.elt.name});
+            ToastPlugin.show('✓ Notes personnelles enregistrées !');
           }, function(){
-            vm.editCommentSaving = false;
+            vm.memoSaving = false;
           });
         }
       }
