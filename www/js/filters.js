@@ -1,23 +1,24 @@
 (function(){
   'use strict';
   angular.module('app')
-    .filter('address', address)
-    .filter('commentDate', commentDate)
-    .filter('customDate', customDate)
+    .filter('address', filterAddress)
+    .filter('commentDate', filterCommentDate)
+    .filter('customDate', filterCustomDate)
+    .filter('datePeriod', filterDatePeriod)
 
-    .filter('inSlicesOf', inSlicesOf)
-    .filter('date', date)
-    .filter('datetime', datetime)
-    .filter('time', time)
-    .filter('humanTime', humanTime)
-    .filter('duration', duration)
-    .filter('humanDuration', humanDuration)
-    .filter('mynumber', mynumber)
-    .filter('rating', rating);
+    .filter('inSlicesOf', filterInSlicesOf)
+    .filter('date', filterDate)
+    .filter('datetime', filterDatetime)
+    .filter('time', filterTime)
+    .filter('humanTime', filterHumanTime)
+    .filter('duration', filterDuration)
+    .filter('humanDuration', filterHumanDuration)
+    .filter('mynumber', filterMyNumber)
+    .filter('rating', filterRating);
 
   // project filters
 
-  function address(){
+  function filterAddress(){
     return function(address){
       if(address){
          return (address.name ? address.name+', ' : '') +
@@ -29,14 +30,14 @@
     };
   }
 
-  function commentDate(Utils, moment){
+  function filterCommentDate(Utils, moment){
     return function(date, format){
       var jsDate = Utils.toDate(date);
       return jsDate ? moment(jsDate).format(format ? format : '[le] D MMM YYYY à HH:mm') : '';
     };
   }
 
-  function customDate(Utils, moment){
+  function filterCustomDate(Utils, moment){
     return function(date){
       var jsDate = Utils.toDate(date);
       if(jsDate){
@@ -51,9 +52,22 @@
     };
   }
 
+  function filterDatePeriod(Utils, moment){
+    return function(startDate, endDate, format){
+      var jsStartDate = Utils.toDate(startDate);
+      if(endDate){
+        var jsEndDate = Utils.toDate(endDate);
+        var prefix = moment(jsStartDate).format('DD') !== moment(jsEndDate).format('DD') ? moment(jsStartDate).format('D')+'-' : '';
+        return jsEndDate ? prefix+moment(jsEndDate).format(format ? format : 'll') : '';
+      } else {
+        return jsStartDate ? moment(jsStartDate).format('ll') : '';
+      }
+    };
+  }
+
   // common filters
 
-  function inSlicesOf($rootScope){
+  function filterInSlicesOf($rootScope){
     return function(items, count){
       if(!angular.isArray(items) && !angular.isString(items)) return items;
       if(!count){ count = 3; }
@@ -75,35 +89,35 @@
     };
   }
 
-  function date(Utils, moment){
+  function filterDate(Utils, moment){
     return function(date, format){
       var jsDate = Utils.toDate(date);
       return jsDate ? moment(jsDate).format(format ? format : 'll') : '';
     };
   }
 
-  function datetime(Utils, moment){
+  function filterDatetime(Utils, moment){
     return function(date, format){
       var jsDate = Utils.toDate(date);
       return jsDate ? moment(jsDate).format(format ? format : 'D MMM YYYY, HH:mm:ss') : '';
     };
   }
 
-  function time(Utils, moment){
+  function filterTime(Utils, moment){
     return function(date, format){
       var jsDate = Utils.toDate(date);
       return jsDate ? moment(jsDate).format(format ? format : 'LT') : '';
     };
   }
 
-  function humanTime(Utils, moment){
+  function filterHumanTime(Utils, moment){
     return function(date, suffix){
       var jsDate = Utils.toDate(date);
       return jsDate ? moment(jsDate).fromNow(suffix === true) : date;
     };
   }
 
-  function duration($log, moment){
+  function filterDuration($log, moment){
     return function(seconds, humanize){
       if(seconds || seconds === 0){
         if(humanize){
@@ -119,21 +133,21 @@
     };
   }
 
-  function humanDuration(moment){
+  function filterHumanDuration(moment){
     return function(start, end, humanize){
       var millis = end - start;
       return moment.duration(millis/1000, 'seconds').humanize();
     };
   }
 
-  function mynumber($filter){
+  function filterMyNumber($filter){
     return function(number, round){
       var mul = Math.pow(10, round ? round : 0);
       return $filter('number')(Math.round(number*mul)/mul);
     };
   }
 
-  function rating($filter){
+  function filterRating($filter){
     return function(rating, max, withText){
       var stars = rating ? new Array(Math.floor(rating)+1).join('★') : '';
       var maxStars = max ? new Array(Math.floor(max)-Math.floor(rating)+1).join('☆') : '';

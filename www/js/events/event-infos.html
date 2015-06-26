@@ -32,7 +32,7 @@
         </div>
         <div class="col" ng-if="vm.event.start">
           <i class="icon ion-ios-calendar-outline"></i>
-          <span>{{vm.event.start | date:'D MMM'}}</span>
+          <span>{{vm.event.start | datePeriod:vm.event.end:'D MMM'}}</span>
         </div>
         <div class="col" ng-if="vm.event.price">
           <a href="{{vm.event.priceUrl}}">
