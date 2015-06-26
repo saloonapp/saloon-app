@@ -3,8 +3,8 @@
   angular.module('app')
     .controller('LoadingCtrl', LoadingCtrl);
 
-  LoadingCtrl.$inject = ['$scope', '$state', '$q', '$timeout', '$ionicHistory', '$analytics', 'UserSrv', 'EventSrv'];
-  function LoadingCtrl($scope, $state, $q, $timeout, $ionicHistory, $analytics, UserSrv, EventSrv){
+  LoadingCtrl.$inject = ['$scope', '$state', '$q', '$timeout', '$ionicHistory', '$analytics', 'UserSrv', 'EventSrv', 'EventUtils'];
+  function LoadingCtrl($scope, $state, $q, $timeout, $ionicHistory, $analytics, UserSrv, EventSrv, EventUtils){
     var vm = {};
     $scope.vm = vm;
 
@@ -20,6 +20,7 @@
       $timeout(function(){
         $q.all([UserSrv.getUser(), EventSrv.getAll()]).then(function(results){
           var user = results[0];
+          var events = results[1];
           var props = {};
           if(user && user.uuid){ props.userId = user.uuid; }
           if(user && user.device && user.device.uuid){ props.deviceId = user.device.uuid; }
@@ -29,7 +30,12 @@
             disableBack: true,
             historyRoot: true
           });
-          $state.go('app.events');
+          var currentEvents = _.filter(events, function(event){ return EventUtils.isEventNow(event); });
+          if(currentEvents.length === 1){
+            $state.go('app.event.infos', {eventId: currentEvents[0].uuid});
+          } else {
+            $state.go('app.events');
+          }
         }, function(err){
           vm.error = err;
         });

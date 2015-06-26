@@ -3,7 +3,7 @@
   angular.module('app')
     .controller('EventsCtrl', EventsCtrl);
 
-  function EventsCtrl($scope, $window, $ionicPopover, $ionicScrollDelegate, EventSrv, Config, events){
+  function EventsCtrl($scope, $window, $ionicPopover, $ionicScrollDelegate, EventSrv, EventUtils, Config, events){
     var nearPeriod = 10*24*60*60*1000;
     var vm = {};
     $scope.vm = vm;
@@ -41,20 +41,12 @@
       });
     }
     function assignEvents(events){
-      var eventsPartition = _.partition(events, function(event){ return isNow(event); });
+      var eventsPartition = _.partition(events, function(event){ return EventUtils.isEventNow(event); });
       vm.runningEvents = eventsPartition[0];
       vm.events = eventsPartition[1];
     }
     function isNear(elt){
       return elt && elt.end+nearPeriod > Date.now();
-    }
-    function isNow(elt){
-      if(elt){
-        var isToday = moment(elt.start).format('DD/MM/YYYY') === moment().format('DD/MM/YYYY') || moment(elt.end).format('DD/MM/YYYY') === moment().format('DD/MM/YYYY');
-        var isRunning = elt.start < Date.now() && Date.now() < elt.end
-        return isRunning || isToday;
-      }
-      return false;
     }
     function togglePastEvents(){
       vm.showPastEvents = !vm.showPastEvents;

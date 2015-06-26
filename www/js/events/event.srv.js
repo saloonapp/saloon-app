@@ -272,6 +272,7 @@
   EventUtils.$inject = ['moment', '_'];
   function EventUtils(moment, _){
     var service = {
+      isEventNow: isEventNow,
       getSessionDays: getSessionDays,
       getSessionsForDay: getSessionsForDay,
       isFavorite: isFavorite,
@@ -297,6 +298,15 @@
       getFavoriteSessions: getFavoriteSessions
     };
     return service;
+
+    function isEventNow(event){
+      if(event){
+        var isToday = moment(event.start).format('DD/MM/YYYY') === moment().format('DD/MM/YYYY') || moment(event.end).format('DD/MM/YYYY') === moment().format('DD/MM/YYYY');
+        var isRunning = event.start < Date.now() && Date.now() < event.end
+        return isRunning || isToday;
+      }
+      return false;
+    }
 
     function getSessionDays(sessions){
       var days = {};

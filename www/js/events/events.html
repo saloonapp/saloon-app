@@ -5,7 +5,7 @@
   <ion-content>
     <ion-refresher pulling-text="Mettre à jour la liste..." on-refresh="vm.doRefresh()"></ion-refresher>
 
-    <div class="list list-inset" ng-show="vm.runningEvents.length > 0">
+    <div class="list card" ng-show="vm.runningEvents.length > 0">
       <div class="item item-avatar event-item" ng-repeat="event in vm.runningEvents | orderBy:'name'" ui-sref="app.event.infos({eventId: event.uuid})">
         <img ng-src="{{event.logoUrl}}" ng-if="event.logoUrl">
         <span class="label pull-right" ng-class="vm.tagColor(event.tags[0])" ng-show="event.tags.length > 0">{{event.tags[0]}}</span>
