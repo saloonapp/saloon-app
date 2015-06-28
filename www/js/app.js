@@ -99,9 +99,20 @@
     }]);
   }
 
-  function runBlock(KeyboardPlugin){
+  function runBlock($rootScope, $state, StorageUtils, KeyboardPlugin){
     //hide "done, back, next" on iOS
     KeyboardPlugin.hideKeyboardAccessoryBar();
     KeyboardPlugin.disableScroll(true);
+
+    var statesToSave = ['app.events', 'app.event.infos', 'app.event.program', 'app.event.schedule'];
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+      var lastState = {
+        name: toState.name,
+        params: toParams
+      };
+      if(statesToSave.indexOf(lastState.name) > -1){
+        StorageUtils.set('last-state', lastState);
+      }
+    });
   }
 })();

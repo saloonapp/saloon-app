@@ -3,8 +3,8 @@
   angular.module('app')
     .controller('LoadingCtrl', LoadingCtrl);
 
-  LoadingCtrl.$inject = ['$scope', '$state', '$q', '$timeout', '$ionicHistory', '$analytics', 'UserSrv', 'EventSrv', 'EventUtils'];
-  function LoadingCtrl($scope, $state, $q, $timeout, $ionicHistory, $analytics, UserSrv, EventSrv, EventUtils){
+  LoadingCtrl.$inject = ['$scope', '$state', '$q', '$timeout', '$ionicHistory', '$analytics', 'UserSrv', 'EventSrv', 'EventUtils', 'StorageUtils', '_'];
+  function LoadingCtrl($scope, $state, $q, $timeout, $ionicHistory, $analytics, UserSrv, EventSrv, EventUtils, StorageUtils, _){
     var vm = {};
     $scope.vm = vm;
 
@@ -30,9 +30,19 @@
             disableBack: true,
             historyRoot: true
           });
+
           var currentEvents = _.filter(events, function(event){ return EventUtils.isEventNow(event); });
-          if(currentEvents.length === 1){
-            $state.go('app.event.infos', {eventId: currentEvents[0].uuid});
+          if(currentEvents.length > 0){
+            StorageUtils.get('last-state').then(function(lastState){
+              var lastEvent = lastState && lastState.params ? _.find(currentEvents, {uuid: lastState.params.eventId}) : undefined;
+              if(lastEvent){
+                $state.go(lastState.name, lastState.params);
+              } else if(currentEvents.length === 1){
+                $state.go('app.event.infos', {eventId: currentEvents[0].uuid});
+              } else {
+                $state.go('app.events');
+              }
+            });
           } else {
             $state.go('app.events');
           }

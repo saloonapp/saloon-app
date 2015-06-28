@@ -29,9 +29,7 @@
       vm.saveMemo = saveMemo;
 
       function saveMemo(){
-        console.log('save memo');
         if(!vm.memo && vm.memoText && !vm.memoSaving){ // create
-          console.log('create comment');
           vm.memoSaving = true;
           EventSrv.createComment(vm.elt, vm.memoText).then(function(memoData){
             EventUtils.addComment(scope.userData, memoData);
@@ -45,7 +43,6 @@
             vm.memoSaving = false;
           });
         } else if(vm.memo && vm.memo.action && vm.memoText && vm.memo.action.text !== vm.memoText && !vm.memoSaving){ // update
-          console.log('update comment');
           vm.memoSaving = true;
           EventSrv.editComment(vm.memo, vm.memoText).then(function(memoData){
             EventUtils.updateComment(scope.userData, memoData);
@@ -59,7 +56,6 @@
             vm.memoSaving = false;
           });
         } else if(vm.memo && vm.memo.action && !vm.memoText && !vm.memoSaving){ // delete
-          console.log('delete comment');
           vm.memoSaving = true;
           EventSrv.deleteComment(vm.memo).then(function(memoData){
             EventUtils.removeComment(scope.userData, memoData);
