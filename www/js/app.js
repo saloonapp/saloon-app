@@ -99,7 +99,7 @@
     }]);
   }
 
-  function runBlock($rootScope, $state, StorageUtils, KeyboardPlugin){
+  function runBlock($rootScope, $state, LoadingSrv, StorageUtils, KeyboardPlugin, LocalNotificationPlugin){
     //hide "done, back, next" on iOS
     KeyboardPlugin.hideKeyboardAccessoryBar();
     KeyboardPlugin.disableScroll(true);
@@ -113,6 +113,21 @@
       if(statesToSave.indexOf(lastState.name) > -1){
         StorageUtils.set('last-state', lastState);
       }
+    });
+
+    LocalNotificationPlugin.onClick(function(notification){
+      LoadingSrv.onLoaded().then(function(){
+        if(notification && notification.data){
+          try {
+            var data = JSON.parse(notification.data);
+            if(data && data.go){
+              $state.go(data.go.name, data.go.params);
+            }
+          } catch(e){
+            console.error('Can\'t parse notification.data', notification.data);
+          }
+        }
+      });
     });
   }
 })();

@@ -5,8 +5,8 @@
     .factory('EventLastRefresh', EventLastRefresh)
     .factory('EventUtils', EventUtils);
 
-  EventSrv.$inject = ['$q', '$http', 'UserSrv', 'UserActionSync', 'EventUtils', 'DataUtils', 'StorageUtils', 'Config', '_'];
-  function EventSrv($q, $http, UserSrv, UserActionSync, EventUtils, DataUtils, StorageUtils, Config, _){
+  EventSrv.$inject = ['$q', '$http', 'UserSrv', 'UserActionSync', 'EventUtils', 'DataUtils', 'StorageUtils', 'Config', 'LocalNotificationPlugin', '_'];
+  function EventSrv($q, $http, UserSrv, UserActionSync, EventUtils, DataUtils, StorageUtils, Config, LocalNotificationPlugin, _){
     var storageKey = 'events';
     function eventKey(eventId){ return storageKey+'-'+eventId; }
     function userDataKey(eventId){ return storageKey+'-'+eventId+'-userData'; }
@@ -59,6 +59,20 @@
           EventUtils.setFavorite(userData, tmpAction);
           return StorageUtils.set(key, userData).then(function(){
             UserActionSync.syncUserAction(key);
+            if(elt.start && elt.start > Date.now()){
+              LocalNotificationPlugin.schedule({
+                id: elt.uuid,
+                title: 'Dans 10min, '+elt.place,
+                text: (elt.format ? '['+elt.format+'] ' : '')+elt.name,
+                at: new Date(elt.start - (10*60*1000)),
+                data: {
+                  go: {
+                    name: 'app.event.schedule',
+                    params: {eventId: elt.eventId}
+                  }
+                }
+              });
+            }
             return tmpAction;
           });
         });
@@ -73,6 +87,7 @@
           EventUtils.setUnfavorite(userData, tmpAction);
           return StorageUtils.set(key, userData).then(function(){
             UserActionSync.syncUserAction(key);
+            LocalNotificationPlugin.cancel(elt.uuid);
             return tmpAction;
           });
         });

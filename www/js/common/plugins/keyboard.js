@@ -34,7 +34,7 @@
    *                        *
    **************************/
   ionic.Platform.ready(function(){
-    if(!ionic.Platform.isWebView()){
+    if(!(ionic.Platform.isAndroid() || ionic.Platform.isIOS() || ionic.Platform.isIPad())){
       if(!window.cordova){window.cordova = {};}
       if(!window.cordova.plugins){window.cordova.plugins = {};}
       if(!window.cordova.plugins.Keyboard){

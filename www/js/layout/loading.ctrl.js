@@ -3,8 +3,8 @@
   angular.module('app')
     .controller('LoadingCtrl', LoadingCtrl);
 
-  LoadingCtrl.$inject = ['$scope', '$state', '$q', '$timeout', '$ionicHistory', '$analytics', 'UserSrv', 'EventSrv', 'EventUtils', 'StorageUtils', '_'];
-  function LoadingCtrl($scope, $state, $q, $timeout, $ionicHistory, $analytics, UserSrv, EventSrv, EventUtils, StorageUtils, _){
+  LoadingCtrl.$inject = ['$scope', '$state', '$q', '$timeout', '$ionicHistory', '$analytics', 'UserSrv', 'EventSrv', 'LoadingSrv', 'EventUtils', 'StorageUtils', '_'];
+  function LoadingCtrl($scope, $state, $q, $timeout, $ionicHistory, $analytics, UserSrv, EventSrv, LoadingSrv, EventUtils, StorageUtils, _){
     var vm = {};
     $scope.vm = vm;
 
@@ -37,14 +37,18 @@
               var lastEvent = lastState && lastState.params ? _.find(currentEvents, {uuid: lastState.params.eventId}) : undefined;
               if(lastEvent){
                 $state.go(lastState.name, lastState.params);
+                LoadingSrv.loaded();
               } else if(currentEvents.length === 1){
                 $state.go('app.event.infos', {eventId: currentEvents[0].uuid});
+                LoadingSrv.loaded();
               } else {
                 $state.go('app.events');
+                LoadingSrv.loaded();
               }
             });
           } else {
             $state.go('app.events');
+            LoadingSrv.loaded();
           }
         }, function(err){
           vm.error = err;

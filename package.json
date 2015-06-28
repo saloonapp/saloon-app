@@ -20,7 +20,8 @@
     "com.ionic.keyboard",
     "org.apache.cordova.dialogs",
     "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin",
-    "org.apache.cordova.inappbrowser"
+    "org.apache.cordova.inappbrowser",
+    "de.appplant.cordova.plugin.local-notification"
   ],
   "cordovaPlatforms": [
     "android",
