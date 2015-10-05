@@ -1,4 +1,4 @@
-# Saloon, event explorer
+# SalooN, your next event app
 
 This application (mostly) follows the [John Papa's style guide](https://github.com/johnpapa/angular-styleguide).
 

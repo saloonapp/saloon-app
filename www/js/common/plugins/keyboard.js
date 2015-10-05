@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   angular.module('app')
-    .factory('KeyboardPlugin', KeyboardPlugin)
+    .factory('KeyboardPlugin', KeyboardPlugin);
 
   // for Keyboard plugin : https://github.com/driftyco/ionic-plugin-keyboard
   function KeyboardPlugin($window, PluginUtils){
@@ -14,7 +14,7 @@
 
     return service;
 
-    function  hideKeyboardAccessoryBar(){
+    function hideKeyboardAccessoryBar(){
       return PluginUtils.onReady(pluginName, pluginTest).then(function(){
         $window.cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       });

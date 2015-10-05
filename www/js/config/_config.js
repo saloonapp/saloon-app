@@ -22,7 +22,7 @@ var Config = (function(){
   var env = dev;
 
   var cfg = {
-    appVersion: '1.0.3~',
+    appVersion: '1.0.4~',
     debug: env.debug, // to toggle features between dev & prod
     verbose: env.verbose, // should log in console more infos
     track: env.track, // should send tracking events & crashs to the server

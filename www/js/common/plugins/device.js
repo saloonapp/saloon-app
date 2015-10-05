@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   angular.module('app')
-    .factory('DevicePlugin', DevicePlugin)
+    .factory('DevicePlugin', DevicePlugin);
 
   // for Device plugin : org.apache.cordova.device (https://github.com/apache/cordova-plugin-device);
   function DevicePlugin($window, PluginUtils){
