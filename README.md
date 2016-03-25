@@ -1,8 +1,22 @@
-# SalooN, your next event app
+![img](doc/logo.png)
+
+# Your next event app
+
+SalooN est une application open-source qui a pour but d'aider les participants à une conférence à planifier et suivre leur programme.
+
+L'application est téléchargeable sur le [Play Store](https://play.google.com/store/apps/details?id=co.saloonapp.eventexplorer) et sur l'[App Store](https://itunes.apple.com/fr/app/saloon-events/id999897097).
+
+Pour toute demande de fonctionnalité ou signalement de bug, les issues et pull-request sont à votre disposition :)
+
+Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [nous contacter](http://saloonapp.herokuapp.com/#contact). Nous ferons notre possible pour l'ajouter en temps et en heures.
+
+![img](doc/screenshots.png)
+
+## Technical
 
 This application (mostly) follows the [John Papa's style guide](https://github.com/johnpapa/angular-styleguide).
 
-## Getting started
+### Getting started
 
 - install nodejs, npm, gulp, bower, cordova, ionic & sass (if not already done)
 - clone this repo and go to folder
@@ -17,20 +31,20 @@ To run the app on your android device :
 - `ionic resources` : generate icon & splash-screen for project platforms
 - `ionic run android` : run your app !
 
-## TODO
+### TODO
 
 - enregistrer le pushId
 - improve ng-repeat performance with "track by"
 - mieux gérer le cache (chargement, refresh, LocalStorage vs SQLite...)
 
-## Infos
+### Infos
 
-### Android debug
+#### Android debug
 
 - android remote debug : https://developer.chrome.com/devtools/docs/remote-debugging
 - activate developer mode on android
 
-### Specific urls
+#### Specific urls
 
 Use these custom urls to open other apps using inappbrowser (org.apache.cordova.inappbrowser)
 
@@ -42,7 +56,7 @@ Use these custom urls to open other apps using inappbrowser (org.apache.cordova.
 
 see http://stackoverflow.com/questions/26271313/tel-sms-and-mailto-no-longer-working-in-android-after-upgrading-to-cordo
 
-### Other links
+#### Other links
 
 - Push
     - https://github.com/hollyschinsky/PushNotificationSample
