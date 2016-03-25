@@ -33,7 +33,7 @@
 
     function fetchUser(){
       return DevicePlugin.getDevice().then(function(device){
-        return $http.get(Config.backendUrl+'/users/find?deviceId='+device.uuid).then(null, function(err){
+        return $http.get(Config.backendUrl+'/users/find?deviceUuid='+device.uuid).then(null, function(err){
           return $http.post(Config.backendUrl+'/users', device);
         });
       }).then(function(res){
