@@ -16,7 +16,8 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 
 - install nodejs, cordova & ionic@beta (if not already done)
 - clone this repo and go to folder
-- run `npm install`
+- `npm install`
+- `ionic serve`
 
 To run the app on your android device :
 
