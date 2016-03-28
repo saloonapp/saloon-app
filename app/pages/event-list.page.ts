@@ -5,8 +5,9 @@ import {EventItem} from "../models/EventItem";
 import {Storage} from "../common/storage.service";
 import {EventService} from "../common/event.service";
 import {EventItemComponent} from "../components/event-item.component";
-import {EventPage} from "./event.page";
 import {DatePipe} from "../common/pipes/datetime.pipe";
+import {UiUtils} from "../common/ui/utils";
+import {EventPage} from "./event.page";
 
 @Page({
     template: `
@@ -42,10 +43,16 @@ import {DatePipe} from "../common/pipes/datetime.pipe";
 })
 export class EventListPage implements OnInit {
     events: EventItem[];
-    constructor(private _storage: Storage, private _eventService: EventService, private _nav: NavController) {}
+    constructor(private _storage: Storage,
+                private _eventService: EventService,
+                private _nav: NavController,
+                private _uiUtils: UiUtils) {}
 
     ngOnInit() {
-        this._eventService.getEvents().then(events => this.events = events);
+        this._eventService.getEvents().then(
+            events => this.events = events,
+            error => this._uiUtils.alert(this._nav, 'Fail to update :(')
+        );
     }
 
     doRefresh(refresher) {
@@ -53,13 +60,7 @@ export class EventListPage implements OnInit {
             this.events = events;
             refresher.complete();
         }, error => {
-            console.log('error', error);
-            let alert = Alert.create({
-                title: 'Fail to update :(',
-                subTitle: 'Your friend, Obi wan Kenobi, just accepted your friend request!',
-                buttons: ['Ok']
-            });
-            this._nav.present(alert);
+            this._uiUtils.alert(this._nav, 'Fail to update :(');
             refresher.complete();
         });
     }

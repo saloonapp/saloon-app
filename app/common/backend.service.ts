@@ -26,7 +26,7 @@ export class Backend {
     getEvent(uuid: string): Promise<EventFull> {
         return new Promise((resolve, reject) => {
             this._http.get(this._backendUrl+'/events/'+uuid+'/full')
-                .map(res => <EventFull> res.json())
+                .map(res => this.formatEventFull(res.json()))
                 .do(data => console.log('Backend.getEvent('+uuid+')', data))
                 .catch(this.handleError)
                 .subscribe(
@@ -39,5 +39,13 @@ export class Backend {
     private handleError(error: Response) {
         console.error('Backend error', error);
         return Observable.throw(error.json().error || 'Server error');
+    }
+
+    private formatEventFull(event: any): EventFull {
+        /*event.sessions = event.sessions.map(session => {
+            session.speakers = session.speakers.map(speaker => speaker.uuid);
+            return session;
+        });*/
+        return <EventFull> event;
     }
 }

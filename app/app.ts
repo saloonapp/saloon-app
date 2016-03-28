@@ -11,11 +11,12 @@ import {Storage} from "./common/storage.service";
 import {Backend} from "./common/backend.service";
 import {EventService} from "./common/event.service";
 import {TfidfService} from "./common/tfidf.service";
+import {UiUtils} from "./common/ui/utils";
 import {EventListPage} from "./pages/event-list.page";
 
 @App({
     template: '<ion-nav [root]="rootPage"></ion-nav>',
-    providers: [PluginUtils, SQLitePlugin, SQLiteStorage, StorageUtils, Storage, Backend, EventService, TfidfService],
+    providers: [PluginUtils, SQLitePlugin, SQLiteStorage, StorageUtils, Storage, Backend, EventService, TfidfService, UiUtils],
     config: {} // http://ionicframework.com/docs/v2/api/config/Config/
 })
 export class MyApp {
