@@ -29,7 +29,6 @@ To run the app on your android device :
 #### Ionic1 features not in Ionic2
 
 - $ionicLoading
--
 
 #### Angular1 features not in Angular2
 

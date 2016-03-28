@@ -22,4 +22,8 @@ export class Storage {
     setEvent(event: EventFull): Promise<void> {
         return this._storage.set('event-'+event.uuid, event);
     }
+
+    clear(): Promise<void> {
+        return this._storage.clear();
+    }
 }

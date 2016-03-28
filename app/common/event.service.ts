@@ -17,7 +17,14 @@ export class EventService {
                     this._storage.setEvents(remoteEvents);
                     return remoteEvents;
                 });
-           }
+            }
+        });
+    }
+
+    fetchEvents(): Promise<EventItem[]> {
+        return this._backend.getEvents().then(remoteEvents => {
+            this._storage.setEvents(remoteEvents);
+            return remoteEvents;
         });
     }
 
