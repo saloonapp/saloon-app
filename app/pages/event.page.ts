@@ -1,6 +1,6 @@
 import {OnInit} from "angular2/core";
 import {Page} from 'ionic-angular';
-import {Event} from "../models/Event";
+import {EventFull} from "../models/EventFull";
 import {EventService} from "../common/event.service";
 import {NavParams} from "ionic-angular/index";
 
@@ -18,9 +18,10 @@ import {NavParams} from "ionic-angular/index";
 `
 })
 export class EventPage implements OnInit {
-    event: Event;
+    event: EventFull;
     constructor(private _eventService: EventService, private _navParams: NavParams) {}
+
     ngOnInit() {
-        this.event = <Event> this._navParams.get('event');
+        this.event = <EventFull> this._navParams.get('event');
     }
 }

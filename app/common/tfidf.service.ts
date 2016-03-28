@@ -8,6 +8,7 @@ export class TfidfDocument {
         this.text = text;
     }
 }
+
 export class TfidefWord {
     word: string;
     documentCount: number; // count word occurences in document
@@ -26,6 +27,7 @@ export class TfidefWord {
         this.value = termFrequency / documentFrequency;
     }
 }
+
 export class TfidfResult {
     id: string;
     text: string;
@@ -40,7 +42,7 @@ export class TfidfResult {
 @Injectable()
 export class TfidfService {
     compute(documents: TfidfDocument[]): TfidfResult[] {
-        let collectionCount = {};
+        let collectionCount: { [key: string]: number; } = {};
         let parsedDocs = documents.map(doc => {
             let words = this.toWords(doc.text);
             let count = this.countWords(words);
@@ -60,16 +62,18 @@ export class TfidfService {
             .split(' ')
             .filter(e => e.length > 0);
     }
-    private countWords(words: string[]) {
-        let count = {};
+
+    private countWords(words: string[]): { [key: string]: number; } {
+        let count: { [key: string]: number; } = {};
         words.map(word => {
             if(count[word]){ count[word]++; }
             else { count[word] = 1; }
         });
         return count;
     }
-    private addCounts(count1, count2) {
-        let res = {};
+
+    private addCounts(count1: { [key: string]: number; }, count2: { [key: string]: number; }): { [key: string]: number; } {
+        let res: { [key: string]: number; } = {};
         for(let key in count1){
             res[key] = count1[key] + (count2[key] || 0);
         }
@@ -80,7 +84,8 @@ export class TfidfService {
         }
         return res;
     }
-    private computeTfIdf(documentCount, collectionCount): TfidefWord[] {
+
+    private computeTfIdf(documentCount: { [key: string]: number; }, collectionCount: { [key: string]: number; }): TfidefWord[] {
         let res = [];
         let documentTotal = this.total(documentCount);
         let collectionTotal = this.total(collectionCount);
@@ -89,7 +94,8 @@ export class TfidfService {
         }
         return res.sort((e1, e2) => e2.value - e1.value);
     }
-    private total(count) {
+
+    private total(count: { [key: string]: number; }) {
         let res = 0;
         for(let key in count){
             res += count[key];

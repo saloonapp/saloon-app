@@ -5,7 +5,7 @@ import {IStorage} from "./IStorage";
 @Injectable()
 export class SQLiteStorage implements IStorage {
     private tableName: string = 'KeyValue';
-    private initialized: Promise<void> = this.init();
+    private initialized: Promise<any> = this.init();
     constructor(private _SQLitePlugin: SQLitePlugin) {}
 
     getItem(key: string): Promise<string> {
@@ -15,17 +15,21 @@ export class SQLiteStorage implements IStorage {
             }
         });
     }
+
     setItem(key: string, value: string): Promise<void> {
         return this.query('INSERT OR REPLACE INTO '+this.tableName+'(key, value) VALUES (?, ?)', [key, value]).then(data => {});
     }
+
     removeItem(key: string): Promise<void> {
         return this.query('DELETE FROM '+this.tableName+' WHERE key = ?', [key]).then(data => {});
     }
+
     keys(): Promise<string[]> {
         return this.query('SELECT key FROM '+this.tableName).then(data => {
             return data.map(e => e.key);
         });
     }
+
     clear(): Promise<void> {
         return this.query('DELETE FROM '+this.tableName).then(data => {});
     }
@@ -35,7 +39,8 @@ export class SQLiteStorage implements IStorage {
             return this._SQLitePlugin.query(db, query, args);
         });
     }
-    private init(): Promise<void> {
+
+    private init(): Promise<any> {
         return this._SQLitePlugin.open().then(db => {
             return this._SQLitePlugin.query(db, 'CREATE TABLE IF NOT EXISTS '+this.tableName+' (key text primary key, value text)').then(() => {
                 return db;

@@ -36,7 +36,7 @@ export class StorageUtils {
                     delete this.promiseStorageCache[key];
                     return this.deepCopy(this.storageCache[key]);
                 }, error => {
-                    console.error('Unable to StorageUtils.get('+key+') !!!', error);
+                    console.error('error in StorageUtils.get('+key+')', error);
                     delete this.promiseStorageCache[key];
                 });
                 return this.promiseStorageCache[key];

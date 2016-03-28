@@ -1,11 +1,13 @@
 import {Injectable} from "angular2/core";
 import {EventItem} from "../models/EventItem";
+import {EventFull} from "../models/EventFull";
 import {Storage} from "./storage.service";
 import {Backend} from "./backend.service";
 
 @Injectable()
 export class EventService {
     constructor(private _storage: Storage, private _backend: Backend) {}
+
     getEvents(): Promise<EventItem[]> {
         return this._storage.getEvents().then(events => {
             if(events.length > 0){
@@ -18,7 +20,8 @@ export class EventService {
            }
         });
     }
-    getEvent(uuid: string): Promise<Event> {
+
+    getEvent(uuid: string): Promise<EventFull> {
         return this._storage.getEvent(uuid).then(event => {
             if(event){
                 return event;

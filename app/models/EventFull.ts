@@ -3,7 +3,7 @@ import {Attendee} from "./Attendee";
 import {Session} from "./Session";
 import {Exponent} from "./Exponent";
 
-export class Event {
+export class EventFull {
     uuid: string;
     refreshUrl: string;
     name: string;

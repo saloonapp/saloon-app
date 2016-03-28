@@ -34,9 +34,11 @@ import {EventPage} from "./event.page";
 export class EventListPage implements OnInit {
     events: EventItem[];
     constructor(private _eventService: EventService, private _nav: NavController) {}
+
     ngOnInit() {
         this._eventService.getEvents().then(events => this.events = events);
     }
+
     navigateTo(event: EventItem) {
         this._eventService.getEvent(event.uuid).then(eventFull => {
             this._nav.push(EventPage, {
