@@ -3,7 +3,8 @@ import {Page} from 'ionic-angular';
 import {EventItem} from "../models/EventItem";
 import {EventService} from "../common/event.service";
 import {EventItemComponent} from "../components/event-item.component";
-
+import {NavController} from "ionic-angular/index";
+import {EventPage} from "./event.page";
 
 @Page({
     template: `
@@ -32,11 +33,15 @@ import {EventItemComponent} from "../components/event-item.component";
 })
 export class EventListPage implements OnInit {
     events: EventItem[];
-    constructor(private _eventService: EventService) {}
+    constructor(private _eventService: EventService, private _nav: NavController) {}
     ngOnInit() {
         this._eventService.getEvents().then(events => this.events = events);
     }
     navigateTo(event: EventItem) {
-        alert('Select: '+event.name)
+        this._eventService.getEvent(event.uuid).then(eventFull => {
+            this._nav.push(EventPage, {
+                event: eventFull
+            });
+        });
     }
 }

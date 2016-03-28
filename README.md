@@ -23,3 +23,14 @@ To run the app on your android device :
 
 - `ionic platform add android` : add android platform to the project
 - `ionic run android` : run your app !
+
+### Notes
+
+#### Ionic1 features not in Ionic2
+
+- $ionicLoading
+-
+
+#### Angular1 features not in Angular2
+
+- angular.copy(), angular.equals()

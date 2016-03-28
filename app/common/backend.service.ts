@@ -3,6 +3,7 @@ import {Http, Response} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 import "rxjs/Rx";
 import {EventItem} from "../models/EventItem";
+import {Event} from "../models/Event";
 
 @Injectable()
 export class Backend {
@@ -13,6 +14,18 @@ export class Backend {
             this._http.get(this._backendUrl+'/events/all')
                 .map(res => <EventItem[]> res.json())
                 .do(data => console.log('Backend.getEvents', data))
+                .catch(this.handleError)
+                .subscribe(
+                    events => resolve(events),
+                    error => reject(error)
+                );
+        });
+    }
+    getEvent(uuid: string): Promise<Event> {
+        return new Promise((resolve, reject) => {
+            this._http.get(this._backendUrl+'/events/'+uuid+'/full')
+                .map(res => <Event> res.json())
+                .do(data => console.log('Backend.getEvent', data))
                 .catch(this.handleError)
                 .subscribe(
                     events => resolve(events),
