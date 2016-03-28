@@ -1,0 +1,14 @@
+.nowrap {
+  white-space: normal;
+}
+
+.lines1, .lines2, .lines3, .lines4, .lines5 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+.lines1 { -webkit-line-clamp: 1; }
+.lines2 { -webkit-line-clamp: 2; }
+.lines3 { -webkit-line-clamp: 3; }
+.lines4 { -webkit-line-clamp: 4; }
+.lines5 { -webkit-line-clamp: 5; }

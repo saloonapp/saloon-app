@@ -6,6 +6,7 @@ import {Storage} from "../common/storage.service";
 import {EventService} from "../common/event.service";
 import {EventItemComponent} from "../components/event-item.component";
 import {EventPage} from "./event.page";
+import {DatePipe} from "../common/pipes/datetime.pipe";
 
 @Page({
     template: `
@@ -36,7 +37,8 @@ import {EventPage} from "./event.page";
     </p>
 </ion-content>
 `,
-    directives: [EventItemComponent]
+    directives: [EventItemComponent],
+    pipes: [DatePipe]
 })
 export class EventListPage implements OnInit {
     events: EventItem[];

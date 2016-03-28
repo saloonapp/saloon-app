@@ -16,6 +16,11 @@ export class DateTimePipe implements PipeTransform {
     transform = DateTimePipeBuilder.build('lll');
 }
 
+@Pipe({name: 'weekDay'})
+export class WeekDayPipe implements PipeTransform {
+    transform = DateTimePipeBuilder.build('dddd');
+}
+
 class DateTimePipeBuilder {
     public static build(formatCfg: string|{ [key: string]: string; }): (string) => string {
         return function(date: string): string {

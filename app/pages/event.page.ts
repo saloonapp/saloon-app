@@ -1,12 +1,12 @@
 import {OnInit} from "angular2/core";
 import {Page} from 'ionic-angular';
-import {NavParams, Alert} from "ionic-angular/index";
+import {NavController, NavParams, Alert} from "ionic-angular/index";
 import {EventItem} from "../models/EventItem";
 import {EventFull} from "../models/EventFull";
+import {Session} from "../models/Session";
 import {EventService} from "../common/event.service";
 import {TimePipe} from "../common/pipes/datetime.pipe";
-import {NavController} from "ionic-angular/index";
-
+import {SessionPage} from "./session.page";
 
 @Page({
     styles: [`
@@ -22,7 +22,7 @@ import {NavController} from "ionic-angular/index";
     <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list *ngIf="eventFull">
-        <ion-item *ngFor="#session of eventFull.sessions">
+        <ion-item *ngFor="#session of eventFull.sessions" (click)="navigateTo(session)">
             <h2>{{session.name}}</h2>
             <p>{{session.start | time}}-{{session.end | time}} {{session.place}} {{session.category}}</p>
             <p><span *ngFor="#p of session.speakers" class="label">{{p.name}} </span></p>
@@ -57,6 +57,12 @@ export class EventPage implements OnInit {
             });
             this._nav.present(alert);
             refresher.complete();
+        });
+    }
+
+    navigateTo(session: Session) {
+        this._nav.push(SessionPage, {
+            session: session
         });
     }
 }
