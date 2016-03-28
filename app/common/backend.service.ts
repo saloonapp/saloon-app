@@ -7,13 +7,14 @@ import {EventFull} from "../models/EventFull";
 
 @Injectable()
 export class Backend {
+    // TODO : use API v2
     private _backendUrl = 'https://dev-saloon.herokuapp.com/api/v1';
     constructor(private _http: Http) {}
 
     getEvents(): Promise<EventItem[]> {
         return new Promise((resolve, reject) => {
             this._http.get(this._backendUrl+'/events/all')
-                .map(res => <EventItem[]> res.json())
+                .map(res => res.json().map(this.formatEventItem))
                 .do(data => console.log('Backend.getEvents', data))
                 .catch(this.handleError)
                 .subscribe(
@@ -41,11 +42,10 @@ export class Backend {
         return Observable.throw(error.json().error || 'Server error');
     }
 
+    private formatEventItem(event: any): EventItem {
+        return <EventItem> event;
+    }
     private formatEventFull(event: any): EventFull {
-        /*event.sessions = event.sessions.map(session => {
-            session.speakers = session.speakers.map(speaker => speaker.uuid);
-            return session;
-        });*/
         return <EventFull> event;
     }
 }
