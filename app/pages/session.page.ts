@@ -2,8 +2,9 @@ import {OnInit} from "angular2/core";
 import {Page} from 'ionic-angular';
 import {NavController, NavParams} from "ionic-angular/index";
 import {Session} from "../models/Session";
-import {EventService} from "../common/event.service";
+import {Attendee} from "../models/Attendee";
 import {WeekDayPipe, TimePipe} from "../common/pipes/datetime.pipe";
+import {AttendeePage} from "./attendee.page";
 
 @Page({
     template: `
@@ -19,7 +20,7 @@ import {WeekDayPipe, TimePipe} from "../common/pipes/datetime.pipe";
     </div>
     <ion-list>
         <ion-list-header>Speakers</ion-list-header>
-        <ion-item *ngFor="#speaker of session.speakers">
+        <ion-item *ngFor="#speaker of session.speakers" (click)="navigateTo(speaker)">
             <ion-avatar item-left>
                 <img src="{{speaker.avatar}}">
             </ion-avatar>
@@ -37,5 +38,11 @@ export class SessionPage implements OnInit {
 
     ngOnInit() {
         this.session = <Session> this._navParams.get('session');
+    }
+
+    navigateTo(attendee: Attendee) {
+        this._nav.push(AttendeePage, {
+            attendee: attendee
+        });
     }
 }
