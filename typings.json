@@ -2,6 +2,8 @@
   "dependencies": {},
   "devDependencies": {},
   "ambientDependencies": {
-    "es6-shim": "github:DefinitelyTyped/DefinitelyTyped/es6-shim/es6-shim.d.ts#4de74cb527395c13ba20b438c3a7a419ad931f1c"
+    "es6-shim": "github:DefinitelyTyped/DefinitelyTyped/es6-shim/es6-shim.d.ts#4de74cb527395c13ba20b438c3a7a419ad931f1c",
+    "lodash": "registry:dt/lodash#3.10.0+20160327004937",
+    "moment": "registry:dt/moment#2.8.0+20160316155526"
   }
 }
