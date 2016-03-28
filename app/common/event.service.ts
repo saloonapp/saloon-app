@@ -40,4 +40,11 @@ export class EventService {
             }
         });
     }
+
+    fetchEvent(uuid: string): Promise<EventFull> {
+        return this._backend.getEvent(uuid).then(remoteEvent => {
+            this._storage.setEvent(remoteEvent);
+            return remoteEvent;
+        });
+    }
 }

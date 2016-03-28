@@ -50,6 +50,15 @@ export class EventListPage implements OnInit {
         this._eventService.fetchEvents().then(events => {
             this.events = events;
             refresher.complete();
+        }, error => {
+            console.log('error', error);
+            let alert = Alert.create({
+                title: 'Fail to update :(',
+                subTitle: 'Your friend, Obi wan Kenobi, just accepted your friend request!',
+                buttons: ['Ok']
+            });
+            this._nav.present(alert);
+            refresher.complete();
         });
     }
 
