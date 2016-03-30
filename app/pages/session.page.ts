@@ -1,10 +1,12 @@
 import {OnInit} from "angular2/core";
 import {Page} from 'ionic-angular';
 import {NavController, NavParams} from "ionic-angular/index";
-import {Session} from "../models/Session";
-import {Attendee} from "../models/Attendee";
+import {SessionFull} from "../models/SessionFull";
+import {SessionItem} from "../models/SessionItem";
+import {AttendeeItem} from "../models/AttendeeItem";
 import {WeekDayPipe, TimePipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
+import {EventService} from "../common/event.service";
 import {AttendeePage} from "./attendee.page";
 
 @Page({
@@ -14,14 +16,14 @@ import {AttendeePage} from "./attendee.page";
 </ion-navbar>
 <ion-content class="session-page">
     <div padding>
-        <h1>{{session.name}}</h1>
-        <p>{{session.start | weekDay | capitalize}}, {{session.start | time}}-{{session.end | time}}</p>
-        <p>{{session.place}}</p>
-        <p>{{session.description}}</p>
+        <h1>{{sessionItem.name}}</h1>
+        <p>{{sessionItem.start | weekDay | capitalize}}, {{sessionItem.start | time}}-{{sessionItem.end | time}}</p>
+        <p>{{sessionItem.place}}</p>
+        <p>{{sessionItem.description}}</p>
     </div>
-    <ion-list *ngIf="session.speakers.length > 0">
+    <ion-list *ngIf="sessionFull && sessionFull.speakers.length > 0">
         <ion-list-header>Speakers</ion-list-header>
-        <ion-item *ngFor="#speaker of session.speakers" (click)="navigateTo(speaker)">
+        <ion-item *ngFor="#speaker of sessionFull.speakers" (click)="goToAttendee(speaker)">
             <ion-avatar item-left>
                 <img src="{{speaker.avatar}}">
             </ion-avatar>
@@ -34,16 +36,20 @@ import {AttendeePage} from "./attendee.page";
     pipes: [WeekDayPipe, TimePipe, CapitalizePipe]
 })
 export class SessionPage implements OnInit {
-    session: Session;
-    constructor(private _nav: NavController, private _navParams: NavParams) {}
+    sessionItem: SessionItem;
+    sessionFull: SessionFull;
+    constructor(private _eventService: EventService,
+                private _nav: NavController,
+                private _navParams: NavParams) {}
 
     ngOnInit() {
-        this.session = <Session> this._navParams.get('session');
+        this.sessionItem = <SessionItem> this._navParams.get('sessionItem');
+        this.sessionFull = this._eventService.getSessionFromCurrent(this.sessionItem.uuid);
     }
 
-    navigateTo(attendee: Attendee) {
+    goToAttendee(attendeeItem: AttendeeItem) {
         this._nav.push(AttendeePage, {
-            attendee: attendee
+            attendeeItem: attendeeItem
         });
     }
 }

@@ -6,7 +6,7 @@ import {DatePipe} from "../common/pipes/datetime.pipe";
     selector: 'event-item',
     template: `
 <ion-card>
-    <img src="{{event.landingUrl}}"/>
+    <img src="{{event.landing}}"/>
     <ion-card-content>
         <ion-card-title>{{event.name}}</ion-card-title>
         <h3>{{event.start | date}}, {{event.address.city}}</h3>

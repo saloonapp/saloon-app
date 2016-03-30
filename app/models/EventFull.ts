@@ -1,29 +1,25 @@
 import {Address} from "./Address";
-import {Attendee} from "./Attendee";
-import {Session} from "./Session";
-import {Exponent} from "./Exponent";
+import {AttendeeFull} from "./AttendeeFull";
+import {SessionFull} from "./SessionFull";
+import {ExponentFull} from "./ExponentFull";
 
 export class EventFull {
-    uuid: string;
-    refreshUrl: string;
-    name: string;
-    description: string;
-    logoUrl: string;
-    landingUrl: string;
-    siteUrl: string;
-    start: number;
-    end: number;
-    address: Address;
-    price: string;
-    priceUrl: string;
-    twitterHashtag: string;
-    twitterAccount: string;
-    tags: string[];
-    published: boolean;
-    created: number;
-    updated: number;
-    className: string;
-    attendees: Attendee[];
-    sessions: Session[];
-    exponents: Exponent[];
+    constructor(public uuid: string,
+                public name: string,
+                public description: string,
+                public descriptionHTML: string,
+                public logo: string,
+                public landing: string,
+                public website: string,
+                public start: number,
+                public end: number,
+                public address: Address,
+                public price: string,
+                public priceUrl: string,
+                public twitterHashtag: string,
+                public twitterAccount: string,
+                public tags: string[],
+                public attendees: AttendeeFull[],
+                public sessions: SessionFull[],
+                public exponents: ExponentFull[]) {}
 }

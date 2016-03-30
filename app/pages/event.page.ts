@@ -3,9 +3,9 @@ import {Page} from 'ionic-angular';
 import {NavController, NavParams, Alert} from "ionic-angular/index";
 import {EventItem} from "../models/EventItem";
 import {EventFull} from "../models/EventFull";
-import {Session} from "../models/Session";
-import {EventService} from "../common/event.service";
+import {SessionFull} from "../models/SessionFull";
 import {TimePipe} from "../common/pipes/datetime.pipe";
+import {EventService} from "../common/event.service";
 import {UiUtils} from "../common/ui/utils";
 import {SessionPage} from "./session.page";
 
@@ -23,7 +23,7 @@ import {SessionPage} from "./session.page";
     <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list *ngIf="eventFull">
-        <ion-item *ngFor="#session of eventFull.sessions" (click)="navigateTo(session)">
+        <ion-item *ngFor="#session of eventFull.sessions" (click)="goToSession(session)">
             <h2>{{session.name}}</h2>
             <p>{{session.start | time}}-{{session.end | time}} {{session.place}} {{session.category}}</p>
             <p><span *ngFor="#p of session.speakers" class="label">{{p.name}} </span></p>
@@ -42,26 +42,32 @@ export class EventPage implements OnInit {
                 private _uiUtils: UiUtils) {}
 
     ngOnInit() {
-        this.eventItem = <EventItem> this._navParams.get('event');
+        this.eventItem = <EventItem> this._navParams.get('eventItem');
         this._eventService.getEvent(this.eventItem.uuid).then(
-            eventFull => this.eventFull = eventFull,
+            eventFull => {
+                this.eventFull = eventFull;
+                this._eventService.setCurrentEvent(eventFull);
+            },
             error => this._uiUtils.alert(this._nav, 'Fail to update :(')
         );
     }
 
     doRefresh(refresher) {
-        this._eventService.fetchEvent(this.eventItem.uuid).then(eventFull => {
-            this.eventFull = eventFull;
-            refresher.complete();
-        }, error => {
-            this._uiUtils.alert(this._nav, 'Fail to update :(');
-            refresher.complete();
-        });
+        this._eventService.fetchEvent(this.eventItem.uuid).then(
+            eventFull => {
+                this.eventFull = eventFull;
+                refresher.complete();
+            },
+            error => {
+                this._uiUtils.alert(this._nav, 'Fail to update :(');
+                refresher.complete();
+            }
+        );
     }
 
-    navigateTo(session: Session) {
+    goToSession(sessionFull: SessionFull) {
         this._nav.push(SessionPage, {
-            session: session
+            sessionItem: SessionFull.toItem(sessionFull)
         });
     }
 }

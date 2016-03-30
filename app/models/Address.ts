@@ -1,6 +1,6 @@
 export class Address {
-    name: string;
-    street: string;
-    zipCode: string;
-    city: string;
+    constructor(public name: string,
+                public street: string,
+                public zipCode: string,
+                public city: string) {}
 }

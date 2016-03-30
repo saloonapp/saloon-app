@@ -2,10 +2,10 @@ import {OnInit} from "angular2/core";
 import {Page} from 'ionic-angular';
 import {NavController, Alert} from "ionic-angular/index";
 import {EventItem} from "../models/EventItem";
+import {DatePipe} from "../common/pipes/datetime.pipe";
+import {EventItemComponent} from "../components/event-item.component";
 import {Storage} from "../common/storage.service";
 import {EventService} from "../common/event.service";
-import {EventItemComponent} from "../components/event-item.component";
-import {DatePipe} from "../common/pipes/datetime.pipe";
 import {UiUtils} from "../common/ui/utils";
 import {EventPage} from "./event.page";
 
@@ -21,9 +21,9 @@ import {EventPage} from "./event.page";
 </ion-navbar>
 <ion-content class="event-list-page">
     <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
-    <event-item *ngFor="#event of events" [event]="event" (click)="navigateTo(event)"></event-item>
+    <event-item *ngFor="#event of events" [event]="event" (click)="goToEvent(event)"></event-item>
     <!--<ion-list>
-        <ion-item *ngFor="#event of events" (click)="navigateTo(event)">
+        <ion-item *ngFor="#event of events" (click)="goToEvent(event)">
             <ion-thumbnail item-left>
                 <img src="{{event.logoUrl}}">
             </ion-thumbnail>
@@ -56,37 +56,28 @@ export class EventListPage implements OnInit {
     }
 
     doRefresh(refresher) {
-        this._eventService.fetchEvents().then(events => {
-            this.events = events;
-            refresher.complete();
-        }, error => {
-            this._uiUtils.alert(this._nav, 'Fail to update :(');
-            refresher.complete();
-        });
+        this._eventService.fetchEvents().then(
+            events => {
+                this.events = events;
+                refresher.complete();
+            },
+            error => {
+                this._uiUtils.alert(this._nav, 'Fail to update :(');
+                refresher.complete();
+            }
+        );
     }
 
-    navigateTo(event: EventItem) {
+    goToEvent(eventItem: EventItem) {
         this._nav.push(EventPage, {
-            event: event
+            eventItem: eventItem
         });
     }
 
     clearStorage() {
-        let alert = Alert.create({
-            title: 'Delete storage ?',
-            buttons: [
-                {
-                    text: 'No',
-                    handler: () => {}
-                },
-                {
-                    text: 'Yes',
-                    handler: () => {
-                        this._storage.clear()
-                    }
-                }
-            ]
+        this._uiUtils.confirm(this._nav, 'Delete storage ?').then(() => {
+            this._storage.clear();
+            console.log('Storage deleted !');
         });
-        this._nav.present(alert);
     }
 }

@@ -1,27 +1,22 @@
 import {Address} from "./Address";
 
 export class EventItem {
-    uuid: string;
-    refreshUrl: string;
-    name: string;
-    description: string;
-    logoUrl: string;
-    landingUrl: string;
-    siteUrl: string;
-    start: number;
-    end: number;
-    address: Address;
-    price: string;
-    priceUrl: string;
-    twitterHashtag: string;
-    twitterAccount: string;
-    tags: Array<string>;
-    published: boolean;
-    created: number;
-    updated: number;
-    className: string;
-    attendeeCount: number;
-    sessionCount: number;
-    exponentCount: number;
-    actionCount: number;
+    constructor(public uuid: string,
+                public name: string,
+                public description: string,
+                public descriptionHTML: string,
+                public logo: string,
+                public landing: string,
+                public website: string,
+                public start: number,
+                public end: number,
+                public address: Address,
+                public price: string,
+                public priceUrl: string,
+                public twitterHashtag: string,
+                public twitterAccount: string,
+                public tags: string[],
+                public attendeeCount: number,
+                public sessionCount: number,
+                public exponentCount: number) {}
 }
