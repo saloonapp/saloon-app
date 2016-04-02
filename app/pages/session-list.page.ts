@@ -23,7 +23,7 @@ import {SessionPage} from "./session.page";
 <ion-content class="session-list-page">
     <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
-    <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
+    <ion-searchbar *ngIf="eventFull" [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
     <ion-list *ngIf="filtered.length > 0">
         <ion-item *ngFor="#session of filtered" (click)="goToSession(session)">
             <h2>{{session.name}}</h2>
