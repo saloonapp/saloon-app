@@ -68,9 +68,9 @@ export class Backend {
     }
     private formatEventFull(event: any): EventFull {
         let attendeeItems = this.toMap(event.attendees.map(this.formatAttendeeItem), i => i.uuid);
-        let attendeeFulls = event.attendees.map(s => this.formatAttendeeFull(s, event.sessions, event.exponents)).sort((e1, e2) => Sort.str(e1.lastName, e2.lastName));
-        let sessionFulls = event.sessions.map(s => this.formatSessionFull(s, attendeeItems)).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), Sort.num(e1.end, e2.end), Sort.str(e1.place, e2.place), Sort.str(e1.name, e2.name)));
-        let exponentFulls = event.exponents.map(e => this.formatExponentFull(e, attendeeItems)).sort((e1, e2) => Sort.str(e1.name, e2.name));
+        let attendeeFulls = event.attendees.map(s => this.formatAttendeeFull(s, event.sessions, event.exponents)).sort((e1, e2) => Sort.str(e1.lastName.toLowerCase(), e2.lastName.toLowerCase()));
+        let sessionFulls = event.sessions.map(s => this.formatSessionFull(s, attendeeItems)).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), Sort.num(e1.end, e2.end), Sort.str(e1.place.toLowerCase(), e2.place.toLowerCase()), Sort.str(e1.name.toLowerCase(), e2.name.toLowerCase())));
+        let exponentFulls = event.exponents.map(e => this.formatExponentFull(e, attendeeItems)).sort((e1, e2) => Sort.str(e1.name.toLowerCase(), e2.name.toLowerCase()));
         let formats = this.eltsToEventElt(sessionFulls.map(s => s.format));
         let themes = this.eltsToEventElt(sessionFulls.map(s => s.theme));
         let places = this.eltsToEventElt(sessionFulls.map(s => s.place));

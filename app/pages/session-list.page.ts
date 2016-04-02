@@ -4,8 +4,9 @@ import {NavController} from "ionic-angular/index";
 import {EventFull} from "../models/EventFull";
 import {EventItem} from "../models/EventItem";
 import {SessionFull} from "../models/SessionFull";
-import {TimePipe} from "../common/pipes/datetime.pipe";
 import {EventService} from "../common/event.service";
+import {Filter} from "../common/utils/array";
+import {TimePipe} from "../common/pipes/datetime.pipe";
 import {UiUtils} from "../common/ui/utils";
 import {SessionPage} from "./session.page";
 
@@ -22,8 +23,9 @@ import {SessionPage} from "./session.page";
 <ion-content class="session-list-page">
     <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
-    <ion-list *ngIf="eventFull">
-        <ion-item *ngFor="#session of eventFull.sessions" (click)="goToSession(session)">
+    <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
+    <ion-list *ngIf="filtered.length > 0">
+        <ion-item *ngFor="#session of filtered" (click)="goToSession(session)">
             <h2>{{session.name}}</h2>
             <p>{{session.start | time}}-{{session.end | time}} {{session.place}} {{session.category}}</p>
             <p><span *ngFor="#p of session.speakers" class="label">{{p.name}} </span></p>
@@ -34,8 +36,10 @@ import {SessionPage} from "./session.page";
     pipes: [TimePipe]
 })
 export class SessionListPage implements OnInit {
+    searchQuery: string = '';
     eventItem: EventItem;
     eventFull: EventFull;
+    filtered: SessionFull[] = [];
     constructor(private _eventService: EventService,
                 private _nav: NavController,
                 private _uiUtils: UiUtils) {}
@@ -43,8 +47,8 @@ export class SessionListPage implements OnInit {
     ngOnInit() {
         this.eventItem = this._eventService.getCurrentEventItem();
         this._eventService.getCurrentEventFull().then(event => {
-            console.log('eventFull', event);
-            this.eventFull = event
+            this.eventFull = event;
+            this.filtered = this.filter(this.eventFull.sessions, this.searchQuery);
         });
     }
 
@@ -53,6 +57,7 @@ export class SessionListPage implements OnInit {
             eventFull => {
                 this.eventItem = EventFull.toItem(eventFull);
                 this.eventFull = eventFull;
+                this.filtered = this.filter(this.eventFull.sessions, this.searchQuery);
                 this._eventService.updateCurrentEvent(this.eventItem, this.eventFull);
                 refresher.complete();
             },
@@ -61,6 +66,15 @@ export class SessionListPage implements OnInit {
                 refresher.complete();
             }
         );
+    }
+
+    search() {
+        this.filtered = this.filter(this.eventFull.sessions, this.searchQuery);
+    }
+
+    filter(items: SessionFull[], q: string): SessionFull[] {
+        if(q.trim() === ''){ return items; } // don't filter if query is empty
+        return items.filter(session => Filter.deep(session, q));
     }
 
     goToSession(sessionFull: SessionFull) {

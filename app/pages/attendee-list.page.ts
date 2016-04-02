@@ -4,6 +4,7 @@ import {EventFull} from "../models/EventFull";
 import {EventItem} from "../models/EventItem";
 import {AttendeeFull} from "../models/AttendeeFull";
 import {EventService} from "../common/event.service";
+import {Filter} from "../common/utils/array";
 import {UiUtils} from "../common/ui/utils";
 import {AttendeePage} from "./attendee.page";
 
@@ -15,8 +16,9 @@ import {AttendeePage} from "./attendee.page";
 <ion-content class="attendee-list-page">
     <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
-    <ion-list *ngIf="eventFull">
-        <ion-item *ngFor="#attendee of eventFull.attendees" (click)="goToAttendee(attendee)">
+    <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
+    <ion-list *ngIf="filtered.length > 0">
+        <ion-item *ngFor="#attendee of filtered" (click)="goToAttendee(attendee)">
             <h2>{{attendee.name}}</h2>
         </ion-item>
     </ion-list>
@@ -24,15 +26,20 @@ import {AttendeePage} from "./attendee.page";
 `,
 })
 export class AttendeeListPage {
+    searchQuery: string = '';
     eventItem: EventItem;
     eventFull: EventFull;
+    filtered: AttendeeFull[] = [];
     constructor(private _eventService: EventService,
                 private _nav: NavController,
                 private _uiUtils: UiUtils) {}
 
     ngOnInit() {
         this.eventItem = this._eventService.getCurrentEventItem();
-        this._eventService.getCurrentEventFull().then(event => this.eventFull = event);
+        this._eventService.getCurrentEventFull().then(event => {
+            this.eventFull = event;
+            this.filtered = this.filter(this.eventFull.attendees, this.searchQuery);
+        });
     }
 
     doRefresh(refresher) {
@@ -40,6 +47,7 @@ export class AttendeeListPage {
             eventFull => {
                 this.eventItem = EventFull.toItem(eventFull);
                 this.eventFull = eventFull;
+                this.filtered = this.filter(this.eventFull.attendees, this.searchQuery);
                 this._eventService.updateCurrentEvent(this.eventItem, this.eventFull);
                 refresher.complete();
             },
@@ -48,6 +56,15 @@ export class AttendeeListPage {
                 refresher.complete();
             }
         );
+    }
+
+    search() {
+        this.filtered = this.filter(this.eventFull.attendees, this.searchQuery);
+    }
+
+    filter(items: AttendeeFull[], q: string): AttendeeFull[] {
+        if(q.trim() === ''){ return items; } // don't filter if query is empty
+        return items.filter(session => Filter.deep(session, q));
     }
 
     goToAttendee(attendeeFull: AttendeeFull) {
