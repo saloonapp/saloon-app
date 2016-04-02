@@ -9,7 +9,8 @@ import {Backend} from "./backend.service";
 
 @Injectable()
 export class EventService {
-    private currentEvent: EventFull;
+    private currentEventItem: EventItem;
+    private currentEventFull: Promise<EventFull>;
     constructor(private _storage: Storage, private _backend: Backend) {}
 
     getEvents(): Promise<EventItem[]> {
@@ -52,16 +53,33 @@ export class EventService {
         });
     }
 
-    setCurrentEvent(event: EventFull): void {
-        this.currentEvent = event;
+    setCurrentEvent(event: EventItem): void {
+        this.currentEventItem = event;
+        this.currentEventFull = this.getEvent(event.uuid);
     }
-    getAttendeeFromCurrent(uuid: string): AttendeeFull {
-        return this.currentEvent.attendees.find(e => e.uuid === uuid);
+    updateCurrentEvent(eventItem: EventItem, eventFull: EventFull): void {
+        this.currentEventItem = eventItem;
+        this.currentEventFull = Promise.resolve(eventFull);
     }
-    getSessionFromCurrent(uuid: string): SessionFull {
-        return this.currentEvent.sessions.find(e => e.uuid === uuid);
+    getCurrentEventItem(): EventItem {
+        return this.currentEventItem;
     }
-    getExponentFromCurrent(uuid: string): ExponentFull {
-        return this.currentEvent.exponents.find(e => e.uuid === uuid);
+    getCurrentEventFull(): Promise<EventFull> {
+        return this.currentEventFull;
+    }
+    getAttendeeFromCurrent(uuid: string): Promise<AttendeeFull> {
+        return this.currentEventFull.then(event => {
+            return event.attendees.find(e => e.uuid === uuid)
+        });
+    }
+    getSessionFromCurrent(uuid: string): Promise<SessionFull> {
+        return this.currentEventFull.then(event => {
+            return event.sessions.find(e => e.uuid === uuid)
+        });
+    }
+    getExponentFromCurrent(uuid: string): Promise<ExponentFull> {
+        return this.currentEventFull.then(event => {
+            return event.exponents.find(e => e.uuid === uuid)
+        });
     }
 }

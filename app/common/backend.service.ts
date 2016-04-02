@@ -2,8 +2,9 @@ import {Injectable} from 'angular2/core';
 import {Http, Response} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 import "rxjs/Rx";
+import * as _ from "lodash";
 import {Address} from "../models/Address";
-import {EventFull} from "../models/EventFull";
+import {EventFull, EventElt} from "../models/EventFull";
 import {EventItem} from "../models/EventItem";
 import {AttendeeFull} from "../models/AttendeeFull";
 import {AttendeeItem} from "../models/AttendeeItem";
@@ -11,6 +12,7 @@ import {SessionFull} from "../models/SessionFull";
 import {SessionItem} from "../models/SessionItem";
 import {ExponentFull} from "../models/ExponentFull";
 import {ExponentItem} from "../models/ExponentItem";
+import {Sort} from "./utils/array";
 
 @Injectable()
 export class Backend {
@@ -66,9 +68,12 @@ export class Backend {
     }
     private formatEventFull(event: any): EventFull {
         let attendeeItems = this.toMap(event.attendees.map(this.formatAttendeeItem), i => i.uuid);
-        let attendeeFulls = event.attendees.map(s => this.formatAttendeeFull(s, event.sessions, event.exponents));
-        let sessionFulls = event.sessions.map(s => this.formatSessionFull(s, attendeeItems));
-        let exponentFulls = event.exponents.map(e => this.formatExponentFull(e, attendeeItems));
+        let attendeeFulls = event.attendees.map(s => this.formatAttendeeFull(s, event.sessions, event.exponents)).sort((e1, e2) => Sort.str(e1.lastName, e2.lastName));
+        let sessionFulls = event.sessions.map(s => this.formatSessionFull(s, attendeeItems)).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), Sort.num(e1.end, e2.end), Sort.str(e1.place, e2.place), Sort.str(e1.name, e2.name)));
+        let exponentFulls = event.exponents.map(e => this.formatExponentFull(e, attendeeItems)).sort((e1, e2) => Sort.str(e1.name, e2.name));
+        let formats = this.eltsToEventElt(sessionFulls.map(s => s.format));
+        let themes = this.eltsToEventElt(sessionFulls.map(s => s.theme));
+        let places = this.eltsToEventElt(sessionFulls.map(s => s.place));
         return new EventFull(
             event.uuid,
             event.name,
@@ -85,9 +90,21 @@ export class Backend {
             event.info ? event.info.social ? event.info.social.twitter ? event.info.social.twitter.hashtag : null : null : null,
             event.info ? event.info.social ? event.info.social.twitter ? event.info.social.twitter.account : null : null : null,
             event.meta ? event.meta.categories : null,
+            formats,
+            themes,
+            places,
             attendeeFulls,
             sessionFulls,
             exponentFulls);
+    }
+    private eltsToEventElt(elts: string[]): EventElt[] {
+        return this.toMap(
+            _.uniq(elts.map(e => e.trim()))
+                .filter(e => e.length > 0)
+                .sort(Sort.str)
+                .map(e => new EventElt(e)),
+            e => e.name
+        );
     }
     private formatAttendeeItem(attendee: any): AttendeeItem {
         return new AttendeeItem(
@@ -183,6 +200,7 @@ export class Backend {
             exponent.info ? exponent.info.team.map(attendeeId => attendeeItems[attendeeId]) : []
         );
     }
+
     private toMap(arr: any[], key: (any) => string): any {
         var res = {};
         arr.map(elt => {

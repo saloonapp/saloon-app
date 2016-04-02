@@ -46,7 +46,7 @@ export class AttendeePage implements OnInit {
 
     ngOnInit() {
         this.attendeeItem = <AttendeeItem> this._navParams.get('attendeeItem');
-        this.attendeeFull = this._eventService.getAttendeeFromCurrent(this.attendeeItem.uuid);
+        this._eventService.getAttendeeFromCurrent(this.attendeeItem.uuid).then(attendee => this.attendeeFull = attendee);
     }
 
     goToExponent(exponentItem: ExponentItem) {

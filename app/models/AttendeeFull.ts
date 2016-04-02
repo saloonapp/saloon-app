@@ -32,6 +32,6 @@ export class AttendeeFull {
             attendee.job,
             attendee.company,
             attendee.website,
-            attendee.twitterUrl)
+            attendee.twitterUrl);
     }
 }

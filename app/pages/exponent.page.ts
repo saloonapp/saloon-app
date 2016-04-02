@@ -40,7 +40,7 @@ export class ExponentPage implements OnInit {
 
     ngOnInit() {
         this.exponentItem = <ExponentItem> this._navParams.get('exponentItem');
-        this.exponentFull = this._eventService.getExponentFromCurrent(this.exponentItem.uuid);
+        this._eventService.getExponentFromCurrent(this.exponentItem.uuid).then(exponent => this.exponentFull = exponent);
     }
 
     goToAttendee(attendeeItem: AttendeeItem) {

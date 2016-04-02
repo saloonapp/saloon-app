@@ -44,7 +44,7 @@ export class SessionPage implements OnInit {
 
     ngOnInit() {
         this.sessionItem = <SessionItem> this._navParams.get('sessionItem');
-        this.sessionFull = this._eventService.getSessionFromCurrent(this.sessionItem.uuid);
+        this._eventService.getSessionFromCurrent(this.sessionItem.uuid).then(session => this.sessionFull = session);
     }
 
     goToAttendee(attendeeItem: AttendeeItem) {

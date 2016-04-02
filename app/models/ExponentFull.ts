@@ -20,6 +20,6 @@ export class ExponentFull {
             exponent.logo,
             exponent.landing,
             exponent.website,
-            exponent.place)
+            exponent.place);
     }
 }

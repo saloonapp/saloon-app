@@ -7,6 +7,6 @@ export class SessionItem {
                 public format: string,
                 public theme: string,
                 public place: string,
-                public start: string,
-                public end: string) {}
+                public start: number,
+                public end: number) {}
 }

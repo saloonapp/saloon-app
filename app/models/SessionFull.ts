@@ -10,8 +10,8 @@ export class SessionFull {
                 public format: string,
                 public theme: string,
                 public place: string,
-                public start: string,
-                public end: string,
+                public start: number,
+                public end: number,
                 public speakers: AttendeeItem[]) {}
     public static toItem(session: SessionFull): SessionItem {
         return new SessionItem(
@@ -24,6 +24,6 @@ export class SessionFull {
             session.theme,
             session.place,
             session.start,
-            session.end)
+            session.end);
     }
 }
