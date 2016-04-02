@@ -20,11 +20,14 @@ import {SessionPage} from "./session.page";
 <ion-navbar *navbar>
     <ion-title>{{eventItem.name}}</ion-title>
 </ion-navbar>
+<ion-toolbar>
+    <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
+</ion-toolbar>
 <ion-content class="session-list-page">
     <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
-    <ion-searchbar *ngIf="eventFull" [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
-    <ion-list *ngIf="filtered.length > 0">
+    <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de session trouvée</ion-list-header>
+    <ion-list *ngIf="eventFull && filtered.length > 0">
         <ion-item *ngFor="#session of filtered" (click)="goToSession(session)">
             <h2>{{session.name}}</h2>
             <p>{{session.start | time}}-{{session.end | time}} {{session.place}} {{session.category}}</p>

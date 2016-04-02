@@ -11,13 +11,16 @@ import {AttendeePage} from "./attendee.page";
 @Page({
     template: `
 <ion-navbar *navbar>
-  <ion-title>Attendee list</ion-title>
+  <ion-title>Participants</ion-title>
 </ion-navbar>
+<ion-toolbar>
+    <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
+</ion-toolbar>
 <ion-content class="attendee-list-page">
     <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
-    <ion-searchbar *ngIf="eventFull" [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
-    <ion-list *ngIf="filtered.length > 0">
+    <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de participant trouvé</ion-list-header>
+    <ion-list *ngIf="eventFull && filtered.length > 0">
         <ion-item *ngFor="#attendee of filtered" (click)="goToAttendee(attendee)">
             <h2>{{attendee.name}}</h2>
         </ion-item>
