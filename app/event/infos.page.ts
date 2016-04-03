@@ -3,6 +3,7 @@ import {Page} from 'ionic-angular';
 import {EventItem} from "./models/EventItem";
 import {EventService} from "./services/event.service";
 import {DatePeriodPipe} from "../common/pipes/datetime.pipe";
+import {AddressPipe} from "../common/pipes/model.pipe";
 
 @Page({
     styles: [`
@@ -32,13 +33,21 @@ import {DatePeriodPipe} from "../common/pipes/datetime.pipe";
     <div padding class="about-info">
         <h4>{{eventItem.name}}</h4>
         <div *ngIf="eventItem.start"><ion-icon name="calendar"></ion-icon> {{eventItem.start | datePeriod:eventItem.end}}</div>
-        <div *ngIf="eventItem.address"><ion-icon name="pin"></ion-icon> {{eventItem.address.city}}</div>
-        <div *ngIf="eventItem.price"><ion-icon name="pricetag"></ion-icon> {{eventItem.price}}</div>
+        <div *ngIf="eventItem.address">
+            <a href="http://maps.google.com/?q={{eventItem.address | address}}">
+                <ion-icon name="pin"></ion-icon> {{eventItem.address.city}}
+            </a>
+        </div>
+        <div *ngIf="eventItem.price">
+            <a href="{{eventItem.priceUrl}}">
+                <ion-icon name="pricetag"></ion-icon> {{eventItem.price}}
+            </a>
+        </div>
         <p [innerHTML]="eventItem.descriptionHTML"></p>
     </div>
 </ion-content>
 `,
-    pipes: [DatePeriodPipe]
+    pipes: [DatePeriodPipe, AddressPipe]
 })
 export class InfosPage implements OnInit {
     eventItem: EventItem;
