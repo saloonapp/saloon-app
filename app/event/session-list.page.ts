@@ -7,7 +7,7 @@ import {EventItem} from "./models/EventItem";
 import {SessionFull} from "./models/SessionFull";
 import {EventService} from "./services/event.service";
 import {Filter, Sort} from "../common/utils/array";
-import {WeekDayPipe, TimePipe} from "../common/pipes/datetime.pipe";
+import {WeekDayPipe, TimePipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {UiUtils} from "../common/ui/utils";
 import {SessionPage} from "./session.page";
@@ -34,14 +34,14 @@ import {SessionPage} from "./session.page";
             <ion-item-divider sticky>{{group.title}}</ion-item-divider>
             <ion-item *ngFor="#session of group.items" (click)="goToSession(session)">
                 <h2>{{session.name}}</h2>
-                <p>{{session.start | time}}-{{session.end | time}} {{session.place}} {{session.category}}</p>
+                <p>{{session.start | timePeriod:session.end}} {{session.place}} {{session.category}}</p>
                 <p><span *ngFor="#p of session.speakers" class="label">{{p.name}} </span></p>
             </ion-item>
         </ion-item-group>
     </ion-list>
 </ion-content>
 `,
-    pipes: [TimePipe]
+    pipes: [TimePeriodPipe]
 })
 export class SessionListPage implements OnInit {
     searchQuery: string = '';

@@ -2,7 +2,7 @@ import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {NavController, Alert} from "ionic-angular/index";
 import {EventItem} from "./models/EventItem";
-import {DatePipe} from "../common/pipes/datetime.pipe";
+import {DatePeriodPipe} from "../common/pipes/datetime.pipe";
 import {EventItemComponent} from "./components/event-item.component";
 import {Storage} from "../common/storage.service";
 import {EventService} from "./services/event.service";
@@ -28,7 +28,7 @@ import {EventPage} from "./event.page.ts";
                 <img src="{{event.logoUrl}}">
             </ion-thumbnail>
             <h2>{{event.name}}</h2>
-            <h3>{{event.start | date}}, {{event.address.city}}</h3>
+            <h3>{{event.start | datePeriod:event.end}}, {{event.address.city}}</h3>
             <p>{{event.description}}</p>
         </ion-item>
     </ion-list>-->
@@ -39,7 +39,7 @@ import {EventPage} from "./event.page.ts";
 </ion-content>
 `,
     directives: [EventItemComponent],
-    pipes: [DatePipe]
+    pipes: [DatePeriodPipe]
 })
 export class EventListPage implements OnInit {
     events: EventItem[];

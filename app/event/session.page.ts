@@ -4,7 +4,7 @@ import {NavController, NavParams} from "ionic-angular/index";
 import {SessionFull} from "./models/SessionFull";
 import {SessionItem} from "./models/SessionItem";
 import {AttendeeItem} from "./models/AttendeeItem";
-import {WeekDayPipe, TimePipe} from "../common/pipes/datetime.pipe";
+import {WeekDayPipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {EventService} from "./services/event.service";
 import {AttendeePage} from "./attendee.page";
@@ -17,7 +17,7 @@ import {AttendeePage} from "./attendee.page";
 <ion-content class="session-page">
     <div padding>
         <h1>{{sessionItem.name}}</h1>
-        <p>{{sessionItem.start | weekDay | capitalize}}, {{sessionItem.start | time}}-{{sessionItem.end | time}}</p>
+        <p>{{sessionItem.start | weekDay | capitalize}}, {{sessionItem.start | timePeriod:sessionItem.end}}</p>
         <p>{{sessionItem.place}}</p>
         <p>{{sessionItem.description}}</p>
     </div>
@@ -33,7 +33,7 @@ import {AttendeePage} from "./attendee.page";
     </ion-list>
 </ion-content>
 `,
-    pipes: [WeekDayPipe, TimePipe, CapitalizePipe]
+    pipes: [WeekDayPipe, CapitalizePipe, TimePeriodPipe]
 })
 export class SessionPage implements OnInit {
     sessionItem: SessionItem;
