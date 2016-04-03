@@ -1,16 +1,22 @@
 export class ObjectUtils {
-    public static getType(value: any): string {
-        if(value === null) return 'null';
-        if(Array.isArray(value)) return 'array';
-        if(this.isDate(value)) return 'date';
-        if(this.isTimestamp(value)) return 'timestamp';
-        return typeof value;
+    public static getType(obj: any): string {
+        if(obj === null) return 'null';
+        if(Array.isArray(obj)) return 'array';
+        if(this.isDate(obj)) return 'date';
+        if(this.isTimestamp(obj)) return 'timestamp';
+        return typeof obj;
     }
-    public static isDate(value: any): boolean {
-        return value instanceof Date && !isNaN(value.valueOf())
+    public static isDate(obj: any): boolean {
+        return obj instanceof Date && !isNaN(obj.valueOf())
     }
-    public static isTimestamp(value: any): boolean {
+    public static isTimestamp(obj: any): boolean {
         // if a number is > 31532400000 (timestamp for 01/01/1971), it's probably a timestamp...
-        return typeof value === 'number' && value > 31532400000;
+        return typeof obj === 'number' && obj > 31532400000;
+    }
+    public static deepCopy(obj: any): any {
+        return obj !== undefined ? JSON.parse(JSON.stringify(obj)) : undefined;
+    }
+    public static deepEquals(obj1: any, obj2: any): boolean {
+        return JSON.stringify(obj1) === JSON.stringify(obj2);
     }
 }

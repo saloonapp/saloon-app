@@ -1,10 +1,10 @@
 import {OnInit} from "angular2/core";
-import {Page} from 'ionic-angular';
+import {Page} from "ionic-angular";
 import {NavController, NavParams} from "ionic-angular/index";
-import {ExponentItem} from "../models/ExponentItem";
-import {ExponentFull} from "../models/ExponentFull";
-import {AttendeeItem} from "../models/AttendeeItem";
-import {EventService} from "../common/event.service";
+import {ExponentItem} from "./models/ExponentItem";
+import {ExponentFull} from "./models/ExponentFull";
+import {AttendeeItem} from "./models/AttendeeItem";
+import {EventService} from "./services/event.service";
 import {AttendeePage} from "./attendee.page";
 
 @Page({

@@ -1,13 +1,13 @@
 import {OnInit} from "angular2/core";
-import {Page} from 'ionic-angular';
+import {Page} from "ionic-angular";
 import {NavController, Alert} from "ionic-angular/index";
-import {EventItem} from "../models/EventItem";
+import {EventItem} from "./models/EventItem";
 import {DatePipe} from "../common/pipes/datetime.pipe";
-import {EventItemComponent} from "../components/event-item.component";
+import {EventItemComponent} from "./components/event-item.component";
 import {Storage} from "../common/storage.service";
-import {EventService} from "../common/event.service";
+import {EventService} from "./services/event.service";
 import {UiUtils} from "../common/ui/utils";
-import {EventPage} from "./event.page";
+import {EventPage} from "./event.page.ts";
 
 @Page({
     template: `

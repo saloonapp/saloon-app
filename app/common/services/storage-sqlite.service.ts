@@ -1,5 +1,5 @@
 import {Injectable} from "angular2/core";
-import {SQLitePlugin} from "./plugins/sqlite.plugin";
+import {SQLitePlugin} from "../plugins/sqlite.plugin";
 import {IStorage} from "./IStorage";
 
 @Injectable()

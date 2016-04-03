@@ -1,11 +1,11 @@
 import {OnInit} from "angular2/core";
-import {Page} from 'ionic-angular';
+import {Page} from "ionic-angular";
 import {NavController} from "ionic-angular/index";
 import * as _ from "lodash";
-import {EventFull} from "../models/EventFull";
-import {EventItem} from "../models/EventItem";
-import {SessionFull} from "../models/SessionFull";
-import {EventService} from "../common/event.service";
+import {EventFull} from "./models/EventFull";
+import {EventItem} from "./models/EventItem";
+import {SessionFull} from "./models/SessionFull";
+import {EventService} from "./services/event.service";
 import {Filter, Sort} from "../common/utils/array";
 import {WeekDayPipe, TimePipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";

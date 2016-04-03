@@ -1,9 +1,9 @@
 import {Page} from 'ionic-angular';
 import {NavController} from "ionic-angular/index";
-import {EventFull} from "../models/EventFull";
-import {EventItem} from "../models/EventItem";
-import {AttendeeFull} from "../models/AttendeeFull";
-import {EventService} from "../common/event.service";
+import {EventFull} from "./models/EventFull";
+import {EventItem} from "./models/EventItem";
+import {AttendeeFull} from "./models/AttendeeFull";
+import {EventService} from "./services/event.service";
 import {Filter, Sort} from "../common/utils/array";
 import {UiUtils} from "../common/ui/utils";
 import {AttendeePage} from "./attendee.page";

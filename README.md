@@ -14,7 +14,6 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 
 ### TODO
 
-- improve file organisation
 - add user favs
 - add user program
 - add colors for theme / room / format
@@ -38,10 +37,13 @@ To run the app on your android device :
 
 ### Notes
 
-#### Ionic1 features not in Ionic2
+#### Ionic1 features not (yet) in Ionic2
 
 - $ionicLoading
+- android back button
+- infinite-scroll
 
 #### Angular1 features not in Angular2
 
 - angular.copy(), angular.equals()
+- filters : filter, orderBy

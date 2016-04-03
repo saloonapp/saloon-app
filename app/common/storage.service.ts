@@ -1,7 +1,7 @@
 import {Injectable} from "angular2/core";
-import {StorageUtils} from "./storage-utils.service";
-import {EventItem} from "../models/EventItem";
-import {EventFull} from "../models/EventFull";
+import {StorageUtils} from "./services/storage-utils.service";
+import {EventItem} from "../event/models/EventItem";
+import {EventFull} from "../event/models/EventFull";
 
 @Injectable()
 export class Storage {

@@ -1,7 +1,8 @@
 import {Injectable} from "angular2/core";
-import {SQLitePlugin} from "./plugins/sqlite.plugin";
-import {SQLiteStorage} from "./storage-sqlite.service";
+import {SQLitePlugin} from "../plugins/sqlite.plugin";
+import {ObjectUtils} from "../utils/object";
 import {IStorage} from "./IStorage";
+import {SQLiteStorage} from "./storage-sqlite.service";
 
 @Injectable()
 export class StorageUtils {
@@ -10,46 +11,40 @@ export class StorageUtils {
     private storageCache = {};
     private promiseStorageCache = {};
     private storage: IStorage = null;
-    private deepCopy(obj: any): any {
-        return obj !== undefined ? JSON.parse(JSON.stringify(obj)) : undefined;
-    }
-    private deepEquals(obj1: any, obj2: any): boolean {
-        return JSON.stringify(obj1) === JSON.stringify(obj2);
-    }
     constructor(private _SQLiteStorage: SQLiteStorage) {
         this.storage = <IStorage> _SQLiteStorage;
     }
 
     get(key: string, defaultValue?: any): any {
         if(this.storageCache[key]){
-            return Promise.resolve(this.deepCopy(this.storageCache[key]));
+            return Promise.resolve(ObjectUtils.deepCopy(this.storageCache[key]));
         } else if(this.promiseStorageCache[key]){
             return this.promiseStorageCache[key];
         } else {
             if(this.useStorage){
                 this.promiseStorageCache[key] = this.storage.getItem(this.storagePrefix+key).then(value => {
                     try {
-                        this.storageCache[key] = JSON.parse(value) || this.deepCopy(defaultValue);
+                        this.storageCache[key] = JSON.parse(value) || ObjectUtils.deepCopy(defaultValue);
                     } catch(e) {
-                        this.storageCache[key] = this.deepCopy(defaultValue);
+                        this.storageCache[key] = ObjectUtils.deepCopy(defaultValue);
                     }
                     delete this.promiseStorageCache[key];
-                    return this.deepCopy(this.storageCache[key]);
+                    return ObjectUtils.deepCopy(this.storageCache[key]);
                 }, error => {
                     console.error('error in StorageUtils.get('+key+')', error);
                     delete this.promiseStorageCache[key];
                 });
                 return this.promiseStorageCache[key];
             } else {
-                this.storageCache[key] = this.deepCopy(defaultValue);
-                return Promise.resolve(this.deepCopy(this.storageCache[key]));
+                this.storageCache[key] = ObjectUtils.deepCopy(defaultValue);
+                return Promise.resolve(ObjectUtils.deepCopy(this.storageCache[key]));
             }
         }
     }
 
     set(key: string, value: any): Promise<void> {
-        if(!this.deepEquals(this.storageCache[key], value)){
-            this.storageCache[key] = this.deepCopy(value);
+        if(!ObjectUtils.deepEquals(this.storageCache[key], value)){
+            this.storageCache[key] = ObjectUtils.deepCopy(value);
             if(this.useStorage){
                 return this.storage.setItem(this.storagePrefix+key, JSON.stringify(this.storageCache[key])).then(
                     value => {},

@@ -1,4 +1,4 @@
-import {Address} from "./Address";
+import {Address} from "../../common/models/Address";
 import {EventItem} from "./EventItem";
 import {AttendeeFull} from "./AttendeeFull";
 import {SessionFull} from "./SessionFull";

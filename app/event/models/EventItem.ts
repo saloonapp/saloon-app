@@ -1,4 +1,4 @@
-import {Address} from "./Address";
+import {Address} from "../../common/models/Address";
 
 export class EventItem {
     constructor(public uuid: string,

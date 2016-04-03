@@ -4,8 +4,8 @@ import {EventItem} from "../models/EventItem";
 import {AttendeeFull} from "../models/AttendeeFull";
 import {SessionFull} from "../models/SessionFull";
 import {ExponentFull} from "../models/ExponentFull";
-import {Storage} from "./storage.service";
-import {Backend} from "./backend.service";
+import {Storage} from "../../common/storage.service";
+import {Backend} from "../../common/backend.service";
 
 @Injectable()
 export class EventService {

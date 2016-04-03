@@ -3,15 +3,15 @@ import {Http, Response} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 import "rxjs/Rx";
 import * as _ from "lodash";
-import {Address} from "../models/Address";
-import {EventFull, EventElt} from "../models/EventFull";
-import {EventItem} from "../models/EventItem";
-import {AttendeeFull} from "../models/AttendeeFull";
-import {AttendeeItem} from "../models/AttendeeItem";
-import {SessionFull} from "../models/SessionFull";
-import {SessionItem} from "../models/SessionItem";
-import {ExponentFull} from "../models/ExponentFull";
-import {ExponentItem} from "../models/ExponentItem";
+import {Address} from "./models/Address";
+import {EventFull, EventElt} from "../event/models/EventFull";
+import {EventItem} from "../event/models/EventItem";
+import {AttendeeFull} from "../event/models/AttendeeFull";
+import {AttendeeItem} from "../event/models/AttendeeItem";
+import {SessionFull} from "../event/models/SessionFull";
+import {SessionItem} from "../event/models/SessionItem";
+import {ExponentFull} from "../event/models/ExponentFull";
+import {ExponentItem} from "../event/models/ExponentItem";
 import {Sort} from "./utils/array";
 
 @Injectable()

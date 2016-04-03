@@ -1,6 +1,6 @@
 import {Component, Input} from "angular2/core";
 import {EventItem} from "../models/EventItem";
-import {DatePipe} from "../common/pipes/datetime.pipe";
+import {DatePipe} from "../../common/pipes/datetime.pipe";
 
 @Component({
     selector: 'event-item',
