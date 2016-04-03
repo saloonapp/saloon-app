@@ -19,4 +19,16 @@ export class ObjectUtils {
     public static deepEquals(obj1: any, obj2: any): boolean {
         return JSON.stringify(obj1) === JSON.stringify(obj2);
     }
+    public static getSafe(obj: any, path: string|string[], defaultValue?: any): any {
+        if(obj === undefined || obj === null){
+            return defaultValue;
+        }
+        let props: string[] = Array.isArray(path) ? path : path.split('.');
+        if(props.length === 0){
+            return obj;
+        }
+        let child = obj[props[0]];
+        let remainingProps = props.slice(1);
+        return this.getSafe(child, remainingProps, defaultValue);
+    }
 }

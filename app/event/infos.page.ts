@@ -55,6 +55,5 @@ export class InfosPage implements OnInit {
 
     ngOnInit() {
         this.eventItem = this._eventService.getCurrentEventItem();
-        console.log('this.eventItem', this.eventItem);
     }
 }
