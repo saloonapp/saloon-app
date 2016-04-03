@@ -12,6 +12,18 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 
 ## Technical
 
+### TODO
+
+- improve file organisation
+- add user favs
+- add user program
+- add colors for theme / room / format
+- filter by : day, theme, room or format
+- sidemenu to come back to event list / event root pages
+- android back button
+- add user notes
+- add error handler
+
 ### Getting started
 
 - install nodejs, cordova & ionic@beta (if not already done)

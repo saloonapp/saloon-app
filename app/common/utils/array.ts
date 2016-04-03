@@ -82,7 +82,7 @@ export class Filter {
     }
     private static matchDate(value: any, query: string): boolean {
         let mDate = moment(value);
-        let valueStr = ['LLLL', 'L', 'llll', 'l'].map(f => mDate.format(f)).join(' ');
+        let valueStr = ['LLLL', 'L', 'llll', 'l', 'HH[h]mm'].map(f => mDate.format(f)).join(' ');
         return this.matchStr(valueStr, query, false);
     }
 }
