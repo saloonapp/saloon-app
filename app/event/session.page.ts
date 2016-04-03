@@ -25,7 +25,7 @@ import {AttendeePage} from "./attendee.page";
         <ion-list-header>Speakers</ion-list-header>
         <ion-item *ngFor="#speaker of sessionFull.speakers" (click)="goToAttendee(speaker)">
             <ion-avatar item-left>
-                <img src="{{speaker.avatar}}">
+                <img [src]="speaker.avatar">
             </ion-avatar>
             <h2>{{speaker.name}}</h2>
             <p class="nowrap lines2">{{speaker.description}}</p>

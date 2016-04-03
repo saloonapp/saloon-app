@@ -14,9 +14,6 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 
 ### TODO
 
-- pipes: address
-- info page : link to map & ticket page
-- improve attendee list with : twitter, talk list
 - add user favs
 - add user program
 - add colors for theme / room / format

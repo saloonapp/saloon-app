@@ -25,7 +25,7 @@ import {EventPage} from "./event.page.ts";
     <!--<ion-list>
         <ion-item *ngFor="#event of events" (click)="goToEvent(event)">
             <ion-thumbnail item-left>
-                <img src="{{event.logoUrl}}">
+                <img [src]="event.logoUrl">
             </ion-thumbnail>
             <h2>{{event.name}}</h2>
             <h3>{{event.start | datePeriod:event.end}}, {{event.address.city}}</h3>

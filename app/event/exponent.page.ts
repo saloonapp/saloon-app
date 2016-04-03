@@ -22,7 +22,7 @@ import {AttendeePage} from "./attendee.page";
         <ion-list-header>Speakers</ion-list-header>
         <ion-item *ngFor="#exponent of sessionFull.team" (click)="goToAttendee(exponent)">
             <ion-avatar item-left>
-                <img src="{{exponent.avatar}}">
+                <img [src]="exponent.avatar">
             </ion-avatar>
             <h2>{{exponent.name}}</h2>
             <p class="nowrap lines2">{{exponent.description}}</p>

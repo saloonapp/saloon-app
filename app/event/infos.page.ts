@@ -28,7 +28,7 @@ import {AddressPipe} from "../common/pipes/model.pipe";
 </ion-navbar>
 <ion-content class="infos-page">
     <div class="about-header">
-        <img src="{{eventItem.landing}}">
+        <img [src]="eventItem.landing">
     </div>
     <div padding class="about-info">
         <h4>{{eventItem.name}}</h4>
