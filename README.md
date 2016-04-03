@@ -14,6 +14,9 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 
 ### TODO
 
+- pipes: timePeriod, datePeriod
+- pipes: address
+- info page : link to map & ticket page
 - add user favs
 - add user program
 - add colors for theme / room / format

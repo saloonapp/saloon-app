@@ -10,7 +10,6 @@ import {DatePipe} from "../../common/pipes/datetime.pipe";
     <ion-card-content>
         <ion-card-title>{{event.name}}</ion-card-title>
         <h3>{{event.start | date}}, {{event.address.city}}</h3>
-        <p class="lines3">{{event.description}}</p>
     </ion-card-content>
 </ion-card>
 `,

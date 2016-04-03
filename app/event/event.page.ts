@@ -8,6 +8,7 @@ import {UiUtils} from "../common/ui/utils";
 import {AttendeeListPage} from "./attendee-list.page";
 import {SessionListPage} from "./session-list.page";
 import {ExponentListPage} from "./exponent-list.page";
+import {InfosPage} from "./infos.page";
 
 
 @Page({
@@ -16,6 +17,7 @@ import {ExponentListPage} from "./exponent-list.page";
   <ion-tab [root]="tab1Root" tabTitle="Sessions" *ngIf="eventItem.sessionCount > 0"></ion-tab>
   <ion-tab [root]="tab2Root" tabTitle="Participants" *ngIf="eventItem.attendeeCount > 0"></ion-tab>
   <ion-tab [root]="tab3Root" tabTitle="Exposants" *ngIf="eventItem.exponentCount > 0"></ion-tab>
+  <ion-tab [root]="tab4Root" tabTitle="Infos" *ngIf="eventItem"></ion-tab>
 </ion-tabs>
 `
 })
@@ -24,6 +26,7 @@ export class EventPage implements OnInit {
     tab1Root: any = SessionListPage;
     tab2Root: any = AttendeeListPage;
     tab3Root: any = ExponentListPage;
+    tab4Root: any = InfosPage;
     constructor(private _eventService: EventService,
                 private _navParams: NavParams) {}
 
