@@ -17,7 +17,7 @@ import {ExponentPage} from "./exponent.page";
 <ion-content class="attendee-page">
     <div padding>
         <h1>{{attendeeItem.name}}</h1>
-        <h4>{{attendeeItem.company}}</h4>
+        <h4>{{(attendeeItem.job ? attendeeItem.job+', ' : '')+attendeeItem.company}}</h4>
         <p>{{attendeeItem.description}}</p>
     </div>
     <ion-list *ngIf="attendeeFull && attendeeFull.exponents.length > 0">

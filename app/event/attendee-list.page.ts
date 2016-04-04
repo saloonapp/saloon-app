@@ -25,15 +25,17 @@ import {ExponentPage} from "./exponent.page";
     <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de participant trouvé</ion-list-header>
-    <!--<ion-list *ngIf="eventFull && filtered.length > 0">
+    <ion-list *ngIf="eventFull && filtered.length > 0">
         <ion-item-group *ngFor="#group of filtered">
             <ion-item-divider sticky>{{group.title}}</ion-item-divider>
             <ion-item *ngFor="#attendee of group.items" (click)="goToAttendee(attendee)">
+                <ion-avatar item-left><img [src]="attendee.avatar"></ion-avatar>
                 <h2>{{attendee.name}}</h2>
+                <p>{{(attendee.job ? attendee.job+', ' : '')+attendee.company}}</p>
             </ion-item>
         </ion-item-group>
-    </ion-list>-->
-    <div *ngIf="eventFull && filtered.length > 0">
+    </ion-list>
+    <!--<div *ngIf="eventFull && filtered.length > 0">
         <div *ngFor="#group of filtered">
             <ion-card *ngFor="#attendee of group.items">
                 <ion-item (click)="goToAttendee(attendee)">
@@ -57,7 +59,7 @@ import {ExponentPage} from "./exponent.page";
                 </ion-item>
             </ion-card>
         </div>
-    </div>
+    </div>-->
 </ion-content>
 `,
     pipes: [TwitterHandlePipe]
