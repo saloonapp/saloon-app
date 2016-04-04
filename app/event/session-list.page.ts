@@ -57,10 +57,12 @@ export class SessionListPage implements OnInit {
 
     ngOnInit() {
         this.eventItem = this._eventService.getCurrentEventItem();
-        this._eventService.getCurrentEventFull().then(event => {
-            this.eventFull = event;
-            this.filtered = this.compute(this.eventFull.sessions, this.searchQuery);
-        });
+        setTimeout(() => {
+            this._eventService.getCurrentEventFull().then(event => {
+                this.eventFull = event;
+                this.filtered = this.compute(this.eventFull.sessions, this.searchQuery);
+            });
+        }, 600);
     }
 
     doRefresh(refresher) {

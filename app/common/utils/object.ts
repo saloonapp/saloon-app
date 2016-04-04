@@ -19,6 +19,9 @@ export class ObjectUtils {
     public static deepEquals(obj1: any, obj2: any): boolean {
         return JSON.stringify(obj1) === JSON.stringify(obj2);
     }
+    public static deepMerge(dest: any, ...srcs: any[]): any { // TODO
+        return dest;
+    }
     public static getSafe(obj: any, path: string|string[], defaultValue?: any): any {
         if(obj === undefined || obj === null){
             return defaultValue;

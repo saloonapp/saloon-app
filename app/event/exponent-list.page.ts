@@ -24,7 +24,9 @@ import {ExponentPage} from "./exponent.page";
         <ion-item-group *ngFor="#group of filtered">
             <ion-item-divider sticky>{{group.title}}</ion-item-divider>
             <ion-item *ngFor="#exponent of group.items" (click)="goToExponent(exponent)">
+                <ion-avatar item-left><img [src]="exponent.logo"></ion-avatar>
                 <h2>{{exponent.name}}</h2>
+                <p>{{exponent.description}}</p>
             </ion-item>
         </ion-item-group>
     </ion-list>
@@ -42,10 +44,12 @@ export class ExponentListPage {
 
     ngOnInit() {
         this.eventItem = this._eventService.getCurrentEventItem();
-        this._eventService.getCurrentEventFull().then(event => {
-            this.eventFull = event;
-            this.filtered = this.compute(this.eventFull.exponents, this.searchQuery);
-        });
+        setTimeout(() => {
+            this._eventService.getCurrentEventFull().then(event => {
+                this.eventFull = event;
+                this.filtered = this.compute(this.eventFull.exponents, this.searchQuery);
+            });
+        }, 600);
     }
 
     doRefresh(refresher) {

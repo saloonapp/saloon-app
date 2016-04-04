@@ -75,10 +75,12 @@ export class AttendeeListPage {
 
     ngOnInit() {
         this.eventItem = this._eventService.getCurrentEventItem();
-        this._eventService.getCurrentEventFull().then(event => {
-            this.eventFull = event;
-            this.filtered = this.compute(this.eventFull.attendees, this.searchQuery);
-        });
+        setTimeout(() => {
+            this._eventService.getCurrentEventFull().then(event => {
+                this.eventFull = event;
+                this.filtered = this.compute(this.eventFull.attendees, this.searchQuery);
+            });
+        }, 600);
     }
 
     doRefresh(refresher) {
