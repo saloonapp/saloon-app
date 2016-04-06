@@ -23,12 +23,10 @@ import {AttendeePage} from "./attendee.page";
     </div>
     <ion-list *ngIf="sessionFull && sessionFull.speakers.length > 0">
         <ion-list-header>Speakers</ion-list-header>
-        <ion-item *ngFor="#speaker of sessionFull.speakers" (click)="goToAttendee(speaker)">
-            <ion-avatar item-left>
-                <img [src]="speaker.avatar">
-            </ion-avatar>
-            <h2>{{speaker.name}}</h2>
-            <p class="nowrap lines2">{{speaker.description}}</p>
+        <ion-item *ngFor="#attendee of sessionFull.speakers" (click)="goToAttendee(attendee)">
+            <ion-avatar item-left><img [src]="attendee.avatar"></ion-avatar>
+            <h2>{{attendee.name}}</h2>
+            <p>{{(attendee.job ? attendee.job+', ' : '')+attendee.company}}</p>
         </ion-item>
     </ion-list>
 </ion-content>

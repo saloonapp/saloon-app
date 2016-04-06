@@ -26,7 +26,7 @@ import {ExponentPage} from "./exponent.page";
             <ion-item *ngFor="#exponent of group.items" (click)="goToExponent(exponent)">
                 <ion-avatar item-left><img [src]="exponent.logo"></ion-avatar>
                 <h2>{{exponent.name}}</h2>
-                <p>{{exponent.description}}</p>
+                <p class="nowrap lines2">{{exponent.description}}</p>
             </ion-item>
         </ion-item-group>
     </ion-list>

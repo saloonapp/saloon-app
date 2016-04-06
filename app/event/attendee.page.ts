@@ -6,8 +6,11 @@ import {AttendeeItem} from "./models/AttendeeItem";
 import {SessionItem} from "./models/SessionItem";
 import {ExponentItem} from "./models/ExponentItem";
 import {EventService} from "./services/event.service";
+import {TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {SessionPage} from "./session.page";
 import {ExponentPage} from "./exponent.page";
+import {WeekDayPipe} from "../common/pipes/datetime.pipe";
+import {CapitalizePipe} from "../common/pipes/text.pipe";
 
 @Page({
     template: `
@@ -23,6 +26,7 @@ import {ExponentPage} from "./exponent.page";
     <ion-list *ngIf="attendeeFull && attendeeFull.exponents.length > 0">
         <ion-list-header>Exposants</ion-list-header>
         <ion-item *ngFor="#exponent of attendeeFull.exponents" (click)="goToExponent(exponent)">
+            <ion-avatar item-left><img [src]="exponent.logo"></ion-avatar>
             <h2>{{exponent.name}}</h2>
             <p class="nowrap lines2">{{exponent.description}}</p>
         </ion-item>
@@ -31,11 +35,12 @@ import {ExponentPage} from "./exponent.page";
         <ion-list-header>Sessions</ion-list-header>
         <ion-item *ngFor="#session of attendeeFull.sessions" (click)="goToSession(session)">
             <h2>{{session.name}}</h2>
-            <p class="nowrap lines2">{{session.description}}</p>
+            <p>{{session.start | weekDay | capitalize}} {{session.start | timePeriod:session.end}} {{session.place}} {{session.category}}</p>
         </ion-item>
     </ion-list>
 </ion-content>
-`
+`,
+    pipes: [TimePeriodPipe, WeekDayPipe, CapitalizePipe]
 })
 export class AttendeePage implements OnInit {
     attendeeItem: AttendeeItem;

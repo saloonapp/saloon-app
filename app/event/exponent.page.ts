@@ -21,11 +21,9 @@ import {AttendeePage} from "./attendee.page";
     <ion-list *ngIf="exponentFull && exponentFull.team.length > 0">
         <ion-list-header>Speakers</ion-list-header>
         <ion-item *ngFor="#exponent of sessionFull.team" (click)="goToAttendee(exponent)">
-            <ion-avatar item-left>
-                <img [src]="exponent.avatar">
-            </ion-avatar>
+            <ion-avatar item-left><img [src]="exponent.avatar"></ion-avatar>
             <h2>{{exponent.name}}</h2>
-            <p class="nowrap lines2">{{exponent.description}}</p>
+            <p>{{(attendee.job ? attendee.job+', ' : '')+attendee.company}}</p>
         </ion-item>
     </ion-list>
 </ion-content>
