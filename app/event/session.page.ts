@@ -6,7 +6,7 @@ import {SessionItem} from "./models/SessionItem";
 import {AttendeeItem} from "./models/AttendeeItem";
 import {WeekDayPipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
-import {EventService} from "./services/event.service";
+import {EventData} from "./services/event.data";
 import {AttendeePage} from "./attendee.page";
 
 @Page({
@@ -36,13 +36,13 @@ import {AttendeePage} from "./attendee.page";
 export class SessionPage implements OnInit {
     sessionItem: SessionItem;
     sessionFull: SessionFull;
-    constructor(private _eventService: EventService,
-                private _nav: NavController,
-                private _navParams: NavParams) {}
+    constructor(private _nav: NavController,
+                private _navParams: NavParams,
+                private _eventData: EventData) {}
 
     ngOnInit() {
         this.sessionItem = <SessionItem> this._navParams.get('sessionItem');
-        this._eventService.getSessionFromCurrent(this.sessionItem.uuid).then(session => this.sessionFull = session);
+        this._eventData.getSessionFromCurrent(this.sessionItem.uuid).then(session => this.sessionFull = session);
     }
 
     goToAttendee(attendeeItem: AttendeeItem) {

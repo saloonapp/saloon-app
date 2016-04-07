@@ -1,7 +1,7 @@
 import {OnInit} from "angular2/core";
 import {Page} from 'ionic-angular';
 import {EventItem} from "./models/EventItem";
-import {EventService} from "./services/event.service";
+import {EventData} from "./services/event.data";
 import {DatePeriodPipe} from "../common/pipes/datetime.pipe";
 import {AddressPipe} from "../common/pipes/model.pipe";
 
@@ -51,9 +51,9 @@ import {AddressPipe} from "../common/pipes/model.pipe";
 })
 export class InfosPage implements OnInit {
     eventItem: EventItem;
-    constructor(private _eventService: EventService) {}
+    constructor(private _eventData: EventData) {}
 
     ngOnInit() {
-        this.eventItem = this._eventService.getCurrentEventItem();
+        this.eventItem = this._eventData.getCurrentEventItem();
     }
 }

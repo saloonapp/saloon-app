@@ -5,7 +5,7 @@ import {AttendeeFull} from "./models/AttendeeFull";
 import {AttendeeItem} from "./models/AttendeeItem";
 import {SessionItem} from "./models/SessionItem";
 import {ExponentItem} from "./models/ExponentItem";
-import {EventService} from "./services/event.service";
+import {EventData} from "./services/event.data";
 import {TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {SessionPage} from "./session.page";
 import {ExponentPage} from "./exponent.page";
@@ -45,13 +45,13 @@ import {CapitalizePipe} from "../common/pipes/text.pipe";
 export class AttendeePage implements OnInit {
     attendeeItem: AttendeeItem;
     attendeeFull: AttendeeFull;
-    constructor(private _eventService: EventService,
-                private _nav: NavController,
-                private _navParams: NavParams) {}
+    constructor(private _nav: NavController,
+                private _navParams: NavParams,
+                private _eventData: EventData) {}
 
     ngOnInit() {
         this.attendeeItem = <AttendeeItem> this._navParams.get('attendeeItem');
-        this._eventService.getAttendeeFromCurrent(this.attendeeItem.uuid).then(attendee => this.attendeeFull = attendee);
+        this._eventData.getAttendeeFromCurrent(this.attendeeItem.uuid).then(attendee => this.attendeeFull = attendee);
     }
 
     goToExponent(exponentItem: ExponentItem) {

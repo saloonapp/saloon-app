@@ -4,7 +4,7 @@ import {NavController, NavParams} from "ionic-angular/index";
 import {ExponentItem} from "./models/ExponentItem";
 import {ExponentFull} from "./models/ExponentFull";
 import {AttendeeItem} from "./models/AttendeeItem";
-import {EventService} from "./services/event.service";
+import {EventData} from "./services/event.data";
 import {AttendeePage} from "./attendee.page";
 
 @Page({
@@ -32,13 +32,13 @@ import {AttendeePage} from "./attendee.page";
 export class ExponentPage implements OnInit {
     exponentItem: ExponentItem;
     exponentFull: ExponentFull;
-    constructor(private _eventService: EventService,
-                private _nav: NavController,
-                private _navParams: NavParams) {}
+    constructor(private _nav: NavController,
+                private _navParams: NavParams,
+                private _eventData: EventData) {}
 
     ngOnInit() {
         this.exponentItem = <ExponentItem> this._navParams.get('exponentItem');
-        this._eventService.getExponentFromCurrent(this.exponentItem.uuid).then(exponent => this.exponentFull = exponent);
+        this._eventData.getExponentFromCurrent(this.exponentItem.uuid).then(exponent => this.exponentFull = exponent);
     }
 
     goToAttendee(attendeeItem: AttendeeItem) {

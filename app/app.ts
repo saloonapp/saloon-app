@@ -9,6 +9,7 @@ import {StorageUtils} from "./common/services/storage-utils.service";
 import {Storage} from "./common/storage.service";
 import {Backend} from "./common/backend.service";
 import {EventService} from "./event/services/event.service";
+import {EventData} from "./event/services/event.data";
 import {TfidfService} from "./common/tfidf.service";
 import {UiUtils} from "./common/ui/utils";
 import {DatePipe, TimePipe, DateTimePipe, WeekDayPipe} from "./common/pipes/datetime.pipe";
@@ -20,7 +21,7 @@ import {EventListPage} from "./event/event-list.page";
     providers: [
         PluginUtils, SQLitePlugin, SQLiteStorage, StorageUtils,
         Storage, Backend,
-        EventService, TfidfService, UiUtils,
+        EventService, EventData, TfidfService, UiUtils,
         DatePipe, TimePipe, DateTimePipe, WeekDayPipe, CapitalizePipe
     ],
     config: {} // http://ionicframework.com/docs/v2/api/config/Config/

@@ -3,6 +3,7 @@ import {NavController} from "ionic-angular/index";
 import {EventFull} from "./models/EventFull";
 import {EventItem} from "./models/EventItem";
 import {ExponentFull} from "./models/ExponentFull";
+import {EventData} from "./services/event.data";
 import {EventService} from "./services/event.service";
 import {Filter, Sort} from "../common/utils/array";
 import {UiUtils} from "../common/ui/utils";
@@ -38,14 +39,15 @@ export class ExponentListPage {
     eventItem: EventItem;
     eventFull: EventFull;
     filtered: Array<any> = [];
-    constructor(private _eventService: EventService,
-                private _nav: NavController,
+    constructor(private _nav: NavController,
+                private _eventService: EventService,
+                private _eventData: EventData,
                 private _uiUtils: UiUtils) {}
 
     ngOnInit() {
-        this.eventItem = this._eventService.getCurrentEventItem();
+        this.eventItem = this._eventData.getCurrentEventItem();
         setTimeout(() => {
-            this._eventService.getCurrentEventFull().then(event => {
+            this._eventData.getCurrentEventFull().then(event => {
                 this.eventFull = event;
                 this.filtered = this.compute(this.eventFull.exponents, this.searchQuery);
             });
@@ -58,7 +60,7 @@ export class ExponentListPage {
                 this.eventItem = EventFull.toItem(eventFull);
                 this.eventFull = eventFull;
                 this.filtered = this.compute(this.eventFull.exponents, this.searchQuery);
-                this._eventService.updateCurrentEvent(this.eventItem, this.eventFull);
+                this._eventData.updateCurrentEvent(this.eventItem, this.eventFull);
                 refresher.complete();
             },
             error => {

@@ -43,9 +43,9 @@ import {EventPage} from "./event.page.ts";
 })
 export class EventListPage implements OnInit {
     events: EventItem[];
-    constructor(private _storage: Storage,
+    constructor(private _nav: NavController,
+                private _storage: Storage,
                 private _eventService: EventService,
-                private _nav: NavController,
                 private _uiUtils: UiUtils) {}
 
     ngOnInit() {

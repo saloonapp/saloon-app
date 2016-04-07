@@ -5,13 +5,11 @@ import * as _ from "lodash";
 import {EventFull} from "./models/EventFull";
 import {EventItem} from "./models/EventItem";
 import {SessionFull} from "./models/SessionFull";
-import {EventService} from "./services/event.service";
-import {Filter, Sort} from "../common/utils/array";
+import {EventData} from "./services/event.data";
+import {Sort} from "../common/utils/array";
 import {WeekDayPipe, TimePipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
-import {UiUtils} from "../common/ui/utils";
 import {SessionPage} from "./session.page";
-import {EventData} from "./services/event.data";
 
 @Page({
     styles: [`
@@ -21,15 +19,11 @@ import {EventData} from "./services/event.data";
     `],
     template: `
 <ion-navbar *navbar>
-    <ion-title>{{eventItem.name}}</ion-title>
+    <ion-title>Mon programme</ion-title>
 </ion-navbar>
-<ion-toolbar>
-    <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
-</ion-toolbar>
-<ion-content class="session-list-page">
-    <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
+<ion-content class="program-page">
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
-    <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de session trouvée</ion-list-header>
+    <ion-list-header *ngIf="eventFull && filtered.length === 0">Aucune session ajoutée au programme :(</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0">
         <ion-item-group *ngFor="#group of filtered">
             <ion-item-divider sticky>{{group.title}}</ion-item-divider>
@@ -37,9 +31,8 @@ import {EventData} from "./services/event.data";
                 <h2>{{session.name}}</h2>
                 <p>{{session.start | timePeriod:session.end}} {{session.place}} {{session.category}}</p>
                 <p><span *ngFor="#p of session.speakers" class="label">{{p.name}} </span></p>
-                <button clear item-right (click)="toggleFav(session);$event.stopPropagation();">
-                    <ion-icon name="star" [hidden]="!isFav(session)"></ion-icon>
-                    <ion-icon name="star-outline" [hidden]="isFav(session)"></ion-icon>
+                <button clear item-right (click)="unFav(session);$event.stopPropagation();">
+                    <ion-icon name="star"></ion-icon>
                 </button>
             </ion-item>
         </ion-item-group>
@@ -48,57 +41,35 @@ import {EventData} from "./services/event.data";
 `,
     pipes: [TimePeriodPipe]
 })
-export class SessionListPage implements OnInit {
-    searchQuery: string = '';
+export class ProgramPage implements OnInit {
     eventItem: EventItem;
     eventFull: EventFull;
     filtered: Array<any> = [];
     favorites: { [key: string]: boolean; } = {};
     constructor(private _nav: NavController,
-                private _eventService: EventService,
                 private _eventData: EventData,
                 private _weekDayPipe: WeekDayPipe,
                 private _timePipe: TimePipe,
-                private _capitalizePipe: CapitalizePipe,
-                private _uiUtils: UiUtils) {}
+                private _capitalizePipe: CapitalizePipe) {}
 
+    // TODO : refresh program on-enter (with updated favorites)
     ngOnInit() {
         this.eventItem = this._eventData.getCurrentEventItem();
         setTimeout(() => {
             this._eventData.getCurrentEventFull().then(event => {
                 this.eventFull = event;
-                this.filtered = this.compute(this.eventFull.sessions, this.searchQuery);
                 this._eventData.getFavoriteSessions().then(favorites => {
                     this.favorites = favorites;
+                    this.filtered = this.compute(this.eventFull.sessions, this.favorites);
                 });
             });
         }, 600);
     }
 
-    doRefresh(refresher) {
-        this._eventService.fetchEvent(this.eventItem.uuid).then(
-            eventFull => {
-                this.eventItem = EventFull.toItem(eventFull);
-                this.eventFull = eventFull;
-                this.filtered = this.compute(this.eventFull.sessions, this.searchQuery);
-                this._eventData.updateCurrentEvent(this.eventItem, this.eventFull);
-                refresher.complete();
-            },
-            error => {
-                this._uiUtils.alert(this._nav, 'Fail to update :(');
-                refresher.complete();
-            }
-        );
-    }
-
-    search() {
-        this.filtered = this.compute(this.eventFull.sessions, this.searchQuery);
-    }
-
-    compute(items: SessionFull[], q: string): Array<any> {
+    compute(items: SessionFull[], favorites: { [key: string]: boolean; }): Array<any> {
         let that = this;
-        function filter(items: SessionFull[], q: string): SessionFull[] {
-            return q.trim() === '' ? items : items.filter(item => Filter.deep(item, q));
+        function filter(items: SessionFull[], favorites: { [key: string]: boolean; }): SessionFull[] {
+            return items.filter(item => favorites[item.uuid]);
         }
         function group(items: SessionFull[]): Array<any> {
             let grouped = _.groupBy(items, 'start');
@@ -113,20 +84,13 @@ export class SessionListPage implements OnInit {
             }
             return ret.sort((e1, e2) => Sort.num(e1.time, e2.time));
         }
-        return group(filter(items, q));
+        return group(filter(items, favorites));
     }
 
-    isFav(sessionFull: SessionFull) {
-        return this.favorites[sessionFull.uuid];
-    }
-
-    toggleFav(sessionFull: SessionFull) {
-        console.log('toggleFav: '+sessionFull.name);
-        if(this.isFav(sessionFull)){
-            this._eventData.unfavoriteSession(SessionFull.toItem(sessionFull));
-        } else {
-            this._eventData.favoriteSession(SessionFull.toItem(sessionFull));
-        }
+    unFav(sessionFull: SessionFull) {
+        this._eventData.unfavoriteSession(SessionFull.toItem(sessionFull)).then(() => {
+            this.filtered = this.compute(this.eventFull.sessions, this.favorites);
+        });
     }
 
     goToSession(sessionFull: SessionFull) {
