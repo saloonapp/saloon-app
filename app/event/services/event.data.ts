@@ -51,7 +51,7 @@ export class EventData {
     getFavoriteSessions(): Promise<{ [key: string]: boolean; }> {
         if(this.favorites === null) {
             return this._storage.getUserActions(this.currentEventItem.uuid).then(actions => {
-                let favorites = {};
+                let favorites: { [key: string]: boolean; } = {};
                 actions.filter(a => a.action === 'favorite' && a.itemType === 'session').map(action => {
                     favorites[action.itemId] = true;
                 });
