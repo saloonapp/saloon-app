@@ -4,6 +4,13 @@ import {ObjectUtils} from "./object";
 
 export class Sort {
     public static str(str1: string, str2: string): number {
+        const s1 = StringUtils.removeDiacritics(str1 || "").toLowerCase();
+        const s2 = StringUtils.removeDiacritics(str2 || "").toLowerCase();
+        if(s1 > s2) return 1;
+        else if(s1 < s2) return -1;
+        else return 0
+    }
+    public static strictStr(str1: string, str2: string): number {
         if(str1 > str2) return 1;
         else if(str1 < str2) return -1;
         else return 0

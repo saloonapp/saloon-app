@@ -22,8 +22,8 @@ import {SessionPage} from "./session.page";
 </ion-navbar>
 <ion-content class="program-page">
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
-    <ion-list-header *ngIf="eventFull && filtered.length === 0">Aucune session ajoutée au programme :(</ion-list-header>
-    <ion-list *ngIf="eventFull && filtered.length > 0">
+    <ion-list-header *ngIf="eventFull && !hasFavs()">Aucune session ajoutée au programme :(</ion-list-header>
+    <ion-list *ngIf="eventFull && hasFavs()">
         <ion-item *ngFor="#session of eventFull.sessions" [hidden]="!isFav(session)" (click)="goToSession(session)">
             <h2>{{session.name}}</h2>
             <p>{{session.start | timePeriod:session.end}} {{session.place}} {{session.category}}</p>
@@ -40,7 +40,6 @@ import {SessionPage} from "./session.page";
 export class ProgramPage implements OnInit {
     eventItem: EventItem;
     eventFull: EventFull;
-    favorites: { [key: string]: boolean; } = {};
     constructor(private _nav: NavController,
                 private _eventData: EventData) {}
 
@@ -52,13 +51,14 @@ export class ProgramPage implements OnInit {
                 this.eventFull = eventFull;
             });
         }, 600);
-        this._eventData.getFavoriteSessions().then(favorites => {
-            this.favorites = favorites;
-        });
     }
 
-    isFav(sessionFull: SessionFull) {
-        return sessionFull ? this.favorites[sessionFull.uuid] : false;
+    hasFavs(): boolean {
+        return this._eventData.hasFavoriteSessions();
+    }
+
+    isFav(sessionFull: SessionFull): boolean {
+        return this._eventData.isFavoriteSession(sessionFull);
     }
 
     unFav(sessionFull: SessionFull) {

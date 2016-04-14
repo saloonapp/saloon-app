@@ -13,6 +13,12 @@ import {AttendeePage} from "./attendee.page";
     template: `
 <ion-navbar *navbar>
     <ion-title>Session</ion-title>
+    <ion-buttons end>
+        <button (click)="toggleFav(sessionItem)">
+            <ion-icon name="star" [hidden]="!isFav(sessionItem)"></ion-icon>
+            <ion-icon name="star-outline" [hidden]="isFav(sessionItem)"></ion-icon>
+        </button>
+    </ion-buttons>
 </ion-navbar>
 <ion-content class="session-page">
     <div padding>
@@ -43,6 +49,18 @@ export class SessionPage implements OnInit {
     ngOnInit() {
         this.sessionItem = <SessionItem> this._navParams.get('sessionItem');
         this._eventData.getSessionFromCurrent(this.sessionItem.uuid).then(session => this.sessionFull = session);
+    }
+
+    isFav(sessionItem: SessionItem): boolean {
+        return this._eventData.isFavoriteSession(sessionItem);
+    }
+
+    toggleFav(sessionItem: SessionItem) {
+        if(this.isFav(sessionItem)){
+            this._eventData.unfavoriteSession(sessionItem);
+        } else {
+            this._eventData.favoriteSession(sessionItem);
+        }
     }
 
     goToAttendee(attendeeItem: AttendeeItem) {

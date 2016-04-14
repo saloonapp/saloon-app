@@ -53,7 +53,6 @@ export class SessionListPage implements OnInit {
     eventItem: EventItem;
     eventFull: EventFull;
     filtered: Array<any> = [];
-    favorites: { [key: string]: boolean; } = {};
     constructor(private _nav: NavController,
                 private _eventService: EventService,
                 private _eventData: EventData,
@@ -68,9 +67,6 @@ export class SessionListPage implements OnInit {
             this._eventData.getCurrentEventFull().then(event => {
                 this.eventFull = event;
                 this.filtered = this.compute(this.eventFull.sessions, this.searchQuery);
-                this._eventData.getFavoriteSessions().then(favorites => {
-                    this.favorites = favorites;
-                });
             });
         }, 600);
     }
@@ -117,11 +113,10 @@ export class SessionListPage implements OnInit {
     }
 
     isFav(sessionFull: SessionFull) {
-        return this.favorites[sessionFull.uuid];
+        return this._eventData.isFavoriteSession(sessionFull);
     }
 
     toggleFav(sessionFull: SessionFull) {
-        console.log('toggleFav: '+sessionFull.name);
         if(this.isFav(sessionFull)){
             this._eventData.unfavoriteSession(SessionFull.toItem(sessionFull));
         } else {

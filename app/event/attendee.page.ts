@@ -13,6 +13,11 @@ import {WeekDayPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 
 @Page({
+    styles: [`
+.item h2 {
+    white-space: initial;
+}
+    `],
     template: `
 <ion-navbar *navbar>
     <ion-title>Participant</ion-title>
@@ -36,6 +41,10 @@ import {CapitalizePipe} from "../common/pipes/text.pipe";
         <ion-item *ngFor="#session of attendeeFull.sessions" (click)="goToSession(session)">
             <h2>{{session.name}}</h2>
             <p>{{session.start | weekDay | capitalize}} {{session.start | timePeriod:session.end}} {{session.place}} {{session.category}}</p>
+            <button clear item-right (click)="toggleFav(session);$event.stopPropagation();">
+                <ion-icon name="star" [hidden]="!isFav(session)"></ion-icon>
+                <ion-icon name="star-outline" [hidden]="isFav(session)"></ion-icon>
+            </button>
         </ion-item>
     </ion-list>
 </ion-content>
@@ -52,6 +61,18 @@ export class AttendeePage implements OnInit {
     ngOnInit() {
         this.attendeeItem = <AttendeeItem> this._navParams.get('attendeeItem');
         this._eventData.getAttendeeFromCurrent(this.attendeeItem.uuid).then(attendee => this.attendeeFull = attendee);
+    }
+
+    isFav(sessionItem: SessionItem) {
+        return this._eventData.isFavoriteSession(sessionItem);
+    }
+
+    toggleFav(sessionItem: SessionItem) {
+        if(this.isFav(sessionItem)){
+            this._eventData.unfavoriteSession(sessionItem);
+        } else {
+            this._eventData.favoriteSession(sessionItem);
+        }
     }
 
     goToExponent(exponentItem: ExponentItem) {

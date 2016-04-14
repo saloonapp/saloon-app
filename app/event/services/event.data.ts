@@ -14,18 +14,16 @@ export class EventData {
     private currentEventItem: EventItem;
     private currentEventFull: Promise<EventFull>;
     private favorites: { [key: string]: boolean; } = null;
-    constructor(private _storage: Storage, private _eventService: EventService) {}
+    constructor(private _storage: Storage,
+                private _eventService: EventService) {}
 
-    setCurrentEvent(event: EventItem): void {
-        this.currentEventItem = event;
-        this.currentEventFull = this._eventService.getEvent(event.uuid);
-        this.favorites = null;
+    setCurrentEvent(eventItem: EventItem): void {
+        this.setEvent(eventItem, this._eventService.getEvent(eventItem.uuid));
     }
     updateCurrentEvent(eventItem: EventItem, eventFull: EventFull): void {
-        this.currentEventItem = eventItem;
-        this.currentEventFull = Promise.resolve(eventFull);
-        this.favorites = null;
+        this.setEvent(eventItem, Promise.resolve(eventFull));
     }
+
     getCurrentEventItem(): EventItem {
         return this.currentEventItem;
     }
@@ -33,34 +31,20 @@ export class EventData {
         return this.currentEventFull;
     }
     getAttendeeFromCurrent(uuid: string): Promise<AttendeeFull> {
-        return this.currentEventFull.then(event => {
-            return event.attendees.find(e => e.uuid === uuid)
-        });
+        return this.currentEventFull.then(event => event.attendees.find(e => e.uuid === uuid));
     }
     getSessionFromCurrent(uuid: string): Promise<SessionFull> {
-        return this.currentEventFull.then(event => {
-            return event.sessions.find(e => e.uuid === uuid)
-        });
+        return this.currentEventFull.then(event => event.sessions.find(e => e.uuid === uuid));
     }
     getExponentFromCurrent(uuid: string): Promise<ExponentFull> {
-        return this.currentEventFull.then(event => {
-            return event.exponents.find(e => e.uuid === uuid)
-        });
+        return this.currentEventFull.then(event => event.exponents.find(e => e.uuid === uuid));
     }
 
-    getFavoriteSessions(): Promise<{ [key: string]: boolean; }> {
-        if(this.favorites === null) {
-            return this._storage.getUserActions(this.currentEventItem.uuid).then(actions => {
-                let favorites: { [key: string]: boolean; } = {};
-                actions.filter(a => a.action === 'favorite' && a.itemType === 'session').map(action => {
-                    favorites[action.itemId] = true;
-                });
-                this.favorites = favorites;
-                return this.favorites;
-            });
-        } else {
-            return Promise.resolve(this.favorites);
-        }
+    isFavoriteSession(session: SessionItem): boolean {
+        return this.favorites ? this.favorites[session.uuid] || false : false;
+    }
+    hasFavoriteSessions(): boolean {
+        return this.favorites ? Object.keys(this.favorites).length > 0 : false;
     }
     favoriteSession(session: SessionItem): Promise<void> {
         const eventId = this.currentEventItem.uuid;
@@ -80,6 +64,19 @@ export class EventData {
             return this._storage.setUserActions(eventId, actions.filter(a => !UserAction.isFavoriteSession(a, session)));
         }).then(() => {
             this.favorites[session.uuid] = false;
+        });
+    }
+
+    private setEvent(eventItem: EventItem, eventFullPromise: Promise<EventFull>): void {
+        this.currentEventItem = eventItem;
+        this.currentEventFull = eventFullPromise;
+        this.favorites = null;
+        this._storage.getUserActions(eventItem.uuid).then(actions => {
+            let favorites: { [key: string]: boolean; } = {};
+            actions.filter(a => a.action === 'favorite' && a.itemType === 'session').map(action => {
+                favorites[action.itemId] = true;
+            });
+            this.favorites = favorites;
         });
     }
 }
