@@ -22,8 +22,8 @@ export class TfidefWord {
         this.documentTotal = documentTotal;
         this.collectionCount = collectionCount;
         this.collectionTotal = collectionTotal;
-        let termFrequency = documentCount / documentTotal;
-        let documentFrequency = collectionCount / collectionTotal;
+        const termFrequency = documentCount / documentTotal;
+        const documentFrequency = collectionCount / collectionTotal;
         this.value = termFrequency / documentFrequency;
     }
 }
@@ -43,14 +43,14 @@ export class TfidfResult {
 export class TfidfService {
     compute(documents: TfidfDocument[]): TfidfResult[] {
         let collectionCount: { [key: string]: number; } = {};
-        let parsedDocs = documents.map(doc => {
-            let words = this.toWords(doc.text);
-            let count = this.countWords(words);
+        const parsedDocs = documents.map(doc => {
+            const words = this.toWords(doc.text);
+            const count = this.countWords(words);
             collectionCount = this.addCounts(collectionCount, count);
             return {doc: doc, count: count, words: []};
         });
         return parsedDocs.map(doc => {
-            let tfidf = this.computeTfIdf(doc.count, collectionCount);
+            const tfidf = this.computeTfIdf(doc.count, collectionCount);
             return new TfidfResult(doc.doc.id, doc.doc.text, tfidf);
         });
     }
@@ -64,7 +64,7 @@ export class TfidfService {
     }
 
     private countWords(words: string[]): { [key: string]: number; } {
-        let count: { [key: string]: number; } = {};
+        const count: { [key: string]: number; } = {};
         words.map(word => {
             if(count[word]){ count[word]++; }
             else { count[word] = 1; }
@@ -73,7 +73,7 @@ export class TfidfService {
     }
 
     private addCounts(count1: { [key: string]: number; }, count2: { [key: string]: number; }): { [key: string]: number; } {
-        let res: { [key: string]: number; } = {};
+        const res: { [key: string]: number; } = {};
         for(let key in count1){
             res[key] = count1[key] + (count2[key] || 0);
         }
@@ -86,9 +86,9 @@ export class TfidfService {
     }
 
     private computeTfIdf(documentCount: { [key: string]: number; }, collectionCount: { [key: string]: number; }): TfidefWord[] {
-        let res = [];
-        let documentTotal = this.total(documentCount);
-        let collectionTotal = this.total(collectionCount);
+        const res = [];
+        const documentTotal = this.total(documentCount);
+        const collectionTotal = this.total(collectionCount);
         for(let key in documentCount){
             res.push(new TfidefWord(key, documentCount[key], documentTotal, collectionCount[key], collectionTotal));
         }

@@ -9,7 +9,7 @@ import {DatePeriodPipe} from "../../common/pipes/datetime.pipe";
     <img [src]="event.landing">
     <ion-card-content>
         <ion-card-title>{{event.name}}</ion-card-title>
-        <h3>{{event.start | datePeriod:event.end}}, {{event.address.city}}</h3>
+        <h3>{{[event.start | datePeriod:event.end, event.address.city].filter(notEmpty).join(', ')}}</h3>
     </ion-card-content>
 </ion-card>
 `,
@@ -17,4 +17,8 @@ import {DatePeriodPipe} from "../../common/pipes/datetime.pipe";
 })
 export class EventItemComponent {
     @Input() event: EventItem
+
+    notEmpty(e: string): boolean {
+        return e ? e.length > 0 : false;
+    }
 }

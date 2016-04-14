@@ -26,8 +26,8 @@ import {SessionPage} from "./session.page";
     <ion-list *ngIf="eventFull && hasFavs()">
         <ion-item *ngFor="#session of eventFull.sessions" [hidden]="!isFav(session)" (click)="goToSession(session)">
             <h2>{{session.name}}</h2>
-            <p>{{session.start | timePeriod:session.end}} {{session.place}} {{session.category}}</p>
-            <p><span *ngFor="#p of session.speakers" class="label">{{p.name}} </span></p>
+            <p>{{[session.place, session.category, session.start | timePeriod:session.end].filter(notEmpty).join(' - ')}}</p>
+            <p>{{session.speakers.map(toName).join(', ')}}</p>
             <button clear item-right (click)="unFav(session);$event.stopPropagation();">
                 <ion-icon name="star"></ion-icon>
             </button>
@@ -69,5 +69,12 @@ export class ProgramPage implements OnInit {
         this._nav.push(SessionPage, {
             sessionItem: SessionFull.toItem(sessionFull)
         });
+    }
+
+    notEmpty(e: string): boolean {
+        return e ? e.length > 0 : false;
+    }
+    toName(e: any): string {
+        return e.name;
     }
 }

@@ -15,7 +15,7 @@ import {EventData} from "./services/event.data";
 
 @Page({
     styles: [`
-.item h2 {
+.item h2, .item p {
     white-space: initial;
 }
     `],
@@ -35,8 +35,8 @@ import {EventData} from "./services/event.data";
             <ion-item-divider sticky>{{group.title}}</ion-item-divider>
             <ion-item *ngFor="#session of group.items" (click)="goToSession(session)">
                 <h2>{{session.name}}</h2>
-                <p>{{session.start | timePeriod:session.end}} {{session.place}} {{session.category}}</p>
-                <p><span *ngFor="#p of session.speakers" class="label">{{p.name}} </span></p>
+                <p>{{[session.place, session.category, session.start | timePeriod:session.end].filter(notEmpty).join(' - ')}}</p>
+                <p>{{session.speakers.map(toName).join(', ')}}</p>
                 <button clear item-right (click)="toggleFav(session);$event.stopPropagation();">
                     <ion-icon name="star" [hidden]="!isFav(session)"></ion-icon>
                     <ion-icon name="star-outline" [hidden]="isFav(session)"></ion-icon>
@@ -92,15 +92,15 @@ export class SessionListPage implements OnInit {
     }
 
     compute(items: SessionFull[], q: string): Array<any> {
-        let that = this;
+        const that = this;
         function filter(items: SessionFull[], q: string): SessionFull[] {
             return q.trim() === '' ? items : items.filter(item => Filter.deep(item, q));
         }
         function group(items: SessionFull[]): Array<any> {
-            let grouped = _.groupBy(items, 'start');
-            let ret = [];
+            const grouped = _.groupBy(items, 'start');
+            const ret = [];
             for(let key in grouped){
-                let time = parseInt(key, 10);
+                const time = parseInt(key, 10);
                 ret.push({
                     title: that._capitalizePipe.transform(that._weekDayPipe.transform(time))+', '+that._timePipe.transform(time),
                     time: time,
@@ -128,5 +128,12 @@ export class SessionListPage implements OnInit {
         this._nav.push(SessionPage, {
             sessionItem: SessionFull.toItem(sessionFull)
         });
+    }
+
+    notEmpty(e: string): boolean {
+        return e ? e.length > 0 : false;
+    }
+    toName(e: any): string {
+        return e.name;
     }
 }

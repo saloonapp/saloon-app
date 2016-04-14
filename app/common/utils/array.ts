@@ -36,14 +36,14 @@ export class Filter {
         return this.custom(obj, query, deep ? deep : 50, {multi: true, removeDiacritics: true});
     }
     public static custom(obj: any, query: string, deep?: number, options?: any): boolean {
-        let deepValue = deep ? deep : 0;
-        let opts = Object.assign({
+        const deepValue = deep ? deep : 0;
+        const opts = Object.assign({
             multi: false,
             removeDiacritics: false,
             matchStr: this.matchStr,
             matchDate: this.matchDate
         }, options);
-        let queries = opts.multi ? query.split(' ') : [query];
+        const queries = opts.multi ? query.split(' ') : [query];
         return queries
             .map(q => this.matchObj(obj, q, deepValue, opts))
             .reduce((total, elt) => total && elt, true);
@@ -52,8 +52,8 @@ export class Filter {
     private static matchObj(obj: any, query: string, deep: number, opts: any): boolean {
         let hasMatch = false;
         for(let key in obj){
-            let value = obj[key];
-            let type = ObjectUtils.getType(value);
+            const value = obj[key];
+            const type = ObjectUtils.getType(value);
             switch (type) {
                 case 'string':
                     hasMatch = hasMatch || opts.matchStr(value, query, opts.removeDiacritics);
@@ -83,13 +83,13 @@ export class Filter {
         return hasMatch;
     }
     private static matchStr(value: string, query: string, removeDiacritics: boolean): boolean {
-        let str1 = (removeDiacritics ? StringUtils.removeDiacritics(value) : value).toLowerCase();
-        let str2 = (removeDiacritics ? StringUtils.removeDiacritics(query) : query).toLowerCase();
+        const str1 = (removeDiacritics ? StringUtils.removeDiacritics(value) : value).toLowerCase();
+        const str2 = (removeDiacritics ? StringUtils.removeDiacritics(query) : query).toLowerCase();
         return str1.indexOf(str2) !== -1;
     }
     private static matchDate(value: any, query: string): boolean {
-        let mDate = moment(value);
-        let valueStr = ['LLLL', 'L', 'llll', 'l', 'HH[h]mm'].map(f => mDate.format(f)).join(' ');
+        const mDate = moment(value);
+        const valueStr = ['LLLL', 'L', 'llll', 'l', 'HH[h]mm'].map(f => mDate.format(f)).join(' ');
         return this.matchStr(valueStr, query, false);
     }
 }

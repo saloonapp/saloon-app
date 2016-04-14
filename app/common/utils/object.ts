@@ -26,12 +26,12 @@ export class ObjectUtils {
         if(obj === undefined || obj === null){
             return defaultValue;
         }
-        let props: string[] = Array.isArray(path) ? path : path.split('.');
+        const props: string[] = Array.isArray(path) ? path : path.split('.');
         if(props.length === 0){
             return obj;
         }
-        let child = obj[props[0]];
-        let remainingProps = props.slice(1);
+        const child = obj[props[0]];
+        const remainingProps = props.slice(1);
         return this.getSafe(child, remainingProps, defaultValue);
     }
 }

@@ -5,7 +5,7 @@ import {NavController, Alert} from "ionic-angular/index";
 export class UiUtils {
     alert(nav: NavController, title: string, subTitle?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            let alert = Alert.create({
+            const alert = Alert.create({
                 title: title,
                 subTitle: subTitle,
                 buttons: [{
@@ -20,7 +20,7 @@ export class UiUtils {
     }
     confirm(nav: NavController, title: string, subTitle?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            let alert = Alert.create({
+            const alert = Alert.create({
                 title: title,
                 subTitle: subTitle,
                 buttons: [{

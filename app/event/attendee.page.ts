@@ -14,7 +14,7 @@ import {CapitalizePipe} from "../common/pipes/text.pipe";
 
 @Page({
     styles: [`
-.item h2 {
+.item h2, .item p {
     white-space: initial;
 }
     `],
@@ -25,7 +25,7 @@ import {CapitalizePipe} from "../common/pipes/text.pipe";
 <ion-content class="attendee-page">
     <div padding>
         <h1>{{attendeeItem.name}}</h1>
-        <h4>{{(attendeeItem.job ? attendeeItem.job+', ' : '')+attendeeItem.company}}</h4>
+        <h4>{{[attendeeItem.job, attendeeItem.company].filter(notEmpty).join(', ')}}</h4>
         <p>{{attendeeItem.description}}</p>
     </div>
     <ion-list *ngIf="attendeeFull && attendeeFull.exponents.length > 0">
@@ -40,7 +40,7 @@ import {CapitalizePipe} from "../common/pipes/text.pipe";
         <ion-list-header>Sessions</ion-list-header>
         <ion-item *ngFor="#session of attendeeFull.sessions" (click)="goToSession(session)">
             <h2>{{session.name}}</h2>
-            <p>{{session.start | weekDay | capitalize}} {{session.start | timePeriod:session.end}} {{session.place}} {{session.category}}</p>
+            <p>{{[session.place, session.category, (session.start|weekDay|capitalize)+' '+(session.start|timePeriod:session.end)].filter(notEmpty).join(' - ')}}</p>
             <button clear item-right (click)="toggleFav(session);$event.stopPropagation();">
                 <ion-icon name="star" [hidden]="!isFav(session)"></ion-icon>
                 <ion-icon name="star-outline" [hidden]="isFav(session)"></ion-icon>
@@ -85,5 +85,9 @@ export class AttendeePage implements OnInit {
         this._nav.push(SessionPage, {
             sessionItem: sessionItem
         });
+    }
+
+    notEmpty(e: string): boolean {
+        return e ? e.length > 0 : false;
     }
 }

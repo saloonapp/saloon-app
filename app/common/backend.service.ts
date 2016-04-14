@@ -69,13 +69,13 @@ export class Backend {
         );
     }
     private formatEventFull(event: any): EventFull {
-        let attendeeItems = this.toMap(event.attendees.map(this.formatAttendeeItem), i => i.uuid);
-        let attendeeFulls = event.attendees.map(s => this.formatAttendeeFull(s, event.sessions, event.exponents)).sort((e1, e2) => Sort.str(e1.lastName, e2.lastName));
-        let sessionFulls = event.sessions.map(s => this.formatSessionFull(s, attendeeItems)).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), Sort.num(e1.end, e2.end), Sort.str(e1.place, e2.place), Sort.str(e1.name, e2.name)));
-        let exponentFulls = event.exponents.map(e => this.formatExponentFull(e, attendeeItems)).sort((e1, e2) => Sort.str(e1.name, e2.name));
-        let formats = this.eltsToEventElt(sessionFulls.map(s => s.format));
-        let themes = this.eltsToEventElt(sessionFulls.map(s => s.theme));
-        let places = this.eltsToEventElt(sessionFulls.map(s => s.place));
+        const attendeeItems = this.toMap(event.attendees.map(this.formatAttendeeItem), i => i.uuid);
+        const attendeeFulls = event.attendees.map(s => this.formatAttendeeFull(s, event.sessions, event.exponents)).sort((e1, e2) => Sort.str(e1.lastName, e2.lastName));
+        const sessionFulls = event.sessions.map(s => this.formatSessionFull(s, attendeeItems)).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), Sort.num(e1.end, e2.end), Sort.str(e1.place, e2.place), Sort.str(e1.name, e2.name)));
+        const exponentFulls = event.exponents.map(e => this.formatExponentFull(e, attendeeItems)).sort((e1, e2) => Sort.str(e1.name, e2.name));
+        const formats = this.eltsToEventElt(sessionFulls.map(s => s.format));
+        const themes = this.eltsToEventElt(sessionFulls.map(s => s.theme));
+        const places = this.eltsToEventElt(sessionFulls.map(s => s.place));
         return new EventFull(
             ObjectUtils.getSafe(event, 'uuid'),
             ObjectUtils.getSafe(event, 'name'),
@@ -124,10 +124,10 @@ export class Backend {
         );
     }
     private formatAttendeeFull(attendee: any, sessions: any[], exponents: any[]): AttendeeFull {
-        let attendeeSessions = sessions.filter(session => {
+        const attendeeSessions = sessions.filter(session => {
             return session.info ? session.info.speakers.indexOf(attendee.uuid) !== -1 : false;
         }).map(this.formatSessionItem);
-        let attendeeExponents = exponents.filter(exponent => {
+        const attendeeExponents = exponents.filter(exponent => {
             return exponent.info ? exponent.info.team.indexOf(attendee.uuid) !== -1 : false;
         }).map(this.formatExponentItem);
         return new AttendeeFull(

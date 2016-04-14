@@ -32,7 +32,7 @@ import {AttendeePage} from "./attendee.page";
         <ion-item *ngFor="#attendee of sessionFull.speakers" (click)="goToAttendee(attendee)">
             <ion-avatar item-left><img [src]="attendee.avatar"></ion-avatar>
             <h2>{{attendee.name}}</h2>
-            <p>{{(attendee.job ? attendee.job+', ' : '')+attendee.company}}</p>
+            <p>{{[attendee.job, attendee.company].filter(notEmpty).join(', ')}}</p>
         </ion-item>
     </ion-list>
 </ion-content>
@@ -67,5 +67,9 @@ export class SessionPage implements OnInit {
         this._nav.push(AttendeePage, {
             attendeeItem: attendeeItem
         });
+    }
+
+    notEmpty(e: string): boolean {
+        return e ? e.length > 0 : false;
     }
 }

@@ -23,7 +23,7 @@ import {AttendeePage} from "./attendee.page";
         <ion-item *ngFor="#exponent of sessionFull.team" (click)="goToAttendee(exponent)">
             <ion-avatar item-left><img [src]="exponent.avatar"></ion-avatar>
             <h2>{{exponent.name}}</h2>
-            <p>{{(attendee.job ? attendee.job+', ' : '')+attendee.company}}</p>
+            <p>{{[attendee.job, attendee.company].filter(notEmpty).join(', ')}}</p>
         </ion-item>
     </ion-list>
 </ion-content>
@@ -45,5 +45,9 @@ export class ExponentPage implements OnInit {
         this._nav.push(AttendeePage, {
             attendeeItem: attendeeItem
         });
+    }
+
+    notEmpty(e: string): boolean {
+        return e ? e.length > 0 : false;
     }
 }

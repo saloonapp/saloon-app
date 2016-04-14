@@ -32,7 +32,7 @@ import {ExponentPage} from "./exponent.page";
             <ion-item *ngFor="#attendee of group.items" (click)="goToAttendee(attendee)">
                 <ion-avatar item-left><img [src]="attendee.avatar"></ion-avatar>
                 <h2>{{attendee.name}}</h2>
-                <p>{{(attendee.job ? attendee.job+', ' : '')+attendee.company}}</p>
+                <p>{{[attendee.job, attendee.company].filter(notEmpty).join(', ')}}</p>
             </ion-item>
         </ion-item-group>
     </ion-list>
@@ -110,8 +110,8 @@ export class AttendeeListPage {
             return q.trim() === '' ? items : items.filter(item => Filter.deep(item, q));
         }
         function group(items: AttendeeFull[]): Array<any> {
-            let grouped = _.groupBy(items, i => i.lastName[0]);
-            let ret = [];
+            const grouped = _.groupBy(items, i => i.lastName[0]);
+            const ret = [];
             for(let key in grouped){
                 ret.push({
                     title: key.toUpperCase(),
@@ -137,5 +137,9 @@ export class AttendeeListPage {
         this._nav.push(SessionPage, {
             sessionItem: sessionItem
         });
+    }
+
+    notEmpty(e: string): boolean {
+        return e ? e.length > 0 : false;
     }
 }

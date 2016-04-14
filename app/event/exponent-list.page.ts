@@ -79,8 +79,8 @@ export class ExponentListPage {
             return q.trim() === '' ? items : items.filter(item => Filter.deep(item, q));
         }
         function group(items: ExponentFull[]): Array<any> {
-            let grouped = _.groupBy(items, i => i.name[0]);
-            let ret = [];
+            const grouped = _.groupBy(items, i => i.name[0]);
+            const ret = [];
             for(let key in grouped){
                 ret.push({
                     title: key.toUpperCase(),
