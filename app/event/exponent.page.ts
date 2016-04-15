@@ -5,6 +5,7 @@ import {ExponentItem} from "./models/ExponentItem";
 import {ExponentFull} from "./models/ExponentFull";
 import {AttendeeItem} from "./models/AttendeeItem";
 import {EventData} from "./services/event.data";
+import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {AttendeePage} from "./attendee.page";
 
 @Page({
@@ -23,11 +24,12 @@ import {AttendeePage} from "./attendee.page";
         <ion-item *ngFor="#exponent of sessionFull.team" (click)="goToAttendee(exponent)">
             <ion-avatar item-left><img [src]="exponent.avatar"></ion-avatar>
             <h2>{{exponent.name}}</h2>
-            <p>{{[attendee.job, attendee.company].filter(notEmpty).join(', ')}}</p>
+            <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
         </ion-item>
     </ion-list>
 </ion-content>
-`
+`,
+    pipes: [NotEmptyPipe, JoinPipe]
 })
 export class ExponentPage implements OnInit {
     exponentItem: ExponentItem;
@@ -45,9 +47,5 @@ export class ExponentPage implements OnInit {
         this._nav.push(AttendeePage, {
             attendeeItem: attendeeItem
         });
-    }
-
-    notEmpty(e: string): boolean {
-        return e ? e.length > 0 : false;
     }
 }

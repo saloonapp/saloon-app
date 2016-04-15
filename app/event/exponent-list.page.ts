@@ -1,5 +1,6 @@
 import {Page} from "ionic-angular";
 import {NavController} from "ionic-angular/index";
+import * as _ from "lodash";
 import {EventFull} from "./models/EventFull";
 import {EventItem} from "./models/EventItem";
 import {ExponentFull} from "./models/ExponentFull";

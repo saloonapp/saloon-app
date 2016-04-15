@@ -6,6 +6,7 @@ import {SessionItem} from "./models/SessionItem";
 import {AttendeeItem} from "./models/AttendeeItem";
 import {WeekDayPipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
+import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {EventData} from "./services/event.data";
 import {AttendeePage} from "./attendee.page";
 
@@ -32,12 +33,12 @@ import {AttendeePage} from "./attendee.page";
         <ion-item *ngFor="#attendee of sessionFull.speakers" (click)="goToAttendee(attendee)">
             <ion-avatar item-left><img [src]="attendee.avatar"></ion-avatar>
             <h2>{{attendee.name}}</h2>
-            <p>{{[attendee.job, attendee.company].filter(notEmpty).join(', ')}}</p>
+            <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
         </ion-item>
     </ion-list>
 </ion-content>
 `,
-    pipes: [WeekDayPipe, CapitalizePipe, TimePeriodPipe]
+    pipes: [WeekDayPipe, CapitalizePipe, TimePeriodPipe, NotEmptyPipe, JoinPipe]
 })
 export class SessionPage implements OnInit {
     sessionItem: SessionItem;
@@ -67,9 +68,5 @@ export class SessionPage implements OnInit {
         this._nav.push(AttendeePage, {
             attendeeItem: attendeeItem
         });
-    }
-
-    notEmpty(e: string): boolean {
-        return e ? e.length > 0 : false;
     }
 }

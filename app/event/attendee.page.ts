@@ -6,11 +6,11 @@ import {AttendeeItem} from "./models/AttendeeItem";
 import {SessionItem} from "./models/SessionItem";
 import {ExponentItem} from "./models/ExponentItem";
 import {EventData} from "./services/event.data";
-import {TimePeriodPipe} from "../common/pipes/datetime.pipe";
+import {TimePeriodPipe, WeekDayPipe} from "../common/pipes/datetime.pipe";
+import {CapitalizePipe} from "../common/pipes/text.pipe";
+import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {SessionPage} from "./session.page";
 import {ExponentPage} from "./exponent.page";
-import {WeekDayPipe} from "../common/pipes/datetime.pipe";
-import {CapitalizePipe} from "../common/pipes/text.pipe";
 
 @Page({
     styles: [`
@@ -25,7 +25,7 @@ import {CapitalizePipe} from "../common/pipes/text.pipe";
 <ion-content class="attendee-page">
     <div padding>
         <h1>{{attendeeItem.name}}</h1>
-        <h4>{{[attendeeItem.job, attendeeItem.company].filter(notEmpty).join(', ')}}</h4>
+        <h4>{{[attendeeItem.job, attendeeItem.company] | notEmpty | join:', '}}</h4>
         <p>{{attendeeItem.description}}</p>
     </div>
     <ion-list *ngIf="attendeeFull && attendeeFull.exponents.length > 0">
@@ -40,7 +40,7 @@ import {CapitalizePipe} from "../common/pipes/text.pipe";
         <ion-list-header>Sessions</ion-list-header>
         <ion-item *ngFor="#session of attendeeFull.sessions" (click)="goToSession(session)">
             <h2>{{session.name}}</h2>
-            <p>{{[session.place, session.category, (session.start|weekDay|capitalize)+' '+(session.start|timePeriod:session.end)].filter(notEmpty).join(' - ')}}</p>
+            <p>{{[session.place, session.category, (session.start|weekDay|capitalize)+' '+(session.start|timePeriod:session.end)] | notEmpty | join:' - '}}</p>
             <button clear item-right (click)="toggleFav(session);$event.stopPropagation();">
                 <ion-icon name="star" [hidden]="!isFav(session)"></ion-icon>
                 <ion-icon name="star-outline" [hidden]="isFav(session)"></ion-icon>
@@ -49,7 +49,7 @@ import {CapitalizePipe} from "../common/pipes/text.pipe";
     </ion-list>
 </ion-content>
 `,
-    pipes: [TimePeriodPipe, WeekDayPipe, CapitalizePipe]
+    pipes: [TimePeriodPipe, WeekDayPipe, CapitalizePipe, NotEmptyPipe, JoinPipe]
 })
 export class AttendeePage implements OnInit {
     attendeeItem: AttendeeItem;
@@ -85,9 +85,5 @@ export class AttendeePage implements OnInit {
         this._nav.push(SessionPage, {
             sessionItem: sessionItem
         });
-    }
-
-    notEmpty(e: string): boolean {
-        return e ? e.length > 0 : false;
     }
 }

@@ -9,6 +9,7 @@ import {EventService} from "./services/event.service";
 import {Filter, Sort} from "../common/utils/array";
 import {WeekDayPipe, TimePipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
+import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {UiUtils} from "../common/ui/utils";
 import {SessionPage} from "./session.page";
 import {EventData} from "./services/event.data";
@@ -35,8 +36,8 @@ import {EventData} from "./services/event.data";
             <ion-item-divider sticky>{{group.title}}</ion-item-divider>
             <ion-item *ngFor="#session of group.items" (click)="goToSession(session)">
                 <h2>{{session.name}}</h2>
-                <p>{{[session.place, session.category, session.start | timePeriod:session.end].filter(notEmpty).join(' - ')}}</p>
-                <p>{{session.speakers.map(toName).join(', ')}}</p>
+                <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
+                <p>{{session.speakers | map:'name' | join:', '}}</p>
                 <button clear item-right (click)="toggleFav(session);$event.stopPropagation();">
                     <ion-icon name="star" [hidden]="!isFav(session)"></ion-icon>
                     <ion-icon name="star-outline" [hidden]="isFav(session)"></ion-icon>
@@ -46,7 +47,7 @@ import {EventData} from "./services/event.data";
     </ion-list>
 </ion-content>
 `,
-    pipes: [TimePeriodPipe]
+    pipes: [TimePeriodPipe, MapPipe, NotEmptyPipe, JoinPipe]
 })
 export class SessionListPage implements OnInit {
     searchQuery: string = '';
@@ -128,12 +129,5 @@ export class SessionListPage implements OnInit {
         this._nav.push(SessionPage, {
             sessionItem: SessionFull.toItem(sessionFull)
         });
-    }
-
-    notEmpty(e: string): boolean {
-        return e ? e.length > 0 : false;
-    }
-    toName(e: any): string {
-        return e.name;
     }
 }

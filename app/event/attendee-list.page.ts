@@ -1,5 +1,6 @@
 import {Page} from 'ionic-angular';
 import {NavController} from "ionic-angular/index";
+import * as _ from "lodash";
 import {EventFull} from "./models/EventFull";
 import {EventItem} from "./models/EventItem";
 import {AttendeeFull} from "./models/AttendeeFull";
@@ -10,6 +11,7 @@ import {EventData} from "./services/event.data";
 import {Filter, Sort} from "../common/utils/array";
 import {UiUtils} from "../common/ui/utils";
 import {TwitterHandlePipe} from "../common/pipes/social.pipe";
+import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {AttendeePage} from "./attendee.page";
 import {SessionPage} from "./session.page";
 import {ExponentPage} from "./exponent.page";
@@ -32,7 +34,7 @@ import {ExponentPage} from "./exponent.page";
             <ion-item *ngFor="#attendee of group.items" (click)="goToAttendee(attendee)">
                 <ion-avatar item-left><img [src]="attendee.avatar"></ion-avatar>
                 <h2>{{attendee.name}}</h2>
-                <p>{{[attendee.job, attendee.company].filter(notEmpty).join(', ')}}</p>
+                <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
             </ion-item>
         </ion-item-group>
     </ion-list>
@@ -63,7 +65,7 @@ import {ExponentPage} from "./exponent.page";
     </div>-->
 </ion-content>
 `,
-    pipes: [TwitterHandlePipe]
+    pipes: [TwitterHandlePipe, NotEmptyPipe, JoinPipe]
 })
 export class AttendeeListPage {
     searchQuery: string = '';
@@ -137,9 +139,5 @@ export class AttendeeListPage {
         this._nav.push(SessionPage, {
             sessionItem: sessionItem
         });
-    }
-
-    notEmpty(e: string): boolean {
-        return e ? e.length > 0 : false;
     }
 }

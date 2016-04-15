@@ -8,6 +8,7 @@ import {SessionFull} from "./models/SessionFull";
 import {EventData} from "./services/event.data";
 import {Sort} from "../common/utils/array";
 import {TimePeriodPipe} from "../common/pipes/datetime.pipe";
+import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {SessionPage} from "./session.page";
 
 @Page({
@@ -26,8 +27,8 @@ import {SessionPage} from "./session.page";
     <ion-list *ngIf="eventFull && hasFavs()">
         <ion-item *ngFor="#session of eventFull.sessions" [hidden]="!isFav(session)" (click)="goToSession(session)">
             <h2>{{session.name}}</h2>
-            <p>{{[session.place, session.category, session.start | timePeriod:session.end].filter(notEmpty).join(' - ')}}</p>
-            <p>{{session.speakers.map(toName).join(', ')}}</p>
+            <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
+            <p>{{session.speakers | map:'name' | join:', '}}</p>
             <button clear item-right (click)="unFav(session);$event.stopPropagation();">
                 <ion-icon name="star"></ion-icon>
             </button>
@@ -35,7 +36,7 @@ import {SessionPage} from "./session.page";
     </ion-list>
 </ion-content>
 `,
-    pipes: [TimePeriodPipe]
+    pipes: [TimePeriodPipe, MapPipe, NotEmptyPipe, JoinPipe]
 })
 export class ProgramPage implements OnInit {
     eventItem: EventItem;
@@ -69,12 +70,5 @@ export class ProgramPage implements OnInit {
         this._nav.push(SessionPage, {
             sessionItem: SessionFull.toItem(sessionFull)
         });
-    }
-
-    notEmpty(e: string): boolean {
-        return e ? e.length > 0 : false;
-    }
-    toName(e: any): string {
-        return e.name;
     }
 }
