@@ -1,6 +1,7 @@
 import {Pipe, PipeTransform} from "angular2/core";
 import * as _ from "lodash";
 import {ObjectUtils} from "../utils/object";
+import {Filter} from "../utils/array";
 
 @Pipe({name: 'map'})
 export class MapPipe implements PipeTransform {
@@ -40,5 +41,19 @@ export class NotEmptyPipe implements PipeTransform {
 export class JoinPipe implements PipeTransform {
     transform(array: any[], [separator]: string[]): string {
         return array ? array.join(separator) : '';
+    }
+}
+
+@Pipe({name: 'search'})
+export class SearchPipe implements PipeTransform {
+    transform(items: any[], [query]: string[]): any[] {
+        return Filter.deep(items, query);
+    }
+}
+
+@Pipe({name: 'filter'})
+export class FilterPipe implements PipeTransform {
+    transform(items: any[], [predicate]: any[]): any[] {
+        return _.filter(items, predicate);
     }
 }

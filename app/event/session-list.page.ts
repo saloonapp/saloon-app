@@ -28,7 +28,7 @@ import {EventData} from "./services/event.data";
     <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
 </ion-toolbar>
 <ion-content class="session-list-page">
-    <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
+    <ion-refresher (refresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de session trouvée</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0">
@@ -62,6 +62,8 @@ export class SessionListPage implements OnInit {
                 private _capitalizePipe: CapitalizePipe,
                 private _uiUtils: UiUtils) {}
 
+    // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
+    // implement VirtualScroll with SearchPipe to improve perf & avoid compute.group()
     ngOnInit() {
         this.eventItem = this._eventData.getCurrentEventItem();
         setTimeout(() => {
@@ -94,9 +96,6 @@ export class SessionListPage implements OnInit {
 
     compute(items: SessionFull[], q: string): Array<any> {
         const that = this;
-        function filter(items: SessionFull[], q: string): SessionFull[] {
-            return q.trim() === '' ? items : items.filter(item => Filter.deep(item, q));
-        }
         function group(items: SessionFull[]): Array<any> {
             const grouped = _.groupBy(items, 'start');
             const ret = [];
@@ -110,7 +109,7 @@ export class SessionListPage implements OnInit {
             }
             return ret.sort((e1, e2) => Sort.num(e1.time, e2.time));
         }
-        return group(filter(items, q));
+        return group(Filter.deep(items, q));
     }
 
     isFav(sessionFull: SessionFull) {

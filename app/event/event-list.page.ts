@@ -20,7 +20,7 @@ import {EventPage} from "./event.page.ts";
     </ion-buttons>
 </ion-navbar>
 <ion-content class="event-list-page">
-    <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
+    <ion-refresher (refresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
     <event-item *ngFor="#event of events" [event]="event" (click)="goToEvent(event)"></event-item>
     <!--<ion-list>
         <ion-item *ngFor="#event of events" (click)="goToEvent(event)">
@@ -46,6 +46,7 @@ export class EventListPage implements OnInit {
                 private _eventService: EventService,
                 private _uiUtils: UiUtils) {}
 
+    // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
     ngOnInit() {
         this._eventService.getEvents().then(
             events => this.events = events,

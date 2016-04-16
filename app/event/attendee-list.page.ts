@@ -25,7 +25,7 @@ import {ExponentPage} from "./exponent.page";
     <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
 </ion-toolbar>
 <ion-content class="attendee-list-page">
-    <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
+    <ion-refresher (refresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de participant trouvé</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0">
@@ -77,6 +77,7 @@ export class AttendeeListPage {
                 private _eventData: EventData,
                 private _uiUtils: UiUtils) {}
 
+    // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
     ngOnInit() {
         this.eventItem = this._eventData.getCurrentEventItem();
         setTimeout(() => {
@@ -108,9 +109,6 @@ export class AttendeeListPage {
     }
 
     compute(items: AttendeeFull[], q: string): Array<any> {
-        function filter(items: AttendeeFull[], q: string): AttendeeFull[] {
-            return q.trim() === '' ? items : items.filter(item => Filter.deep(item, q));
-        }
         function group(items: AttendeeFull[]): Array<any> {
             const grouped = _.groupBy(items, i => i.lastName[0]);
             const ret = [];
@@ -122,7 +120,7 @@ export class AttendeeListPage {
             }
             return ret.sort((e1, e2) => Sort.str(e1.title, e2.title));
         }
-        return group(filter(items, q));
+        return group(Filter.deep(items, q));
     }
 
     goToAttendee(attendeeFull: AttendeeFull) {

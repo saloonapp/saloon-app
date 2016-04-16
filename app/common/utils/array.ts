@@ -28,23 +28,26 @@ export class Sort {
     }
 }
 
-export class Filter {
+export class Matcher {
     public static shallow(obj: any, query: string): boolean {
-        return this.custom(obj, query, 0, {multi: true, removeDiacritics: true});
+        return Matcher.custom(obj, query, {deep: 0});
     }
-    public static deep(obj: any, query: string, deep?: number): boolean {
-        return this.custom(obj, query, deep ? deep : 50, {multi: true, removeDiacritics: true});
+    public static deep(obj: any, query: string): boolean {
+        return Matcher.custom(obj, query, {deep: 50});
     }
-    public static custom(obj: any, query: string, deep?: number, options?: any): boolean {
-        const deepValue = deep ? deep : 0;
+    public static custom(obj: any, query: string, options?: any): boolean {
+        const deepValue = options && options.deep ? options.deep : 50;
         const opts = Object.assign({
-            multi: false,
-            removeDiacritics: false,
+            multi: true,
+            removeDiacritics: true,
+            minLength: 1,
             matchStr: this.matchStr,
+            matchNum: this.matchNum,
             matchDate: this.matchDate
         }, options);
-        const queries = opts.multi ? query.split(' ') : [query];
+        const queries = typeof query === 'string' && opts.multi ? query.split(' ') : [query];
         return queries
+            .filter(q => q && q.trim().length >= opts.minLength)
             .map(q => this.matchObj(obj, q, deepValue, opts))
             .reduce((total, elt) => total && elt, true);
     }
@@ -59,13 +62,13 @@ export class Filter {
                     hasMatch = hasMatch || opts.matchStr(value, query, opts.removeDiacritics);
                     break;
                 case 'number':
-                    hasMatch = hasMatch || opts.matchStr(value.toString(), query, false);
+                    hasMatch = hasMatch || opts.matchNum(value, query);
                     break;
                 case 'date':
                     hasMatch = hasMatch || opts.matchDate(value, query);
                     break;
                 case 'timestamp':
-                    hasMatch = hasMatch || opts.matchStr(value.toString(), query, false) || opts.matchDate(new Date(value), query);
+                    hasMatch = hasMatch || opts.matchNum(value, query) || opts.matchDate(new Date(value), query);
                     break;
                 case 'object':
                 case 'array':
@@ -87,9 +90,28 @@ export class Filter {
         const str2 = (removeDiacritics ? StringUtils.removeDiacritics(query) : query).toLowerCase();
         return str1.indexOf(str2) !== -1;
     }
-    private static matchDate(value: any, query: string): boolean {
+    private static matchNum(value: number, query: string): boolean {
+        return value.toString() === query;
+    }
+    private static matchDate(value: Date, query: string): boolean {
         const mDate = moment(value);
         const valueStr = ['LLLL', 'L', 'llll', 'l', 'HH[h]mm'].map(f => mDate.format(f)).join(' ');
         return this.matchStr(valueStr, query, false);
+    }
+}
+
+export class Filter {
+    public static shallow(items: any[], query: string): any[] {
+        return this.filter(items, query, Matcher.shallow);
+    }
+    public static deep(items: any[], query: string): any[] {
+        return this.filter(items, query, Matcher.deep);
+    }
+    public static custom(items: any[], query: string, options?: any): any[] {
+        return this.filter(items, query, (obj: any, query: string) => Matcher.custom(obj, query, options));
+    }
+
+    private static filter(items: any[], query: string, matcher: (any, string) => boolean): any[] {
+        return typeof query === 'string' && query.trim() !== '' ? items.filter(item => matcher(item, query.trim())) : items;
     }
 }

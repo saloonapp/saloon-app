@@ -19,7 +19,7 @@ import {ExponentPage} from "./exponent.page";
     <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
 </ion-toolbar>
 <ion-content class="exponent-list-page">
-    <ion-refresher (refresh)="doRefresh($event)"></ion-refresher>
+    <ion-refresher (refresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas d'exposant trouvé</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0">
@@ -45,6 +45,7 @@ export class ExponentListPage {
                 private _eventData: EventData,
                 private _uiUtils: UiUtils) {}
 
+    // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
     ngOnInit() {
         this.eventItem = this._eventData.getCurrentEventItem();
         setTimeout(() => {
@@ -76,9 +77,6 @@ export class ExponentListPage {
     }
 
     compute(items: ExponentFull[], q: string): Array<any> {
-        function filter(items: ExponentFull[], q: string): ExponentFull[] {
-            return q.trim() === '' ? items : items.filter(item => Filter.deep(item, q));
-        }
         function group(items: ExponentFull[]): Array<any> {
             const grouped = _.groupBy(items, i => i.name[0]);
             const ret = [];
@@ -90,7 +88,7 @@ export class ExponentListPage {
             }
             return ret.sort((e1, e2) => Sort.str(e1.title, e2.title));
         }
-        return group(filter(items, q));
+        return group(Filter.deep(items, q));
     }
 
     goToExponent(exponentFull: ExponentFull) {
