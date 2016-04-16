@@ -18,7 +18,7 @@ import {InfosPage} from "./infos.page";
   <ion-tab [root]="tab1Root" tabTitle="Sessions" tabIcon="calendar" *ngIf="eventItem.sessionCount > 0"></ion-tab>
   <ion-tab [root]="tab2Root" tabTitle="Participants" tabIcon="people" *ngIf="eventItem.attendeeCount > 0"></ion-tab>
   <ion-tab [root]="tab3Root" tabTitle="Exposants" tabIcon="briefcase" *ngIf="eventItem.exponentCount > 0"></ion-tab>
-  <ion-tab [root]="tab4Root" tabTitle="Programme" tabIcon="bookmarks" *ngIf="eventItem"></ion-tab>
+  <ion-tab [root]="tab4Root" tabTitle="Programme" tabIcon="bookmarks" *ngIf="eventItem.sessionCount > 0"></ion-tab>
   <ion-tab [root]="tab5Root" tabTitle="Infos" tabIcon="information-circle" *ngIf="eventItem"></ion-tab>
 </ion-tabs>
 `
