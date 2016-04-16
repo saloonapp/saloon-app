@@ -1,17 +1,16 @@
 import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
-import {NavController} from "ionic-angular/index";
-import * as _ from "lodash";
+import * as moment from "moment";
 import {EventFull} from "./models/EventFull";
-import {EventItem} from "./models/EventItem";
 import {SessionFull} from "./models/SessionFull";
 import {EventData} from "./services/event.data";
-import {Sort} from "../common/utils/array";
-import {TimePeriodPipe} from "../common/pipes/datetime.pipe";
-import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
-import {SessionPage} from "./session.page";
+import {DatePipe} from "../common/pipes/datetime.pipe";
+import {GroupByPipe, SortByPipe} from "../common/pipes/array.pipe";
+import {ScheduleComponent} from "./components/schedule.component";
 
 @Page({
+    directives: [ScheduleComponent],
+    pipes: [DatePipe, GroupByPipe, SortByPipe],
     styles: [`
 .item h2 {
     white-space: initial;
@@ -23,30 +22,20 @@ import {SessionPage} from "./session.page";
 </ion-navbar>
 <ion-content class="program-page">
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
-    <ion-list-header *ngIf="eventFull && !hasFavs()">Aucune session ajoutée au programme :(</ion-list-header>
-    <ion-list *ngIf="eventFull && hasFavs()">
-        <ion-item *ngFor="#session of eventFull.sessions" [hidden]="!isFav(session)" (click)="goToSession(session)">
-            <h2>{{session.name}}</h2>
-            <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
-            <p>{{session.speakers | map:'name' | join:', '}}</p>
-            <button clear item-right (click)="unFav(session);$event.stopPropagation();">
-                <ion-icon name="star"></ion-icon>
-            </button>
-        </ion-item>
-    </ion-list>
+    <div *ngIf="eventFull">
+        <div *ngFor="#daySessions of eventFull.sessions | groupBy:sessionDay | sortBy:'key'">
+            <h3>{{daySessions.key | date}}</h3>
+            <schedule [sessions]="daySessions.values"></schedule>
+        </div>
+    </div>
 </ion-content>
-`,
-    pipes: [TimePeriodPipe, MapPipe, NotEmptyPipe, JoinPipe]
+`
 })
 export class ProgramPage implements OnInit {
-    eventItem: EventItem;
     eventFull: EventFull;
-    constructor(private _nav: NavController,
-                private _eventData: EventData) {}
+    constructor(private _eventData: EventData) {}
 
-    // TODO : create Pipe 'filter' to filter sessions instead of hide them
     ngOnInit() {
-        this.eventItem = this._eventData.getCurrentEventItem();
         setTimeout(() => {
             this._eventData.getCurrentEventFull().then(eventFull => {
                 this.eventFull = eventFull;
@@ -54,21 +43,7 @@ export class ProgramPage implements OnInit {
         }, 600);
     }
 
-    hasFavs(): boolean {
-        return this._eventData.hasFavoriteSessions();
-    }
-
-    isFav(sessionFull: SessionFull): boolean {
-        return this._eventData.isFavoriteSession(sessionFull);
-    }
-
-    unFav(sessionFull: SessionFull) {
-        this._eventData.unfavoriteSession(SessionFull.toItem(sessionFull));
-    }
-
-    goToSession(sessionFull: SessionFull) {
-        this._nav.push(SessionPage, {
-            sessionItem: SessionFull.toItem(sessionFull)
-        });
+    sessionDay(sessionFull: SessionFull): number {
+        return moment(moment(sessionFull.start).format('L'), 'L').valueOf();
     }
 }
