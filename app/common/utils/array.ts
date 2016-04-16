@@ -1,4 +1,5 @@
 import * as moment from "moment";
+import * as _ from "lodash";
 import {StringUtils} from "./string";
 import {ObjectUtils} from "./object";
 
@@ -48,42 +49,30 @@ export class Matcher {
         const queries = typeof query === 'string' && opts.multi ? query.split(' ') : [query];
         return queries
             .filter(q => q && q.trim().length >= opts.minLength)
-            .map(q => this.matchObj(obj, q, deepValue, opts))
-            .reduce((total, elt) => total && elt, true);
+            .find(q => !this.match(obj, q, deepValue, opts)) === undefined; // no query should not match <=> all queries should match
     }
 
-    private static matchObj(obj: any, query: string, deep: number, opts: any): boolean {
-        let hasMatch = false;
-        for(let key in obj){
-            const value = obj[key];
-            const type = ObjectUtils.getType(value);
-            switch (type) {
-                case 'string':
-                    hasMatch = hasMatch || opts.matchStr(value, query, opts.removeDiacritics);
-                    break;
-                case 'number':
-                    hasMatch = hasMatch || opts.matchNum(value, query);
-                    break;
-                case 'date':
-                    hasMatch = hasMatch || opts.matchDate(value, query);
-                    break;
-                case 'timestamp':
-                    hasMatch = hasMatch || opts.matchNum(value, query) || opts.matchDate(new Date(value), query);
-                    break;
-                case 'object':
-                case 'array':
-                    hasMatch = hasMatch || (deep > 0 ? this.matchObj(value, query, deep-1, opts) : false);
-                    break;
-                case 'boolean':
-                case 'null':
-                case 'undefined':
-                case 'function':
-                default:
-                    break;
-            }
-            if(hasMatch){ return hasMatch; } // early exit
+    private static match(item: any, query: string, deep: number, opts: any): boolean {
+        const itemType = ObjectUtils.getType(item);
+        switch (itemType) {
+            case 'string':
+                return opts.matchStr(item, query, opts.removeDiacritics);
+            case 'number':
+                return opts.matchNum(item, query);
+            case 'date':
+                return opts.matchDate(item, query);
+            case 'timestamp':
+                return opts.matchNum(item, query) || opts.matchDate(new Date(item), query);
+            case 'array':
+            case 'object':
+                return deep > 0 ? _.find(item, e => this.match(e, query, deep - 1, opts)) !== undefined : false;
+            case 'boolean':
+            case 'null':
+            case 'undefined':
+            case 'function':
+            default:
+                return false;
         }
-        return hasMatch;
     }
     private static matchStr(value: string, query: string, removeDiacritics: boolean): boolean {
         const str1 = (removeDiacritics ? StringUtils.removeDiacritics(value) : value).toLowerCase();
