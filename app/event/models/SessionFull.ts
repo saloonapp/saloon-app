@@ -1,7 +1,8 @@
+import {Slot} from "./Slot";
 import {AttendeeItem} from "./AttendeeItem";
 import {SessionItem} from "./SessionItem";
 
-export class SessionFull {
+export class SessionFull implements Slot {
     constructor(public uuid: string,
                 public name: string,
                 public description: string,

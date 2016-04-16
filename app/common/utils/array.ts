@@ -1,7 +1,7 @@
-import * as moment from "moment";
 import * as _ from "lodash";
 import {StringUtils} from "./string";
 import {ObjectUtils} from "./object";
+import {DateUtils} from "./date";
 
 export class Sort {
     public static str(str1: string, str2: string): number {
@@ -83,8 +83,7 @@ export class Matcher {
         return value.toString() === query;
     }
     private static matchDate(value: Date, query: string): boolean {
-        const mDate = moment(value);
-        const valueStr = ['LLLL', 'L', 'llll', 'l', 'HH[h]mm'].map(f => mDate.format(f)).join(' ');
+        const valueStr = ['LLLL', 'L', 'llll', 'l', 'HH[h]mm'].map(f => DateUtils.format(value, f)).join(' ');
         return this.matchStr(valueStr, query, false);
     }
 }

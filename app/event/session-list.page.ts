@@ -49,6 +49,8 @@ import {EventData} from "./services/event.data";
 </ion-content>
 `
 })
+// TODO
+//  filter sessions by : only favorites, day, track, room, last updated
 export class SessionListPage implements OnInit {
     searchQuery: string = '';
     eventItem: EventItem;
