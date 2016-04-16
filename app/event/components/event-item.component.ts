@@ -16,7 +16,7 @@ import {DatePeriodPipe} from "../../common/pipes/datetime.pipe";
     pipes: [DatePeriodPipe]
 })
 export class EventItemComponent {
-    @Input() event: EventItem
+    @Input() event: EventItem;
 
     notEmpty(e: string): boolean {
         return e ? e.length > 0 : false;

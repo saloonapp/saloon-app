@@ -1,5 +1,6 @@
 import {Pipe, PipeTransform} from "angular2/core";
 import * as moment from "moment";
+import {ObjectUtils} from "../utils/object";
 
 @Pipe({name: 'date'})
 export class DatePipe implements PipeTransform {
@@ -97,7 +98,7 @@ export class TimeDurationPipe implements PipeTransform {
 
 class DateTimePipeBuilder {
     public static toDate(date: string, format: string): string {
-        const mDate = moment(date);
+        const mDate = ObjectUtils.isTimestamp(date) ? moment(parseInt(date)) : moment(date);
         if(date && format && mDate.isValid()){
             return mDate.format(format);
         } else {

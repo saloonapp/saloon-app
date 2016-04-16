@@ -15,6 +15,7 @@ import {SessionPage} from "./session.page";
 import {EventData} from "./services/event.data";
 
 @Page({
+    pipes: [TimePeriodPipe, MapPipe, NotEmptyPipe, JoinPipe],
     styles: [`
 .item h2, .item p {
     white-space: initial;
@@ -46,8 +47,7 @@ import {EventData} from "./services/event.data";
         </ion-item-group>
     </ion-list>
 </ion-content>
-`,
-    pipes: [TimePeriodPipe, MapPipe, NotEmptyPipe, JoinPipe]
+`
 })
 export class SessionListPage implements OnInit {
     searchQuery: string = '';

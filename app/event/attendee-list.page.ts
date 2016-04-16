@@ -17,6 +17,7 @@ import {SessionPage} from "./session.page";
 import {ExponentPage} from "./exponent.page";
 
 @Page({
+    pipes: [TwitterHandlePipe, NotEmptyPipe, JoinPipe],
     template: `
 <ion-navbar *navbar>
   <ion-title>Participants</ion-title>
@@ -64,8 +65,7 @@ import {ExponentPage} from "./exponent.page";
         </div>
     </div>-->
 </ion-content>
-`,
-    pipes: [TwitterHandlePipe, NotEmptyPipe, JoinPipe]
+`
 })
 export class AttendeeListPage {
     searchQuery: string = '';

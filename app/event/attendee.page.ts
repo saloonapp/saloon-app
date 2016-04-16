@@ -13,6 +13,7 @@ import {SessionPage} from "./session.page";
 import {ExponentPage} from "./exponent.page";
 
 @Page({
+    pipes: [TimePeriodPipe, WeekDayPipe, CapitalizePipe, NotEmptyPipe, JoinPipe],
     styles: [`
 .item h2, .item p {
     white-space: initial;
@@ -48,8 +49,7 @@ import {ExponentPage} from "./exponent.page";
         </ion-item>
     </ion-list>
 </ion-content>
-`,
-    pipes: [TimePeriodPipe, WeekDayPipe, CapitalizePipe, NotEmptyPipe, JoinPipe]
+`
 })
 export class AttendeePage implements OnInit {
     attendeeItem: AttendeeItem;

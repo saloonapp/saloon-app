@@ -10,6 +10,8 @@ import {UiUtils} from "../common/ui/utils";
 import {EventPage} from "./event.page.ts";
 
 @Page({
+    directives: [EventItemComponent],
+    pipes: [DatePeriodPipe],
     template: `
 <ion-navbar *navbar>
     <ion-title>Événements</ion-title>
@@ -35,9 +37,7 @@ import {EventPage} from "./event.page.ts";
         Pour ça, il vous suffit de nous le signaler.
     </p>
 </ion-content>
-`,
-    directives: [EventItemComponent],
-    pipes: [DatePeriodPipe]
+`
 })
 export class EventListPage implements OnInit {
     events: EventItem[];

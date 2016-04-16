@@ -6,6 +6,7 @@ import {DatePeriodPipe} from "../common/pipes/datetime.pipe";
 import {AddressPipe} from "../common/pipes/model.pipe";
 
 @Page({
+    pipes: [DatePeriodPipe, AddressPipe],
     styles: [`
 .infos-page img {
     width: 100%;
@@ -46,8 +47,7 @@ import {AddressPipe} from "../common/pipes/model.pipe";
         <p [innerHTML]="eventItem.descriptionHTML"></p>
     </div>
 </ion-content>
-`,
-    pipes: [DatePeriodPipe, AddressPipe]
+`
 })
 export class InfosPage implements OnInit {
     eventItem: EventItem;

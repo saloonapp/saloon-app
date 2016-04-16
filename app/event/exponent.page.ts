@@ -9,6 +9,7 @@ import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {AttendeePage} from "./attendee.page";
 
 @Page({
+    pipes: [NotEmptyPipe, JoinPipe],
     template: `
 <ion-navbar *navbar>
     <ion-title>Exposant</ion-title>
@@ -28,8 +29,7 @@ import {AttendeePage} from "./attendee.page";
         </ion-item>
     </ion-list>
 </ion-content>
-`,
-    pipes: [NotEmptyPipe, JoinPipe]
+`
 })
 export class ExponentPage implements OnInit {
     exponentItem: ExponentItem;

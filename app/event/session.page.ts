@@ -11,6 +11,7 @@ import {EventData} from "./services/event.data";
 import {AttendeePage} from "./attendee.page";
 
 @Page({
+    pipes: [WeekDayPipe, CapitalizePipe, TimePeriodPipe, NotEmptyPipe, JoinPipe],
     template: `
 <ion-navbar *navbar>
     <ion-title>Session</ion-title>
@@ -37,8 +38,7 @@ import {AttendeePage} from "./attendee.page";
         </ion-item>
     </ion-list>
 </ion-content>
-`,
-    pipes: [WeekDayPipe, CapitalizePipe, TimePeriodPipe, NotEmptyPipe, JoinPipe]
+`
 })
 export class SessionPage implements OnInit {
     sessionItem: SessionItem;
