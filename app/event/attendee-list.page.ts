@@ -1,13 +1,12 @@
 import {Page} from 'ionic-angular';
 import {NavController} from "ionic-angular/index";
-import * as _ from "lodash";
 import {EventItem} from "./models/EventItem";
 import {EventFull} from "./models/EventFull";
 import {AttendeeFull} from "./models/AttendeeFull";
 import {SessionItem} from "./models/SessionItem";
 import {ExponentItem} from "./models/ExponentItem";
 import {EventData} from "./services/event.data";
-import {Filter, Sort} from "../common/utils/array";
+import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
 import {TwitterHandlePipe} from "../common/pipes/social.pipe";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {AttendeePage} from "./attendee.page";
@@ -28,8 +27,8 @@ import {ExponentPage} from "./exponent.page";
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de participant trouvé</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0">
         <ion-item-group *ngFor="#group of filtered">
-            <ion-item-divider sticky>{{group.title}}</ion-item-divider>
-            <ion-item *ngFor="#attendee of group.items" (click)="goToAttendee(attendee)">
+            <ion-item-divider sticky>{{group.key}}</ion-item-divider>
+            <ion-item *ngFor="#attendee of group.values" (click)="goToAttendee(attendee)">
                 <ion-avatar item-left><img [src]="attendee.avatar"></ion-avatar>
                 <h2>{{attendee.name}}</h2>
                 <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
@@ -68,7 +67,7 @@ export class AttendeeListPage {
     searchQuery: string = '';
     eventItem: EventItem;
     eventFull: EventFull;
-    filtered: Array<any> = [];
+    filtered: ItemGroup<AttendeeFull>[] = [];
     constructor(private _nav: NavController,
                 private _eventData: EventData) {}
 
@@ -105,18 +104,9 @@ export class AttendeeListPage {
 }
 
 class AttendeeListHelper {
-    public static compute(items: AttendeeFull[], q: string): Array<any> {
-        function group(items: AttendeeFull[]): Array<any> {
-            const grouped = _.groupBy(items, i => i.lastName[0]);
-            const ret = [];
-            for(let key in grouped){
-                ret.push({
-                    title: key.toUpperCase(),
-                    items: grouped[key]
-                });
-            }
-            return ret.sort((e1, e2) => Sort.str(e1.title, e2.title));
-        }
-        return group(Filter.deep(items, q));
+    public static compute(items: AttendeeFull[], q: string): ItemGroup<AttendeeFull>[] {
+        const filtered: AttendeeFull[] = Filter.deep(items, q);
+        const grouped: ItemGroup<AttendeeFull>[] = ArrayHelper.groupBy(filtered, i => i.lastName[0].toUpperCase());
+        return grouped.sort((e1, e2) => Sort.str(e1.key, e2.key));
     }
 }

@@ -1,11 +1,10 @@
 import {Page} from "ionic-angular";
 import {NavController} from "ionic-angular/index";
-import * as _ from "lodash";
 import {EventFull} from "./models/EventFull";
 import {EventItem} from "./models/EventItem";
 import {ExponentFull} from "./models/ExponentFull";
 import {EventData} from "./services/event.data";
-import {Filter, Sort} from "../common/utils/array";
+import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
 import {ExponentPage} from "./exponent.page";
 
 @Page({
@@ -21,8 +20,8 @@ import {ExponentPage} from "./exponent.page";
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas d'exposant trouvé</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0">
         <ion-item-group *ngFor="#group of filtered">
-            <ion-item-divider sticky>{{group.title}}</ion-item-divider>
-            <ion-item *ngFor="#exponent of group.items" (click)="goToExponent(exponent)">
+            <ion-item-divider sticky>{{group.key}}</ion-item-divider>
+            <ion-item *ngFor="#exponent of group.values" (click)="goToExponent(exponent)">
                 <ion-avatar item-left><img [src]="exponent.logo"></ion-avatar>
                 <h2>{{exponent.name}}</h2>
                 <p class="nowrap lines2">{{exponent.description}}</p>
@@ -36,7 +35,7 @@ export class ExponentListPage {
     searchQuery: string = '';
     eventItem: EventItem;
     eventFull: EventFull;
-    filtered: Array<any> = [];
+    filtered: ItemGroup<ExponentFull>[] = [];
     constructor(private _nav: NavController,
                 private _eventData: EventData) {}
 
@@ -63,18 +62,9 @@ export class ExponentListPage {
 }
 
 class ExponentListHelper {
-    public static compute(items: ExponentFull[], q: string): Array<any> {
-        function group(items: ExponentFull[]): Array<any> {
-            const grouped = _.groupBy(items, i => i.name[0]);
-            const ret = [];
-            for(let key in grouped){
-                ret.push({
-                    title: key.toUpperCase(),
-                    items: grouped[key]
-                });
-            }
-            return ret.sort((e1, e2) => Sort.str(e1.title, e2.title));
-        }
-        return group(Filter.deep(items, q));
+    public static compute(items: ExponentFull[], q: string): ItemGroup<ExponentFull>[] {
+        const filtered: ExponentFull[] = Filter.deep(items, q);
+        const grouped: ItemGroup<ExponentFull>[] = ArrayHelper.groupBy(filtered, i => i.name[0].toUpperCase());
+        return grouped.sort((e1, e2) => Sort.str(e1.key, e2.key));
     }
 }

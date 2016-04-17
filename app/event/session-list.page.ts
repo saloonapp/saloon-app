@@ -1,11 +1,10 @@
 import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {NavController} from "ionic-angular/index";
-import * as _ from "lodash";
 import {EventItem} from "./models/EventItem";
 import {EventFull} from "./models/EventFull";
 import {SessionFull} from "./models/SessionFull";
-import {Filter, Sort} from "../common/utils/array";
+import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
 import {WeekDayPipe, TimePipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
@@ -31,8 +30,8 @@ import {EventData} from "./services/event.data";
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de session trouvée</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0">
         <ion-item-group *ngFor="#group of filtered">
-            <ion-item-divider sticky>{{group.time | weekDay | capitalize}}, {{group.time | time}}</ion-item-divider>
-            <ion-item *ngFor="#session of group.items" (click)="goToSession(session)">
+            <ion-item-divider sticky>{{group.key | weekDay | capitalize}}, {{group.key | time}}</ion-item-divider>
+            <ion-item *ngFor="#session of group.values" (click)="goToSession(session)">
                 <h2>{{session.name}}</h2>
                 <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
                 <p>{{session.speakers | map:'name' | join:', '}}</p>
@@ -52,12 +51,9 @@ export class SessionListPage implements OnInit {
     searchQuery: string = '';
     eventItem: EventItem;
     eventFull: EventFull;
-    filtered: Array<any> = [];
+    filtered: ItemGroup<SessionFull>[] = [];
     constructor(private _nav: NavController,
-                private _eventData: EventData,
-                private _weekDayPipe: WeekDayPipe,
-                private _timePipe: TimePipe,
-                private _capitalizePipe: CapitalizePipe) {}
+                private _eventData: EventData) {}
 
     // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
     // implement VirtualScroll with SearchPipe to improve perf & avoid compute.group()
@@ -95,20 +91,9 @@ export class SessionListPage implements OnInit {
 }
 
 class SessionListHelper {
-    public static compute(items: SessionFull[], q: string): Array<any> {
-        const that = this;
-        function group(items: SessionFull[]): Array<any> {
-            const grouped = _.groupBy(items, 'start');
-            const ret = [];
-            for(let key in grouped){
-                const time = parseInt(key, 10);
-                ret.push({
-                    time: time,
-                    items: grouped[key]
-                });
-            }
-            return ret.sort((e1, e2) => Sort.num(e1.time, e2.time));
-        }
-        return group(Filter.deep(items, q));
+    public static compute(items: SessionFull[], q: string): ItemGroup<SessionFull>[] {
+        const filtered: SessionFull[] = Filter.deep(items, q);
+        const grouped: ItemGroup<SessionFull>[] = ArrayHelper.groupBy(filtered, 'start');
+        return grouped.sort((e1, e2) => Sort.num(parseInt(e1.key), parseInt(e2.key)));
     }
 }

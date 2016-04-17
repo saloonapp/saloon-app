@@ -3,6 +3,25 @@ import {StringHelper} from "./string";
 import {ObjectHelper} from "./object";
 import {DateHelper} from "./date";
 
+export interface ItemGroup<T> {
+    key: string;
+    values: T[];
+}
+
+export class ArrayHelper {
+    public static groupBy<T>(items: T[], iteratee: any): ItemGroup<T>[] {
+        const grouped = _.groupBy(items, iteratee);
+        const ret = [];
+        for(let key in grouped){
+            ret.push({
+                key: key,
+                values: grouped[key]
+            });
+        }
+        return ret;
+    }
+}
+
 export class Sort {
     public static str(str1: string, str2: string): number {
         const s1 = StringHelper.removeDiacritics(str1 || "").toLowerCase();
