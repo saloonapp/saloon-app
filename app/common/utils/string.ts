@@ -1,4 +1,4 @@
-export class StringUtils {
+export class StringHelper {
     constructor() {}
 
     // see http://jsperf.com/diacritics/38

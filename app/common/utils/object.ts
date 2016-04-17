@@ -1,4 +1,4 @@
-export class ObjectUtils {
+export class ObjectHelper {
     public static getType(obj: any): string {
         if(obj === null) return 'null';
         if(Array.isArray(obj)) return 'array';

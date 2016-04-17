@@ -2,7 +2,7 @@ import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {EventFull} from "./models/EventFull";
 import {SessionFull} from "./models/SessionFull";
-import {DateUtils} from "../common/utils/date";
+import {DateHelper} from "../common/utils/date";
 import {EventData} from "./services/event.data";
 import {DatePipe} from "../common/pipes/datetime.pipe";
 import {GroupByPipe, SortByPipe} from "../common/pipes/array.pipe";
@@ -44,6 +44,6 @@ export class ProgramPage implements OnInit {
     }
 
     sessionDay(sessionFull: SessionFull): number {
-        return DateUtils.dayTimestamp(sessionFull.start);
+        return DateHelper.dayTimestamp(sessionFull.start);
     }
 }

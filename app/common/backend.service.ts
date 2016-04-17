@@ -13,7 +13,7 @@ import {SessionItem} from "../event/models/SessionItem";
 import {ExponentFull} from "../event/models/ExponentFull";
 import {ExponentItem} from "../event/models/ExponentItem";
 import {Sort} from "./utils/array";
-import {ObjectUtils} from "./utils/object";
+import {ObjectHelper} from "./utils/object";
 
 @Injectable()
 export class Backend {
@@ -48,24 +48,24 @@ export class Backend {
 
     private formatEventItem(event: any): EventItem {
         return new EventItem(
-            ObjectUtils.getSafe(event, 'uuid'),
-            ObjectUtils.getSafe(event, 'name'),
-            ObjectUtils.getSafe(event, 'description'),
-            ObjectUtils.getSafe(event, 'descriptionHTML'),
-            ObjectUtils.getSafe(event, 'images.logo'),
-            ObjectUtils.getSafe(event, 'images.landing'),
-            ObjectUtils.getSafe(event, 'info.website'),
-            ObjectUtils.getSafe(event, 'info.start'),
-            ObjectUtils.getSafe(event, 'info.end'),
-            ObjectUtils.getSafe(event, 'info.address'),
-            ObjectUtils.getSafe(event, 'info.price.label'),
-            ObjectUtils.getSafe(event, 'info.price.url'),
-            ObjectUtils.getSafe(event, 'info.social.twitter.hashtag'),
-            ObjectUtils.getSafe(event, 'info.social.twitter.account'),
-            ObjectUtils.getSafe(event, 'meta.categories'),
-            ObjectUtils.getSafe(event, 'attendeeCount'),
-            ObjectUtils.getSafe(event, 'sessionCount'),
-            ObjectUtils.getSafe(event, 'exponentCount')
+            ObjectHelper.getSafe(event, 'uuid'),
+            ObjectHelper.getSafe(event, 'name'),
+            ObjectHelper.getSafe(event, 'description'),
+            ObjectHelper.getSafe(event, 'descriptionHTML'),
+            ObjectHelper.getSafe(event, 'images.logo'),
+            ObjectHelper.getSafe(event, 'images.landing'),
+            ObjectHelper.getSafe(event, 'info.website'),
+            ObjectHelper.getSafe(event, 'info.start'),
+            ObjectHelper.getSafe(event, 'info.end'),
+            ObjectHelper.getSafe(event, 'info.address'),
+            ObjectHelper.getSafe(event, 'info.price.label'),
+            ObjectHelper.getSafe(event, 'info.price.url'),
+            ObjectHelper.getSafe(event, 'info.social.twitter.hashtag'),
+            ObjectHelper.getSafe(event, 'info.social.twitter.account'),
+            ObjectHelper.getSafe(event, 'meta.categories'),
+            ObjectHelper.getSafe(event, 'attendeeCount'),
+            ObjectHelper.getSafe(event, 'sessionCount'),
+            ObjectHelper.getSafe(event, 'exponentCount')
         );
     }
     private formatEventFull(event: any): EventFull {
@@ -77,21 +77,21 @@ export class Backend {
         const themes = this.eltsToEventElt(sessionFulls.map(s => s.theme));
         const places = this.eltsToEventElt(sessionFulls.map(s => s.place));
         return new EventFull(
-            ObjectUtils.getSafe(event, 'uuid'),
-            ObjectUtils.getSafe(event, 'name'),
-            ObjectUtils.getSafe(event, 'description'),
-            ObjectUtils.getSafe(event, 'descriptionHTML'),
-            ObjectUtils.getSafe(event, 'images.logo'),
-            ObjectUtils.getSafe(event, 'images.landing'),
-            ObjectUtils.getSafe(event, 'info.website'),
-            ObjectUtils.getSafe(event, 'info.start'),
-            ObjectUtils.getSafe(event, 'info.end'),
-            ObjectUtils.getSafe(event, 'info.address'),
-            ObjectUtils.getSafe(event, 'info.price.label'),
-            ObjectUtils.getSafe(event, 'info.price.url'),
-            ObjectUtils.getSafe(event, 'info.social.twitter.hashtag'),
-            ObjectUtils.getSafe(event, 'info.social.twitter.account'),
-            ObjectUtils.getSafe(event, 'meta.categories'),
+            ObjectHelper.getSafe(event, 'uuid'),
+            ObjectHelper.getSafe(event, 'name'),
+            ObjectHelper.getSafe(event, 'description'),
+            ObjectHelper.getSafe(event, 'descriptionHTML'),
+            ObjectHelper.getSafe(event, 'images.logo'),
+            ObjectHelper.getSafe(event, 'images.landing'),
+            ObjectHelper.getSafe(event, 'info.website'),
+            ObjectHelper.getSafe(event, 'info.start'),
+            ObjectHelper.getSafe(event, 'info.end'),
+            ObjectHelper.getSafe(event, 'info.address'),
+            ObjectHelper.getSafe(event, 'info.price.label'),
+            ObjectHelper.getSafe(event, 'info.price.url'),
+            ObjectHelper.getSafe(event, 'info.social.twitter.hashtag'),
+            ObjectHelper.getSafe(event, 'info.social.twitter.account'),
+            ObjectHelper.getSafe(event, 'meta.categories'),
             formats,
             themes,
             places,
@@ -111,16 +111,16 @@ export class Backend {
     }
     private formatAttendeeItem(attendee: any): AttendeeItem {
         return new AttendeeItem(
-            ObjectUtils.getSafe(attendee, 'uuid'),
-            ObjectUtils.getSafe(attendee, 'info.role'),
-            ObjectUtils.getSafe(attendee, 'name'),
-            ObjectUtils.getSafe(attendee, 'description'),
-            ObjectUtils.getSafe(attendee, 'descriptionHTML'),
-            ObjectUtils.getSafe(attendee, 'images.avatar'),
-            ObjectUtils.getSafe(attendee, 'info.job'),
-            ObjectUtils.getSafe(attendee, 'info.company'),
-            ObjectUtils.getSafe(attendee, 'info.website'),
-            ObjectUtils.getSafe(attendee, 'social.twitterUrl')
+            ObjectHelper.getSafe(attendee, 'uuid'),
+            ObjectHelper.getSafe(attendee, 'info.role'),
+            ObjectHelper.getSafe(attendee, 'name'),
+            ObjectHelper.getSafe(attendee, 'description'),
+            ObjectHelper.getSafe(attendee, 'descriptionHTML'),
+            ObjectHelper.getSafe(attendee, 'images.avatar'),
+            ObjectHelper.getSafe(attendee, 'info.job'),
+            ObjectHelper.getSafe(attendee, 'info.company'),
+            ObjectHelper.getSafe(attendee, 'info.website'),
+            ObjectHelper.getSafe(attendee, 'social.twitterUrl')
         );
     }
     private formatAttendeeFull(attendee: any, sessions: any[], exponents: any[]): AttendeeFull {
@@ -131,77 +131,77 @@ export class Backend {
             return exponent.info ? exponent.info.team.indexOf(attendee.uuid) !== -1 : false;
         }).map(this.formatExponentItem);
         return new AttendeeFull(
-            ObjectUtils.getSafe(attendee, 'uuid'),
-            ObjectUtils.getSafe(attendee, 'info.role'),
-            ObjectUtils.getSafe(attendee, 'name'),
-            ObjectUtils.getSafe(attendee, 'info.firstName'),
-            ObjectUtils.getSafe(attendee, 'info.lastName'),
-            ObjectUtils.getSafe(attendee, 'description'),
-            ObjectUtils.getSafe(attendee, 'descriptionHTML'),
-            ObjectUtils.getSafe(attendee, 'images.avatar'),
-            ObjectUtils.getSafe(attendee, 'info.email'),
-            ObjectUtils.getSafe(attendee, 'info.phone'),
-            ObjectUtils.getSafe(attendee, 'info.address'),
-            ObjectUtils.getSafe(attendee, 'info.job'),
-            ObjectUtils.getSafe(attendee, 'info.company'),
-            ObjectUtils.getSafe(attendee, 'info.website'),
-            ObjectUtils.getSafe(attendee, 'social.twitterUrl'),
+            ObjectHelper.getSafe(attendee, 'uuid'),
+            ObjectHelper.getSafe(attendee, 'info.role'),
+            ObjectHelper.getSafe(attendee, 'name'),
+            ObjectHelper.getSafe(attendee, 'info.firstName'),
+            ObjectHelper.getSafe(attendee, 'info.lastName'),
+            ObjectHelper.getSafe(attendee, 'description'),
+            ObjectHelper.getSafe(attendee, 'descriptionHTML'),
+            ObjectHelper.getSafe(attendee, 'images.avatar'),
+            ObjectHelper.getSafe(attendee, 'info.email'),
+            ObjectHelper.getSafe(attendee, 'info.phone'),
+            ObjectHelper.getSafe(attendee, 'info.address'),
+            ObjectHelper.getSafe(attendee, 'info.job'),
+            ObjectHelper.getSafe(attendee, 'info.company'),
+            ObjectHelper.getSafe(attendee, 'info.website'),
+            ObjectHelper.getSafe(attendee, 'social.twitterUrl'),
             attendeeSessions,
             attendeeExponents
         );
     }
     private formatSessionItem(session: any): SessionItem {
         return new SessionItem(
-            ObjectUtils.getSafe(session, 'uuid'),
-            ObjectUtils.getSafe(session, 'name'),
-            ObjectUtils.getSafe(session, 'description'),
-            ObjectUtils.getSafe(session, 'descriptionHTML'),
-            ObjectUtils.getSafe(session, 'images.landing'),
-            ObjectUtils.getSafe(session, 'info.format'),
-            ObjectUtils.getSafe(session, 'info.theme'),
-            ObjectUtils.getSafe(session, 'info.place'),
-            ObjectUtils.getSafe(session, 'info.start'),
-            ObjectUtils.getSafe(session, 'info.end')
+            ObjectHelper.getSafe(session, 'uuid'),
+            ObjectHelper.getSafe(session, 'name'),
+            ObjectHelper.getSafe(session, 'description'),
+            ObjectHelper.getSafe(session, 'descriptionHTML'),
+            ObjectHelper.getSafe(session, 'images.landing'),
+            ObjectHelper.getSafe(session, 'info.format'),
+            ObjectHelper.getSafe(session, 'info.theme'),
+            ObjectHelper.getSafe(session, 'info.place'),
+            ObjectHelper.getSafe(session, 'info.start'),
+            ObjectHelper.getSafe(session, 'info.end')
         );
     }
     private formatSessionFull(session: any, attendeeItems: { [key: string]: AttendeeItem; }): SessionFull {
         return new SessionFull(
-            ObjectUtils.getSafe(session, 'uuid'),
-            ObjectUtils.getSafe(session, 'name'),
-            ObjectUtils.getSafe(session, 'description'),
-            ObjectUtils.getSafe(session, 'descriptionHTML'),
-            ObjectUtils.getSafe(session, 'images.landing'),
-            ObjectUtils.getSafe(session, 'info.format'),
-            ObjectUtils.getSafe(session, 'info.theme'),
-            ObjectUtils.getSafe(session, 'info.place'),
-            ObjectUtils.getSafe(session, 'info.start'),
-            ObjectUtils.getSafe(session, 'info.end'),
-            ObjectUtils.getSafe(session, 'info.speakers', []).map(attendeeId => attendeeItems[attendeeId])
+            ObjectHelper.getSafe(session, 'uuid'),
+            ObjectHelper.getSafe(session, 'name'),
+            ObjectHelper.getSafe(session, 'description'),
+            ObjectHelper.getSafe(session, 'descriptionHTML'),
+            ObjectHelper.getSafe(session, 'images.landing'),
+            ObjectHelper.getSafe(session, 'info.format'),
+            ObjectHelper.getSafe(session, 'info.theme'),
+            ObjectHelper.getSafe(session, 'info.place'),
+            ObjectHelper.getSafe(session, 'info.start'),
+            ObjectHelper.getSafe(session, 'info.end'),
+            ObjectHelper.getSafe(session, 'info.speakers', []).map(attendeeId => attendeeItems[attendeeId])
         );
     }
     private formatExponentItem(exponent: any): ExponentItem {
         return new ExponentItem(
-            ObjectUtils.getSafe(exponent, 'uuid'),
-            ObjectUtils.getSafe(exponent, 'name'),
-            ObjectUtils.getSafe(exponent, 'description'),
-            ObjectUtils.getSafe(exponent, 'descriptionHTML'),
-            ObjectUtils.getSafe(exponent, 'images.logo'),
-            ObjectUtils.getSafe(exponent, 'images.landing'),
-            ObjectUtils.getSafe(exponent, 'info.website'),
-            ObjectUtils.getSafe(exponent, 'info.place')
+            ObjectHelper.getSafe(exponent, 'uuid'),
+            ObjectHelper.getSafe(exponent, 'name'),
+            ObjectHelper.getSafe(exponent, 'description'),
+            ObjectHelper.getSafe(exponent, 'descriptionHTML'),
+            ObjectHelper.getSafe(exponent, 'images.logo'),
+            ObjectHelper.getSafe(exponent, 'images.landing'),
+            ObjectHelper.getSafe(exponent, 'info.website'),
+            ObjectHelper.getSafe(exponent, 'info.place')
         );
     }
     private formatExponentFull(exponent: any, attendeeItems: { [key: string]: AttendeeItem; }): ExponentFull {
         return new ExponentFull(
-            ObjectUtils.getSafe(exponent, 'uuid'),
-            ObjectUtils.getSafe(exponent, 'name'),
-            ObjectUtils.getSafe(exponent, 'description'),
-            ObjectUtils.getSafe(exponent, 'descriptionHTML'),
-            ObjectUtils.getSafe(exponent, 'images.logo'),
-            ObjectUtils.getSafe(exponent, 'images.landing'),
-            ObjectUtils.getSafe(exponent, 'info.website'),
-            ObjectUtils.getSafe(exponent, 'info.place'),
-            ObjectUtils.getSafe(exponent, 'info.team', []).map(attendeeId => attendeeItems[attendeeId])
+            ObjectHelper.getSafe(exponent, 'uuid'),
+            ObjectHelper.getSafe(exponent, 'name'),
+            ObjectHelper.getSafe(exponent, 'description'),
+            ObjectHelper.getSafe(exponent, 'descriptionHTML'),
+            ObjectHelper.getSafe(exponent, 'images.logo'),
+            ObjectHelper.getSafe(exponent, 'images.landing'),
+            ObjectHelper.getSafe(exponent, 'info.website'),
+            ObjectHelper.getSafe(exponent, 'info.place'),
+            ObjectHelper.getSafe(exponent, 'info.team', []).map(attendeeId => attendeeItems[attendeeId])
         );
     }
 

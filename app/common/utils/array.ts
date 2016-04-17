@@ -1,12 +1,12 @@
 import * as _ from "lodash";
-import {StringUtils} from "./string";
-import {ObjectUtils} from "./object";
-import {DateUtils} from "./date";
+import {StringHelper} from "./string";
+import {ObjectHelper} from "./object";
+import {DateHelper} from "./date";
 
 export class Sort {
     public static str(str1: string, str2: string): number {
-        const s1 = StringUtils.removeDiacritics(str1 || "").toLowerCase();
-        const s2 = StringUtils.removeDiacritics(str2 || "").toLowerCase();
+        const s1 = StringHelper.removeDiacritics(str1 || "").toLowerCase();
+        const s2 = StringHelper.removeDiacritics(str2 || "").toLowerCase();
         if(s1 > s2) return 1;
         else if(s1 < s2) return -1;
         else return 0
@@ -53,7 +53,7 @@ export class Matcher {
     }
 
     private static match(item: any, query: string, deep: number, opts: any): boolean {
-        const itemType = ObjectUtils.getType(item);
+        const itemType = ObjectHelper.getType(item);
         switch (itemType) {
             case 'string':
                 return opts.matchStr(item, query, opts.removeDiacritics);
@@ -75,15 +75,15 @@ export class Matcher {
         }
     }
     private static matchStr(value: string, query: string, removeDiacritics: boolean): boolean {
-        const str1 = (removeDiacritics ? StringUtils.removeDiacritics(value) : value).toLowerCase();
-        const str2 = (removeDiacritics ? StringUtils.removeDiacritics(query) : query).toLowerCase();
+        const str1 = (removeDiacritics ? StringHelper.removeDiacritics(value) : value).toLowerCase();
+        const str2 = (removeDiacritics ? StringHelper.removeDiacritics(query) : query).toLowerCase();
         return str1.indexOf(str2) !== -1;
     }
     private static matchNum(value: number, query: string): boolean {
         return value.toString() === query;
     }
     private static matchDate(value: Date, query: string): boolean {
-        const valueStr = ['LLLL', 'L', 'llll', 'l', 'HH[h]mm'].map(f => DateUtils.format(value, f)).join(' ');
+        const valueStr = ['LLLL', 'L', 'llll', 'l', 'HH[h]mm'].map(f => DateHelper.format(value, f)).join(' ');
         return this.matchStr(valueStr, query, false);
     }
 }

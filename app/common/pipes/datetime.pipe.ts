@@ -1,25 +1,26 @@
 import {Pipe, PipeTransform} from "angular2/core";
 import * as moment from "moment";
-import {ObjectUtils} from "../utils/object";
+import {ObjectHelper} from "../utils/object";
+import {DateHelper} from "../utils/date";
 
 @Pipe({name: 'date'})
 export class DatePipe implements PipeTransform {
-    transform = DateTimePipeBuilder.build('ll');
+    transform = DateHelper.createPipe('ll');
 }
 
 @Pipe({name: 'time'})
 export class TimePipe implements PipeTransform {
-    transform = DateTimePipeBuilder.build('LT');
+    transform = DateHelper.createPipe('LT');
 }
 
 @Pipe({name: 'datetime'})
 export class DateTimePipe implements PipeTransform {
-    transform = DateTimePipeBuilder.build('lll');
+    transform = DateHelper.createPipe('lll');
 }
 
 @Pipe({name: 'weekDay'})
 export class WeekDayPipe implements PipeTransform {
-    transform = DateTimePipeBuilder.build('dddd');
+    transform = DateHelper.createPipe('dddd');
 }
 
 @Pipe({name: 'datePeriod'})
@@ -28,25 +29,25 @@ export class DatePeriodPipe implements PipeTransform {
         if(end){
             const separator = ' - ', mStart = moment(start), mEnd = moment(end);
             if(mStart.format('YYYY') !== mEnd.format('YYYY')){
-                return DateTimePipeBuilder.toDate(start, 'll') + separator + DateTimePipeBuilder.toDate(end, 'll');
+                return DateHelper.format(start, 'll') + separator + DateHelper.format(end, 'll');
             } else if(mStart.format('MM') !== mEnd.format('MM')){
-                const res = DateTimePipeBuilder.toDate(end, 'll');
-                const dmStart = DateTimePipeBuilder.toDate(start, 'll').replace(mStart.format('YYYY'), '').trim();
-                const dmEnd = DateTimePipeBuilder.toDate(end, 'll').replace(mStart.format('YYYY'), '').trim();
+                const res = DateHelper.format(end, 'll');
+                const dmStart = DateHelper.format(start, 'll').replace(mStart.format('YYYY'), '').trim();
+                const dmEnd = DateHelper.format(end, 'll').replace(mStart.format('YYYY'), '').trim();
                 return res.replace(dmEnd, dmStart + separator + dmEnd);
             } else if(mStart.format('DD') !== mEnd.format('DD')){
-                const res = DateTimePipeBuilder.toDate(end, 'll');
+                const res = DateHelper.format(end, 'll');
                 return res.replace(mEnd.format('DD'), mStart.format('DD') + separator + mEnd.format('DD'));
             }
         }
-        return DateTimePipeBuilder.toDate(start, 'll');
+        return DateHelper.format(start, 'll');
     }
 }
 
 @Pipe({name: 'timePeriod'})
 export class TimePeriodPipe implements PipeTransform {
     transform(start:string, [end]: string[]): string {
-        const separator = ' - ', startStr = DateTimePipeBuilder.toDate(start, 'LT'), endStr = DateTimePipeBuilder.toDate(end, 'LT');
+        const separator = ' - ', startStr = DateHelper.format(start, 'LT'), endStr = DateHelper.format(end, 'LT');
         if(startStr === endStr){
             return endStr;
         } else {
@@ -93,23 +94,5 @@ export class TimeDurationPipe implements PipeTransform {
         } else {
             return '';
         }
-    }
-}
-
-class DateTimePipeBuilder {
-    public static toDate(date: string, format: string): string {
-        const mDate = ObjectUtils.isTimestamp(date) ? moment(parseInt(date)) : moment(date);
-        if(date && format && mDate.isValid()){
-            return mDate.format(format);
-        } else {
-            return date;
-        }
-    }
-    public static build(formatCfg: string|{ [key: string]: string; }): (string) => string {
-        const that = this;
-        return function(date: string): string {
-            const format: string = typeof formatCfg === 'string' ? formatCfg : formatCfg[moment.locale()];
-            return that.toDate(date, format);
-        };
     }
 }

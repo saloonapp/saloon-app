@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from "angular2/core";
 import * as _ from "lodash";
-import {ObjectUtils} from "../utils/object";
+import {ObjectHelper} from "../utils/object";
 import {Filter} from "../utils/array";
 
 @Pipe({name: 'search'})
@@ -44,7 +44,7 @@ export class GroupByPipe implements PipeTransform {
 export class NotEmptyPipe implements PipeTransform {
     transform<T>(items: T[]): T[] {
         if(Array.isArray(items) && items.length > 0){
-            const type = ObjectUtils.getType(items[0]);
+            const type = ObjectHelper.getType(items[0]);
             switch (type) {
                 case 'string':
                     return items.filter(e => e && e.length > 0);
