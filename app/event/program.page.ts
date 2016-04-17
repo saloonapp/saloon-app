@@ -18,6 +18,7 @@ import {ScheduleComponent} from "./components/schedule.component";
     `],
     template: `
 <ion-navbar *navbar>
+    <button menuToggle><ion-icon name="menu"></ion-icon></button>
     <ion-title>Mon programme</ion-title>
 </ion-navbar>
 <ion-content class="program-page">

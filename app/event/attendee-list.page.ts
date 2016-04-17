@@ -17,7 +17,8 @@ import {ExponentPage} from "./exponent.page";
     pipes: [TwitterHandlePipe, NotEmptyPipe, JoinPipe],
     template: `
 <ion-navbar *navbar>
-  <ion-title>Participants</ion-title>
+    <button menuToggle><ion-icon name="menu"></ion-icon></button>
+    <ion-title>Participants</ion-title>
 </ion-navbar>
 <ion-toolbar>
     <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>

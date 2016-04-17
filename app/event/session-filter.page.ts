@@ -5,10 +5,11 @@ import {SessionFull} from "./models/SessionFull";
 import {EventData} from "./services/event.data";
 import {WeekDayPipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
+import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {SessionPage} from "./session.page";
 
 @Page({
-    pipes: [TimePeriodPipe, MapPipe, NotEmptyPipe, JoinPipe],
+    pipes: [TimePeriodPipe, MapPipe, NotEmptyPipe, JoinPipe, CapitalizePipe],
     styles: [`
 .item h2, .item p {
     white-space: initial;
@@ -16,7 +17,7 @@ import {SessionPage} from "./session.page";
     `],
     template: `
 <ion-navbar *navbar>
-    <ion-title>{{title}}</ion-title>
+    <ion-title>{{title | capitalize}}</ion-title>
 </ion-navbar>
 <ion-content class="session-list-page">
     <div *ngIf="!filtered" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
@@ -72,7 +73,7 @@ export class SessionFilterPage implements OnInit {
     compute(items: SessionFull[], filter: any): [string, SessionFull[]] {
         if(filter.slot){
             return [
-                'Slot du '+this._weekDayPipe.transform(filter.slot.start)+' '+this._timePeriodPipe.transform(filter.slot.start, [filter.slot.end]),
+                this._weekDayPipe.transform(filter.slot.start)+' '+this._timePeriodPipe.transform(filter.slot.start, [filter.slot.end]),
                 items.filter(i => i.start === filter.slot.start && i.end === filter.slot.end)
             ];
         }

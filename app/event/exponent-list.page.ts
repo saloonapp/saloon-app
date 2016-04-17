@@ -10,7 +10,8 @@ import {ExponentPage} from "./exponent.page";
 @Page({
     template: `
 <ion-navbar *navbar>
-  <ion-title>Exposants</ion-title>
+    <button menuToggle><ion-icon name="menu"></ion-icon></button>
+    <ion-title>Exposants</ion-title>
 </ion-navbar>
 <ion-toolbar>
     <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>

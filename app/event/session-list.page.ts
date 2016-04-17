@@ -20,6 +20,7 @@ import {SessionPage} from "./session.page";
     `],
     template: `
 <ion-navbar *navbar>
+    <button menuToggle><ion-icon name="menu"></ion-icon></button>
     <ion-title>{{eventItem.name}}</ion-title>
 </ion-navbar>
 <ion-toolbar>

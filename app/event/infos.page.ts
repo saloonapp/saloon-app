@@ -29,6 +29,7 @@ import {AddressPipe} from "../common/pipes/model.pipe";
     `],
     template: `
 <ion-navbar *navbar>
+    <button menuToggle><ion-icon name="menu"></ion-icon></button>
     <ion-title>Infos</ion-title>
 </ion-navbar>
 <ion-content class="infos-page">
