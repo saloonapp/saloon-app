@@ -1,15 +1,13 @@
 import {Page} from 'ionic-angular';
 import {NavController} from "ionic-angular/index";
 import * as _ from "lodash";
-import {EventFull} from "./models/EventFull";
 import {EventItem} from "./models/EventItem";
+import {EventFull} from "./models/EventFull";
 import {AttendeeFull} from "./models/AttendeeFull";
 import {SessionItem} from "./models/SessionItem";
 import {ExponentItem} from "./models/ExponentItem";
-import {EventService} from "./services/event.service";
 import {EventData} from "./services/event.data";
 import {Filter, Sort} from "../common/utils/array";
-import {UiUtils} from "../common/ui/utils";
 import {TwitterHandlePipe} from "../common/pipes/social.pipe";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {AttendeePage} from "./attendee.page";
@@ -26,7 +24,6 @@ import {ExponentPage} from "./exponent.page";
     <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
 </ion-toolbar>
 <ion-content class="attendee-list-page">
-    <ion-refresher (refresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de participant trouvé</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0">
@@ -73,9 +70,7 @@ export class AttendeeListPage {
     eventFull: EventFull;
     filtered: Array<any> = [];
     constructor(private _nav: NavController,
-                private _eventService: EventService,
-                private _eventData: EventData,
-                private _uiUtils: UiUtils) {}
+                private _eventData: EventData) {}
 
     // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
     ngOnInit() {
@@ -83,44 +78,13 @@ export class AttendeeListPage {
         setTimeout(() => {
             this._eventData.getCurrentEventFull().then(event => {
                 this.eventFull = event;
-                this.filtered = this.compute(this.eventFull.attendees, this.searchQuery);
+                this.filtered = AttendeeListHelper.compute(this.eventFull.attendees, this.searchQuery);
             });
         }, 600);
     }
 
-    doRefresh(refresher) {
-        this._eventService.fetchEvent(this.eventItem.uuid).then(
-            eventFull => {
-                this.eventItem = EventFull.toItem(eventFull);
-                this.eventFull = eventFull;
-                this.filtered = this.compute(this.eventFull.attendees, this.searchQuery);
-                this._eventData.updateCurrentEvent(this.eventItem, this.eventFull);
-                refresher.complete();
-            },
-            error => {
-                this._uiUtils.alert(this._nav, 'Fail to update :(');
-                refresher.complete();
-            }
-        );
-    }
-
     search() {
-        this.filtered = this.compute(this.eventFull.attendees, this.searchQuery);
-    }
-
-    compute(items: AttendeeFull[], q: string): Array<any> {
-        function group(items: AttendeeFull[]): Array<any> {
-            const grouped = _.groupBy(items, i => i.lastName[0]);
-            const ret = [];
-            for(let key in grouped){
-                ret.push({
-                    title: key.toUpperCase(),
-                    items: grouped[key]
-                });
-            }
-            return ret.sort((e1, e2) => Sort.str(e1.title, e2.title));
-        }
-        return group(Filter.deep(items, q));
+        this.filtered = AttendeeListHelper.compute(this.eventFull.attendees, this.searchQuery);
     }
 
     goToAttendee(attendeeFull: AttendeeFull) {
@@ -137,5 +101,22 @@ export class AttendeeListPage {
         this._nav.push(SessionPage, {
             sessionItem: sessionItem
         });
+    }
+}
+
+class AttendeeListHelper {
+    public static compute(items: AttendeeFull[], q: string): Array<any> {
+        function group(items: AttendeeFull[]): Array<any> {
+            const grouped = _.groupBy(items, i => i.lastName[0]);
+            const ret = [];
+            for(let key in grouped){
+                ret.push({
+                    title: key.toUpperCase(),
+                    items: grouped[key]
+                });
+            }
+            return ret.sort((e1, e2) => Sort.str(e1.title, e2.title));
+        }
+        return group(Filter.deep(items, q));
     }
 }

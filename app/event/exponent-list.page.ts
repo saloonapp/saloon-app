@@ -5,9 +5,7 @@ import {EventFull} from "./models/EventFull";
 import {EventItem} from "./models/EventItem";
 import {ExponentFull} from "./models/ExponentFull";
 import {EventData} from "./services/event.data";
-import {EventService} from "./services/event.service";
 import {Filter, Sort} from "../common/utils/array";
-import {UiUtils} from "../common/ui/utils";
 import {ExponentPage} from "./exponent.page";
 
 @Page({
@@ -19,7 +17,6 @@ import {ExponentPage} from "./exponent.page";
     <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
 </ion-toolbar>
 <ion-content class="exponent-list-page">
-    <ion-refresher (refresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas d'exposant trouvé</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0">
@@ -41,9 +38,7 @@ export class ExponentListPage {
     eventFull: EventFull;
     filtered: Array<any> = [];
     constructor(private _nav: NavController,
-                private _eventService: EventService,
-                private _eventData: EventData,
-                private _uiUtils: UiUtils) {}
+                private _eventData: EventData) {}
 
     // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
     ngOnInit() {
@@ -51,32 +46,24 @@ export class ExponentListPage {
         setTimeout(() => {
             this._eventData.getCurrentEventFull().then(event => {
                 this.eventFull = event;
-                this.filtered = this.compute(this.eventFull.exponents, this.searchQuery);
+                this.filtered = ExponentListHelper.compute(this.eventFull.exponents, this.searchQuery);
             });
         }, 600);
     }
 
-    doRefresh(refresher) {
-        this._eventService.fetchEvent(this.eventItem.uuid).then(
-            eventFull => {
-                this.eventItem = EventFull.toItem(eventFull);
-                this.eventFull = eventFull;
-                this.filtered = this.compute(this.eventFull.exponents, this.searchQuery);
-                this._eventData.updateCurrentEvent(this.eventItem, this.eventFull);
-                refresher.complete();
-            },
-            error => {
-                this._uiUtils.alert(this._nav, 'Fail to update :(');
-                refresher.complete();
-            }
-        );
-    }
-
     search() {
-        this.filtered = this.compute(this.eventFull.exponents, this.searchQuery);
+        this.filtered = ExponentListHelper.compute(this.eventFull.exponents, this.searchQuery);
     }
 
-    compute(items: ExponentFull[], q: string): Array<any> {
+    goToExponent(exponentFull: ExponentFull) {
+        this._nav.push(ExponentPage, {
+            exponentItem: ExponentFull.toItem(exponentFull)
+        });
+    }
+}
+
+class ExponentListHelper {
+    public static compute(items: ExponentFull[], q: string): Array<any> {
         function group(items: ExponentFull[]): Array<any> {
             const grouped = _.groupBy(items, i => i.name[0]);
             const ret = [];
@@ -89,11 +76,5 @@ export class ExponentListPage {
             return ret.sort((e1, e2) => Sort.str(e1.title, e2.title));
         }
         return group(Filter.deep(items, q));
-    }
-
-    goToExponent(exponentFull: ExponentFull) {
-        this._nav.push(ExponentPage, {
-            exponentItem: ExponentFull.toItem(exponentFull)
-        });
     }
 }

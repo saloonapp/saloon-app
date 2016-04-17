@@ -94,7 +94,7 @@ export class ScheduleComponent implements OnChanges {
 }
 
 class ScheduleBuilder {
-    private static pxPerMin = 4;
+    private static pxPerMin = 3;
     private static msPerMin = 1000*60;
 
     public static compute(favorites: SessionFull[], slots: Slot[]): any[] {

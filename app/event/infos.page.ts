@@ -1,7 +1,11 @@
 import {OnInit} from "angular2/core";
 import {Page} from 'ionic-angular';
+import {NavController} from "ionic-angular/index";
 import {EventItem} from "./models/EventItem";
+import {EventFull} from "./models/EventFull";
 import {EventData} from "./services/event.data";
+import {EventService} from "./services/event.service";
+import {UiUtils} from "../common/ui/utils";
 import {DatePeriodPipe} from "../common/pipes/datetime.pipe";
 import {AddressPipe} from "../common/pipes/model.pipe";
 
@@ -28,6 +32,7 @@ import {AddressPipe} from "../common/pipes/model.pipe";
     <ion-title>Infos</ion-title>
 </ion-navbar>
 <ion-content class="infos-page">
+    <ion-refresher (refresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
     <div class="about-header">
         <img [src]="eventItem.landing">
     </div>
@@ -51,9 +56,26 @@ import {AddressPipe} from "../common/pipes/model.pipe";
 })
 export class InfosPage implements OnInit {
     eventItem: EventItem;
-    constructor(private _eventData: EventData) {}
+    constructor(private _nav: NavController,
+                private _eventData: EventData,
+                private _eventService: EventService,
+                private _uiUtils: UiUtils) {}
 
     ngOnInit() {
         this.eventItem = this._eventData.getCurrentEventItem();
+    }
+
+    doRefresh(refresher) {
+        this._eventService.fetchEvent(this.eventItem.uuid).then(
+            eventFull => {
+                this.eventItem = EventFull.toItem(eventFull);
+                this._eventData.updateCurrentEvent(this.eventItem, eventFull);
+                refresher.complete();
+            },
+            error => {
+                this._uiUtils.alert(this._nav, 'Fail to update :(', 'You can retry...');
+                refresher.complete();
+            }
+        );
     }
 }

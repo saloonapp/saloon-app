@@ -2,20 +2,18 @@ import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {NavController} from "ionic-angular/index";
 import * as _ from "lodash";
-import {EventFull} from "./models/EventFull";
 import {EventItem} from "./models/EventItem";
+import {EventFull} from "./models/EventFull";
 import {SessionFull} from "./models/SessionFull";
-import {EventService} from "./services/event.service";
 import {Filter, Sort} from "../common/utils/array";
 import {WeekDayPipe, TimePipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
-import {UiUtils} from "../common/ui/utils";
 import {SessionPage} from "./session.page";
 import {EventData} from "./services/event.data";
 
 @Page({
-    pipes: [TimePeriodPipe, MapPipe, NotEmptyPipe, JoinPipe],
+    pipes: [WeekDayPipe, TimePipe, TimePeriodPipe, CapitalizePipe, MapPipe, NotEmptyPipe, JoinPipe],
     styles: [`
 .item h2, .item p {
     white-space: initial;
@@ -29,12 +27,11 @@ import {EventData} from "./services/event.data";
     <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
 </ion-toolbar>
 <ion-content class="session-list-page">
-    <ion-refresher (refresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de session trouvée</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0">
         <ion-item-group *ngFor="#group of filtered">
-            <ion-item-divider sticky>{{group.title}}</ion-item-divider>
+            <ion-item-divider sticky>{{group.time | weekDay | capitalize}}, {{group.time | time}}</ion-item-divider>
             <ion-item *ngFor="#session of group.items" (click)="goToSession(session)">
                 <h2>{{session.name}}</h2>
                 <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
@@ -57,12 +54,10 @@ export class SessionListPage implements OnInit {
     eventFull: EventFull;
     filtered: Array<any> = [];
     constructor(private _nav: NavController,
-                private _eventService: EventService,
                 private _eventData: EventData,
                 private _weekDayPipe: WeekDayPipe,
                 private _timePipe: TimePipe,
-                private _capitalizePipe: CapitalizePipe,
-                private _uiUtils: UiUtils) {}
+                private _capitalizePipe: CapitalizePipe) {}
 
     // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
     // implement VirtualScroll with SearchPipe to improve perf & avoid compute.group()
@@ -71,47 +66,13 @@ export class SessionListPage implements OnInit {
         setTimeout(() => {
             this._eventData.getCurrentEventFull().then(event => {
                 this.eventFull = event;
-                this.filtered = this.compute(this.eventFull.sessions, this.searchQuery);
+                this.filtered = SessionListHelper.compute(this.eventFull.sessions, this.searchQuery);
             });
         }, 600);
     }
 
-    doRefresh(refresher) {
-        this._eventService.fetchEvent(this.eventItem.uuid).then(
-            eventFull => {
-                this.eventItem = EventFull.toItem(eventFull);
-                this.eventFull = eventFull;
-                this.filtered = this.compute(this.eventFull.sessions, this.searchQuery);
-                this._eventData.updateCurrentEvent(this.eventItem, this.eventFull);
-                refresher.complete();
-            },
-            error => {
-                this._uiUtils.alert(this._nav, 'Fail to update :(');
-                refresher.complete();
-            }
-        );
-    }
-
     search() {
-        this.filtered = this.compute(this.eventFull.sessions, this.searchQuery);
-    }
-
-    compute(items: SessionFull[], q: string): Array<any> {
-        const that = this;
-        function group(items: SessionFull[]): Array<any> {
-            const grouped = _.groupBy(items, 'start');
-            const ret = [];
-            for(let key in grouped){
-                const time = parseInt(key, 10);
-                ret.push({
-                    title: that._capitalizePipe.transform(that._weekDayPipe.transform(time))+', '+that._timePipe.transform(time),
-                    time: time,
-                    items: grouped[key]
-                });
-            }
-            return ret.sort((e1, e2) => Sort.num(e1.time, e2.time));
-        }
-        return group(Filter.deep(items, q));
+        this.filtered = SessionListHelper.compute(this.eventFull.sessions, this.searchQuery);
     }
 
     isFav(sessionFull: SessionFull) {
@@ -130,5 +91,24 @@ export class SessionListPage implements OnInit {
         this._nav.push(SessionPage, {
             sessionItem: SessionFull.toItem(sessionFull)
         });
+    }
+}
+
+class SessionListHelper {
+    public static compute(items: SessionFull[], q: string): Array<any> {
+        const that = this;
+        function group(items: SessionFull[]): Array<any> {
+            const grouped = _.groupBy(items, 'start');
+            const ret = [];
+            for(let key in grouped){
+                const time = parseInt(key, 10);
+                ret.push({
+                    time: time,
+                    items: grouped[key]
+                });
+            }
+            return ret.sort((e1, e2) => Sort.num(e1.time, e2.time));
+        }
+        return group(Filter.deep(items, q));
     }
 }
