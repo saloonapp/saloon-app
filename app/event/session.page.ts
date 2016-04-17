@@ -8,6 +8,7 @@ import {WeekDayPipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {EventData} from "./services/event.data";
+import {SessionFilterPage} from "./session-filter.page";
 import {AttendeePage} from "./attendee.page";
 
 @Page({
@@ -25,8 +26,9 @@ import {AttendeePage} from "./attendee.page";
 <ion-content class="session-page">
     <div padding>
         <h1>{{sessionItem.name}}</h1>
-        <p>{{sessionItem.start | weekDay | capitalize}}, {{sessionItem.start | timePeriod:sessionItem.end}}</p>
-        <p>{{sessionItem.place}}</p>
+        <p (click)="goToSlot(sessionItem)">{{sessionItem.start | weekDay | capitalize}}, {{sessionItem.start | timePeriod:sessionItem.end}}</p>
+        <p (click)="goToPlace(sessionItem)">{{sessionItem.place}}</p>
+        <p (click)="goToTheme(sessionItem)">{{sessionItem.theme}}</p>
         <p>{{sessionItem.description}}</p>
     </div>
     <ion-list *ngIf="sessionFull && sessionFull.speakers.length > 0">
@@ -62,6 +64,24 @@ export class SessionPage implements OnInit {
         } else {
             this._eventData.favoriteSession(sessionItem);
         }
+    }
+
+    goToSlot(sessionItem: SessionItem) {
+        this._nav.push(SessionFilterPage, {
+            filter: { slot: sessionItem }
+        });
+    }
+
+    goToPlace(sessionItem: SessionItem) {
+        this._nav.push(SessionFilterPage, {
+            filter: { place: sessionItem.place }
+        });
+    }
+
+    goToTheme(sessionItem: SessionItem) {
+        this._nav.push(SessionFilterPage, {
+            filter: { theme: sessionItem.theme }
+        });
     }
 
     goToAttendee(attendeeItem: AttendeeItem) {

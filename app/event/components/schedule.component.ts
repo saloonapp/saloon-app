@@ -52,12 +52,12 @@ interface ScheduleItem {
     `],
     template: `
 <div class="schedule" style="height: {{totalHeight}}px;">
-    <div class="schedule-item" *ngFor="#item of items" (click)="goToSession(item.data)" (hold)="openSlotsForSession(item.data)" style="{{item.position}}">
+    <div class="schedule-item" *ngFor="#item of items" (click)="goToSession(item.data)" (hold)="goToPeriod(item.data)" style="{{item.position}}">
         <p>{{item.data.start | timePeriod:item.data.end}} - {{item.data.place}}</p>
         <h2>{{item.data.name}}</h2>
         <p>{{item.data.speakers | map:'name' | join:', '}}</p>
     </div>
-    <div class="empty-slot-item" *ngFor="#item of slots" (click)="openSlot(item.data)" style="{{item.position}}">
+    <div class="empty-slot-item" *ngFor="#item of slots" (click)="goToSlot(item.data)" style="{{item.position}}">
         <p>{{item.data.start | timePeriod:item.data.end}}</p>
         <h2>
             {{item.data.sessions.length}} session{{item.data.sessions.length > 1 ? 's' : ''}}
@@ -69,7 +69,7 @@ interface ScheduleItem {
 })
 // TODO :
 //  bug when a (long) session is in same time of many successive (short) sessions : wrong width/position calculation
-//  hold on session : open session selection for slots during the session
+//  hold on session : open session selection for slots during the session (cf http://roblouie.com/article/198/using-gestures-in-the-ionic-2-beta)
 //  add day/time on the left
 //  add a 'now' line & button
 //  pass sessions & slots to Component to have a more generic component (no filter on favorites...)
@@ -89,15 +89,13 @@ export class ScheduleComponent implements OnChanges {
         this.compute(this.sessions);
     }
 
-    openSlot(slot: Slot) {
+    goToSlot(slot: Slot) {
         this._nav.push(SessionFilterPage, {
-            filter: {
-                slot: slot
-            }
+            filter: { slot: slot }
         });
     }
 
-    openSlotsForSession(sessionFull: SessionFull) {
+    goToPeriod(sessionFull: SessionFull) {
         alert('TODO: open session selector for slots during this session');
     }
 

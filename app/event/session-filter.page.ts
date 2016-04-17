@@ -76,6 +76,12 @@ export class SessionFilterPage implements OnInit {
                 items.filter(i => i.start === filter.slot.start && i.end === filter.slot.end)
             ];
         }
+        if(filter.place){
+            return [filter.place, items.filter(i => i.place === filter.place)];
+        }
+        if(filter.theme){
+            return [filter.theme, items.filter(i => i.theme === filter.theme)];
+        }
         return ['Toutes les sessions', items];
     }
 }
