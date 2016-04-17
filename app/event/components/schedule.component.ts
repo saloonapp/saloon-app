@@ -82,12 +82,11 @@ export class ScheduleComponent implements OnChanges {
                 private _eventData: EventData) {}
 
     ngOnChanges(changes: {[propName: string]: SimpleChange}) {
-        if(changes && changes['sessions']) {
-            const sessions: SessionFull[] = changes['sessions'].currentValue;
-            const favorites: SessionFull[]  = sessions.filter(s => this._eventData.isFavoriteSession(s));
-            const sessionSlots: Slot[] = SlotHelper.extract(sessions);
-            [this.totalHeight, this.items, this.slots] = ScheduleBuilder.compute(favorites, sessionSlots);
-        }
+        if(changes && changes['sessions']) { this.compute(changes['sessions'].currentValue); }
+    }
+
+    update() {
+        this.compute(this.sessions);
     }
 
     openSlot(slot: Slot) {
@@ -106,6 +105,12 @@ export class ScheduleComponent implements OnChanges {
         this._nav.push(SessionPage, {
             sessionItem: SessionFull.toItem(sessionFull)
         });
+    }
+
+    private compute(sessions: SessionFull[]) {
+        const favorites: SessionFull[] = sessions.filter(s => this._eventData.isFavoriteSession(s));
+        const sessionSlots: Slot[] = SlotHelper.extract(sessions);
+        [this.totalHeight, this.items, this.slots] = ScheduleBuilder.compute(favorites, sessionSlots);
     }
 }
 
