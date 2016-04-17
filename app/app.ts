@@ -11,7 +11,7 @@ import {Backend} from "./common/backend.service";
 import {EventService} from "./event/services/event.service";
 import {EventData} from "./event/services/event.data";
 import {TfidfService} from "./common/tfidf.service";
-import {UiUtils} from "./common/ui/utils";
+import {UiHelper} from "./common/ui/utils";
 import {SearchPipe, FilterPipe, SortByPipe, MapPipe, GroupByPipe, NotEmptyPipe, JoinPipe} from "./common/pipes/array.pipe";
 import {DatePipe, TimePipe, DateTimePipe, WeekDayPipe, DatePeriodPipe, TimePeriodPipe, TimeDurationPipe} from "./common/pipes/datetime.pipe";
 import {CapitalizePipe} from "./common/pipes/text.pipe";
@@ -24,7 +24,7 @@ import {EventListPage} from "./event/event-list.page";
     providers: [
         PluginUtils, SQLitePlugin, SQLiteStorage, StorageUtils,
         Storage, Backend,
-        EventService, EventData, TfidfService, UiUtils,
+        EventService, EventData, TfidfService, UiHelper,
         SearchPipe, FilterPipe, SortByPipe, MapPipe, GroupByPipe, NotEmptyPipe, JoinPipe,
         DatePipe, TimePipe, DateTimePipe, WeekDayPipe, DatePeriodPipe, TimePeriodPipe, TimeDurationPipe,
         CapitalizePipe,

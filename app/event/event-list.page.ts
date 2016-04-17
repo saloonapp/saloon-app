@@ -6,7 +6,7 @@ import {DatePeriodPipe} from "../common/pipes/datetime.pipe";
 import {EventItemComponent} from "./components/event-item.component";
 import {Storage} from "../common/storage.service";
 import {EventService} from "./services/event.service";
-import {UiUtils} from "../common/ui/utils";
+import {UiHelper} from "../common/ui/utils";
 import {EventPage} from "./event.page.ts";
 
 @Page({
@@ -44,13 +44,13 @@ export class EventListPage implements OnInit {
     constructor(private _nav: NavController,
                 private _storage: Storage,
                 private _eventService: EventService,
-                private _uiUtils: UiUtils) {}
+                private _uiHelper: UiHelper) {}
 
     // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
     ngOnInit() {
         this._eventService.getEvents().then(
             events => this.events = events,
-            error => this._uiUtils.alert(this._nav, 'Fail to update :(')
+            error => this._uiHelper.alert(this._nav, 'Fail to update :(')
         );
     }
 
@@ -61,7 +61,7 @@ export class EventListPage implements OnInit {
                 refresher.complete();
             },
             error => {
-                this._uiUtils.alert(this._nav, 'Fail to update :(');
+                this._uiHelper.alert(this._nav, 'Fail to update :(');
                 refresher.complete();
             }
         );
@@ -74,7 +74,7 @@ export class EventListPage implements OnInit {
     }
 
     clearStorage() {
-        this._uiUtils.confirm(this._nav, 'Delete storage ?').then(() => {
+        this._uiHelper.confirm(this._nav, 'Delete storage ?').then(() => {
             this._storage.clear();
             console.log('Storage deleted !');
         });

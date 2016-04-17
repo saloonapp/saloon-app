@@ -2,7 +2,7 @@ import {Injectable} from "angular2/core";
 import {NavController, Alert} from "ionic-angular/index";
 
 @Injectable()
-export class UiUtils {
+export class UiHelper {
     alert(nav: NavController, title: string, subTitle?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             const alert = Alert.create({

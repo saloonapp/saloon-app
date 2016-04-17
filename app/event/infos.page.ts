@@ -5,7 +5,7 @@ import {EventItem} from "./models/EventItem";
 import {EventFull} from "./models/EventFull";
 import {EventData} from "./services/event.data";
 import {EventService} from "./services/event.service";
-import {UiUtils} from "../common/ui/utils";
+import {UiHelper} from "../common/ui/utils";
 import {DatePeriodPipe} from "../common/pipes/datetime.pipe";
 import {AddressPipe} from "../common/pipes/model.pipe";
 
@@ -59,7 +59,7 @@ export class InfosPage implements OnInit {
     constructor(private _nav: NavController,
                 private _eventData: EventData,
                 private _eventService: EventService,
-                private _uiUtils: UiUtils) {}
+                private _uiHelper: UiHelper) {}
 
     ngOnInit() {
         this.eventItem = this._eventData.getCurrentEventItem();
@@ -73,7 +73,7 @@ export class InfosPage implements OnInit {
                 refresher.complete();
             },
             error => {
-                this._uiUtils.alert(this._nav, 'Fail to update :(', 'You can retry...');
+                this._uiHelper.alert(this._nav, 'Fail to update :(', 'You can retry...');
                 refresher.complete();
             }
         );
