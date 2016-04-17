@@ -12,8 +12,11 @@ import {EventService} from "./event/services/event.service";
 import {EventData} from "./event/services/event.data";
 import {TfidfService} from "./common/tfidf.service";
 import {UiUtils} from "./common/ui/utils";
-import {DatePipe, TimePipe, DateTimePipe, WeekDayPipe} from "./common/pipes/datetime.pipe";
+import {SearchPipe, FilterPipe, SortByPipe, MapPipe, GroupByPipe, NotEmptyPipe, JoinPipe} from "./common/pipes/array.pipe";
+import {DatePipe, TimePipe, DateTimePipe, WeekDayPipe, DatePeriodPipe, TimePeriodPipe, TimeDurationPipe} from "./common/pipes/datetime.pipe";
 import {CapitalizePipe} from "./common/pipes/text.pipe";
+import {TwitterNamePipe, TwitterHandlePipe, TwitterUrlPipe} from "./common/pipes/social.pipe";
+import {AddressPipe} from "./common/pipes/model.pipe";
 import {EventListPage} from "./event/event-list.page";
 
 @App({
@@ -22,7 +25,11 @@ import {EventListPage} from "./event/event-list.page";
         PluginUtils, SQLitePlugin, SQLiteStorage, StorageUtils,
         Storage, Backend,
         EventService, EventData, TfidfService, UiUtils,
-        DatePipe, TimePipe, DateTimePipe, WeekDayPipe, CapitalizePipe
+        SearchPipe, FilterPipe, SortByPipe, MapPipe, GroupByPipe, NotEmptyPipe, JoinPipe,
+        DatePipe, TimePipe, DateTimePipe, WeekDayPipe, DatePeriodPipe, TimePeriodPipe, TimeDurationPipe,
+        CapitalizePipe,
+        TwitterNamePipe, TwitterHandlePipe, TwitterUrlPipe,
+        AddressPipe
     ],
     config: {} // http://ionicframework.com/docs/v2/api/config/Config/
 })

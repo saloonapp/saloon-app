@@ -5,7 +5,9 @@ import {SessionFull} from "../models/SessionFull";
 import {Slot, SlotHelper} from "../models/Slot";
 import {EventData} from "../services/event.data";
 import {TimePeriodPipe} from "../../common/pipes/datetime.pipe";
+import {MapPipe, JoinPipe} from "../../common/pipes/array.pipe";
 import {SessionPage} from "../session.page";
+import {SessionFilterPage} from "../session-filter.page";
 
 interface ScheduleItem {
     data: Slot;
@@ -14,7 +16,7 @@ interface ScheduleItem {
 
 @Component({
     selector: 'schedule',
-    pipes: [TimePeriodPipe],
+    pipes: [TimePeriodPipe, MapPipe, JoinPipe],
     styles: [`
 .schedule {
     position: relative;
@@ -23,43 +25,53 @@ interface ScheduleItem {
     position: absolute;
     box-sizing: border-box;
     border-radius: 5px;
+    padding: 5px;
     overflow: hidden;
+    background: #F4F4F4;
+    border: solid 1px #E0E0E0;
 }
-.schedule-item {
-    background: #ccc;
-    border: solid 1px #aaa;
-}
-.schedule-item h2 {
+.schedule-item h2, .empty-slot-item h2 {
     margin: 0 0 2px;
     font-size: 1.6rem;
     font-weight: normal;
 }
+.schedule-item p, .empty-slot-item p {
+    margin: 0 0 2px;
+    font-size: 1.2rem;
+    line-height: normal;
+    color: #666;
+}
 .empty-slot-item {
-    background: #ccc;
-    border: dashed 2px #aaa;
+    border-style: dashed;
+    border-width: 2px;
     opacity: 0.5;
+}
+.empty-slot-item h2 {
+    color: #666;
 }
     `],
     template: `
 <div class="schedule" style="height: {{totalHeight}}px;">
     <div class="schedule-item" *ngFor="#item of items" (click)="goToSession(item.data)" (hold)="openSlotsForSession(item.data)" style="{{item.position}}">
-        <p>{{item.data.start | timePeriod:item.data.end}}</p>
+        <p>{{item.data.start | timePeriod:item.data.end}} - {{item.data.place}}</p>
         <h2>{{item.data.name}}</h2>
+        <p>{{item.data.speakers | map:'name' | join:', '}}</p>
     </div>
     <div class="empty-slot-item" *ngFor="#item of slots" (click)="openSlot(item.data)" style="{{item.position}}">
-         <p>{{item.data.start | timePeriod:item.data.end}}</p>
+        <p>{{item.data.start | timePeriod:item.data.end}}</p>
+        <h2>
+            {{item.data.sessions.length}} session{{item.data.sessions.length > 1 ? 's' : ''}}
+            {{item.data.sessions.length === 1 ? '('+item.data.sessions[0].name+')' : ''}}
+        </h2>
     </div>
 </div>
 `
 })
 // TODO :
 //  bug when a (long) session is in same time of many successive (short) sessions : wrong width/position calculation
-//  click on slot : open session selection for this slot
 //  hold on session : open session selection for slots during the session
-//  show nb of session available for empty slots
 //  add day/time on the left
 //  add a 'now' line & button
-//  improve infos (hours, room...) and design
 //  pass sessions & slots to Component to have a more generic component (no filter on favorites...)
 export class ScheduleComponent implements OnChanges {
     @Input() sessions: SessionFull[];
@@ -79,7 +91,11 @@ export class ScheduleComponent implements OnChanges {
     }
 
     openSlot(slot: Slot) {
-        alert('TODO: choose session for this slot');
+        this._nav.push(SessionFilterPage, {
+            filter: {
+                slot: slot
+            }
+        });
     }
 
     openSlotsForSession(sessionFull: SessionFull) {

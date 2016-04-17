@@ -7,7 +7,7 @@ export class DateHelper {
         if(date && format && mDate.isValid()){
             return mDate.format(format);
         } else {
-            return date.toString();
+            return <string> date;
         }
     }
     public static dayTimestamp(timestamp: number): number {

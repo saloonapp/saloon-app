@@ -8,14 +8,15 @@ export interface Slot {
 
 export class SlotHelper {
     public static extract(slots: Slot[]): Slot[] {
-        const results: Slot[] = [];
+        const results = [];
         let cpt = 1;
         slots.map(slot => {
             if(results.find(s => s.start === slot.start && s.end === slot.end) === undefined){
                 results.push({
                     uuid: 'slot-'+(cpt++),
                     start: slot.start,
-                    end: slot.end
+                    end: slot.end,
+                    sessions: slots.filter(s => s.start === slot.start && s.end === slot.end)
                 });
             }
         });

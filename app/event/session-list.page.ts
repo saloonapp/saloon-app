@@ -4,12 +4,12 @@ import {NavController} from "ionic-angular/index";
 import {EventItem} from "./models/EventItem";
 import {EventFull} from "./models/EventFull";
 import {SessionFull} from "./models/SessionFull";
+import {EventData} from "./services/event.data";
 import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
 import {WeekDayPipe, TimePipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {SessionPage} from "./session.page";
-import {EventData} from "./services/event.data";
 
 @Page({
     pipes: [WeekDayPipe, TimePipe, TimePeriodPipe, CapitalizePipe, MapPipe, NotEmptyPipe, JoinPipe],

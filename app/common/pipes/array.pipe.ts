@@ -1,7 +1,7 @@
 import {Pipe, PipeTransform} from "angular2/core";
 import * as _ from "lodash";
 import {ObjectHelper} from "../utils/object";
-import {Filter} from "../utils/array";
+import {ItemGroup, Filter} from "../utils/array";
 
 @Pipe({name: 'search'})
 export class SearchPipe implements PipeTransform {
@@ -33,7 +33,7 @@ export class MapPipe implements PipeTransform {
 
 @Pipe({name: 'groupBy'})
 export class GroupByPipe implements PipeTransform {
-    transform<T>(items: T[], [iteratee]: any[]): {key: string, values: T[]}[] {
+    transform<T>(items: T[], [iteratee]: any[]): ItemGroup<T>[] {
         return _.map(_.groupBy(items, iteratee), (values, key) =>  {
             return {key: key, values: values};
         });
