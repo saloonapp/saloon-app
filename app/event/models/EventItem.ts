@@ -18,5 +18,6 @@ export class EventItem {
                 public tags: string[],
                 public attendeeCount: number,
                 public sessionCount: number,
-                public exponentCount: number) {}
+                public exponentCount: number,
+                public updated: number) {}
 }

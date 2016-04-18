@@ -22,6 +22,9 @@ import {SessionPage} from "./session.page";
 <ion-navbar *navbar>
     <button menuToggle><ion-icon name="menu"></ion-icon></button>
     <ion-title>{{eventItem.name}}</ion-title>
+    <ion-buttons end>
+        <button (click)="scrollToNow()"><ion-icon name="arrow-round-down"></ion-icon></button>
+    </ion-buttons>
 </ion-navbar>
 <ion-toolbar>
     <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
@@ -82,6 +85,10 @@ export class SessionListPage implements OnInit {
         } else {
             this._eventData.favoriteSession(SessionFull.toItem(sessionFull));
         }
+    }
+
+    scrollToNow() {
+        alert("TODO: Scroll to now :)");
     }
 
     goToSession(sessionFull: SessionFull) {

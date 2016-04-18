@@ -13,7 +13,8 @@ export class SessionFull implements Slot {
                 public place: string,
                 public start: number,
                 public end: number,
-                public speakers: AttendeeItem[]) {}
+                public speakers: AttendeeItem[],
+                public updated: number) {}
     public static toItem(session: SessionFull): SessionItem {
         return new SessionItem(
             session.uuid,
@@ -25,6 +26,7 @@ export class SessionFull implements Slot {
             session.theme,
             session.place,
             session.start,
-            session.end);
+            session.end,
+            session.updated);
     }
 }

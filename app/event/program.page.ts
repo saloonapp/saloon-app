@@ -20,6 +20,9 @@ import {ScheduleComponent} from "./components/schedule.component";
 <ion-navbar *navbar>
     <button menuToggle><ion-icon name="menu"></ion-icon></button>
     <ion-title>Mon programme</ion-title>
+    <ion-buttons end>
+        <button (click)="scrollToNow()"><ion-icon name="arrow-round-down"></ion-icon></button>
+    </ion-buttons>
 </ion-navbar>
 <ion-content class="program-page">
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
@@ -53,5 +56,9 @@ export class ProgramPage implements OnInit {
 
     sessionDay(sessionFull: SessionFull): number {
         return DateHelper.dayTimestamp(sessionFull.start);
+    }
+
+    scrollToNow() {
+        alert("TODO: Scroll to now :)");
     }
 }

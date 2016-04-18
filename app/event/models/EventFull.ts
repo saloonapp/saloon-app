@@ -3,6 +3,7 @@ import {EventItem} from "./EventItem";
 import {AttendeeFull} from "./AttendeeFull";
 import {SessionFull} from "./SessionFull";
 import {ExponentFull} from "./ExponentFull";
+import {Slot} from "./Slot";
 
 export class EventElt {
     constructor(public name: string) {}
@@ -28,7 +29,9 @@ export class EventFull {
                 public places: EventElt[],
                 public attendees: AttendeeFull[],
                 public sessions: SessionFull[],
-                public exponents: ExponentFull[]) {}
+                public exponents: ExponentFull[],
+                public slots: Slot[],
+                public updated: number) {}
     public static toItem(event: EventFull): EventItem {
         return new EventItem(
             event.uuid,
@@ -48,6 +51,7 @@ export class EventFull {
             event.tags,
             event.attendees.length,
             event.sessions.length,
-            event.exponents.length);
+            event.exponents.length,
+            event.updated);
     }
 }

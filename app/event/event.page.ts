@@ -28,6 +28,7 @@ import {IonicApp} from "ionic-angular/index";
             <button ion-item menuClose (click)="goToExponent()" *ngIf="eventItem.exponentCount > 0"><ion-icon item-left name="briefcase"></ion-icon> Exposants</button>
             <button ion-item menuClose (click)="goToProgram()" *ngIf="eventItem.sessionCount > 0"><ion-icon item-left name="bookmarks"></ion-icon> Programme</button>
             <button ion-item menuClose (click)="goToInfos()" *ngIf="eventItem"><ion-icon item-left name="information-circle"></ion-icon> Infos</button>
+            <button ion-item menuClose (click)="updateEvent()" *ngIf="eventItem">Mettre à jour les données</button>
         </ion-list>
         <ion-list>
             <ion-list-header>Autre</ion-list-header>
@@ -66,6 +67,7 @@ export class EventPage implements OnInit {
     goToExponent() { this.goToTab('Exposants'); }
     goToProgram() { this.goToTab('Programme'); }
     goToInfos() { this.goToTab('Infos'); }
+    updateEvent() { alert('TODO: update event'); }
     goToEvents() { this._nav.setRoot(EventListPage); }
 
     private goToTab(title: string) {

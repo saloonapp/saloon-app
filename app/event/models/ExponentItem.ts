@@ -6,5 +6,6 @@ export class ExponentItem {
                 public logo: string,
                 public landing: string,
                 public website: string,
-                public place: string) {}
+                public place: string,
+                public updated: number) {}
 }

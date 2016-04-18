@@ -8,5 +8,6 @@ export class AttendeeItem {
                 public job: string,
                 public company: string,
                 public website: string,
-                public twitterUrl: string) {}
+                public twitterUrl: string,
+                public updated: number) {}
 }

@@ -10,7 +10,8 @@ export class ExponentFull {
                 public landing: string,
                 public website: string,
                 public place: string,
-                public team: AttendeeItem[]) {}
+                public team: AttendeeItem[],
+                public updated: number) {}
     public static toItem(exponent: ExponentFull): ExponentItem {
         return new ExponentItem(
             exponent.uuid,
@@ -20,6 +21,7 @@ export class ExponentFull {
             exponent.logo,
             exponent.landing,
             exponent.website,
-            exponent.place);
+            exponent.place,
+            exponent.updated);
     }
 }

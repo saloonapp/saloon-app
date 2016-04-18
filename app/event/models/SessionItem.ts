@@ -10,5 +10,6 @@ export class SessionItem implements Slot {
                 public theme: string,
                 public place: string,
                 public start: number,
-                public end: number) {}
+                public end: number,
+                public updated: number) {}
 }

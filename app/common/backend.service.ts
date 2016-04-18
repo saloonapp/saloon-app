@@ -12,8 +12,10 @@ import {SessionFull} from "../event/models/SessionFull";
 import {SessionItem} from "../event/models/SessionItem";
 import {ExponentFull} from "../event/models/ExponentFull";
 import {ExponentItem} from "../event/models/ExponentItem";
-import {Sort} from "./utils/array";
+import {Slot} from "../event/models/Slot";
+import {SlotHelper} from "../event/models/Slot";
 import {ObjectHelper} from "./utils/object";
+import {Sort} from "./utils/array";
 
 @Injectable()
 export class Backend {
@@ -65,7 +67,8 @@ export class Backend {
             ObjectHelper.getSafe(event, 'meta.categories'),
             ObjectHelper.getSafe(event, 'attendeeCount'),
             ObjectHelper.getSafe(event, 'sessionCount'),
-            ObjectHelper.getSafe(event, 'exponentCount')
+            ObjectHelper.getSafe(event, 'exponentCount'),
+            ObjectHelper.getSafe(event, 'meta.updated')
         );
     }
     private formatEventFull(event: any): EventFull {
@@ -73,6 +76,7 @@ export class Backend {
         const attendeeFulls = event.attendees.map(s => this.formatAttendeeFull(s, event.sessions, event.exponents)).sort((e1, e2) => Sort.str(e1.lastName, e2.lastName));
         const sessionFulls = event.sessions.map(s => this.formatSessionFull(s, attendeeItems)).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), Sort.num(e1.end, e2.end), Sort.str(e1.place, e2.place), Sort.str(e1.name, e2.name)));
         const exponentFulls = event.exponents.map(e => this.formatExponentFull(e, attendeeItems)).sort((e1, e2) => Sort.str(e1.name, e2.name));
+        const slots: Slot[] = SlotHelper.extract(sessionFulls).map(s => { return {uuid: s.uuid, start: s.start, end: s.end}; }).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), -Sort.num(e1.end, e2.end)));
         const formats = this.eltsToEventElt(sessionFulls.map(s => s.format));
         const themes = this.eltsToEventElt(sessionFulls.map(s => s.theme));
         const places = this.eltsToEventElt(sessionFulls.map(s => s.place));
@@ -97,7 +101,9 @@ export class Backend {
             places,
             attendeeFulls,
             sessionFulls,
-            exponentFulls
+            exponentFulls,
+            slots,
+            ObjectHelper.getSafe(event, 'meta.updated')
         );
     }
     private eltsToEventElt(elts: string[]): EventElt[] {
@@ -120,7 +126,8 @@ export class Backend {
             ObjectHelper.getSafe(attendee, 'info.job'),
             ObjectHelper.getSafe(attendee, 'info.company'),
             ObjectHelper.getSafe(attendee, 'info.website'),
-            ObjectHelper.getSafe(attendee, 'social.twitterUrl')
+            ObjectHelper.getSafe(attendee, 'social.twitterUrl'),
+            ObjectHelper.getSafe(attendee, 'meta.updated')
         );
     }
     private formatAttendeeFull(attendee: any, sessions: any[], exponents: any[]): AttendeeFull {
@@ -147,7 +154,8 @@ export class Backend {
             ObjectHelper.getSafe(attendee, 'info.website'),
             ObjectHelper.getSafe(attendee, 'social.twitterUrl'),
             attendeeSessions,
-            attendeeExponents
+            attendeeExponents,
+            ObjectHelper.getSafe(attendee, 'meta.updated')
         );
     }
     private formatSessionItem(session: any): SessionItem {
@@ -161,7 +169,8 @@ export class Backend {
             ObjectHelper.getSafe(session, 'info.theme'),
             ObjectHelper.getSafe(session, 'info.place'),
             ObjectHelper.getSafe(session, 'info.start'),
-            ObjectHelper.getSafe(session, 'info.end')
+            ObjectHelper.getSafe(session, 'info.end'),
+            ObjectHelper.getSafe(session, 'meta.updated')
         );
     }
     private formatSessionFull(session: any, attendeeItems: { [key: string]: AttendeeItem; }): SessionFull {
@@ -176,7 +185,8 @@ export class Backend {
             ObjectHelper.getSafe(session, 'info.place'),
             ObjectHelper.getSafe(session, 'info.start'),
             ObjectHelper.getSafe(session, 'info.end'),
-            ObjectHelper.getSafe(session, 'info.speakers', []).map(attendeeId => attendeeItems[attendeeId])
+            ObjectHelper.getSafe(session, 'info.speakers', []).map(attendeeId => attendeeItems[attendeeId]),
+            ObjectHelper.getSafe(session, 'meta.updated')
         );
     }
     private formatExponentItem(exponent: any): ExponentItem {
@@ -188,7 +198,8 @@ export class Backend {
             ObjectHelper.getSafe(exponent, 'images.logo'),
             ObjectHelper.getSafe(exponent, 'images.landing'),
             ObjectHelper.getSafe(exponent, 'info.website'),
-            ObjectHelper.getSafe(exponent, 'info.place')
+            ObjectHelper.getSafe(exponent, 'info.place'),
+            ObjectHelper.getSafe(exponent, 'meta.updated')
         );
     }
     private formatExponentFull(exponent: any, attendeeItems: { [key: string]: AttendeeItem; }): ExponentFull {
@@ -201,7 +212,8 @@ export class Backend {
             ObjectHelper.getSafe(exponent, 'images.landing'),
             ObjectHelper.getSafe(exponent, 'info.website'),
             ObjectHelper.getSafe(exponent, 'info.place'),
-            ObjectHelper.getSafe(exponent, 'info.team', []).map(attendeeId => attendeeItems[attendeeId])
+            ObjectHelper.getSafe(exponent, 'info.team', []).map(attendeeId => attendeeItems[attendeeId]),
+            ObjectHelper.getSafe(exponent, 'meta.updated')
         );
     }
 

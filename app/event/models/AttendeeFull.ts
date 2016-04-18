@@ -20,7 +20,8 @@ export class AttendeeFull {
                 public website: string,
                 public twitterUrl: string,
                 public sessions: SessionItem[],
-                public exponents: ExponentItem[]) {}
+                public exponents: ExponentItem[],
+                public updated: number) {}
     public static toItem(attendee: AttendeeFull): AttendeeItem {
         return new AttendeeItem(
             attendee.uuid,
@@ -32,6 +33,7 @@ export class AttendeeFull {
             attendee.job,
             attendee.company,
             attendee.website,
-            attendee.twitterUrl);
+            attendee.twitterUrl,
+            attendee.updated);
     }
 }
