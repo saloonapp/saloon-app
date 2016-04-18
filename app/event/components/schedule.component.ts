@@ -49,6 +49,15 @@ interface ScheduleItem {
 .empty-slot-item h2 {
     color: #666;
 }
+.now {
+    position: absolute;
+    width: 100%;
+    height: 0px;
+    border-top: 3px dashed #387ef5;
+    text-align: right;
+    padding-right: 5px;
+    color: #387ef5;
+}
     `],
     template: `
 <div class="schedule" style="height: {{totalHeight}}px;">
@@ -64,6 +73,7 @@ interface ScheduleItem {
             {{item.data.sessions.length === 1 ? '('+item.data.sessions[0].name+')' : ''}}
         </h2>
     </div>
+    <div class="now" *ngIf="now > 0" style="top: {{now}}px;">now</div>
 </div>
 `
 })
@@ -78,6 +88,7 @@ export class ScheduleComponent implements OnChanges {
     totalHeight: number;
     items: ScheduleItem[];
     slots: ScheduleItem[];
+    now: number;
     constructor(private _nav: NavController,
                 private _eventData: EventData) {}
 
@@ -108,7 +119,7 @@ export class ScheduleComponent implements OnChanges {
     private compute(sessions: SessionFull[]) {
         const favorites: SessionFull[] = sessions.filter(s => this._eventData.isFavoriteSession(s));
         const sessionSlots: Slot[] = SlotHelper.extract(sessions);
-        [this.totalHeight, this.items, this.slots] = ScheduleBuilder.compute(favorites, sessionSlots);
+        [this.totalHeight, this.items, this.slots, this.now] = ScheduleBuilder.compute(favorites, sessionSlots);
     }
 }
 
@@ -117,13 +128,15 @@ class ScheduleBuilder {
     private static msPerMin = 1000*60;
 
     public static compute(favorites: SessionFull[], slots: Slot[]): any[] {
+        const now = Date.now();
         const globalStart  : number         = _.min(_.map(slots, s => s.start));
         const globalEnd    : number         = _.max(_.map(slots, s => s.end));
         const totalHeight  : number         = this.toPx(globalEnd - globalStart);
+        const nowOffset    : number         = globalStart < now && now < globalEnd ? this.toPx(now - globalStart) : -1;
         const emptySlots   : Slot[]         = slots.filter(slot => favorites.find(s => this.isDuring(slot, s)) === undefined);
         const scheduleItems: ScheduleItem[] = this.computePosition(favorites, globalStart);
         const scheduleSlots: ScheduleItem[] = this.computePosition(emptySlots, globalStart);
-        return [totalHeight, scheduleItems, scheduleSlots];
+        return [totalHeight, scheduleItems, scheduleSlots, nowOffset];
     }
 
     private static computePosition(slots: Slot[], globalStart: number): ScheduleItem[] {
@@ -157,5 +170,16 @@ class ScheduleBuilder {
     }
     private static toPx(msTime: number): number {
         return msTime * this.pxPerMin / this.msPerMin;
+    }
+
+    private static computePosition2(slots: Slot[], globalStart: number): ScheduleItem[] {
+        const slotsByCollision = _.groupBy(slots, slot => {
+            const inParallel: Slot[] = this.inParallel(slot, slots);
+            return _.min(inParallel.map(s => s.start));
+        });
+        _.map(slotsByCollision, collisionSlots => {
+
+        });
+        return [];
     }
 }

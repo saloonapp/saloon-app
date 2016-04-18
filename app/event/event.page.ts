@@ -32,7 +32,7 @@ import {IonicApp} from "ionic-angular/index";
         </ion-list>
         <ion-list>
             <ion-list-header>Autre</ion-list-header>
-            <button ion-item menuClose (click)="goToEvents()"><ion-icon item-left name="list-box"></ion-icon> Tous les événements</button>
+            <button ion-item menuClose (click)="goToEvents()"><ion-icon item-left name="list"></ion-icon> Tous les événements</button>
         </ion-list>
     </ion-content>
 </ion-menu>

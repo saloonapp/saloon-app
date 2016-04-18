@@ -18,6 +18,16 @@ import {ExponentPage} from "./exponent.page";
 .item h2, .item p {
     white-space: initial;
 }
+.attendee-card {
+    text-align: center;
+}
+.attendee-card img {
+    border-radius: 50%;
+    height: 100px;
+}
+.attendee-card h1, .attendee-card h4 {
+    margin: 0px;
+}
     `],
     template: `
 <ion-navbar *navbar>
@@ -25,8 +35,12 @@ import {ExponentPage} from "./exponent.page";
 </ion-navbar>
 <ion-content class="attendee-page">
     <div padding>
-        <h1>{{attendeeItem.name}}</h1>
-        <h4>{{[attendeeItem.job, attendeeItem.company] | notEmpty | join:', '}}</h4>
+        <div class="attendee-card">
+            <img [src]="attendeeItem.avatar"><br>
+            <h1>{{attendeeItem.name}}</h1>
+            <h4>{{[attendeeItem.job, attendeeItem.company] | notEmpty | join:', '}}</h4>
+            <a clear small twitter *ngIf="attendeeItem.twitterUrl" [href]="attendeeItem.twitterUrl"><ion-icon name="logo-twitter"></ion-icon></a>
+        </div>
         <p>{{attendeeItem.description}}</p>
     </div>
     <ion-list *ngIf="attendeeFull && attendeeFull.exponents.length > 0">

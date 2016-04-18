@@ -4,16 +4,21 @@ import {EventFull} from "./models/EventFull";
 import {SessionFull} from "./models/SessionFull";
 import {DateHelper} from "../common/utils/date";
 import {EventData} from "./services/event.data";
-import {DatePipe} from "../common/pipes/datetime.pipe";
+import {WeekDayPipe, DatePipe} from "../common/pipes/datetime.pipe";
 import {GroupByPipe, SortByPipe} from "../common/pipes/array.pipe";
+import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {ScheduleComponent} from "./components/schedule.component";
 
 @Page({
     directives: [ScheduleComponent],
-    pipes: [DatePipe, GroupByPipe, SortByPipe],
+    pipes: [DatePipe, WeekDayPipe, CapitalizePipe, GroupByPipe, SortByPipe],
     styles: [`
 .item h2 {
     white-space: initial;
+}
+h3 {
+    padding: 5px;
+    padding-left: 10px;
 }
     `],
     template: `
@@ -28,7 +33,7 @@ import {ScheduleComponent} from "./components/schedule.component";
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <div *ngIf="eventFull">
         <div *ngFor="#daySessions of eventFull.sessions | groupBy:sessionDay | sortBy:'key'">
-            <h3>{{daySessions.key | date}}</h3>
+            <h3>{{daySessions.key | weekDay | capitalize}} {{daySessions.key | date}}</h3>
             <schedule [sessions]="daySessions.values"></schedule>
         </div>
     </div>

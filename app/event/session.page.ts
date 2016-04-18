@@ -10,6 +10,7 @@ import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {EventData} from "./services/event.data";
 import {SessionFilterPage} from "./session-filter.page";
 import {AttendeePage} from "./attendee.page";
+import {TwitterHandlePipe} from "../common/pipes/social.pipe";
 
 @Page({
     pipes: [WeekDayPipe, CapitalizePipe, TimePeriodPipe, NotEmptyPipe, JoinPipe],
@@ -26,6 +27,9 @@ import {AttendeePage} from "./attendee.page";
 <ion-content class="session-page">
     <div padding>
         <h1>{{sessionItem.name}}</h1>
+        <div style="float: right;">
+            <a clear small twitter href="https://twitter.com/intent/tweet?text={{sessionItem.name}}{{speakerNames(sessionFull)}} %23DevoxxFR "><ion-icon name="logo-twitter"></ion-icon></a>
+        </div>
         <p (click)="goToSlot(sessionItem)">{{sessionItem.start | weekDay | capitalize}}, {{sessionItem.start | timePeriod:sessionItem.end}}</p>
         <p (click)="goToPlace(sessionItem)">{{sessionItem.place}}</p>
         <p (click)="goToTheme(sessionItem)">{{sessionItem.theme}}</p>
@@ -47,7 +51,8 @@ export class SessionPage implements OnInit {
     sessionFull: SessionFull;
     constructor(private _nav: NavController,
                 private _navParams: NavParams,
-                private _eventData: EventData) {}
+                private _eventData: EventData,
+                private _twitterHandlePipe: TwitterHandlePipe) {}
 
     ngOnInit() {
         this.sessionItem = <SessionItem> this._navParams.get('sessionItem');
@@ -63,6 +68,20 @@ export class SessionPage implements OnInit {
             this._eventData.unfavoriteSession(sessionItem);
         } else {
             this._eventData.favoriteSession(sessionItem);
+        }
+    }
+
+    speakerNames(session: SessionFull) {
+        if(session && session.speakers.length > 0) {
+            return ' par ' + session.speakers.map(s => {
+                if(s.twitterUrl){
+                    return this._twitterHandlePipe.transform(s.twitterUrl);
+                } else {
+                    return s.name;
+                }
+            }).filter(name => name && name.length > 0).join(' ');
+        } else {
+            return '';
         }
     }
 
