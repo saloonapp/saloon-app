@@ -2,9 +2,11 @@ import {Injectable} from "angular2/core";
 import {EventFull} from "../models/EventFull";
 import {EventItem} from "../models/EventItem";
 import {AttendeeFull} from "../models/AttendeeFull";
+import {AttendeeItem} from "../models/AttendeeItem";
 import {SessionFull} from "../models/SessionFull";
 import {SessionItem} from "../models/SessionItem";
 import {ExponentFull} from "../models/ExponentFull";
+import {ExponentItem} from "../models/ExponentItem";
 import {UserAction} from "../../user/models/UserAction";
 import {Storage} from "../../common/storage.service";
 import {EventService} from "./event.service";
@@ -13,7 +15,7 @@ import {EventService} from "./event.service";
 export class EventData {
     private currentEventItem: EventItem;
     private currentEventFull: Promise<EventFull>;
-    private favorites: { [key: string]: boolean; } = null;
+    private favorites: {[key: string]: {[key: string]: boolean}} = null;
     constructor(private _storage: Storage,
                 private _eventService: EventService) {}
 
@@ -40,31 +42,56 @@ export class EventData {
         return this.currentEventFull.then(event => event.exponents.find(e => e.uuid === uuid));
     }
 
-    isFavoriteSession(session: SessionItem): boolean {
-        return this.favorites ? this.favorites[session.uuid] || false : false;
+    isFavoriteSession(session: SessionItem): boolean { return this.isFavorite('session', session.uuid); }
+    hasFavoriteSessions(): boolean { return this.hasFavorites('session'); }
+    favoriteSession(session: SessionItem): Promise<void> { return this.favorite('session', session.uuid); }
+    unfavoriteSession(session: SessionItem): Promise<void> { return this.unfavorite('session', session.uuid); }
+    toggleFavoriteSession(session: SessionItem): Promise<void> { return this.toggleFavorite('session', session.uuid); }
+
+    isFavoriteAttendee(attendee: AttendeeItem): boolean { return this.isFavorite('attendee', attendee.uuid); }
+    hasFavoriteAttendees(): boolean { return this.hasFavorites('attendee'); }
+    favoriteAttendee(attendee: AttendeeItem): Promise<void> { return this.favorite('attendee', attendee.uuid); }
+    unfavoriteAttendee(attendee: AttendeeItem): Promise<void> { return this.unfavorite('attendee', attendee.uuid); }
+    toggleFavoriteAttendee(attendee: AttendeeItem): Promise<void> { return this.toggleFavorite('attendee', attendee.uuid); }
+
+    isFavoriteExponent(exponent: ExponentItem): boolean { return this.isFavorite('exponent', exponent.uuid); }
+    hasFavoriteExponents(): boolean { return this.hasFavorites('exponent'); }
+    favoriteExponent(exponent: ExponentItem): Promise<void> { return this.favorite('exponent', exponent.uuid); }
+    unfavoriteExponent(exponent: ExponentItem): Promise<void> { return this.unfavorite('exponent', exponent.uuid); }
+    toggleFavoriteExponent(exponent: ExponentItem): Promise<void> { return this.toggleFavorite('exponent', exponent.uuid); }
+
+    private isFavorite(type: string, uuid: string): boolean {
+        return this.favorites && this.favorites[type] ? this.favorites[type][uuid] || false : false;
     }
-    hasFavoriteSessions(): boolean {
-        return this.favorites ? Object.keys(this.favorites).length > 0 : false;
+    private hasFavorites(type: string): boolean {
+        return this.favorites && this.favorites[type] ? Object.keys(this.favorites[type]).length > 0 : false;
     }
-    favoriteSession(session: SessionItem): Promise<void> {
+    private favorite(type: string, uuid: string): Promise<void> {
         const eventId = this.currentEventItem.uuid;
         return this._storage.getUserActions(eventId).then(actions => {
-            const isFav = actions.find(a => UserAction.isFavoriteSession(a, session));
+            const isFav = actions.find(a => UserAction.isFavorite(a, type, uuid));
             if(!isFav){
-                actions.push(UserAction.favoriteSession(eventId, session));
+                actions.push(UserAction.favorite(eventId, type, uuid));
             }
             return this._storage.setUserActions(eventId, actions);
         }).then(() => {
-            this.favorites[session.uuid] = true;
+            if(this.favorites && this.favorites[type]){ this.favorites[type][uuid] = true; }
         });
     }
-    unfavoriteSession(session: SessionItem): Promise<void> {
+    private unfavorite(type: string, uuid: string): Promise<void> {
         const eventId = this.currentEventItem.uuid;
         return this._storage.getUserActions(eventId).then(actions => {
-            return this._storage.setUserActions(eventId, actions.filter(a => !UserAction.isFavoriteSession(a, session)));
+            return this._storage.setUserActions(eventId, actions.filter(a => !UserAction.isFavorite(a, type, uuid)));
         }).then(() => {
-            this.favorites[session.uuid] = false;
+            if(this.favorites && this.favorites[type]){ this.favorites[type][uuid] = false; }
         });
+    }
+    private toggleFavorite(type: string, uuid: string): Promise<void> {
+        if(this.isFavorite(type, uuid)){
+            return this.unfavorite(type, uuid);
+        } else {
+            return this.favorite(type, uuid);
+        }
     }
 
     private setEvent(eventItem: EventItem, eventFullPromise: Promise<EventFull>): void {
@@ -72,9 +99,10 @@ export class EventData {
         this.currentEventFull = eventFullPromise;
         this.favorites = null;
         this._storage.getUserActions(eventItem.uuid).then(actions => {
-            const favorites: { [key: string]: boolean; } = {};
-            actions.filter(a => a.action === 'favorite' && a.itemType === 'session').map(action => {
-                favorites[action.itemId] = true;
+            const favorites: {[key: string]: {[key: string]: boolean}} = {};
+            actions.filter(a => a.action === 'favorite').map(action => {
+                if(!favorites[action.itemType]){ favorites[action.itemType] = {}; }
+                favorites[action.itemType][action.itemId] = true;
             });
             this.favorites = favorites;
         });

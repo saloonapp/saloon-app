@@ -26,6 +26,10 @@ import {ExponentPage} from "./exponent.page";
                 <ion-avatar item-left><img [src]="exponent.logo"></ion-avatar>
                 <h2>{{exponent.name}}</h2>
                 <p class="nowrap lines2">{{exponent.description}}</p>
+                <button clear item-right (click)="toggleFav(exponent);$event.stopPropagation();">
+                    <ion-icon name="star" [hidden]="!isFav(exponent)"></ion-icon>
+                    <ion-icon name="star-outline" [hidden]="isFav(exponent)"></ion-icon>
+                </button>
             </ion-item>
         </ion-item-group>
     </ion-list>
@@ -53,6 +57,14 @@ export class ExponentListPage {
 
     search() {
         this.filtered = ExponentListHelper.compute(this.eventFull.exponents, this.searchQuery);
+    }
+
+    isFav(exponent: ExponentFull): boolean {
+        return this._eventData.isFavoriteExponent(exponent);
+    }
+
+    toggleFav(exponent: ExponentFull) {
+        this._eventData.toggleFavoriteExponent(exponent);
     }
 
     goToExponent(exponentFull: ExponentFull) {

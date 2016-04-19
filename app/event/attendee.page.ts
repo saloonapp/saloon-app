@@ -32,6 +32,12 @@ import {ExponentPage} from "./exponent.page";
     template: `
 <ion-navbar *navbar>
     <ion-title>Participant</ion-title>
+    <ion-buttons end>
+        <button (click)="toggleFav(attendeeItem)">
+            <ion-icon name="star" [hidden]="!isFav(attendeeItem)"></ion-icon>
+            <ion-icon name="star-outline" [hidden]="isFav(attendeeItem)"></ion-icon>
+        </button>
+    </ion-buttons>
 </ion-navbar>
 <ion-content class="attendee-page">
     <div padding>
@@ -77,16 +83,12 @@ export class AttendeePage implements OnInit {
         this._eventData.getAttendeeFromCurrent(this.attendeeItem.uuid).then(attendee => this.attendeeFull = attendee);
     }
 
-    isFav(sessionItem: SessionItem) {
-        return this._eventData.isFavoriteSession(sessionItem);
+    isFav(attendee: AttendeeItem): boolean {
+        return this._eventData.isFavoriteAttendee(attendee);
     }
 
-    toggleFav(sessionItem: SessionItem) {
-        if(this.isFav(sessionItem)){
-            this._eventData.unfavoriteSession(sessionItem);
-        } else {
-            this._eventData.favoriteSession(sessionItem);
-        }
+    toggleFav(attendee: AttendeeItem) {
+        this._eventData.toggleFavoriteAttendee(attendee);
     }
 
     goToExponent(exponentItem: ExponentItem) {

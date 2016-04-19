@@ -59,16 +59,12 @@ export class SessionPage implements OnInit {
         this._eventData.getSessionFromCurrent(this.sessionItem.uuid).then(session => this.sessionFull = session);
     }
 
-    isFav(sessionItem: SessionItem): boolean {
-        return this._eventData.isFavoriteSession(sessionItem);
+    isFav(session: SessionItem): boolean {
+        return this._eventData.isFavoriteSession(session);
     }
 
-    toggleFav(sessionItem: SessionItem) {
-        if(this.isFav(sessionItem)){
-            this._eventData.unfavoriteSession(sessionItem);
-        } else {
-            this._eventData.favoriteSession(sessionItem);
-        }
+    toggleFav(session: SessionItem) {
+        this._eventData.toggleFavoriteSession(session);
     }
 
     speakerNames(session: SessionFull) {

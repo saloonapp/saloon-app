@@ -75,16 +75,12 @@ export class SessionListPage implements OnInit {
         this.filtered = SessionListHelper.compute(this.eventFull.sessions, this.searchQuery);
     }
 
-    isFav(sessionFull: SessionFull) {
-        return this._eventData.isFavoriteSession(sessionFull);
+    isFav(session: SessionFull): boolean {
+        return this._eventData.isFavoriteSession(session);
     }
 
-    toggleFav(sessionFull: SessionFull) {
-        if(this.isFav(sessionFull)){
-            this._eventData.unfavoriteSession(SessionFull.toItem(sessionFull));
-        } else {
-            this._eventData.favoriteSession(SessionFull.toItem(sessionFull));
-        }
+    toggleFav(session: SessionFull) {
+        this._eventData.toggleFavoriteSession(session);
     }
 
     scrollToNow() {

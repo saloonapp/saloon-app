@@ -33,34 +33,13 @@ import {ExponentPage} from "./exponent.page";
                 <ion-avatar item-left><img [src]="attendee.avatar"></ion-avatar>
                 <h2>{{attendee.name}}</h2>
                 <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
+                <button clear item-right (click)="toggleFav(attendee);$event.stopPropagation();">
+                    <ion-icon name="star" [hidden]="!isFav(attendee)"></ion-icon>
+                    <ion-icon name="star-outline" [hidden]="isFav(attendee)"></ion-icon>
+                </button>
             </ion-item>
         </ion-item-group>
     </ion-list>
-    <!--<div *ngIf="eventFull && filtered.length > 0">
-        <div *ngFor="#group of filtered">
-            <ion-card *ngFor="#attendee of group.items">
-                <ion-item (click)="goToAttendee(attendee)">
-                    <ion-avatar item-left><img [src]="attendee.avatar"></ion-avatar>
-                    <h2>{{attendee.name}}</h2>
-                    <p>{{(attendee.job ? attendee.job+', ' : '')+attendee.company}}</p>
-                </ion-item>
-                <ion-list *ngIf="attendee.exponents.length > 0 || attendee.sessions.length > 0">
-                    <button ion-item *ngFor="#exponent of attendee.exponents" (click)="goToExponent(exponent)">
-                        <h3>{{exponent.name}}</h3>
-                    </button>
-                    <button ion-item *ngFor="#session of attendee.sessions" (click)="goToSession(session)">
-                        <h3>{{session.name}}</h3>
-                    </button>
-                </ion-list>
-                <ion-item *ngIf="attendee.twitterUrl">
-                    <button primary clear item-left>
-                        <ion-icon name="logo-twitter"></ion-icon>
-                        <a href="{{attendee.twitterUrl}}">{{attendee.twitterUrl | twitterHandle}}</a>
-                    </button>
-                </ion-item>
-            </ion-card>
-        </div>
-    </div>-->
 </ion-content>
 `
 })
@@ -85,6 +64,14 @@ export class AttendeeListPage {
 
     search() {
         this.filtered = AttendeeListHelper.compute(this.eventFull.attendees, this.searchQuery);
+    }
+
+    isFav(attendee: AttendeeFull): boolean {
+        return this._eventData.isFavoriteAttendee(attendee);
+    }
+
+    toggleFav(attendee: AttendeeFull) {
+        this._eventData.toggleFavoriteAttendee(attendee);
     }
 
     goToAttendee(attendeeFull: AttendeeFull) {

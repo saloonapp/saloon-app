@@ -13,6 +13,12 @@ import {AttendeePage} from "./attendee.page";
     template: `
 <ion-navbar *navbar>
     <ion-title>Exposant</ion-title>
+    <ion-buttons end>
+        <button (click)="toggleFav(exponentItem)">
+            <ion-icon name="star" [hidden]="!isFav(exponentItem)"></ion-icon>
+            <ion-icon name="star-outline" [hidden]="isFav(exponentItem)"></ion-icon>
+        </button>
+    </ion-buttons>
 </ion-navbar>
 <ion-content class="exponent-page">
     <div padding>
@@ -41,6 +47,14 @@ export class ExponentPage implements OnInit {
     ngOnInit() {
         this.exponentItem = <ExponentItem> this._navParams.get('exponentItem');
         this._eventData.getExponentFromCurrent(this.exponentItem.uuid).then(exponent => this.exponentFull = exponent);
+    }
+
+    isFav(exponent: ExponentItem): boolean {
+        return this._eventData.isFavoriteExponent(exponent);
+    }
+
+    toggleFav(exponent: ExponentItem) {
+        this._eventData.toggleFavoriteExponent(exponent);
     }
 
     goToAttendee(attendeeItem: AttendeeItem) {
