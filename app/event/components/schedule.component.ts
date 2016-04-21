@@ -73,7 +73,7 @@ interface ScheduleItem {
             {{item.data.sessions.length === 1 ? '('+item.data.sessions[0].name+')' : ''}}
         </h2>
     </div>
-    <div class="now" *ngIf="now > 0" style="top: {{now}}px;">now</div>
+    <div id="now" class="now" *ngIf="now > 0" style="top: {{now}}px;">now</div>
 </div>
 `
 })
@@ -128,7 +128,7 @@ class ScheduleBuilder {
     private static msPerMin = 1000*60;
 
     public static compute(favorites: SessionFull[], slots: Slot[]): any[] {
-        const now = Date.now();
+        const now = Date.now(); //new Date("Thu Apr 21 2016 09:56:48 GMT+0200 (CEST)").getTime();
         const globalStart  : number         = _.min(_.map(slots, s => s.start));
         const globalEnd    : number         = _.max(_.map(slots, s => s.end));
         const totalHeight  : number         = this.toPx(globalEnd - globalStart);

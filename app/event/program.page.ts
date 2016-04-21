@@ -29,7 +29,7 @@ h3 {
         <button (click)="scrollToNow()"><ion-icon name="arrow-round-down"></ion-icon></button>
     </ion-buttons>
 </ion-navbar>
-<ion-content class="program-page">
+<ion-content id="program" class="program-page">
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <div *ngIf="eventFull">
         <div *ngFor="#daySessions of eventFull.sessions | groupBy:sessionDay | sortBy:'key'">
@@ -64,6 +64,13 @@ export class ProgramPage implements OnInit {
     }
 
     scrollToNow() {
-        alert("TODO: Scroll to now :)");
+        // TODO should improve !!! 2699.390625
+        const now = document.getElementById('now');
+        const program = document.getElementById('program').childNodes[0];
+        if(program && now) {
+            const top = now.getBoundingClientRect().top;
+            console.log('top: ', top);
+            program.scrollTop += top-130;
+        }
     }
 }
