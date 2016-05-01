@@ -6,10 +6,12 @@ import {EventFull} from "./models/EventFull";
 import {SessionFull} from "./models/SessionFull";
 import {EventData} from "./services/event.data";
 import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
+import {DateHelper} from "../common/utils/date";
 import {WeekDayPipe, TimePipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {SessionPage} from "./session.page";
+import {DOMHelper} from "../common/utils/DOM";
 
 @Page({
     pipes: [WeekDayPipe, TimePipe, TimePeriodPipe, CapitalizePipe, MapPipe, NotEmptyPipe, JoinPipe],
@@ -23,17 +25,17 @@ import {SessionPage} from "./session.page";
     <button menuToggle><ion-icon name="menu"></ion-icon></button>
     <ion-title>{{eventItem.name}}</ion-title>
     <ion-buttons end>
-        <button (click)="scrollToNow()"><ion-icon name="arrow-round-down"></ion-icon></button>
+        <button (click)="scrollToNow()" [hidden]="!isNow(eventItem)"><ion-icon name="arrow-round-down"></ion-icon></button>
     </ion-buttons>
 </ion-navbar>
 <ion-toolbar>
     <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
 </ion-toolbar>
-<ion-content class="session-list-page">
+<ion-content id="session-list" class="session-list-page">
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de session trouvée</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0">
-        <ion-item-group *ngFor="#group of filtered">
+        <ion-item-group *ngFor="#group of filtered" class="start-{{group.key}}">
             <ion-item-divider sticky>{{group.key | weekDay | capitalize}}, {{group.key | time}}</ion-item-divider>
             <ion-item *ngFor="#session of group.values" (click)="goToSession(session)">
                 <h2>{{session.name}}</h2>
@@ -75,6 +77,11 @@ export class SessionListPage implements OnInit {
         this.filtered = SessionListHelper.compute(this.eventFull.sessions, this.searchQuery);
     }
 
+    isNow(event: EventItem): boolean {
+        const now = DateHelper.now();
+        return event.start && event.end && event.start < now && now < event.end;
+    }
+
     isFav(session: SessionFull): boolean {
         return this._eventData.isFavoriteSession(session);
     }
@@ -84,7 +91,10 @@ export class SessionListPage implements OnInit {
     }
 
     scrollToNow() {
-        alert("TODO: Scroll to now :)");
+        const now = DateHelper.now();
+        const firstNotStarted = this.filtered.find(g => parseInt(g.key) > now);
+        const nowElts = firstNotStarted ? document.getElementsByClassName('start-'+firstNotStarted.key) : [];
+        DOMHelper.scrollTo(nowElts.length === 1 ? nowElts[0] : null, -(56+69+56));
     }
 
     goToSession(sessionFull: SessionFull) {

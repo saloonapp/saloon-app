@@ -4,6 +4,7 @@ import * as _ from "lodash";
 import {SessionFull} from "../models/SessionFull";
 import {Slot, SlotHelper} from "../models/Slot";
 import {EventData} from "../services/event.data";
+import {DateHelper} from "../../common/utils/date";
 import {TimePeriodPipe} from "../../common/pipes/datetime.pipe";
 import {MapPipe, JoinPipe} from "../../common/pipes/array.pipe";
 import {SessionPage} from "../session.page";
@@ -128,7 +129,7 @@ class ScheduleBuilder {
     private static msPerMin = 1000*60;
 
     public static compute(favorites: SessionFull[], slots: Slot[]): any[] {
-        const now = Date.now(); //new Date("Thu Apr 21 2016 09:56:48 GMT+0200 (CEST)").getTime();
+        const now = DateHelper.now();
         const globalStart  : number         = _.min(_.map(slots, s => s.start));
         const globalEnd    : number         = _.max(_.map(slots, s => s.end));
         const totalHeight  : number         = this.toPx(globalEnd - globalStart);

@@ -8,6 +8,7 @@ import {WeekDayPipe, DatePipe} from "../common/pipes/datetime.pipe";
 import {GroupByPipe, SortByPipe} from "../common/pipes/array.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {ScheduleComponent} from "./components/schedule.component";
+import {DOMHelper} from "../common/utils/DOM";
 
 @Page({
     directives: [ScheduleComponent],
@@ -26,7 +27,7 @@ h3 {
     <button menuToggle><ion-icon name="menu"></ion-icon></button>
     <ion-title>Mon programme</ion-title>
     <ion-buttons end>
-        <button (click)="scrollToNow()"><ion-icon name="arrow-round-down"></ion-icon></button>
+        <button (click)="scrollToNow()" [hidden]="!(eventFull && isNow(eventFull))"><ion-icon name="arrow-round-down"></ion-icon></button>
     </ion-buttons>
 </ion-navbar>
 <ion-content id="program" class="program-page">
@@ -59,18 +60,16 @@ export class ProgramPage implements OnInit {
         }
     }
 
+    isNow(event: EventFull): boolean {
+        const now = DateHelper.now();
+        return event.start && event.end && event.start < now && now < event.end;
+    }
+
     sessionDay(sessionFull: SessionFull): number {
         return DateHelper.dayTimestamp(sessionFull.start);
     }
 
     scrollToNow() {
-        // TODO should improve !!! 2699.390625
-        const now = document.getElementById('now');
-        const program = document.getElementById('program').childNodes[0];
-        if(program && now) {
-            const top = now.getBoundingClientRect().top;
-            console.log('top: ', top);
-            program.scrollTop += top-130;
-        }
+        DOMHelper.scrollTo(document.getElementById('now'), -(56+69));
     }
 }
