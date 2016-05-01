@@ -4,7 +4,6 @@ import {NavController, NavParams} from "ionic-angular/index";
 import {EventFull} from "./models/EventFull";
 import {EventItem} from "./models/EventItem";
 import {EventData} from "./services/event.data";
-import {UiHelper} from "../common/ui/utils";
 import {AttendeeListPage} from "./attendee-list.page";
 import {SessionListPage} from "./session-list.page";
 import {ExponentListPage} from "./exponent-list.page";

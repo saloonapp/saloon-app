@@ -68,6 +68,7 @@ export class EventListPage implements OnInit {
     }
 
     goToEvent(eventItem: EventItem) {
+        this._uiHelper.showLoading(this._nav);
         this._nav.push(EventPage, {
             eventItem: eventItem
         });

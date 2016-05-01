@@ -4,7 +4,7 @@
 
 SalooN est une application open-source qui a pour but d'aider les participants à une conférence à planifier et suivre leur programme.
 
-L'application est téléchargeable sur le [Play Store](https://play.google.com/store/apps/details?id=co.saloonapp.eventexplorer) et sur l'[App Store](https://itunes.apple.com/fr/app/saloon-events/id999897097).
+L'application est [accessible sur le web](http://saloonapp.github.io/saloon-app/) et téléchargeable sur le [Play Store](https://play.google.com/store/apps/details?id=co.saloonapp.eventexplorer) et sur l'[App Store](https://itunes.apple.com/fr/app/saloon-events/id999897097).
 
 Pour toute demande de fonctionnalité ou signalement de bug, les issues et pull-request sont à votre disposition :)
 

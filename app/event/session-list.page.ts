@@ -7,11 +7,12 @@ import {SessionFull} from "./models/SessionFull";
 import {EventData} from "./services/event.data";
 import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
 import {DateHelper} from "../common/utils/date";
+import {DOMHelper} from "../common/utils/DOM";
+import {UiHelper} from "../common/ui/utils";
 import {WeekDayPipe, TimePipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {SessionPage} from "./session.page";
-import {DOMHelper} from "../common/utils/DOM";
 
 @Page({
     pipes: [WeekDayPipe, TimePipe, TimePeriodPipe, CapitalizePipe, MapPipe, NotEmptyPipe, JoinPipe],
@@ -59,18 +60,18 @@ export class SessionListPage implements OnInit {
     eventFull: EventFull;
     filtered: ItemGroup<SessionFull>[] = [];
     constructor(private _nav: NavController,
-                private _eventData: EventData) {}
+                private _eventData: EventData,
+                private _uiHelper: UiHelper) {}
 
     // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
     // implement VirtualScroll with SearchPipe to improve perf & avoid compute.group()
     ngOnInit() {
         this.eventItem = this._eventData.getCurrentEventItem();
-        setTimeout(() => {
-            this._eventData.getCurrentEventFull().then(event => {
-                this.eventFull = event;
-                this.filtered = SessionListHelper.compute(this.eventFull.sessions, this.searchQuery);
-            });
-        }, 600);
+        this._eventData.getCurrentEventFull().then(event => {
+            this.eventFull = event;
+            this.filtered = SessionListHelper.compute(this.eventFull.sessions, this.searchQuery);
+            this._uiHelper.hideLoading();
+        });
     }
 
     search() {
