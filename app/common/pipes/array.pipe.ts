@@ -55,6 +55,7 @@ export class NotEmptyPipe implements PipeTransform {
                 case 'number':
                 case 'date':
                 case 'timestamp':
+                case 'image':
                 case 'boolean':
                 case 'null':
                 case 'undefined':

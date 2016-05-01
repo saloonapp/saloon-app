@@ -34,6 +34,14 @@ To run the app on your android device :
 
 ### Notes
 
+#### Ionic2 issues
+
+- when used in navigator
+    - urls are importants (deep-linking & setup navigation history)
+    - browser back button not handled (navigation.push/pop does not handle browser history)
+- créer un composant avec un ion-item (style is broken)
+- scrollTo with virtual scroll (not found element if not displayed)
+
 #### Ionic1 features not (yet) in Ionic2
 
 - $ionicLoading

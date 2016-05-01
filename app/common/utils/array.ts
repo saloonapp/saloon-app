@@ -86,6 +86,7 @@ export class Matcher {
             case 'object':
                 return deep > 0 ? _.find(item, e => this.match(e, query, deep - 1, opts)) !== undefined : false;
             case 'boolean':
+            case 'image':
             case 'null':
             case 'undefined':
             case 'function':

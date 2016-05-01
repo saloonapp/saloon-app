@@ -4,6 +4,8 @@ export class ObjectHelper {
         if(Array.isArray(obj)) return 'array';
         if(this.isDate(obj)) return 'date';
         if(this.isTimestamp(obj)) return 'timestamp';
+        if(this.isImage(obj)) return 'image';
+        // TODO: add types: url, base64...
         return typeof obj;
     }
     public static isDate(obj: any): boolean {
@@ -12,6 +14,9 @@ export class ObjectHelper {
     public static isTimestamp(obj: any): boolean {
         // if a number is > 31532400000 (timestamp for 01/01/1971), it's probably a timestamp...
         return (typeof obj === 'number' && obj > 31532400000) || (typeof obj === 'string' && parseInt(obj) > 31532400000);
+    }
+    public static isImage(obj: any): boolean {
+        return typeof obj === 'string' && obj.startsWith('data:image');
     }
     public static deepCopy(obj: any): any {
         return obj !== undefined ? JSON.parse(JSON.stringify(obj)) : undefined;

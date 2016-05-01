@@ -7,6 +7,7 @@ import {SessionItem} from "./models/SessionItem";
 import {ExponentItem} from "./models/ExponentItem";
 import {EventData} from "./services/event.data";
 import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
+import {UiHelper} from "../common/ui/utils";
 import {TwitterHandlePipe} from "../common/pipes/social.pipe";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {AttendeePage} from "./attendee.page";
@@ -26,44 +27,48 @@ import {ExponentPage} from "./exponent.page";
 <ion-content class="attendee-list-page">
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de participant trouvé</ion-list-header>
-    <ion-list *ngIf="eventFull && filtered.length > 0">
-        <ion-item-group *ngFor="#group of filtered">
-            <ion-item-divider sticky>{{group.key}}</ion-item-divider>
-            <ion-item *ngFor="#attendee of group.values" (click)="goToAttendee(attendee)">
-                <ion-avatar item-left><img [src]="attendee.avatar"></ion-avatar>
-                <h2>{{attendee.name}}</h2>
-                <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
-                <button clear item-right (click)="toggleFav(attendee);$event.stopPropagation();">
-                    <ion-icon name="star" [hidden]="!isFav(attendee)"></ion-icon>
-                    <ion-icon name="star-outline" [hidden]="isFav(attendee)"></ion-icon>
-                </button>
-            </ion-item>
-        </ion-item-group>
+    <ion-list *ngIf="eventFull && filtered.length > 0" [virtualScroll]="filtered" [headerFn]="virtualHeader">
+        <ion-item-divider *virtualHeader="#letter" sticky>{{letter}}</ion-item-divider>
+        <ion-item *virtualItem="#attendee" (click)="goToAttendee(attendee)">
+            <ion-avatar item-left><ion-img [src]="attendee.avatar"></ion-img></ion-avatar>
+            <h2>{{attendee.name}}</h2>
+            <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
+            <button clear item-right (click)="toggleFav(attendee);$event.stopPropagation();">
+                <ion-icon name="star" [hidden]="!isFav(attendee)"></ion-icon>
+                <ion-icon name="star-outline" [hidden]="isFav(attendee)"></ion-icon>
+            </button>
+        </ion-item>
     </ion-list>
 </ion-content>
 `
 })
 export class AttendeeListPage {
-    searchQuery: string = '';
     eventItem: EventItem;
     eventFull: EventFull;
-    filtered: ItemGroup<AttendeeFull>[] = [];
+    searchQuery: string = '';
+    filtered: AttendeeFull[] = [];
     constructor(private _nav: NavController,
-                private _eventData: EventData) {}
+                private _eventData: EventData,
+                private _uiHelper: UiHelper) {}
 
-    // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
     ngOnInit() {
         this.eventItem = this._eventData.getCurrentEventItem();
-        setTimeout(() => {
-            this._eventData.getCurrentEventFull().then(event => {
-                this.eventFull = event;
-                this.filtered = AttendeeListHelper.compute(this.eventFull.attendees, this.searchQuery);
-            });
-        }, 600);
+        this._eventData.getCurrentEventFull().then(event => {
+            this.eventFull = event;
+            this.filtered = Filter.deep(this.eventFull.attendees, this.searchQuery);
+            this._uiHelper.hideLoading();
+        });
     }
 
     search() {
-        this.filtered = AttendeeListHelper.compute(this.eventFull.attendees, this.searchQuery);
+        this.filtered = Filter.deep(this.eventFull.attendees, this.searchQuery);
+    }
+
+    virtualHeader(item, index, array) {
+        if(index === 0 || item.lastName[0].toUpperCase() !== array[index-1].lastName[0].toUpperCase()) {
+            return item.lastName[0].toUpperCase();
+        }
+        return null;
     }
 
     isFav(attendee: AttendeeFull): boolean {
@@ -88,13 +93,5 @@ export class AttendeeListPage {
         this._nav.push(SessionPage, {
             sessionItem: sessionItem
         });
-    }
-}
-
-class AttendeeListHelper {
-    public static compute(items: AttendeeFull[], q: string): ItemGroup<AttendeeFull>[] {
-        const filtered: AttendeeFull[] = Filter.deep(items, q);
-        const grouped: ItemGroup<AttendeeFull>[] = ArrayHelper.groupBy(filtered, i => i.lastName[0].toUpperCase());
-        return grouped.sort((e1, e2) => Sort.str(e1.key, e2.key));
     }
 }

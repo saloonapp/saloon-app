@@ -30,7 +30,7 @@ h3 {
         <button (click)="scrollToNow()" [hidden]="!(eventFull && isNow(eventFull))"><ion-icon name="arrow-round-down"></ion-icon></button>
     </ion-buttons>
 </ion-navbar>
-<ion-content id="program" class="program-page">
+<ion-content class="program-page">
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <div *ngIf="eventFull">
         <div *ngFor="#daySessions of eventFull.sessions | groupBy:sessionDay | sortBy:'key'">
