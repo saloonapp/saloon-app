@@ -281,6 +281,7 @@ var NotEmptyPipe = (function () {
                 case 'number':
                 case 'date':
                 case 'timestamp':
+                case 'image':
                 case 'boolean':
                 case 'null':
                 case 'undefined':
@@ -1029,6 +1030,8 @@ var core_1 = require("angular2/core");
 var index_1 = require("ionic-angular/index");
 var UiHelper = (function () {
     function UiHelper() {
+        this.loading = null;
+        this.loadingPromise = null;
     }
     UiHelper.prototype.alert = function (nav, title, subTitle) {
         return new Promise(function (resolve, reject) {
@@ -1060,6 +1063,29 @@ var UiHelper = (function () {
             });
             nav.present(alert);
         });
+    };
+    UiHelper.prototype.showLoading = function (nav, opts) {
+        var _this = this;
+        if (this.loadingPromise === null) {
+            this.loadingPromise = new Promise(function (resolve, reject) {
+                _this.loading = index_1.Loading.create(opts);
+                _this.loading.onDismiss(function () {
+                    _this.loading = null;
+                    _this.loadingPromise = null;
+                    resolve();
+                });
+                nav.present(_this.loading);
+            });
+        }
+        return this.loadingPromise;
+    };
+    UiHelper.prototype.hideLoading = function () {
+        if (this.loading !== null) {
+            this.loading.dismiss();
+        }
+        else {
+            console.warn('Loading is not active...');
+        }
     };
     UiHelper = __decorate([
         core_1.Injectable(), 
@@ -1208,6 +1234,7 @@ var Matcher = (function () {
             case 'object':
                 return deep > 0 ? _.find(item, function (e) { return _this.match(e, query, deep - 1, opts); }) !== undefined : false;
             case 'boolean':
+            case 'image':
             case 'null':
             case 'undefined':
             case 'function':
@@ -1297,6 +1324,9 @@ var ObjectHelper = (function () {
             return 'date';
         if (this.isTimestamp(obj))
             return 'timestamp';
+        if (this.isImage(obj))
+            return 'image';
+        // TODO: add types: url, base64...
         return typeof obj;
     };
     ObjectHelper.isDate = function (obj) {
@@ -1305,6 +1335,9 @@ var ObjectHelper = (function () {
     ObjectHelper.isTimestamp = function (obj) {
         // if a number is > 31532400000 (timestamp for 01/01/1971), it's probably a timestamp...
         return (typeof obj === 'number' && obj > 31532400000) || (typeof obj === 'string' && parseInt(obj) > 31532400000);
+    };
+    ObjectHelper.isImage = function (obj) {
+        return typeof obj === 'string' && obj.startsWith('data:image');
     };
     ObjectHelper.deepCopy = function (obj) {
         return obj !== undefined ? JSON.parse(JSON.stringify(obj)) : undefined;
@@ -1464,31 +1497,37 @@ var index_1 = require("ionic-angular/index");
 var AttendeeFull_1 = require("./models/AttendeeFull");
 var event_data_1 = require("./services/event.data");
 var array_1 = require("../common/utils/array");
+var utils_1 = require("../common/ui/utils");
 var social_pipe_1 = require("../common/pipes/social.pipe");
 var array_pipe_1 = require("../common/pipes/array.pipe");
 var attendee_page_1 = require("./attendee.page");
 var session_page_1 = require("./session.page");
 var exponent_page_1 = require("./exponent.page");
 var AttendeeListPage = (function () {
-    function AttendeeListPage(_nav, _eventData) {
+    function AttendeeListPage(_nav, _eventData, _uiHelper) {
         this._nav = _nav;
         this._eventData = _eventData;
+        this._uiHelper = _uiHelper;
         this.searchQuery = '';
         this.filtered = [];
     }
-    // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
     AttendeeListPage.prototype.ngOnInit = function () {
         var _this = this;
         this.eventItem = this._eventData.getCurrentEventItem();
-        setTimeout(function () {
-            _this._eventData.getCurrentEventFull().then(function (event) {
-                _this.eventFull = event;
-                _this.filtered = AttendeeListHelper.compute(_this.eventFull.attendees, _this.searchQuery);
-            });
-        }, 600);
+        this._eventData.getCurrentEventFull().then(function (event) {
+            _this.eventFull = event;
+            _this.filtered = array_1.Filter.deep(_this.eventFull.attendees, _this.searchQuery);
+            _this._uiHelper.hideLoading();
+        });
     };
     AttendeeListPage.prototype.search = function () {
-        this.filtered = AttendeeListHelper.compute(this.eventFull.attendees, this.searchQuery);
+        this.filtered = array_1.Filter.deep(this.eventFull.attendees, this.searchQuery);
+    };
+    AttendeeListPage.prototype.virtualHeader = function (item, index, array) {
+        if (index === 0 || item.lastName[0].toUpperCase() !== array[index - 1].lastName[0].toUpperCase()) {
+            return item.lastName[0].toUpperCase();
+        }
+        return null;
     };
     AttendeeListPage.prototype.isFav = function (attendee) {
         return this._eventData.isFavoriteAttendee(attendee);
@@ -1514,25 +1553,15 @@ var AttendeeListPage = (function () {
     AttendeeListPage = __decorate([
         ionic_angular_1.Page({
             pipes: [social_pipe_1.TwitterHandlePipe, array_pipe_1.NotEmptyPipe, array_pipe_1.JoinPipe],
-            template: "\n<ion-navbar *navbar>\n    <button menuToggle><ion-icon name=\"menu\"></ion-icon></button>\n    <ion-title>Participants</ion-title>\n</ion-navbar>\n<ion-toolbar>\n    <ion-searchbar [(ngModel)]=\"searchQuery\" (input)=\"search()\" debounce=\"500\"></ion-searchbar>\n</ion-toolbar>\n<ion-content class=\"attendee-list-page\">\n    <div *ngIf=\"!eventFull\" style=\"text-align: center; margin-top: 100px;\"><ion-spinner></ion-spinner></div>\n    <ion-list-header *ngIf=\"eventFull && filtered.length === 0\">Pas de participant trouv\u00E9</ion-list-header>\n    <ion-list *ngIf=\"eventFull && filtered.length > 0\">\n        <ion-item-group *ngFor=\"#group of filtered\">\n            <ion-item-divider sticky>{{group.key}}</ion-item-divider>\n            <ion-item *ngFor=\"#attendee of group.values\" (click)=\"goToAttendee(attendee)\">\n                <ion-avatar item-left><img [src]=\"attendee.avatar\"></ion-avatar>\n                <h2>{{attendee.name}}</h2>\n                <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>\n                <button clear item-right (click)=\"toggleFav(attendee);$event.stopPropagation();\">\n                    <ion-icon name=\"star\" [hidden]=\"!isFav(attendee)\"></ion-icon>\n                    <ion-icon name=\"star-outline\" [hidden]=\"isFav(attendee)\"></ion-icon>\n                </button>\n            </ion-item>\n        </ion-item-group>\n    </ion-list>\n</ion-content>\n"
+            template: "\n<ion-navbar *navbar>\n    <button menuToggle><ion-icon name=\"menu\"></ion-icon></button>\n    <ion-title>Participants</ion-title>\n</ion-navbar>\n<ion-toolbar>\n    <ion-searchbar [(ngModel)]=\"searchQuery\" (input)=\"search()\" debounce=\"500\"></ion-searchbar>\n</ion-toolbar>\n<ion-content class=\"attendee-list-page\">\n    <div *ngIf=\"!eventFull\" style=\"text-align: center; margin-top: 100px;\"><ion-spinner></ion-spinner></div>\n    <ion-list-header *ngIf=\"eventFull && filtered.length === 0\">Pas de participant trouv\u00E9</ion-list-header>\n    <ion-list *ngIf=\"eventFull && filtered.length > 0\" [virtualScroll]=\"filtered\" [headerFn]=\"virtualHeader\">\n        <ion-item-divider *virtualHeader=\"#letter\" sticky>{{letter}}</ion-item-divider>\n        <ion-item *virtualItem=\"#attendee\" (click)=\"goToAttendee(attendee)\">\n            <ion-avatar item-left><ion-img [src]=\"attendee.avatar\"></ion-img></ion-avatar>\n            <h2>{{attendee.name}}</h2>\n            <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>\n            <button clear item-right (click)=\"toggleFav(attendee);$event.stopPropagation();\">\n                <ion-icon name=\"star\" [hidden]=\"!isFav(attendee)\"></ion-icon>\n                <ion-icon name=\"star-outline\" [hidden]=\"isFav(attendee)\"></ion-icon>\n            </button>\n        </ion-item>\n    </ion-list>\n</ion-content>\n"
         }), 
-        __metadata('design:paramtypes', [index_1.NavController, event_data_1.EventData])
+        __metadata('design:paramtypes', [index_1.NavController, event_data_1.EventData, utils_1.UiHelper])
     ], AttendeeListPage);
     return AttendeeListPage;
 }());
 exports.AttendeeListPage = AttendeeListPage;
-var AttendeeListHelper = (function () {
-    function AttendeeListHelper() {
-    }
-    AttendeeListHelper.compute = function (items, q) {
-        var filtered = array_1.Filter.deep(items, q);
-        var grouped = array_1.ArrayHelper.groupBy(filtered, function (i) { return i.lastName[0].toUpperCase(); });
-        return grouped.sort(function (e1, e2) { return array_1.Sort.str(e1.key, e2.key); });
-    };
-    return AttendeeListHelper;
-}());
 
-},{"../common/pipes/array.pipe":3,"../common/pipes/social.pipe":6,"../common/utils/array":16,"./attendee.page":21,"./exponent.page":27,"./models/AttendeeFull":29,"./services/event.data":39,"./session.page":43,"ionic-angular":378,"ionic-angular/index":378}],21:[function(require,module,exports){
+},{"../common/pipes/array.pipe":3,"../common/pipes/social.pipe":6,"../common/ui/utils":14,"../common/utils/array":16,"./attendee.page":21,"./exponent.page":27,"./models/AttendeeFull":29,"./services/event.data":39,"./session.page":43,"ionic-angular":378,"ionic-angular/index":378}],21:[function(require,module,exports){
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1803,6 +1832,7 @@ var EventListPage = (function () {
         });
     };
     EventListPage.prototype.goToEvent = function (eventItem) {
+        this._uiHelper.showLoading(this._nav);
         this._nav.push(event_page_ts_1.EventPage, {
             eventItem: eventItem
         });
@@ -1911,27 +1941,33 @@ var index_1 = require("ionic-angular/index");
 var ExponentFull_1 = require("./models/ExponentFull");
 var event_data_1 = require("./services/event.data");
 var array_1 = require("../common/utils/array");
+var utils_1 = require("../common/ui/utils");
 var exponent_page_1 = require("./exponent.page");
 var ExponentListPage = (function () {
-    function ExponentListPage(_nav, _eventData) {
+    function ExponentListPage(_nav, _eventData, _uiHelper) {
         this._nav = _nav;
         this._eventData = _eventData;
+        this._uiHelper = _uiHelper;
         this.searchQuery = '';
         this.filtered = [];
     }
-    // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
     ExponentListPage.prototype.ngOnInit = function () {
         var _this = this;
         this.eventItem = this._eventData.getCurrentEventItem();
-        setTimeout(function () {
-            _this._eventData.getCurrentEventFull().then(function (event) {
-                _this.eventFull = event;
-                _this.filtered = ExponentListHelper.compute(_this.eventFull.exponents, _this.searchQuery);
-            });
-        }, 600);
+        this._eventData.getCurrentEventFull().then(function (event) {
+            _this.eventFull = event;
+            _this.filtered = array_1.Filter.deep(_this.eventFull.exponents, _this.searchQuery);
+            _this._uiHelper.hideLoading();
+        });
     };
     ExponentListPage.prototype.search = function () {
-        this.filtered = ExponentListHelper.compute(this.eventFull.exponents, this.searchQuery);
+        this.filtered = array_1.Filter.deep(this.eventFull.exponents, this.searchQuery);
+    };
+    ExponentListPage.prototype.virtualHeader = function (item, index, array) {
+        if (index === 0 || item.name[0].toUpperCase() !== array[index - 1].name[0].toUpperCase()) {
+            return item.name[0].toUpperCase();
+        }
+        return null;
     };
     ExponentListPage.prototype.isFav = function (exponent) {
         return this._eventData.isFavoriteExponent(exponent);
@@ -1946,25 +1982,15 @@ var ExponentListPage = (function () {
     };
     ExponentListPage = __decorate([
         ionic_angular_1.Page({
-            template: "\n<ion-navbar *navbar>\n    <button menuToggle><ion-icon name=\"menu\"></ion-icon></button>\n    <ion-title>Exposants</ion-title>\n</ion-navbar>\n<ion-toolbar>\n    <ion-searchbar [(ngModel)]=\"searchQuery\" (input)=\"search()\" debounce=\"500\"></ion-searchbar>\n</ion-toolbar>\n<ion-content class=\"exponent-list-page\">\n    <div *ngIf=\"!eventFull\" style=\"text-align: center; margin-top: 100px;\"><ion-spinner></ion-spinner></div>\n    <ion-list-header *ngIf=\"eventFull && filtered.length === 0\">Pas d'exposant trouv\u00E9</ion-list-header>\n    <ion-list *ngIf=\"eventFull && filtered.length > 0\">\n        <ion-item-group *ngFor=\"#group of filtered\">\n            <ion-item-divider sticky>{{group.key}}</ion-item-divider>\n            <ion-item *ngFor=\"#exponent of group.values\" (click)=\"goToExponent(exponent)\">\n                <ion-avatar item-left><img [src]=\"exponent.logo\"></ion-avatar>\n                <h2>{{exponent.name}}</h2>\n                <p class=\"nowrap lines2\">{{exponent.description}}</p>\n                <button clear item-right (click)=\"toggleFav(exponent);$event.stopPropagation();\">\n                    <ion-icon name=\"star\" [hidden]=\"!isFav(exponent)\"></ion-icon>\n                    <ion-icon name=\"star-outline\" [hidden]=\"isFav(exponent)\"></ion-icon>\n                </button>\n            </ion-item>\n        </ion-item-group>\n    </ion-list>\n</ion-content>\n",
+            template: "\n<ion-navbar *navbar>\n    <button menuToggle><ion-icon name=\"menu\"></ion-icon></button>\n    <ion-title>Exposants</ion-title>\n</ion-navbar>\n<ion-toolbar>\n    <ion-searchbar [(ngModel)]=\"searchQuery\" (input)=\"search()\" debounce=\"500\"></ion-searchbar>\n</ion-toolbar>\n<ion-content class=\"exponent-list-page\">\n    <div *ngIf=\"!eventFull\" style=\"text-align: center; margin-top: 100px;\"><ion-spinner></ion-spinner></div>\n    <ion-list-header *ngIf=\"eventFull && filtered.length === 0\">Pas d'exposant trouv\u00E9</ion-list-header>\n    <ion-list *ngIf=\"eventFull && filtered.length > 0\" [virtualScroll]=\"filtered\" [headerFn]=\"virtualHeader\">\n        <ion-item-divider *virtualHeader=\"#letter\" sticky>{{letter}}</ion-item-divider>\n        <ion-item *virtualItem=\"#exponent\" (click)=\"goToExponent(exponent)\">\n            <ion-avatar item-left><ion-img [src]=\"exponent.logo\"></ion-img></ion-avatar>\n            <h2>{{exponent.name}}</h2>\n            <p class=\"nowrap lines2\">{{exponent.description}}</p>\n            <button clear item-right (click)=\"toggleFav(exponent);$event.stopPropagation();\">\n                <ion-icon name=\"star\" [hidden]=\"!isFav(exponent)\"></ion-icon>\n                <ion-icon name=\"star-outline\" [hidden]=\"isFav(exponent)\"></ion-icon>\n            </button>\n        </ion-item>\n    </ion-list>\n</ion-content>\n",
         }), 
-        __metadata('design:paramtypes', [index_1.NavController, event_data_1.EventData])
+        __metadata('design:paramtypes', [index_1.NavController, event_data_1.EventData, utils_1.UiHelper])
     ], ExponentListPage);
     return ExponentListPage;
 }());
 exports.ExponentListPage = ExponentListPage;
-var ExponentListHelper = (function () {
-    function ExponentListHelper() {
-    }
-    ExponentListHelper.compute = function (items, q) {
-        var filtered = array_1.Filter.deep(items, q);
-        var grouped = array_1.ArrayHelper.groupBy(filtered, function (i) { return i.name[0].toUpperCase(); });
-        return grouped.sort(function (e1, e2) { return array_1.Sort.str(e1.key, e2.key); });
-    };
-    return ExponentListHelper;
-}());
 
-},{"../common/utils/array":16,"./exponent.page":27,"./models/ExponentFull":33,"./services/event.data":39,"ionic-angular":378,"ionic-angular/index":378}],27:[function(require,module,exports){
+},{"../common/ui/utils":14,"../common/utils/array":16,"./exponent.page":27,"./models/ExponentFull":33,"./services/event.data":39,"ionic-angular":378,"ionic-angular/index":378}],27:[function(require,module,exports){
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2324,11 +2350,9 @@ var ProgramPage = (function () {
     }
     ProgramPage.prototype.ngOnInit = function () {
         var _this = this;
-        setTimeout(function () {
-            _this._eventData.getCurrentEventFull().then(function (eventFull) {
-                _this.eventFull = eventFull;
-            });
-        }, 600);
+        this._eventData.getCurrentEventFull().then(function (eventFull) {
+            _this.eventFull = eventFull;
+        });
     };
     ProgramPage.prototype.onPageWillEnter = function () {
         if (this.schedules) {
@@ -2354,7 +2378,7 @@ var ProgramPage = (function () {
             directives: [schedule_component_1.ScheduleComponent],
             pipes: [datetime_pipe_1.DatePipe, datetime_pipe_1.WeekDayPipe, text_pipe_1.CapitalizePipe, array_pipe_1.GroupByPipe, array_pipe_1.SortByPipe],
             styles: ["\n.item h2 {\n    white-space: initial;\n}\nh3 {\n    padding: 5px;\n    padding-left: 10px;\n}\n    "],
-            template: "\n<ion-navbar *navbar>\n    <button menuToggle><ion-icon name=\"menu\"></ion-icon></button>\n    <ion-title>Mon programme</ion-title>\n    <ion-buttons end>\n        <button (click)=\"scrollToNow()\" [hidden]=\"!(eventFull && isNow(eventFull))\"><ion-icon name=\"arrow-round-down\"></ion-icon></button>\n    </ion-buttons>\n</ion-navbar>\n<ion-content id=\"program\" class=\"program-page\">\n    <div *ngIf=\"!eventFull\" style=\"text-align: center; margin-top: 100px;\"><ion-spinner></ion-spinner></div>\n    <div *ngIf=\"eventFull\">\n        <div *ngFor=\"#daySessions of eventFull.sessions | groupBy:sessionDay | sortBy:'key'\">\n            <h3>{{daySessions.key | weekDay | capitalize}} {{daySessions.key | date}}</h3>\n            <schedule [sessions]=\"daySessions.values\"></schedule>\n        </div>\n    </div>\n</ion-content>\n"
+            template: "\n<ion-navbar *navbar>\n    <button menuToggle><ion-icon name=\"menu\"></ion-icon></button>\n    <ion-title>Mon programme</ion-title>\n    <ion-buttons end>\n        <button (click)=\"scrollToNow()\" [hidden]=\"!(eventFull && isNow(eventFull))\"><ion-icon name=\"arrow-round-down\"></ion-icon></button>\n    </ion-buttons>\n</ion-navbar>\n<ion-content class=\"program-page\">\n    <div *ngIf=\"!eventFull\" style=\"text-align: center; margin-top: 100px;\"><ion-spinner></ion-spinner></div>\n    <div *ngIf=\"eventFull\">\n        <div *ngFor=\"#daySessions of eventFull.sessions | groupBy:sessionDay | sortBy:'key'\">\n            <h3>{{daySessions.key | weekDay | capitalize}} {{daySessions.key | date}}</h3>\n            <schedule [sessions]=\"daySessions.values\"></schedule>\n        </div>\n    </div>\n</ion-content>\n"
         }), 
         __metadata('design:paramtypes', [event_data_1.EventData])
     ], ProgramPage);
@@ -2646,37 +2670,36 @@ var index_1 = require("ionic-angular/index");
 var SessionFull_1 = require("./models/SessionFull");
 var event_data_1 = require("./services/event.data");
 var array_1 = require("../common/utils/array");
-var date_1 = require("../common/utils/date");
+var utils_1 = require("../common/ui/utils");
 var datetime_pipe_1 = require("../common/pipes/datetime.pipe");
 var text_pipe_1 = require("../common/pipes/text.pipe");
 var array_pipe_1 = require("../common/pipes/array.pipe");
 var session_page_1 = require("./session.page");
-var DOM_1 = require("../common/utils/DOM");
 var SessionListPage = (function () {
-    function SessionListPage(_nav, _eventData) {
+    function SessionListPage(_nav, _eventData, _uiHelper) {
         this._nav = _nav;
         this._eventData = _eventData;
+        this._uiHelper = _uiHelper;
         this.searchQuery = '';
         this.filtered = [];
     }
-    // TODO http://ionicframework.com/docs/v2/api/components/virtual-scroll/VirtualScroll/
-    // implement VirtualScroll with SearchPipe to improve perf & avoid compute.group()
     SessionListPage.prototype.ngOnInit = function () {
         var _this = this;
         this.eventItem = this._eventData.getCurrentEventItem();
-        setTimeout(function () {
-            _this._eventData.getCurrentEventFull().then(function (event) {
-                _this.eventFull = event;
-                _this.filtered = SessionListHelper.compute(_this.eventFull.sessions, _this.searchQuery);
-            });
-        }, 600);
+        this._eventData.getCurrentEventFull().then(function (event) {
+            _this.eventFull = event;
+            _this.filtered = array_1.Filter.deep(_this.eventFull.sessions, _this.searchQuery);
+            _this._uiHelper.hideLoading();
+        });
     };
     SessionListPage.prototype.search = function () {
-        this.filtered = SessionListHelper.compute(this.eventFull.sessions, this.searchQuery);
+        this.filtered = array_1.Filter.deep(this.eventFull.sessions, this.searchQuery);
     };
-    SessionListPage.prototype.isNow = function (event) {
-        var now = date_1.DateHelper.now();
-        return event.start && event.end && event.start < now && now < event.end;
+    SessionListPage.prototype.virtualHeader = function (item, index, array) {
+        if (index === 0 || item.start !== array[index - 1].start) {
+            return item;
+        }
+        return null;
     };
     SessionListPage.prototype.isFav = function (session) {
         return this._eventData.isFavoriteSession(session);
@@ -2684,12 +2707,18 @@ var SessionListPage = (function () {
     SessionListPage.prototype.toggleFav = function (session) {
         this._eventData.toggleFavoriteSession(session);
     };
-    SessionListPage.prototype.scrollToNow = function () {
-        var now = date_1.DateHelper.now();
-        var firstNotStarted = this.filtered.find(function (g) { return parseInt(g.key) > now; });
-        var nowElts = firstNotStarted ? document.getElementsByClassName('start-' + firstNotStarted.key) : [];
-        DOM_1.DOMHelper.scrollTo(nowElts.length === 1 ? nowElts[0] : null, -(56 + 69 + 56));
-    };
+    // can't scrollToNow with virtual scroll :(
+    /*isNow(event: EventItem): boolean {
+        const now = DateHelper.now();
+        return event.start && event.end && event.start < now && now < event.end;
+    }
+
+    scrollToNow() {
+        const now = DateHelper.now();
+        const firstNotStarted = this.filtered.find(g => parseInt(g.key) > now);
+        const nowElts = firstNotStarted ? document.getElementsByClassName('start-'+firstNotStarted.key) : [];
+        DOMHelper.scrollTo(nowElts.length === 1 ? nowElts[0] : null, -(56+69+56));
+    }*/
     SessionListPage.prototype.goToSession = function (sessionFull) {
         this._nav.push(session_page_1.SessionPage, {
             sessionItem: SessionFull_1.SessionFull.toItem(sessionFull)
@@ -2699,25 +2728,15 @@ var SessionListPage = (function () {
         ionic_angular_1.Page({
             pipes: [datetime_pipe_1.WeekDayPipe, datetime_pipe_1.TimePipe, datetime_pipe_1.TimePeriodPipe, text_pipe_1.CapitalizePipe, array_pipe_1.MapPipe, array_pipe_1.NotEmptyPipe, array_pipe_1.JoinPipe],
             styles: ["\n.item h2, .item p {\n    white-space: initial;\n}\n    "],
-            template: "\n<ion-navbar *navbar>\n    <button menuToggle><ion-icon name=\"menu\"></ion-icon></button>\n    <ion-title>{{eventItem.name}}</ion-title>\n    <ion-buttons end>\n        <button (click)=\"scrollToNow()\" [hidden]=\"!isNow(eventItem)\"><ion-icon name=\"arrow-round-down\"></ion-icon></button>\n    </ion-buttons>\n</ion-navbar>\n<ion-toolbar>\n    <ion-searchbar [(ngModel)]=\"searchQuery\" (input)=\"search()\" debounce=\"500\"></ion-searchbar>\n</ion-toolbar>\n<ion-content id=\"session-list\" class=\"session-list-page\">\n    <div *ngIf=\"!eventFull\" style=\"text-align: center; margin-top: 100px;\"><ion-spinner></ion-spinner></div>\n    <ion-list-header *ngIf=\"eventFull && filtered.length === 0\">Pas de session trouv\u00E9e</ion-list-header>\n    <ion-list *ngIf=\"eventFull && filtered.length > 0\">\n        <ion-item-group *ngFor=\"#group of filtered\" class=\"start-{{group.key}}\">\n            <ion-item-divider sticky>{{group.key | weekDay | capitalize}}, {{group.key | time}}</ion-item-divider>\n            <ion-item *ngFor=\"#session of group.values\" (click)=\"goToSession(session)\">\n                <h2>{{session.name}}</h2>\n                <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>\n                <p>{{session.speakers | map:'name' | join:', '}}</p>\n                <button clear item-right (click)=\"toggleFav(session);$event.stopPropagation();\">\n                    <ion-icon name=\"star\" [hidden]=\"!isFav(session)\"></ion-icon>\n                    <ion-icon name=\"star-outline\" [hidden]=\"isFav(session)\"></ion-icon>\n                </button>\n            </ion-item>\n        </ion-item-group>\n    </ion-list>\n</ion-content>\n"
+            template: "\n<ion-navbar *navbar>\n    <button menuToggle><ion-icon name=\"menu\"></ion-icon></button>\n    <ion-title>{{eventItem.name}}</ion-title>\n    <!--<ion-buttons end>\n        <button (click)=\"scrollToNow()\" [hidden]=\"!isNow(eventItem)\"><ion-icon name=\"arrow-round-down\"></ion-icon></button>\n    </ion-buttons>-->\n</ion-navbar>\n<ion-toolbar>\n    <ion-searchbar [(ngModel)]=\"searchQuery\" (input)=\"search()\" debounce=\"500\"></ion-searchbar>\n</ion-toolbar>\n<ion-content class=\"session-list-page\">\n    <div *ngIf=\"!eventFull\" style=\"text-align: center; margin-top: 100px;\"><ion-spinner></ion-spinner></div>\n    <ion-list-header *ngIf=\"eventFull && filtered.length === 0\">Pas de session trouv\u00E9e</ion-list-header>\n    <ion-list *ngIf=\"eventFull && filtered.length > 0\" [virtualScroll]=\"filtered\" [headerFn]=\"virtualHeader\">\n        <ion-item-divider *virtualHeader=\"#session\" class=\"start-{{session.start}}\" sticky>\n            {{session.start | weekDay | capitalize}}, {{session.start | time}}\n        </ion-item-divider>\n        <ion-item *virtualItem=\"#session\" (click)=\"goToSession(session)\">\n            <h2>{{session.name}}</h2>\n            <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>\n            <p>{{session.speakers | map:'name' | join:', '}}</p>\n            <button clear item-right (click)=\"toggleFav(session);$event.stopPropagation();\">\n                <ion-icon name=\"star\" [hidden]=\"!isFav(session)\"></ion-icon>\n                <ion-icon name=\"star-outline\" [hidden]=\"isFav(session)\"></ion-icon>\n            </button>\n        </ion-item>\n    </ion-list>\n</ion-content>\n"
         }), 
-        __metadata('design:paramtypes', [index_1.NavController, event_data_1.EventData])
+        __metadata('design:paramtypes', [index_1.NavController, event_data_1.EventData, utils_1.UiHelper])
     ], SessionListPage);
     return SessionListPage;
 }());
 exports.SessionListPage = SessionListPage;
-var SessionListHelper = (function () {
-    function SessionListHelper() {
-    }
-    SessionListHelper.compute = function (items, q) {
-        var filtered = array_1.Filter.deep(items, q);
-        var grouped = array_1.ArrayHelper.groupBy(filtered, 'start');
-        return grouped.sort(function (e1, e2) { return array_1.Sort.num(parseInt(e1.key), parseInt(e2.key)); });
-    };
-    return SessionListHelper;
-}());
 
-},{"../common/pipes/array.pipe":3,"../common/pipes/datetime.pipe":4,"../common/pipes/text.pipe":7,"../common/utils/DOM":15,"../common/utils/array":16,"../common/utils/date":17,"./models/SessionFull":35,"./services/event.data":39,"./session.page":43,"ionic-angular":378,"ionic-angular/index":378}],43:[function(require,module,exports){
+},{"../common/pipes/array.pipe":3,"../common/pipes/datetime.pipe":4,"../common/pipes/text.pipe":7,"../common/ui/utils":14,"../common/utils/array":16,"./models/SessionFull":35,"./services/event.data":39,"./session.page":43,"ionic-angular":378,"ionic-angular/index":378}],43:[function(require,module,exports){
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
