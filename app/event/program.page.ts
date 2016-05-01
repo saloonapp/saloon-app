@@ -47,11 +47,9 @@ export class ProgramPage implements OnInit {
     constructor(private _eventData: EventData) {}
 
     ngOnInit() {
-        setTimeout(() => {
-            this._eventData.getCurrentEventFull().then(eventFull => {
-                this.eventFull = eventFull;
-            });
-        }, 600);
+        this._eventData.getCurrentEventFull().then(eventFull => {
+            this.eventFull = eventFull;
+        });
     }
 
     onPageWillEnter() {
