@@ -27,6 +27,7 @@ export class Backend {
             this._http.get(this._backendUrl+'/events/all')
                 .map(res => res.json().map(this.formatEventItem))
                 .do(data => console.log('Backend.getEvents', data))
+                .retryWhen(errors => errors)// TODO : should improve to not retry indefinitely...
                 .catch(this.handleError)
                 .subscribe(
                     events => resolve(events),
@@ -40,6 +41,7 @@ export class Backend {
             this._http.get(this._backendUrl+'/events/'+uuid+'/full')
                 .map(res => this.formatEventFull(res.json()))
                 .do(data => console.log('Backend.getEvent('+uuid+')', data))
+                .retryWhen(errors => errors)// TODO : should improve to not retry indefinitely...
                 .catch(this.handleError)
                 .subscribe(
                     events => resolve(events),
