@@ -3,6 +3,7 @@ import {Http, Response} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 import "rxjs/Rx";
 import * as _ from "lodash";
+import {Config} from "../config";
 import {Address} from "./models/Address";
 import {EventItem, EventFull, EventElt} from "../event/models/Event";
 import {AttendeeItem, AttendeeFull} from "../event/models/Attendee";
@@ -14,12 +15,11 @@ import {Sort} from "./utils/array";
 
 @Injectable()
 export class Backend {
-    private _backendUrl = 'https://dev-saloon.herokuapp.com/api/v2';
     constructor(private _http: Http) {}
 
     getEvents(): Promise<EventItem[]> {
         return new Promise((resolve, reject) => {
-            this._http.get(this._backendUrl+'/events/all')
+            this._http.get(Config.backendUrl+'/events/all')
                 .map(res => res.json().map(this.formatEventItem))
                 .do(data => console.log('Backend.getEvents', data))
                 .retryWhen(errors => errors)// TODO : should improve to not retry indefinitely...
@@ -33,7 +33,7 @@ export class Backend {
 
     getEvent(uuid: string): Promise<EventFull> {
         return new Promise((resolve, reject) => {
-            this._http.get(this._backendUrl+'/events/'+uuid+'/full')
+            this._http.get(Config.backendUrl+'/events/'+uuid+'/full')
                 .map(res => this.formatEventFull(res.json()))
                 .do(data => console.log('Backend.getEvent('+uuid+')', data))
                 .retryWhen(errors => errors)// TODO : should improve to not retry indefinitely...
