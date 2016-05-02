@@ -95,7 +95,8 @@ export class EventData {
         this.currentEventFull = eventFullPromise;
         this.favorites = null;
         this._storage.getUserActions(eventItem.uuid).then(actions => {
-            const favorites: {[key: string]: {[key: string]: boolean}} = {};
+            // all favorite types should be initialized to correctly be updated in UI (for the first time)
+            const favorites: {[key: string]: {[key: string]: boolean}} = {session: {}, attendee: {}, exponent: {}};
             actions.filter(a => a.action === 'favorite').map(action => {
                 if(!favorites[action.itemType]){ favorites[action.itemType] = {}; }
                 favorites[action.itemType][action.itemId] = true;
