@@ -51,8 +51,7 @@ import {SessionPage} from "./session.page";
 </ion-content>
 `
 })
-// TODO
-//  filter sessions by : only favorites, day, track, room, last updated
+// TODO : filter sessions by : only favorites, day, track, room, last updated
 export class SessionListPage implements OnInit {
     eventItem: EventItem;
     eventFull: EventFull;
@@ -66,6 +65,7 @@ export class SessionListPage implements OnInit {
         this.eventItem = this._eventData.getCurrentEventItem();
         this._eventData.getCurrentEventFull().then(event => {
             this.eventFull = event;
+            // TODO : should watch this.eventFull changes to update this.filtered (updated after restert right now...)
             this.filtered = Filter.deep(this.eventFull.sessions, this.searchQuery);
             this._uiHelper.hideLoading();
         });

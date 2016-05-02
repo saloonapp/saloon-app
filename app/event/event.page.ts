@@ -1,15 +1,16 @@
 import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
-import {NavController, NavParams} from "ionic-angular/index";
+import {IonicApp, NavController, NavParams} from "ionic-angular/index";
 import {EventItem, EventFull} from "./models/Event";
 import {EventData} from "./services/event.data";
+import {EventService} from "./services/event.service";
+import {UiHelper} from "../common/ui/utils";
 import {AttendeeListPage} from "./attendee-list.page";
 import {SessionListPage} from "./session-list.page";
 import {ExponentListPage} from "./exponent-list.page";
 import {ProgramPage} from "./program.page";
 import {InfosPage} from "./infos.page";
 import {EventListPage} from "./event-list.page";
-import {IonicApp} from "ionic-angular/index";
 
 
 @Page({
@@ -53,7 +54,9 @@ export class EventPage implements OnInit {
     constructor(private _app: IonicApp,
                 private _nav: NavController,
                 private _navParams: NavParams,
-                private _eventData: EventData) {}
+                private _eventService: EventService,
+                private _eventData: EventData,
+                private _uiHelper: UiHelper) {}
 
     ngOnInit() {
         this.eventItem = <EventItem> this._navParams.get('eventItem');
@@ -65,7 +68,7 @@ export class EventPage implements OnInit {
     goToExponent() { this.goToTab('Exposants'); }
     goToProgram() { this.goToTab('Programme'); }
     goToInfos() { this.goToTab('Infos'); }
-    updateEvent() { alert('TODO: update event'); }
+    updateEvent() { this.doRefresh(); }
     goToEvents() { this._nav.setRoot(EventListPage); }
 
     private goToTab(title: string) {
@@ -80,5 +83,18 @@ export class EventPage implements OnInit {
             tab = tabs.getByIndex(++tabIndex);
         }
         if(tab === null){ console.warn('Tab <'+title+'> not found !'); }
+    }
+    doRefresh() {
+        this._uiHelper.showLoading(this._nav);
+        this._eventService.fetchEvent(this.eventItem.uuid).then(
+            eventFull => {
+                this.eventItem = eventFull.toItem();
+                this._eventData.updateCurrentEvent(this.eventItem, eventFull);
+                this._uiHelper.hideLoading();
+            },
+            error => {
+                this._uiHelper.alert(this._nav, 'Fail to update :(', 'You can retry...');
+            }
+        );
     }
 }

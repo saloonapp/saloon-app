@@ -41,7 +41,7 @@ import {ExponentPage} from "./exponent.page";
 </ion-content>
 `
 })
-export class AttendeeListPage {
+export class AttendeeListPage implements OnInit {
     eventItem: EventItem;
     eventFull: EventFull;
     searchQuery: string = '';
@@ -54,6 +54,7 @@ export class AttendeeListPage {
         this.eventItem = this._eventData.getCurrentEventItem();
         this._eventData.getCurrentEventFull().then(event => {
             this.eventFull = event;
+            // TODO : should watch this.eventFull changes to update this.filtered (updated after restert right now...)
             this.filtered = Filter.deep(this.eventFull.attendees, this.searchQuery);
             this._uiHelper.hideLoading();
         });
