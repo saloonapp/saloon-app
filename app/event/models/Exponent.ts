@@ -10,7 +10,7 @@ export class ExponentItem extends Serializable {
                 public landing: string,
                 public website: string,
                 public place: string,
-                public updated: number) {}
+                public updated: number) { super(); }
 }
 
 export class ExponentFull extends Serializable {
@@ -23,7 +23,7 @@ export class ExponentFull extends Serializable {
                 public website: string,
                 public place: string,
                 public team: AttendeeItem[],
-                public updated: number) {}
+                public updated: number) { super(); }
     toItem(): ExponentItem {
         return new ExponentItem(
             this.uuid,
@@ -39,8 +39,8 @@ export class ExponentFull extends Serializable {
 
     // override Serializable.fromJS to correctly parse nested class
     public static fromJS(jsonObj: any): ExponentFull {
-        const instance: ExponentFull = super.fromJS(jsonObj);
-        instance.team = instance.team.map(item => AttendeeItem.fromJS(item));
+        const instance = <ExponentFull> super.fromJS(jsonObj);
+        instance.team  = <AttendeeItem[]> instance.team.map(item => AttendeeItem.fromJS(item));
         return instance;
     }
 }

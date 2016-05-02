@@ -11,14 +11,14 @@ export interface ISlot {
 export class Slot extends Serializable {
     constructor(public uuid: string,
                 public start: number,
-                public end: number) {}
+                public end: number) { super(); }
 }
 
 export class SlotWithSessions extends Serializable {
     constructor(public uuid: string,
                 public start: number,
                 public end: number,
-                public sessions: SessionFull[]) {}
+                public sessions: SessionFull[]) { super(); }
     toSlot(): Slot {
         return new Slot(this.uuid, this.start, this.end);
     }

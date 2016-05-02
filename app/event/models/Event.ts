@@ -25,12 +25,12 @@ export class EventItem extends Serializable {
                 public attendeeCount: number,
                 public sessionCount: number,
                 public exponentCount: number,
-                public updated: number) {}
+                public updated: number) { super(); }
 
     // override Serializable.fromJS to correctly parse nested class
     public static fromJS(jsonObj: any): EventItem {
-        const instance: EventItem = super.fromJS(jsonObj);
-        instance.address = Address.fromJS(jsonObj.address);
+        const instance   = <EventItem> super.fromJS(jsonObj);
+        instance.address = <Address> Address.fromJS(jsonObj.address);
         return instance;
     }
 }
@@ -58,7 +58,7 @@ export class EventFull extends Serializable {
                 public sessions: SessionFull[],
                 public exponents: ExponentFull[],
                 public slots: Slot[],
-                public updated: number) {}
+                public updated: number) { super(); }
     toItem(): EventItem {
         return new EventItem(
             this.uuid,
@@ -84,19 +84,19 @@ export class EventFull extends Serializable {
 
     // override Serializable.fromJS to correctly parse nested class
     public static fromJS(jsonObj: any): EventFull {
-        const instance: EventFull = super.fromJS(jsonObj);
-        instance.address = Address.fromJS(jsonObj.address);
-        instance.formats = instance.formats.map(item => EventElt.fromJS(item));
-        instance.themes = instance.themes.map(item => EventElt.fromJS(item));
-        instance.places = instance.places.map(item => EventElt.fromJS(item));
-        instance.attendees = instance.attendees.map(item => AttendeeFull.fromJS(item));
-        instance.sessions = instance.sessions.map(item => SessionFull.fromJS(item));
-        instance.exponents = instance.exponents.map(item => ExponentFull.fromJS(item));
-        instance.slots = instance.slots.map(item => Slot.fromJS(item));
+        const instance     = <EventFull> super.fromJS(jsonObj);
+        instance.address   = <Address> Address.fromJS(jsonObj.address);
+        instance.formats   = <EventElt[]> instance.formats.map(item => EventElt.fromJS(item));
+        instance.themes    = <EventElt[]> instance.themes.map(item => EventElt.fromJS(item));
+        instance.places    = <EventElt[]> instance.places.map(item => EventElt.fromJS(item));
+        instance.attendees = <AttendeeFull[]> instance.attendees.map(item => AttendeeFull.fromJS(item));
+        instance.sessions  = <SessionFull[]> instance.sessions.map(item => SessionFull.fromJS(item));
+        instance.exponents = <ExponentFull[]> instance.exponents.map(item => ExponentFull.fromJS(item));
+        instance.slots     = <Slot[]> instance.slots.map(item => Slot.fromJS(item));
         return instance;
     }
 }
 
 export class EventElt extends Serializable {
-    constructor(public name: string) {}
+    constructor(public name: string) { super(); }
 }

@@ -20,7 +20,7 @@ export class Backend {
     getEvents(): Promise<EventItem[]> {
         return new Promise((resolve, reject) => {
             this._http.get(Config.backendUrl+'/events/all')
-                .map(res => res.json().map(this.formatEventItem))
+                .map(res => res.json().map(BackendFormatter.formatEventItem))
                 .do(data => console.log('Backend.getEvents', data))
                 .retryWhen(errors => errors)// TODO : should improve to not retry indefinitely...
                 .catch(this.handleError)
@@ -34,7 +34,7 @@ export class Backend {
     getEvent(uuid: string): Promise<EventFull> {
         return new Promise((resolve, reject) => {
             this._http.get(Config.backendUrl+'/events/'+uuid+'/full')
-                .map(res => this.formatEventFull(res.json()))
+                .map(res => BackendFormatter.formatEventFull(res.json()))
                 .do(data => console.log('Backend.getEvent('+uuid+')', data))
                 .retryWhen(errors => errors)// TODO : should improve to not retry indefinitely...
                 .catch(this.handleError)
@@ -45,7 +45,14 @@ export class Backend {
         });
     }
 
-    private formatEventItem(event: any): EventItem {
+    private handleError(error: Response) {
+        console.error('Backend error', error);
+        return Observable.throw(error.json().error || 'Server error');
+    }
+}
+
+class BackendFormatter {
+    public static formatEventItem(event: any): EventItem {
         return new EventItem(
             ObjectHelper.getSafe(event, 'uuid'),
             ObjectHelper.getSafe(event, 'name'),
@@ -68,15 +75,15 @@ export class Backend {
             ObjectHelper.getSafe(event, 'meta.updated')
         );
     }
-    private formatEventFull(event: any): EventFull {
-        const attendeeItems = this.toMap(event.attendees.map(this.formatAttendeeItem), i => i.uuid);
-        const attendeeFulls = event.attendees.map(s => this.formatAttendeeFull(s, event.sessions, event.exponents)).sort((e1, e2) => Sort.str(e1.lastName, e2.lastName));
-        const sessionFulls = event.sessions.map(s => this.formatSessionFull(s, attendeeItems)).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), Sort.num(e1.end, e2.end), Sort.str(e1.place, e2.place), Sort.str(e1.name, e2.name)));
-        const exponentFulls = event.exponents.map(e => this.formatExponentFull(e, attendeeItems)).sort((e1, e2) => Sort.str(e1.name, e2.name));
-        const slots: Slot[] = SlotHelper.extract(sessionFulls).map(s => s.toSlot()).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), -Sort.num(e1.end, e2.end)));
-        const formats = this.eltsToEventElt(sessionFulls.map(s => s.format));
-        const themes = this.eltsToEventElt(sessionFulls.map(s => s.theme));
-        const places = this.eltsToEventElt(sessionFulls.map(s => s.place));
+    public static formatEventFull(event: any): EventFull {
+        const attendeeItems : { [key: string]: AttendeeItem; } = this.toMap<AttendeeItem>(event.attendees.map(this.formatAttendeeItem), i => i.uuid);
+        const attendeeFulls : AttendeeFull[]                   = event.attendees.map(s => this.formatAttendeeFull(s, event.sessions, event.exponents)).sort((e1, e2) => Sort.str(e1.lastName, e2.lastName));
+        const sessionFulls  : SessionFull[]                    = event.sessions.map(s => this.formatSessionFull(s, attendeeItems)).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), Sort.num(e1.end, e2.end), Sort.str(e1.place, e2.place), Sort.str(e1.name, e2.name)));
+        const exponentFulls : ExponentFull[]                   = event.exponents.map(e => this.formatExponentFull(e, attendeeItems)).sort((e1, e2) => Sort.str(e1.name, e2.name));
+        const slots         : Slot[]                           = SlotHelper.extract(sessionFulls).map(s => s.toSlot()).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), -Sort.num(e1.end, e2.end)));
+        const formats       : EventElt[]                       = this.eltsToEventElt(sessionFulls.map(s => s.format));
+        const themes        : EventElt[]                       = this.eltsToEventElt(sessionFulls.map(s => s.theme));
+        const places        : EventElt[]                       = this.eltsToEventElt(sessionFulls.map(s => s.place));
         return new EventFull(
             ObjectHelper.getSafe(event, 'uuid'),
             ObjectHelper.getSafe(event, 'name'),
@@ -103,13 +110,13 @@ export class Backend {
             ObjectHelper.getSafe(event, 'meta.updated')
         );
     }
-    private eltsToEventElt(elts: string[]): EventElt[] {
+    private static eltsToEventElt(elts: string[]): EventElt[] {
         return _.uniq(elts.map(e => e.trim()))
-                .filter(e => e.length > 0)
-                .sort(Sort.str)
-                .map(e => new EventElt(e));
+            .filter(e => e.length > 0)
+            .sort(Sort.str)
+            .map(e => new EventElt(e));
     }
-    private formatAttendeeItem(attendee: any): AttendeeItem {
+    private static formatAttendeeItem(attendee: any): AttendeeItem {
         return new AttendeeItem(
             ObjectHelper.getSafe(attendee, 'uuid'),
             ObjectHelper.getSafe(attendee, 'info.role'),
@@ -124,7 +131,7 @@ export class Backend {
             ObjectHelper.getSafe(attendee, 'meta.updated')
         );
     }
-    private formatAttendeeFull(attendee: any, sessions: any[], exponents: any[]): AttendeeFull {
+    private static formatAttendeeFull(attendee: any, sessions: any[], exponents: any[]): AttendeeFull {
         const attendeeSessions = sessions.filter(session => {
             return session.info ? session.info.speakers.indexOf(attendee.uuid) !== -1 : false;
         }).map(this.formatSessionItem);
@@ -152,7 +159,7 @@ export class Backend {
             ObjectHelper.getSafe(attendee, 'meta.updated')
         );
     }
-    private formatSessionItem(session: any): SessionItem {
+    private static formatSessionItem(session: any): SessionItem {
         return new SessionItem(
             ObjectHelper.getSafe(session, 'uuid'),
             ObjectHelper.getSafe(session, 'name'),
@@ -167,7 +174,7 @@ export class Backend {
             ObjectHelper.getSafe(session, 'meta.updated')
         );
     }
-    private formatSessionFull(session: any, attendeeItems: { [key: string]: AttendeeItem; }): SessionFull {
+    private static formatSessionFull(session: any, attendeeItems: { [key: string]: AttendeeItem; }): SessionFull {
         return new SessionFull(
             ObjectHelper.getSafe(session, 'uuid'),
             ObjectHelper.getSafe(session, 'name'),
@@ -183,7 +190,7 @@ export class Backend {
             ObjectHelper.getSafe(session, 'meta.updated')
         );
     }
-    private formatExponentItem(exponent: any): ExponentItem {
+    private static formatExponentItem(exponent: any): ExponentItem {
         return new ExponentItem(
             ObjectHelper.getSafe(exponent, 'uuid'),
             ObjectHelper.getSafe(exponent, 'name'),
@@ -196,7 +203,7 @@ export class Backend {
             ObjectHelper.getSafe(exponent, 'meta.updated')
         );
     }
-    private formatExponentFull(exponent: any, attendeeItems: { [key: string]: AttendeeItem; }): ExponentFull {
+    private static formatExponentFull(exponent: any, attendeeItems: { [key: string]: AttendeeItem; }): ExponentFull {
         return new ExponentFull(
             ObjectHelper.getSafe(exponent, 'uuid'),
             ObjectHelper.getSafe(exponent, 'name'),
@@ -211,16 +218,11 @@ export class Backend {
         );
     }
 
-    private toMap<T>(arr: T[], key: (T) => string): { [key: string]: T; } {
-        var res = {};
+    private static toMap<T>(arr: T[], key: (T) => string): { [key: string]: T; } {
+        var res: { [key: string]: T; } = {};
         arr.map(elt => {
             res[key(elt)] = elt;
         });
         return res;
-    }
-
-    private handleError(error: Response) {
-        console.error('Backend error', error);
-        return Observable.throw(error.json().error || 'Server error');
     }
 }

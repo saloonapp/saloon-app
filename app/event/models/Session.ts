@@ -13,7 +13,7 @@ export class SessionItem extends Serializable {
                 public place: string,
                 public start: number,
                 public end: number,
-                public updated: number) {}
+                public updated: number) { super(); }
 }
 
 export class SessionFull extends Serializable {
@@ -28,7 +28,7 @@ export class SessionFull extends Serializable {
                 public start: number,
                 public end: number,
                 public speakers: AttendeeItem[],
-                public updated: number) {}
+                public updated: number) { super(); }
     toItem(): SessionItem {
         return new SessionItem(
             this.uuid,
@@ -49,8 +49,8 @@ export class SessionFull extends Serializable {
 
     // override Serializable.fromJS to correctly parse nested class
     public static fromJS(jsonObj: any): SessionFull {
-        const instance: SessionFull = super.fromJS(jsonObj);
-        instance.speakers = instance.speakers.map(item => AttendeeItem.fromJS(item));
+        const instance    = <SessionFull> super.fromJS(jsonObj);
+        instance.speakers = <AttendeeItem[]> instance.speakers.map(item => AttendeeItem.fromJS(item));
         return instance;
     }
 }

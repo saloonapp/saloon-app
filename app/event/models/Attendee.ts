@@ -14,7 +14,7 @@ export class AttendeeItem extends Serializable {
                 public company: string,
                 public website: string,
                 public twitterUrl: string,
-                public updated: number) {}
+                public updated: number) { super(); }
 }
 
 
@@ -36,7 +36,7 @@ export class AttendeeFull extends Serializable {
                 public twitterUrl: string,
                 public sessions: SessionItem[],
                 public exponents: ExponentItem[],
-                public updated: number) {}
+                public updated: number) { super(); }
     toItem(): AttendeeItem {
         return new AttendeeItem(
             this.uuid,
@@ -54,10 +54,10 @@ export class AttendeeFull extends Serializable {
 
     // override Serializable.fromJS to correctly parse nested class
     public static fromJS(jsonObj: any): AttendeeFull {
-        const instance: AttendeeFull = super.fromJS(jsonObj);
-        instance.address = Address.fromJS(jsonObj.address);
-        instance.sessions = instance.sessions.map(item => SessionItem.fromJS(item));
-        instance.exponents = instance.exponents.map(item => ExponentItem.fromJS(item));
+        const instance     = <AttendeeFull> super.fromJS(jsonObj);
+        instance.address   = <Address> Address.fromJS(jsonObj.address);
+        instance.sessions  = <SessionItem[]> instance.sessions.map(item => SessionItem.fromJS(item));
+        instance.exponents = <ExponentItem[]> instance.exponents.map(item => ExponentItem.fromJS(item));
         return instance;
     }
 }

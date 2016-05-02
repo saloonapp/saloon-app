@@ -1,9 +1,9 @@
 export class Serializable {
-    public static fromJSON<U>(json: string): U {
+    public static fromJSON(json: string) {
         const jsonObj = JSON.parse(json);
-        return this.fromJS<U>(jsonObj);
+        return this.fromJS(jsonObj);
     }
-    public static fromJS<U>(jsonObj: any): U {
+    public static fromJS(jsonObj: any) {
         let instance = new this();
         for (let key in jsonObj) {
             if(!jsonObj.hasOwnProperty(key)) { continue; }

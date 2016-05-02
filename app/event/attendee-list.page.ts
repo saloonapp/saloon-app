@@ -1,3 +1,4 @@
+import {OnInit} from "angular2/core";
 import {Page} from 'ionic-angular';
 import {NavController} from "ionic-angular/index";
 import {EventItem, EventFull} from "./models/Event";

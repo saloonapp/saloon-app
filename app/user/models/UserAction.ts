@@ -4,7 +4,7 @@ export class UserAction extends Serializable {
     constructor(public action: string,
                 public eventId: string,
                 public itemType: string,
-                public itemId: string) {}
+                public itemId: string) { super(); }
     isFavorite(type: string, uuid: string): boolean {
         return this.action === 'favorite' && this.itemType === type && this.itemId === uuid;
     }

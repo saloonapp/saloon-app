@@ -4,5 +4,5 @@ export class Address extends Serializable {
     constructor(public name: string,
                 public street: string,
                 public zipCode: string,
-                public city: string) {}
+                public city: string) { super(); }
 }
