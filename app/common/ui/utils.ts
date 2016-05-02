@@ -1,5 +1,5 @@
 import {Injectable} from "angular2/core";
-import {NavController, Alert, Loading} from "ionic-angular/index";
+import {NavController, Alert, Loading, Toast} from "ionic-angular/index";
 
 @Injectable()
 export class UiHelper {
@@ -57,5 +57,18 @@ export class UiHelper {
         } else {
             console.warn('Loading is not active...');
         }
+    }
+    showToast(nav: NavController, message: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            let toast = Toast.create({
+                message: message,
+                duration: 3000,
+                enableBackdropDismiss: false
+            });
+            toast.onDismiss(() => {
+                resolve();
+            });
+            nav.present(toast);
+        });
     }
 }
