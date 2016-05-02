@@ -57,7 +57,7 @@ export class Matcher {
     }
     public static custom(obj: any, query: string, options?: any): boolean {
         const deepValue = options && options.deep ? options.deep : 50;
-        const opts = Object.assign({
+        const opts = ObjectHelper.merge({
             multi: true,
             removeDiacritics: true,
             minLength: 1,

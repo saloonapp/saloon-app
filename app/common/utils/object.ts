@@ -24,6 +24,9 @@ export class ObjectHelper {
     public static deepEquals(obj1: any, obj2: any): boolean {
         return JSON.stringify(obj1) === JSON.stringify(obj2);
     }
+    public static merge(dest: any, ...srcs: any[]): any {
+        return Object.assign(dest, ...srcs);
+    }
     public static deepMerge(dest: any, ...srcs: any[]): any { // TODO
         return dest;
     }

@@ -1,5 +1,6 @@
 import {Injectable} from "angular2/core";
 import {NavController, Alert, Loading, Toast} from "ionic-angular/index";
+import {ObjectHelper} from "../utils/object";
 
 @Injectable()
 export class UiHelper {
@@ -40,7 +41,7 @@ export class UiHelper {
     showLoading(nav: NavController, opts?: any): Promise<void> {
         if (this.loadingPromise === null) {
             this.loadingPromise = new Promise<void>((resolve, reject) => {
-                this.loading = Loading.create(opts);
+                this.loading = Loading.create(ObjectHelper.merge({content: 'loading...'}, opts));
                 this.loading.onDismiss(() => {
                     this.loading = null;
                     this.loadingPromise = null;
@@ -54,8 +55,6 @@ export class UiHelper {
     hideLoading(): void {
         if (this.loading !== null) {
             this.loading.dismiss();
-        } else {
-            console.warn('Loading is not active...');
         }
     }
     showToast(nav: NavController, message: string): Promise<void> {

@@ -8,7 +8,9 @@ export class Storage {
     constructor(private _storage: StorageUtils) {}
 
     getEvents(): Promise<EventItem[]> {
-        return this._storage.get('events', []).then(array => array.map(item => EventItem.fromJS(item)));
+        return this._storage.get('events', [])
+            .then(array => array.map(item => EventItem.fromJS(item)))
+            .then(null, err => []);
     }
 
     setEvents(events: EventItem[]): Promise<void> {
@@ -16,7 +18,9 @@ export class Storage {
     }
 
     getEvent(uuid: string): Promise<EventFull> {
-        return this._storage.get('event-'+uuid).then(item => item ? EventFull.fromJS(item) : item);
+        return this._storage.get('event-'+uuid)
+            .then(item => item ? EventFull.fromJS(item) : item)
+            .then(null, err => undefined);
     }
 
     setEvent(event: EventFull): Promise<void> {
@@ -24,7 +28,9 @@ export class Storage {
     }
 
     getUserActions(eventId: string): Promise<UserAction[]> {
-        return this._storage.get('actions-'+eventId, []).then(array => array.map(item => UserAction.fromJS(item)));
+        return this._storage.get('actions-'+eventId, [])
+            .then(array => array.map(item => UserAction.fromJS(item)))
+            .then(null, err => []);
     }
 
     setUserActions(eventId: string, actions: UserAction[]): Promise<void> {
