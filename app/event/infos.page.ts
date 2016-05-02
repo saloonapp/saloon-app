@@ -1,8 +1,7 @@
 import {OnInit} from "angular2/core";
 import {Page} from 'ionic-angular';
 import {NavController} from "ionic-angular/index";
-import {EventItem} from "./models/EventItem";
-import {EventFull} from "./models/EventFull";
+import {EventItem, EventFull} from "./models/Event";
 import {EventData} from "./services/event.data";
 import {EventService} from "./services/event.service";
 import {UiHelper} from "../common/ui/utils";
@@ -69,7 +68,7 @@ export class InfosPage implements OnInit {
     doRefresh(refresher) {
         this._eventService.fetchEvent(this.eventItem.uuid).then(
             eventFull => {
-                this.eventItem = EventFull.toItem(eventFull);
+                this.eventItem = eventFull.toItem();
                 this._eventData.updateCurrentEvent(this.eventItem, eventFull);
                 refresher.complete();
             },

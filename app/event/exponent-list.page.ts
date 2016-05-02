@@ -1,8 +1,7 @@
 import {Page} from "ionic-angular";
 import {NavController} from "ionic-angular/index";
-import {EventFull} from "./models/EventFull";
-import {EventItem} from "./models/EventItem";
-import {ExponentFull} from "./models/ExponentFull";
+import {EventItem, EventFull} from "./models/Event";
+import {ExponentFull} from "./models/Exponent";
 import {EventData} from "./services/event.data";
 import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
 import {UiHelper} from "../common/ui/utils";
@@ -74,7 +73,7 @@ export class ExponentListPage {
 
     goToExponent(exponentFull: ExponentFull) {
         this._nav.push(ExponentPage, {
-            exponentItem: ExponentFull.toItem(exponentFull)
+            exponentItem: exponentFull.toItem()
         });
     }
 }

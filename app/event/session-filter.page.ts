@@ -1,7 +1,7 @@
 import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {NavController, NavParams} from "ionic-angular/index";
-import {SessionFull} from "./models/SessionFull";
+import {SessionFull} from "./models/Session";
 import {EventData} from "./services/event.data";
 import {WeekDayPipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
@@ -58,15 +58,15 @@ export class SessionFilterPage implements OnInit {
 
     toggleFav(sessionFull: SessionFull) {
         if(this.isFav(sessionFull)){
-            this._eventData.unfavoriteSession(SessionFull.toItem(sessionFull));
+            this._eventData.unfavoriteSession(sessionFull.toItem());
         } else {
-            this._eventData.favoriteSession(SessionFull.toItem(sessionFull));
+            this._eventData.favoriteSession(sessionFull.toItem());
         }
     }
 
     goToSession(sessionFull: SessionFull) {
         this._nav.push(SessionPage, {
-            sessionItem: SessionFull.toItem(sessionFull)
+            sessionItem: sessionFull.toItem()
         });
     }
 

@@ -1,8 +1,7 @@
 import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {NavController, NavParams} from "ionic-angular/index";
-import {EventFull} from "./models/EventFull";
-import {EventItem} from "./models/EventItem";
+import {EventItem, EventFull} from "./models/Event";
 import {EventData} from "./services/event.data";
 import {AttendeeListPage} from "./attendee-list.page";
 import {SessionListPage} from "./session-list.page";

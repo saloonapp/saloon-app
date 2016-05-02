@@ -4,16 +4,11 @@ import {Observable} from "rxjs/Observable";
 import "rxjs/Rx";
 import * as _ from "lodash";
 import {Address} from "./models/Address";
-import {EventFull, EventElt} from "../event/models/EventFull";
-import {EventItem} from "../event/models/EventItem";
-import {AttendeeFull} from "../event/models/AttendeeFull";
-import {AttendeeItem} from "../event/models/AttendeeItem";
-import {SessionFull} from "../event/models/SessionFull";
-import {SessionItem} from "../event/models/SessionItem";
-import {ExponentFull} from "../event/models/ExponentFull";
-import {ExponentItem} from "../event/models/ExponentItem";
-import {Slot} from "../event/models/Slot";
-import {SlotHelper} from "../event/models/Slot";
+import {EventItem, EventFull, EventElt} from "../event/models/Event";
+import {AttendeeItem, AttendeeFull} from "../event/models/Attendee";
+import {SessionItem, SessionFull} from "../event/models/Session";
+import {ExponentItem, ExponentFull} from "../event/models/Exponent";
+import {Slot, SlotHelper} from "../event/models/Slot";
 import {ObjectHelper} from "./utils/object";
 import {Sort} from "./utils/array";
 
@@ -78,7 +73,7 @@ export class Backend {
         const attendeeFulls = event.attendees.map(s => this.formatAttendeeFull(s, event.sessions, event.exponents)).sort((e1, e2) => Sort.str(e1.lastName, e2.lastName));
         const sessionFulls = event.sessions.map(s => this.formatSessionFull(s, attendeeItems)).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), Sort.num(e1.end, e2.end), Sort.str(e1.place, e2.place), Sort.str(e1.name, e2.name)));
         const exponentFulls = event.exponents.map(e => this.formatExponentFull(e, attendeeItems)).sort((e1, e2) => Sort.str(e1.name, e2.name));
-        const slots: Slot[] = SlotHelper.extract(sessionFulls).map(s => { return {uuid: s.uuid, start: s.start, end: s.end}; }).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), -Sort.num(e1.end, e2.end)));
+        const slots: Slot[] = SlotHelper.extract(sessionFulls).map(s => s.toSlot()).sort((e1, e2) => Sort.multi(Sort.num(e1.start, e2.start), -Sort.num(e1.end, e2.end)));
         const formats = this.eltsToEventElt(sessionFulls.map(s => s.format));
         const themes = this.eltsToEventElt(sessionFulls.map(s => s.theme));
         const places = this.eltsToEventElt(sessionFulls.map(s => s.place));
@@ -109,13 +104,10 @@ export class Backend {
         );
     }
     private eltsToEventElt(elts: string[]): EventElt[] {
-        return this.toMap(
-            _.uniq(elts.map(e => e.trim()))
+        return _.uniq(elts.map(e => e.trim()))
                 .filter(e => e.length > 0)
                 .sort(Sort.str)
-                .map(e => new EventElt(e)),
-            e => e.name
-        );
+                .map(e => new EventElt(e));
     }
     private formatAttendeeItem(attendee: any): AttendeeItem {
         return new AttendeeItem(
@@ -219,7 +211,7 @@ export class Backend {
         );
     }
 
-    private toMap(arr: any[], key: (any) => string): any {
+    private toMap<T>(arr: T[], key: (T) => string): { [key: string]: T; } {
         var res = {};
         arr.map(elt => {
             res[key(elt)] = elt;

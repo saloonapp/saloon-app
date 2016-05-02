@@ -1,12 +1,8 @@
 import {Injectable} from "angular2/core";
-import {EventFull} from "../models/EventFull";
-import {EventItem} from "../models/EventItem";
-import {AttendeeFull} from "../models/AttendeeFull";
-import {AttendeeItem} from "../models/AttendeeItem";
-import {SessionFull} from "../models/SessionFull";
-import {SessionItem} from "../models/SessionItem";
-import {ExponentFull} from "../models/ExponentFull";
-import {ExponentItem} from "../models/ExponentItem";
+import {EventItem, EventFull} from "../models/Event";
+import {AttendeeItem, AttendeeFull} from "../models/Attendee";
+import {SessionItem, SessionFull} from "../models/Session";
+import {ExponentItem, ExponentFull} from "../models/Exponent";
 import {UserAction} from "../../user/models/UserAction";
 import {Storage} from "../../common/storage.service";
 import {EventService} from "./event.service";
@@ -69,7 +65,7 @@ export class EventData {
     private favorite(type: string, uuid: string): Promise<void> {
         const eventId = this.currentEventItem.uuid;
         return this._storage.getUserActions(eventId).then(actions => {
-            const isFav = actions.find(a => UserAction.isFavorite(a, type, uuid));
+            const isFav = actions.find(a => a.isFavorite(type, uuid));
             if(!isFav){
                 actions.push(UserAction.favorite(eventId, type, uuid));
             }
@@ -81,7 +77,7 @@ export class EventData {
     private unfavorite(type: string, uuid: string): Promise<void> {
         const eventId = this.currentEventItem.uuid;
         return this._storage.getUserActions(eventId).then(actions => {
-            return this._storage.setUserActions(eventId, actions.filter(a => !UserAction.isFavorite(a, type, uuid)));
+            return this._storage.setUserActions(eventId, actions.filter(a => !a.isFavorite(type, uuid)));
         }).then(() => {
             if(this.favorites && this.favorites[type]){ this.favorites[type][uuid] = false; }
         });

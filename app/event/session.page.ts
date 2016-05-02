@@ -1,9 +1,8 @@
 import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {NavController, NavParams} from "ionic-angular/index";
-import {SessionFull} from "./models/SessionFull";
-import {SessionItem} from "./models/SessionItem";
-import {AttendeeItem} from "./models/AttendeeItem";
+import {SessionItem, SessionFull} from "./models/Session";
+import {AttendeeItem} from "./models/Attendee";
 import {WeekDayPipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";

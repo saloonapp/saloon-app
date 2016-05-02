@@ -1,5 +1,5 @@
 import {Component, Input} from "angular2/core";
-import {EventItem} from "../models/EventItem";
+import {EventItem} from "../models/Event";
 import {DatePeriodPipe} from "../../common/pipes/datetime.pipe";
 
 @Component({

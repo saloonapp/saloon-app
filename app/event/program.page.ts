@@ -1,7 +1,7 @@
 import {OnInit, ViewChildren, QueryList} from "angular2/core";
 import {Page} from "ionic-angular";
-import {EventFull} from "./models/EventFull";
-import {SessionFull} from "./models/SessionFull";
+import {EventFull} from "./models/Event";
+import {SessionFull} from "./models/Session";
 import {DateHelper} from "../common/utils/date";
 import {EventData} from "./services/event.data";
 import {WeekDayPipe, DatePipe} from "../common/pipes/datetime.pipe";

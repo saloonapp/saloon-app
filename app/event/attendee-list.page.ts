@@ -1,10 +1,9 @@
 import {Page} from 'ionic-angular';
 import {NavController} from "ionic-angular/index";
-import {EventItem} from "./models/EventItem";
-import {EventFull} from "./models/EventFull";
-import {AttendeeFull} from "./models/AttendeeFull";
-import {SessionItem} from "./models/SessionItem";
-import {ExponentItem} from "./models/ExponentItem";
+import {EventItem, EventFull} from "./models/Event";
+import {AttendeeFull} from "./models/Attendee";
+import {SessionItem} from "./models/Session";
+import {ExponentItem} from "./models/Exponent";
 import {EventData} from "./services/event.data";
 import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
 import {UiHelper} from "../common/ui/utils";
@@ -81,7 +80,7 @@ export class AttendeeListPage {
 
     goToAttendee(attendeeFull: AttendeeFull) {
         this._nav.push(AttendeePage, {
-            attendeeItem: AttendeeFull.toItem(attendeeFull)
+            attendeeItem: attendeeFull.toItem()
         });
     }
     goToExponent(exponentItem: ExponentItem) {

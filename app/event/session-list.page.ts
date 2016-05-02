@@ -1,9 +1,8 @@
 import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {NavController} from "ionic-angular/index";
-import {EventItem} from "./models/EventItem";
-import {EventFull} from "./models/EventFull";
-import {SessionFull} from "./models/SessionFull";
+import {EventItem, EventFull} from "./models/Event";
+import {SessionFull} from "./models/Session";
 import {EventData} from "./services/event.data";
 import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
 import {DateHelper} from "../common/utils/date";
@@ -106,7 +105,7 @@ export class SessionListPage implements OnInit {
 
     goToSession(sessionFull: SessionFull) {
         this._nav.push(SessionPage, {
-            sessionItem: SessionFull.toItem(sessionFull)
+            sessionItem: sessionFull.toItem()
         });
     }
 }

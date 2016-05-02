@@ -1,10 +1,9 @@
 import {OnInit} from "angular2/core";
 import {Page} from 'ionic-angular';
 import {NavController, NavParams} from "ionic-angular/index";
-import {AttendeeFull} from "./models/AttendeeFull";
-import {AttendeeItem} from "./models/AttendeeItem";
-import {SessionItem} from "./models/SessionItem";
-import {ExponentItem} from "./models/ExponentItem";
+import {AttendeeItem, AttendeeFull} from "./models/Attendee";
+import {SessionItem} from "./models/Session";
+import {ExponentItem} from "./models/Exponent";
 import {EventData} from "./services/event.data";
 import {TimePeriodPipe, WeekDayPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";

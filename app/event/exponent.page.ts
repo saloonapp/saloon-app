@@ -1,9 +1,8 @@
 import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {NavController, NavParams} from "ionic-angular/index";
-import {ExponentItem} from "./models/ExponentItem";
-import {ExponentFull} from "./models/ExponentFull";
-import {AttendeeItem} from "./models/AttendeeItem";
+import {ExponentItem, ExponentFull} from "./models/Exponent";
+import {AttendeeItem} from "./models/Attendee";
 import {EventData} from "./services/event.data";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {AttendeePage} from "./attendee.page";

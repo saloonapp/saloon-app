@@ -1,23 +1,41 @@
+import {SessionFull} from "./Session";
 import {Sort} from "../../common/utils/array";
+import {Serializable} from "../../common/models/Serializable";
 
-export interface Slot {
+export interface ISlot {
     uuid: string;
     start: number;
     end: number;
 }
 
+export class Slot extends Serializable {
+    constructor(public uuid: string,
+                public start: number,
+                public end: number) {}
+}
+
+export class SlotWithSessions extends Serializable {
+    constructor(public uuid: string,
+                public start: number,
+                public end: number,
+                public sessions: SessionFull[]) {}
+    toSlot(): Slot {
+        return new Slot(this.uuid, this.start, this.end);
+    }
+}
+
 export class SlotHelper {
-    public static extract(slots: Slot[]): Slot[] {
+    public static extract(sessions: SessionFull[]): SlotWithSessions[] {
         const results = [];
         let cpt = 1;
-        slots.map(slot => {
-            if(results.find(s => s.start === slot.start && s.end === slot.end) === undefined){
-                results.push({
-                    uuid: 'slot-'+(cpt++),
-                    start: slot.start,
-                    end: slot.end,
-                    sessions: slots.filter(s => s.start === slot.start && s.end === slot.end)
-                });
+        sessions.map(session => {
+            if(results.find(s => s.start === session.start && s.end === session.end) === undefined){
+                results.push(new SlotWithSessions(
+                    'slot-'+(cpt++),
+                    session.start,
+                    session.end,
+                    sessions.filter(s => s.start === session.start && s.end === session.end)
+                ));
             }
         });
         return results.sort((s1, s2) => Sort.num(s1.start, s2.start));

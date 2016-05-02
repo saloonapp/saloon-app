@@ -1,6 +1,5 @@
 import {Injectable} from "angular2/core";
-import {EventFull} from "../models/EventFull";
-import {EventItem} from "../models/EventItem";
+import {EventItem, EventFull} from "../models/Event";
 import {Storage} from "../../common/storage.service";
 import {Backend} from "../../common/backend.service";
 

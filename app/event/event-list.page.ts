@@ -1,7 +1,7 @@
 import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {NavController, Alert} from "ionic-angular/index";
-import {EventItem} from "./models/EventItem";
+import {EventItem} from "./models/Event";
 import {DatePeriodPipe} from "../common/pipes/datetime.pipe";
 import {EventItemComponent} from "./components/event-item.component";
 import {Storage} from "../common/storage.service";
