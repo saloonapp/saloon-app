@@ -21,8 +21,8 @@ import {TwitterHandlePipe} from "../common/pipes/social.pipe";
     <ion-title>Session</ion-title>
     <ion-buttons end>
         <button (click)="toggleFav(sessionItem)">
-            <ion-icon name="star" [hidden]="!isFav(sessionItem)"></ion-icon>
-            <ion-icon name="star-outline" [hidden]="isFav(sessionItem)"></ion-icon>
+            <ion-icon name="star" [hidden]="!getFav(sessionItem)"></ion-icon>
+            <ion-icon name="star-outline" [hidden]="getFav(sessionItem)"></ion-icon>
         </button>
     </ion-buttons>
 </ion-navbar>
@@ -64,21 +64,10 @@ export class SessionPage implements OnInit {
         this._eventData.getSessionFromCurrent(this.sessionItem.uuid).then(session => this.sessionFull = session);
     }
 
-    isFav(session: SessionItem): boolean {
-        return this._eventData.isFavoriteSession(session);
-    }
-
-    toggleFav(session: SessionItem) {
-        this._eventData.toggleFavoriteSession(session);
-    }
-
-    getRating(session: SessionItem): number {
-        return this._eventData.getSessionRating(session);
-    }
-
-    setRating(session: SessionItem, event) {
-        this._eventData.setSessionRating(session, this.getRating(session) !== event.value ? event.value : 0);
-    }
+    getFav(session: SessionItem): boolean { return this._eventData.getSessionFavorite(session); }
+    toggleFav(session: SessionItem) { this._eventData.toggleSessionFavorite(session); }
+    getRating(session: SessionItem): number { return this._eventData.getSessionRating(session); }
+    setRating(session: SessionItem, value: number) { this._eventData.setSessionRating(session, this.getRating(session) !== value ? value : 0); }
 
     twittText(event: EventItem, session: SessionFull): string {
         if(session) {

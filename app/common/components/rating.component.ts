@@ -15,7 +15,7 @@ interface IStar {
 })
 export class RatingComponent {
     @Input() value: number;
-    @Output() change: EventEmitter = new EventEmitter();
+    @Output() change: EventEmitter<number> = new EventEmitter<number>();
     stars: IStar[] = [];
 
     ngOnChanges(changes: {[propName: string]: SimpleChange}) {
@@ -23,7 +23,7 @@ export class RatingComponent {
     }
 
     clicked(index: number) {
-        this.change.emit({value: index+1});
+        this.change.emit(index+1);
     }
 
     private compute(value: number) {

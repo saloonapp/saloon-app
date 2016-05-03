@@ -30,8 +30,8 @@ import {SessionPage} from "./session.page";
             <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
             <p>{{session.speakers | map:'name' | join:', '}}</p>
             <button clear item-right (click)="toggleFav(session);$event.stopPropagation();">
-                <ion-icon name="star" [hidden]="!isFav(session)"></ion-icon>
-                <ion-icon name="star-outline" [hidden]="isFav(session)"></ion-icon>
+                <ion-icon name="star" [hidden]="!getFav(session)"></ion-icon>
+                <ion-icon name="star-outline" [hidden]="getFav(session)"></ion-icon>
             </button>
         </ion-item>
     </ion-list>
@@ -54,17 +54,9 @@ export class SessionFilterPage implements OnInit {
         });
     }
 
-    isFav(sessionFull: SessionFull) {
-        return this._eventData.isFavoriteSession(sessionFull);
-    }
-
-    toggleFav(sessionFull: SessionFull) {
-        this._eventData.toggleFavoriteSession(sessionFull);
-    }
-
-    getRating(session: SessionFull): number {
-        return this._eventData.getSessionRating(session);
-    }
+    getFav(sessionFull: SessionFull): boolean { return this._eventData.getSessionFavorite(sessionFull); }
+    toggleFav(sessionFull: SessionFull) { this._eventData.toggleSessionFavorite(sessionFull); }
+    getRating(session: SessionFull): number { return this._eventData.getSessionRating(session); }
 
     goToSession(sessionFull: SessionFull) {
         this._nav.push(SessionPage, {

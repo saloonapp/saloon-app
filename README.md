@@ -16,6 +16,9 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 
 - add scrollToNow for session-filter page (when not filtered by slot)
 - create attendee-filter (by company & role)
+- tester l'application
+- ajouter un lien dans la version web pour télécharger l'app mobile
+- proposer de télécharger l'app mobile au bout de "quelques" actions (favs/ratings)
 - add colors for theme / room / format
 - filter by : day, theme, room or format
 - add user notes

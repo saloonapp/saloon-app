@@ -119,7 +119,7 @@ export class ScheduleComponent implements OnChanges {
     }
 
     private compute(sessions: SessionFull[]) {
-        const favorites: SessionFull[] = sessions.filter(s => this._eventData.isFavoriteSession(s));
+        const favorites: SessionFull[] = sessions.filter(s => this._eventData.getSessionFavorite(s));
         const sessionSlots: SlotWithSessions[] = SlotHelper.extract(sessions);
         [this.totalHeight, this.items, this.slots, this.now] = ScheduleBuilder.compute(favorites, sessionSlots);
     }

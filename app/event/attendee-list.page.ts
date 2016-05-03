@@ -36,8 +36,8 @@ import {ExponentPage} from "./exponent.page";
             <h2>{{attendee.name}} <rating *ngIf="getRating(attendee) > 0" [value]="getRating(attendee)"></rating></h2>
             <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
             <button clear item-right (click)="toggleFav(attendee);$event.stopPropagation();">
-                <ion-icon name="star" [hidden]="!isFav(attendee)"></ion-icon>
-                <ion-icon name="star-outline" [hidden]="isFav(attendee)"></ion-icon>
+                <ion-icon name="star" [hidden]="!getFav(attendee)"></ion-icon>
+                <ion-icon name="star-outline" [hidden]="getFav(attendee)"></ion-icon>
             </button>
         </ion-item>
     </ion-list>
@@ -57,7 +57,7 @@ export class AttendeeListPage implements OnInit {
         this.eventItem = this._eventData.getCurrentEventItem();
         this._eventData.getCurrentEventFull().then(event => {
             this.eventFull = event;
-            // TODO : should watch this.eventFull changes to update this.filtered (updated after restert right now...)
+            // TODO : should watch 'this.eventFull' changes to update 'this.filtered' (updated only after restert right now...)
             this.filtered = Filter.deep(this.eventFull.attendees, this.searchQuery);
             this._uiHelper.hideLoading();
         });
@@ -74,17 +74,9 @@ export class AttendeeListPage implements OnInit {
         return null;
     }
 
-    isFav(attendee: AttendeeFull): boolean {
-        return this._eventData.isFavoriteAttendee(attendee);
-    }
-
-    toggleFav(attendee: AttendeeFull) {
-        this._eventData.toggleFavoriteAttendee(attendee);
-    }
-
-    getRating(attendee: AttendeeFull): number {
-        return this._eventData.getAttendeeRating(attendee);
-    }
+    getFav(attendee: AttendeeFull): boolean { return this._eventData.getAttendeeFavorite(attendee); }
+    toggleFav(attendee: AttendeeFull) { this._eventData.toggleAttendeeFavorite(attendee); }
+    getRating(attendee: AttendeeFull): number { return this._eventData.getAttendeeRating(attendee); }
 
     goToAttendee(attendeeFull: AttendeeFull) {
         this._nav.push(AttendeePage, {

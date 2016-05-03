@@ -45,8 +45,8 @@ import {SessionPage} from "./session.page";
             <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
             <p>{{session.speakers | map:'name' | join:', '}}</p>
             <button clear item-right (click)="toggleFav(session);$event.stopPropagation();">
-                <ion-icon name="star" [hidden]="!isFav(session)"></ion-icon>
-                <ion-icon name="star-outline" [hidden]="isFav(session)"></ion-icon>
+                <ion-icon name="star" [hidden]="!getFav(session)"></ion-icon>
+                <ion-icon name="star-outline" [hidden]="getFav(session)"></ion-icon>
             </button>
         </ion-item>
     </ion-list>
@@ -84,17 +84,9 @@ export class SessionListPage implements OnInit {
         return null;
     }
 
-    isFav(session: SessionFull): boolean {
-        return this._eventData.isFavoriteSession(session);
-    }
-
-    toggleFav(session: SessionFull) {
-        this._eventData.toggleFavoriteSession(session);
-    }
-
-    getRating(session: SessionFull): number {
-        return this._eventData.getSessionRating(session);
-    }
+    getFav(session: SessionFull): boolean { return this._eventData.getSessionFavorite(session); }
+    toggleFav(session: SessionFull) { this._eventData.toggleSessionFavorite(session); }
+    getRating(session: SessionFull): number { return this._eventData.getSessionRating(session); }
 
     // can't scrollToNow with virtual scroll :(
     /*isNow(event: EventItem): boolean {

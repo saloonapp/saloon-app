@@ -29,8 +29,8 @@ import {ExponentPage} from "./exponent.page";
             <h2>{{exponent.name}} <rating *ngIf="getRating(exponent) > 0" [value]="getRating(exponent)"></rating></h2>
             <p class="nowrap lines2">{{exponent.description}}</p>
             <button clear item-right (click)="toggleFav(exponent);$event.stopPropagation();">
-                <ion-icon name="star" [hidden]="!isFav(exponent)"></ion-icon>
-                <ion-icon name="star-outline" [hidden]="isFav(exponent)"></ion-icon>
+                <ion-icon name="star" [hidden]="!getFav(exponent)"></ion-icon>
+                <ion-icon name="star-outline" [hidden]="getFav(exponent)"></ion-icon>
             </button>
         </ion-item>
     </ion-list>
@@ -67,17 +67,9 @@ export class ExponentListPage implements OnInit {
         return null;
     }
 
-    isFav(exponent: ExponentFull): boolean {
-        return this._eventData.isFavoriteExponent(exponent);
-    }
-
-    toggleFav(exponent: ExponentFull) {
-        this._eventData.toggleFavoriteExponent(exponent);
-    }
-
-    getRating(exponent: ExponentFull): number {
-        return this._eventData.getExponentRating(exponent);
-    }
+    getFav(exponent: ExponentFull): boolean { return this._eventData.getExponentFavorite(exponent); }
+    toggleFav(exponent: ExponentFull) { this._eventData.toggleExponentFavorite(exponent); }
+    getRating(exponent: ExponentFull): number { return this._eventData.getExponentRating(exponent); }
 
     goToExponent(exponentFull: ExponentFull) {
         this._nav.push(ExponentPage, {

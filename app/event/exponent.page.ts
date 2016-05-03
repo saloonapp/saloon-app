@@ -16,8 +16,8 @@ import {AttendeePage} from "./attendee.page";
     <ion-title>Exposant</ion-title>
     <ion-buttons end>
         <button (click)="toggleFav(exponentItem)">
-            <ion-icon name="star" [hidden]="!isFav(exponentItem)"></ion-icon>
-            <ion-icon name="star-outline" [hidden]="isFav(exponentItem)"></ion-icon>
+            <ion-icon name="star" [hidden]="!getFav(exponentItem)"></ion-icon>
+            <ion-icon name="star-outline" [hidden]="getFav(exponentItem)"></ion-icon>
         </button>
     </ion-buttons>
 </ion-navbar>
@@ -51,21 +51,10 @@ export class ExponentPage implements OnInit {
         this._eventData.getExponentFromCurrent(this.exponentItem.uuid).then(exponent => this.exponentFull = exponent);
     }
 
-    isFav(exponent: ExponentItem): boolean {
-        return this._eventData.isFavoriteExponent(exponent);
-    }
-
-    toggleFav(exponent: ExponentItem) {
-        this._eventData.toggleFavoriteExponent(exponent);
-    }
-
-    getRating(exponent: ExponentItem): number {
-        return this._eventData.getExponentRating(exponent);
-    }
-
-    setRating(exponent: ExponentItem, event) {
-        this._eventData.setExponentRating(exponent, this.getRating(exponent) !== event.value ? event.value : 0);
-    }
+    getFav(exponent: ExponentItem): boolean { return this._eventData.getExponentFavorite(exponent); }
+    toggleFav(exponent: ExponentItem) { this._eventData.toggleExponentFavorite(exponent); }
+    getRating(exponent: ExponentItem): number { return this._eventData.getExponentRating(exponent); }
+    setRating(exponent: ExponentItem, value: number) { this._eventData.setExponentRating(exponent, this.getRating(exponent) !== value ? value : 0); }
 
     goToAttendee(attendeeItem: AttendeeItem) {
         this._nav.push(AttendeePage, {

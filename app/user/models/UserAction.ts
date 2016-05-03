@@ -14,8 +14,8 @@ export class UserAction extends Serializable {
     isRating(type: string, uuid: string): boolean {
         return this.action === 'rating' && this.itemType === type && this.itemId === uuid;
     }
-    public static favorite(eventId: string, type: string, uuid: string): UserAction {
-        return new UserAction('favorite', eventId, type, uuid, DateHelper.now());
+    public static favorite(eventId: string, type: string, uuid: string, value: boolean): UserAction {
+        return new UserAction('favorite', eventId, type, uuid, DateHelper.now(), {value: value});
     }
     public static rating(eventId: string, type: string, uuid: string, value: number): UserAction {
         return new UserAction('rating', eventId, type, uuid, DateHelper.now(), {value: value});

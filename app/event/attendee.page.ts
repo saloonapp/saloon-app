@@ -35,8 +35,8 @@ import {ExponentPage} from "./exponent.page";
     <ion-title>Participant</ion-title>
     <ion-buttons end>
         <button (click)="toggleFav(attendeeItem)">
-            <ion-icon name="star" [hidden]="!isFav(attendeeItem)"></ion-icon>
-            <ion-icon name="star-outline" [hidden]="isFav(attendeeItem)"></ion-icon>
+            <ion-icon name="star" [hidden]="!getFav(attendeeItem)"></ion-icon>
+            <ion-icon name="star-outline" [hidden]="getFav(attendeeItem)"></ion-icon>
         </button>
     </ion-buttons>
 </ion-navbar>
@@ -64,9 +64,9 @@ import {ExponentPage} from "./exponent.page";
         <ion-item *ngFor="#session of attendeeFull.sessions" (click)="goToSession(session)">
             <h2>{{session.name}}</h2>
             <p>{{[session.place, session.category, (session.start|weekDay|capitalize)+' '+(session.start|timePeriod:session.end)] | notEmpty | join:' - '}}</p>
-            <button clear item-right (click)="toggleFav(session);$event.stopPropagation();">
-                <ion-icon name="star" [hidden]="!isFav(session)"></ion-icon>
-                <ion-icon name="star-outline" [hidden]="isFav(session)"></ion-icon>
+            <button clear item-right (click)="toggleSessionFav(session);$event.stopPropagation();">
+                <ion-icon name="star" [hidden]="!getSessionFav(session)"></ion-icon>
+                <ion-icon name="star-outline" [hidden]="getSessionFav(session)"></ion-icon>
             </button>
         </ion-item>
     </ion-list>
@@ -85,21 +85,12 @@ export class AttendeePage implements OnInit {
         this._eventData.getAttendeeFromCurrent(this.attendeeItem.uuid).then(attendee => this.attendeeFull = attendee);
     }
 
-    isFav(attendee: AttendeeItem): boolean {
-        return this._eventData.isFavoriteAttendee(attendee);
-    }
-
-    toggleFav(attendee: AttendeeItem) {
-        this._eventData.toggleFavoriteAttendee(attendee);
-    }
-
-    getRating(attendee: AttendeeItem): number {
-        return this._eventData.getAttendeeRating(attendee);
-    }
-
-    setRating(attendee: AttendeeItem, event) {
-        this._eventData.setAttendeeRating(attendee, this.getRating(attendee) !== event.value ? event.value : 0);
-    }
+    getFav(attendee: AttendeeItem): boolean { return this._eventData.getAttendeeFavorite(attendee); }
+    toggleFav(attendee: AttendeeItem) { this._eventData.toggleAttendeeFavorite(attendee); }
+    getSessionFav(session: SessionItem): boolean { return this._eventData.getSessionFavorite(session); }
+    toggleSessionFav(session: SessionItem) { this._eventData.toggleSessionFavorite(session); }
+    getRating(attendee: AttendeeItem): number { return this._eventData.getAttendeeRating(attendee); }
+    setRating(attendee: AttendeeItem, value: number) { this._eventData.setAttendeeRating(attendee, this.getRating(attendee) !== value ? value : 0); }
 
     goToExponent(exponentItem: ExponentItem) {
         this._nav.push(ExponentPage, {

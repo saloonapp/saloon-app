@@ -39,55 +39,32 @@ export class EventData {
         return this.currentEventFull.then(event => event.exponents.find(e => e.uuid === uuid));
     }
 
-    isFavoriteSession(session: SessionItem): boolean { return this.isFavorite('session', session.uuid); }
-    hasFavoriteSessions(): boolean { return this.hasFavorites('session'); }
-    favoriteSession(session: SessionItem): Promise<void> { return this.favorite('session', session.uuid); }
-    unfavoriteSession(session: SessionItem): Promise<void> { return this.unfavorite('session', session.uuid); }
-    toggleFavoriteSession(session: SessionItem): Promise<void> { return this.toggleFavorite('session', session.uuid); }
+    getSessionFavorite(session: SessionItem): boolean { return this.getFavorite('session', session.uuid); }
+    toggleSessionFavorite(session: SessionItem): Promise<void> { return this.toggleFavorite('session', session.uuid); }
 
-    isFavoriteAttendee(attendee: AttendeeItem): boolean { return this.isFavorite('attendee', attendee.uuid); }
-    hasFavoriteAttendees(): boolean { return this.hasFavorites('attendee'); }
-    favoriteAttendee(attendee: AttendeeItem): Promise<void> { return this.favorite('attendee', attendee.uuid); }
-    unfavoriteAttendee(attendee: AttendeeItem): Promise<void> { return this.unfavorite('attendee', attendee.uuid); }
-    toggleFavoriteAttendee(attendee: AttendeeItem): Promise<void> { return this.toggleFavorite('attendee', attendee.uuid); }
+    getAttendeeFavorite(attendee: AttendeeItem): boolean { return this.getFavorite('attendee', attendee.uuid); }
+    toggleAttendeeFavorite(attendee: AttendeeItem): Promise<void> { return this.toggleFavorite('attendee', attendee.uuid); }
 
-    isFavoriteExponent(exponent: ExponentItem): boolean { return this.isFavorite('exponent', exponent.uuid); }
-    hasFavoriteExponents(): boolean { return this.hasFavorites('exponent'); }
-    favoriteExponent(exponent: ExponentItem): Promise<void> { return this.favorite('exponent', exponent.uuid); }
-    unfavoriteExponent(exponent: ExponentItem): Promise<void> { return this.unfavorite('exponent', exponent.uuid); }
-    toggleFavoriteExponent(exponent: ExponentItem): Promise<void> { return this.toggleFavorite('exponent', exponent.uuid); }
+    getExponentFavorite(exponent: ExponentItem): boolean { return this.getFavorite('exponent', exponent.uuid); }
+    toggleExponentFavorite(exponent: ExponentItem): Promise<void> { return this.toggleFavorite('exponent', exponent.uuid); }
 
-    private isFavorite(type: string, uuid: string): boolean {
+    private getFavorite(type: string, uuid: string): boolean {
         return this.favorites && this.favorites[type] ? this.favorites[type][uuid] || false : false;
     }
-    private hasFavorites(type: string): boolean {
-        return this.favorites && this.favorites[type] ? Object.keys(this.favorites[type]).length > 0 : false;
-    }
-    private favorite(type: string, uuid: string): Promise<void> {
+    private setFavorite(type: string, uuid: string, value: boolean): Promise<void> {
         const eventId = this.currentEventItem.uuid;
         return this._storage.getUserActions(eventId).then(actions => {
-            const isFav = actions.find(a => a.isFavorite(type, uuid));
-            if(!isFav){
-                actions.push(UserAction.favorite(eventId, type, uuid));
-            }
+            actions.push(UserAction.favorite(eventId, type, uuid, value));
             return this._storage.setUserActions(eventId, actions);
         }).then(() => {
-            if(this.favorites && this.favorites[type]){ this.favorites[type][uuid] = true; }
-        });
-    }
-    private unfavorite(type: string, uuid: string): Promise<void> {
-        const eventId = this.currentEventItem.uuid;
-        return this._storage.getUserActions(eventId).then(actions => {
-            return this._storage.setUserActions(eventId, actions.filter(a => !a.isFavorite(type, uuid)));
-        }).then(() => {
-            if(this.favorites && this.favorites[type]){ this.favorites[type][uuid] = false; }
+            if(this.favorites && this.favorites[type]){ this.favorites[type][uuid] = value; }
         });
     }
     private toggleFavorite(type: string, uuid: string): Promise<void> {
-        if(this.isFavorite(type, uuid)){
-            return this.unfavorite(type, uuid);
+        if(this.getFavorite(type, uuid)){
+            return this.setFavorite(type, uuid, false);
         } else {
-            return this.favorite(type, uuid);
+            return this.setFavorite(type, uuid, true);
         }
     }
 
