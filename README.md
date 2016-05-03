@@ -14,7 +14,6 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 
 ### TODO
 
-- prod vs dev config
 - add colors for theme / room / format
 - filter by : day, theme, room or format
 - add user notes

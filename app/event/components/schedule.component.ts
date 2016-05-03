@@ -135,7 +135,7 @@ class ScheduleBuilder {
         const totalHeight  : number             = this.toPx(globalEnd - globalStart);
         const nowOffset    : number             = globalStart < now && now < globalEnd ? this.toPx(now - globalStart) : -1;
         const emptySlots   : SlotWithSessions[] = slots.filter(slot => favorites.find(s => this.isDuring(slot, s)) === undefined);
-        const scheduleItems: ScheduleItem[]     = this.computePosition(favorites.map(s => SessionFull.fromJS(s).toSlot()), globalStart);
+        const scheduleItems: ScheduleItem[]     = this.computePosition(favorites, globalStart);
         const scheduleSlots: ScheduleItem[]     = this.computePosition(emptySlots, globalStart);
         return [totalHeight, scheduleItems, scheduleSlots, nowOffset];
     }
