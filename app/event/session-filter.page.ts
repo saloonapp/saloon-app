@@ -3,6 +3,7 @@ import {Page} from "ionic-angular";
 import {NavController, NavParams} from "ionic-angular/index";
 import {SessionFull} from "./models/Session";
 import {EventData} from "./services/event.data";
+import {RatingComponent} from "../common/components/rating.component";
 import {WeekDayPipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
@@ -10,6 +11,7 @@ import {SessionPage} from "./session.page";
 
 @Page({
     pipes: [TimePeriodPipe, MapPipe, NotEmptyPipe, JoinPipe, CapitalizePipe],
+    directives: [RatingComponent],
     styles: [`
 .item h2, .item p {
     white-space: initial;
@@ -24,7 +26,7 @@ import {SessionPage} from "./session.page";
     <ion-list-header *ngIf="filtered && filtered.length === 0">Pas de session trouvée</ion-list-header>
     <ion-list *ngIf="filtered && filtered.length > 0">
         <ion-item *ngFor="#session of filtered" (click)="goToSession(session)">
-            <h2>{{session.name}}</h2>
+            <h2>{{session.name}} <rating *ngIf="getRating(session) > 0" [value]="getRating(session)"></rating></h2>
             <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
             <p>{{session.speakers | map:'name' | join:', '}}</p>
             <button clear item-right (click)="toggleFav(session);$event.stopPropagation();">
@@ -57,11 +59,11 @@ export class SessionFilterPage implements OnInit {
     }
 
     toggleFav(sessionFull: SessionFull) {
-        if(this.isFav(sessionFull)){
-            this._eventData.unfavoriteSession(sessionFull.toItem());
-        } else {
-            this._eventData.favoriteSession(sessionFull.toItem());
-        }
+        this._eventData.toggleFavoriteSession(sessionFull);
+    }
+
+    getRating(session: SessionFull): number {
+        return this._eventData.getSessionRating(session);
     }
 
     goToSession(sessionFull: SessionFull) {

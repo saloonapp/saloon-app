@@ -5,6 +5,7 @@ import {SessionFull} from "../models/Session";
 import {ISlot, Slot, SlotWithSessions, SlotHelper} from "../models/Slot";
 import {EventData} from "../services/event.data";
 import {DateHelper} from "../../common/utils/date";
+import {RatingComponent} from "../../common/components/rating.component";
 import {TimePeriodPipe} from "../../common/pipes/datetime.pipe";
 import {MapPipe, JoinPipe} from "../../common/pipes/array.pipe";
 import {SessionPage} from "../session.page";
@@ -13,6 +14,7 @@ import {SessionFilterPage} from "../session-filter.page";
 @Component({
     selector: 'schedule',
     pipes: [TimePeriodPipe, MapPipe, JoinPipe],
+    directives: [RatingComponent],
     styles: [`
 .schedule {
     position: relative;
@@ -59,7 +61,7 @@ import {SessionFilterPage} from "../session-filter.page";
 <div class="schedule" style="height: {{totalHeight}}px;">
     <div class="schedule-item" *ngFor="#item of items" (click)="goToSession(item.data)" (hold)="goToPeriod(item.data)" style="{{item.position}}">
         <p>{{item.data.start | timePeriod:item.data.end}} - {{item.data.place}}</p>
-        <h2>{{item.data.name}}</h2>
+        <h2>{{item.data.name}} <rating *ngIf="getRating(item.data) > 0" [value]="getRating(item.data)"></rating></h2>
         <p>{{item.data.speakers | map:'name' | join:', '}}</p>
     </div>
     <div class="empty-slot-item" *ngFor="#item of slots" (click)="goToSlot(item.data)" style="{{item.position}}">
@@ -94,6 +96,10 @@ export class ScheduleComponent implements OnChanges {
 
     update() {
         this.compute(this.sessions);
+    }
+
+    getRating(session: SessionFull): number {
+        return this._eventData.getSessionRating(session);
     }
 
     goToSlot(slot: Slot) {

@@ -12,6 +12,7 @@ export class EventData {
     private currentEventItem: EventItem;
     private currentEventFull: Promise<EventFull>;
     private favorites: {[key: string]: {[key: string]: boolean}} = null;
+    private ratings: {[key: string]: {[key: string]: number}} = null;
     constructor(private _storage: Storage,
                 private _eventService: EventService) {}
 
@@ -90,10 +91,27 @@ export class EventData {
         }
     }
 
+    getSessionRating(session: SessionItem): number { return this.getRating('session', session.uuid); }
+    setSessionRating(session: SessionItem, value): Promise<void> { return this.setRating('session', session.uuid, value); }
+
+    private getRating(type: string, uuid: string): number {
+        return this.ratings && this.ratings[type] ? this.ratings[type][uuid] || 0 : 0;
+    }
+    private setRating(type: string, uuid: string, value: number): Promise<void> {
+        const eventId = this.currentEventItem.uuid;
+        return this._storage.getUserActions(eventId).then(actions => {
+            actions.push(UserAction.rating(eventId, type, uuid, value));
+            return this._storage.setUserActions(eventId, actions);
+        }).then(() => {
+            if(this.ratings && this.ratings[type]){ this.ratings[type][uuid] = value; }
+        });
+    }
+
     private setEvent(eventItem: EventItem, eventFullPromise: Promise<EventFull>): void {
         this.currentEventItem = eventItem;
         this.currentEventFull = eventFullPromise;
         this.favorites = null;
+        this.ratings = null;
         this._storage.getUserActions(eventItem.uuid).then(actions => {
             // all favorite types should be initialized to correctly be updated in UI (for the first time)
             const favorites: {[key: string]: {[key: string]: boolean}} = {session: {}, attendee: {}, exponent: {}};
@@ -102,6 +120,14 @@ export class EventData {
                 favorites[action.itemType][action.itemId] = true;
             });
             this.favorites = favorites;
+
+            // all ratings types should be initialized to correctly be updated in UI (for the first time)
+            const ratings: {[key: string]: {[key: string]: number}} = {session: {}, attendee: {}, exponent: {}};
+            actions.filter(a => a.action === 'rating').map(action => {
+                if(!ratings[action.itemType]){ ratings[action.itemType] = {}; }
+                ratings[action.itemType][action.itemId] = action.custom.value;
+            });
+            this.ratings = ratings;
         });
     }
 }

@@ -8,6 +8,7 @@ import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
 import {DateHelper} from "../common/utils/date";
 import {DOMHelper} from "../common/utils/DOM";
 import {UiHelper} from "../common/ui/utils";
+import {RatingComponent} from "../common/components/rating.component";
 import {WeekDayPipe, TimePipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
@@ -15,6 +16,7 @@ import {SessionPage} from "./session.page";
 
 @Page({
     pipes: [WeekDayPipe, TimePipe, TimePeriodPipe, CapitalizePipe, MapPipe, NotEmptyPipe, JoinPipe],
+    directives: [RatingComponent],
     styles: [`
 .item h2, .item p {
     white-space: initial;
@@ -39,7 +41,7 @@ import {SessionPage} from "./session.page";
             {{session.start | weekDay | capitalize}}, {{session.start | time}}
         </ion-item-divider>
         <ion-item *virtualItem="#session" (click)="goToSession(session)">
-            <h2>{{session.name}}</h2>
+            <h2>{{session.name}} <rating *ngIf="getRating(session) > 0" [value]="getRating(session)"></rating></h2>
             <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
             <p>{{session.speakers | map:'name' | join:', '}}</p>
             <button clear item-right (click)="toggleFav(session);$event.stopPropagation();">
@@ -88,6 +90,10 @@ export class SessionListPage implements OnInit {
 
     toggleFav(session: SessionFull) {
         this._eventData.toggleFavoriteSession(session);
+    }
+
+    getRating(session: SessionFull): number {
+        return this._eventData.getSessionRating(session);
     }
 
     // can't scrollToNow with virtual scroll :(

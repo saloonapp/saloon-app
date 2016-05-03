@@ -2,6 +2,7 @@ import {Injectable} from "angular2/core";
 import {StorageUtils} from "./services/storage-utils.service";
 import {EventItem, EventFull} from "../event/models/Event";
 import {UserAction} from "../user/models/UserAction";
+import {Sort} from "./utils/array";
 
 @Injectable()
 export class Storage {
@@ -34,7 +35,7 @@ export class Storage {
     }
 
     setUserActions(eventId: string, actions: UserAction[]): Promise<void> {
-        return this._storage.set('actions-'+eventId, actions);
+        return this._storage.set('actions-'+eventId, actions.sort((e1, e2) => Sort.num(e1.created, e2.created)));
     }
 
     clear(): Promise<void> {
