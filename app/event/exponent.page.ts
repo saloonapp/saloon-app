@@ -21,7 +21,7 @@ import {AttendeePage} from "./attendee.page";
         </button>
     </ion-buttons>
 </ion-navbar>
-<ion-content class="exponent-page">
+<ion-content>
     <div padding>
         <h1>{{exponentItem.name}}</h1>
         <p style="float: right; margin-top: 5px;"><rating [value]="getRating(exponentItem)" (change)="setRating(exponentItem, $event)"></rating></p>

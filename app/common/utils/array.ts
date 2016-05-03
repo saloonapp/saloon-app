@@ -24,8 +24,8 @@ export class ArrayHelper {
 
 export class Sort {
     public static str(str1: string, str2: string): number {
-        const s1 = StringHelper.removeDiacritics(str1 || "").toLowerCase();
-        const s2 = StringHelper.removeDiacritics(str2 || "").toLowerCase();
+        const s1 = StringHelper.removeDiacritics(str1 || '').toLowerCase().trim();
+        const s2 = StringHelper.removeDiacritics(str2 || '').toLowerCase().trim();
         if(s1 > s2) return 1;
         else if(s1 < s2) return -1;
         else return 0

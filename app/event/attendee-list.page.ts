@@ -3,20 +3,15 @@ import {Page} from 'ionic-angular';
 import {NavController} from "ionic-angular/index";
 import {EventItem, EventFull} from "./models/Event";
 import {AttendeeFull} from "./models/Attendee";
-import {SessionItem} from "./models/Session";
-import {ExponentItem} from "./models/Exponent";
 import {EventData} from "./services/event.data";
-import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
+import {Filter} from "../common/utils/array";
 import {UiHelper} from "../common/ui/utils";
 import {RatingComponent} from "../common/components/rating.component";
-import {TwitterHandlePipe} from "../common/pipes/social.pipe";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {AttendeePage} from "./attendee.page";
-import {SessionPage} from "./session.page";
-import {ExponentPage} from "./exponent.page";
 
 @Page({
-    pipes: [TwitterHandlePipe, NotEmptyPipe, JoinPipe],
+    pipes: [NotEmptyPipe, JoinPipe],
     directives: [RatingComponent],
     template: `
 <ion-navbar *navbar>
@@ -26,7 +21,7 @@ import {ExponentPage} from "./exponent.page";
 <ion-toolbar>
     <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
 </ion-toolbar>
-<ion-content class="attendee-list-page">
+<ion-content>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de participant trouvé</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0" [virtualScroll]="filtered" [headerFn]="virtualHeader">
@@ -81,16 +76,6 @@ export class AttendeeListPage implements OnInit {
     goToAttendee(attendeeFull: AttendeeFull) {
         this._nav.push(AttendeePage, {
             attendeeItem: attendeeFull.toItem()
-        });
-    }
-    goToExponent(exponentItem: ExponentItem) {
-        this._nav.push(ExponentPage, {
-            exponentItem: exponentItem
-        });
-    }
-    goToSession(sessionItem: SessionItem) {
-        this._nav.push(SessionPage, {
-            sessionItem: sessionItem
         });
     }
 }

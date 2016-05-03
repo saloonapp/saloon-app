@@ -21,11 +21,11 @@ import {SessionPage} from "./session.page";
 <ion-navbar *navbar>
     <ion-title>{{title | capitalize}}</ion-title>
 </ion-navbar>
-<ion-content class="session-list-page">
+<ion-content>
     <div *ngIf="!filtered" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="filtered && filtered.length === 0">Pas de session trouvée</ion-list-header>
-    <ion-list *ngIf="filtered && filtered.length > 0">
-        <ion-item *ngFor="#session of filtered" (click)="goToSession(session)">
+    <ion-list *ngIf="filtered && filtered.length > 0" [virtualScroll]="filtered">
+        <ion-item *virtualItem="#session" (click)="goToSession(session)">
             <h2>{{session.name}} <rating *ngIf="getRating(session) > 0" [value]="getRating(session)"></rating></h2>
             <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
             <p>{{session.speakers | map:'name' | join:', '}}</p>
@@ -64,19 +64,15 @@ export class SessionFilterPage implements OnInit {
         });
     }
 
-    compute(items: SessionFull[], filter: any): [string, SessionFull[]] {
+    private compute(items: SessionFull[], filter: any): [string, SessionFull[]] {
         if(filter.slot){
             return [
                 this._weekDayPipe.transform(filter.slot.start)+' '+this._timePeriodPipe.transform(filter.slot.start, [filter.slot.end]),
                 items.filter(i => i.start === filter.slot.start && i.end === filter.slot.end)
             ];
         }
-        if(filter.place){
-            return [filter.place, items.filter(i => i.place === filter.place)];
-        }
-        if(filter.theme){
-            return [filter.theme, items.filter(i => i.theme === filter.theme)];
-        }
+        if(filter.place){ return [filter.place, items.filter(i => i.place === filter.place)]; }
+        if(filter.theme){ return [filter.theme, items.filter(i => i.theme === filter.theme)]; }
         return ['Toutes les sessions', items];
     }
 }

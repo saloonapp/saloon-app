@@ -20,7 +20,7 @@ import {Config} from "../config";
         <ion-segment-button *ngFor="#s of segmentValues" value="{{s.value}}">{{s.label}}</ion-segment-button>
     </ion-segment>
 </ion-toolbar>
-<ion-content class="event-list-page">
+<ion-content>
     <ion-refresher (refresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
     <div *ngIf="!events" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <event-item *ngFor="#event of showedEvents" [event]="event" (click)="goToEvent(event)"></event-item>

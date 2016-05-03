@@ -31,7 +31,7 @@ import {AddressPipe} from "../common/pipes/model.pipe";
     <button menuToggle><ion-icon name="menu"></ion-icon></button>
     <ion-title>Infos</ion-title>
 </ion-navbar>
-<ion-content class="infos-page">
+<ion-content>
     <ion-refresher (refresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
     <div class="about-header">
         <img [src]="eventItem.landing">

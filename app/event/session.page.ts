@@ -26,7 +26,7 @@ import {TwitterHandlePipe} from "../common/pipes/social.pipe";
         </button>
     </ion-buttons>
 </ion-navbar>
-<ion-content class="session-page">
+<ion-content>
     <div padding>
         <h1>{{sessionItem.name}}</h1>
         <div style="float: right; text-align: right; margin-top: -10px;">

@@ -4,7 +4,7 @@ import {NavController} from "ionic-angular/index";
 import {EventItem, EventFull} from "./models/Event";
 import {SessionFull} from "./models/Session";
 import {EventData} from "./services/event.data";
-import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
+import {Filter} from "../common/utils/array";
 import {DateHelper} from "../common/utils/date";
 import {DOMHelper} from "../common/utils/DOM";
 import {UiHelper} from "../common/ui/utils";
@@ -33,7 +33,7 @@ import {SessionPage} from "./session.page";
 <ion-toolbar>
     <ion-searchbar [(ngModel)]="searchQuery" (input)="search()" debounce="500"></ion-searchbar>
 </ion-toolbar>
-<ion-content class="session-list-page">
+<ion-content>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de session trouvée</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0" [virtualScroll]="filtered" [headerFn]="virtualHeader">

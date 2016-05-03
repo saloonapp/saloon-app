@@ -14,8 +14,8 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 
 ### TODO
 
-- add scrollToNow for session-filter page (when not filtered by slot)
-- create attendee-filter (by company & role)
+- don't allow to rate future sessions
+- add scrollToNow for session-list/session-filter pages (when not filtered by slot)
 - tester l'application
 - ajouter un lien dans la version web pour télécharger l'app mobile
 - proposer de télécharger l'app mobile au bout de "quelques" actions (favs/ratings)

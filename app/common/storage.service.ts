@@ -32,12 +32,12 @@ export class Storage {
         return this._storage.set('event-'+eventFull.uuid, eventFull);
     }
 
-    getUserActions(eventId: string): Promise<UserAction[]> {
+    getUserActions(eventId: string): Promise<UserAction<any>[]> {
         return this._storage.get('actions-'+eventId, [])
             .then(array => array.map(item => UserAction.fromJS(item)));
     }
 
-    setUserActions(eventId: string, actions: UserAction[]): Promise<void> {
+    setUserActions(eventId: string, actions: UserAction<any>[]): Promise<void> {
         return this._storage.set('actions-'+eventId, actions.sort((e1, e2) => Sort.num(e1.created, e2.created)));
     }
 

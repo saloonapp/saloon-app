@@ -9,6 +9,7 @@ import {RatingComponent} from "../common/components/rating.component";
 import {TimePeriodPipe, WeekDayPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
+import {AttendeeFilterPage} from "./attendee-filter.page";
 import {SessionPage} from "./session.page";
 import {ExponentPage} from "./exponent.page";
 
@@ -40,12 +41,12 @@ import {ExponentPage} from "./exponent.page";
         </button>
     </ion-buttons>
 </ion-navbar>
-<ion-content class="attendee-page">
+<ion-content>
     <div padding>
         <div class="attendee-card">
             <img [src]="attendeeItem.avatar"><br>
             <h1>{{attendeeItem.name}}</h1>
-            <h4>{{[attendeeItem.job, attendeeItem.company] | notEmpty | join:', '}}</h4>
+            <h4 (click)="goToCompany(attendeeItem)">{{[attendeeItem.job, attendeeItem.company] | notEmpty | join:', '}}</h4>
             <a clear small twitter *ngIf="attendeeItem.twitterUrl" [href]="attendeeItem.twitterUrl" target="_blank"><ion-icon name="logo-twitter"></ion-icon></a><br>
             <rating [value]="getRating(attendeeItem)" (change)="setRating(attendeeItem, $event)"></rating>
         </div>
@@ -91,6 +92,12 @@ export class AttendeePage implements OnInit {
     toggleSessionFav(session: SessionItem) { this._eventData.toggleSessionFavorite(session); }
     getRating(attendee: AttendeeItem): number { return this._eventData.getAttendeeRating(attendee); }
     setRating(attendee: AttendeeItem, value: number) { this._eventData.setAttendeeRating(attendee, this.getRating(attendee) !== value ? value : 0); }
+
+    goToCompany(attendeeItem: AttendeeItem) {
+        this._nav.push(AttendeeFilterPage, {
+            filter: { company: attendeeItem.company }
+        });
+    }
 
     goToExponent(exponentItem: ExponentItem) {
         this._nav.push(ExponentPage, {
