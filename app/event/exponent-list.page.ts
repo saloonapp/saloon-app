@@ -6,9 +6,11 @@ import {ExponentFull} from "./models/Exponent";
 import {EventData} from "./services/event.data";
 import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
 import {UiHelper} from "../common/ui/utils";
+import {RatingComponent} from "../common/components/rating.component";
 import {ExponentPage} from "./exponent.page";
 
 @Page({
+    directives: [RatingComponent],
     template: `
 <ion-navbar *navbar>
     <button menuToggle><ion-icon name="menu"></ion-icon></button>
@@ -24,7 +26,7 @@ import {ExponentPage} from "./exponent.page";
         <ion-item-divider *virtualHeader="#letter" sticky>{{letter}}</ion-item-divider>
         <ion-item *virtualItem="#exponent" (click)="goToExponent(exponent)">
             <ion-avatar item-left><ion-img [src]="exponent.logo"></ion-img></ion-avatar>
-            <h2>{{exponent.name}}</h2>
+            <h2>{{exponent.name}} <rating *ngIf="getRating(exponent) > 0" [value]="getRating(exponent)"></rating></h2>
             <p class="nowrap lines2">{{exponent.description}}</p>
             <button clear item-right (click)="toggleFav(exponent);$event.stopPropagation();">
                 <ion-icon name="star" [hidden]="!isFav(exponent)"></ion-icon>
@@ -71,6 +73,10 @@ export class ExponentListPage implements OnInit {
 
     toggleFav(exponent: ExponentFull) {
         this._eventData.toggleFavoriteExponent(exponent);
+    }
+
+    getRating(exponent: ExponentFull): number {
+        return this._eventData.getExponentRating(exponent);
     }
 
     goToExponent(exponentFull: ExponentFull) {

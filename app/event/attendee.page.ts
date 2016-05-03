@@ -5,6 +5,7 @@ import {AttendeeItem, AttendeeFull} from "./models/Attendee";
 import {SessionItem} from "./models/Session";
 import {ExponentItem} from "./models/Exponent";
 import {EventData} from "./services/event.data";
+import {RatingComponent} from "../common/components/rating.component";
 import {TimePeriodPipe, WeekDayPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
@@ -13,6 +14,7 @@ import {ExponentPage} from "./exponent.page";
 
 @Page({
     pipes: [TimePeriodPipe, WeekDayPipe, CapitalizePipe, NotEmptyPipe, JoinPipe],
+    directives: [RatingComponent],
     styles: [`
 .item h2, .item p {
     white-space: initial;
@@ -44,7 +46,8 @@ import {ExponentPage} from "./exponent.page";
             <img [src]="attendeeItem.avatar"><br>
             <h1>{{attendeeItem.name}}</h1>
             <h4>{{[attendeeItem.job, attendeeItem.company] | notEmpty | join:', '}}</h4>
-            <a clear small twitter *ngIf="attendeeItem.twitterUrl" [href]="attendeeItem.twitterUrl"><ion-icon name="logo-twitter"></ion-icon></a>
+            <a clear small twitter *ngIf="attendeeItem.twitterUrl" [href]="attendeeItem.twitterUrl"><ion-icon name="logo-twitter"></ion-icon></a><br>
+            <rating [value]="getRating(attendeeItem)" (change)="setRating(attendeeItem, $event)"></rating>
         </div>
         <p>{{attendeeItem.description}}</p>
     </div>
@@ -88,6 +91,14 @@ export class AttendeePage implements OnInit {
 
     toggleFav(attendee: AttendeeItem) {
         this._eventData.toggleFavoriteAttendee(attendee);
+    }
+
+    getRating(attendee: AttendeeItem): number {
+        return this._eventData.getAttendeeRating(attendee);
+    }
+
+    setRating(attendee: AttendeeItem, event) {
+        this._eventData.setAttendeeRating(attendee, event.value);
     }
 
     goToExponent(exponentItem: ExponentItem) {

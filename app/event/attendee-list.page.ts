@@ -8,6 +8,7 @@ import {ExponentItem} from "./models/Exponent";
 import {EventData} from "./services/event.data";
 import {ArrayHelper, ItemGroup, Filter, Sort} from "../common/utils/array";
 import {UiHelper} from "../common/ui/utils";
+import {RatingComponent} from "../common/components/rating.component";
 import {TwitterHandlePipe} from "../common/pipes/social.pipe";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {AttendeePage} from "./attendee.page";
@@ -16,6 +17,7 @@ import {ExponentPage} from "./exponent.page";
 
 @Page({
     pipes: [TwitterHandlePipe, NotEmptyPipe, JoinPipe],
+    directives: [RatingComponent],
     template: `
 <ion-navbar *navbar>
     <button menuToggle><ion-icon name="menu"></ion-icon></button>
@@ -31,7 +33,7 @@ import {ExponentPage} from "./exponent.page";
         <ion-item-divider *virtualHeader="#letter" sticky>{{letter}}</ion-item-divider>
         <ion-item *virtualItem="#attendee" (click)="goToAttendee(attendee)">
             <ion-avatar item-left><ion-img [src]="attendee.avatar"></ion-img></ion-avatar>
-            <h2>{{attendee.name}}</h2>
+            <h2>{{attendee.name}} <rating *ngIf="getRating(attendee) > 0" [value]="getRating(attendee)"></rating></h2>
             <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
             <button clear item-right (click)="toggleFav(attendee);$event.stopPropagation();">
                 <ion-icon name="star" [hidden]="!isFav(attendee)"></ion-icon>
@@ -78,6 +80,10 @@ export class AttendeeListPage implements OnInit {
 
     toggleFav(attendee: AttendeeFull) {
         this._eventData.toggleFavoriteAttendee(attendee);
+    }
+
+    getRating(attendee: AttendeeFull): number {
+        return this._eventData.getAttendeeRating(attendee);
     }
 
     goToAttendee(attendeeFull: AttendeeFull) {

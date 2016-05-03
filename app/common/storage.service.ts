@@ -30,8 +30,7 @@ export class Storage {
 
     getUserActions(eventId: string): Promise<UserAction[]> {
         return this._storage.get('actions-'+eventId, [])
-            .then(array => array.map(item => UserAction.fromJS(item)))
-            .then(null, err => []);
+            .then(array => array.map(item => UserAction.fromJS(item)));
     }
 
     setUserActions(eventId: string, actions: UserAction[]): Promise<void> {

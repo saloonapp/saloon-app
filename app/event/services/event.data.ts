@@ -94,6 +94,12 @@ export class EventData {
     getSessionRating(session: SessionItem): number { return this.getRating('session', session.uuid); }
     setSessionRating(session: SessionItem, value): Promise<void> { return this.setRating('session', session.uuid, value); }
 
+    getAttendeeRating(attendee: AttendeeItem): number { return this.getRating('attendee', attendee.uuid); }
+    setAttendeeRating(attendee: AttendeeItem, value): Promise<void> { return this.setRating('attendee', attendee.uuid, value); }
+
+    getExponentRating(exponent: ExponentItem): number { return this.getRating('exponent', exponent.uuid); }
+    setExponentRating(exponent: ExponentItem, value): Promise<void> { return this.setRating('exponent', exponent.uuid, value); }
+
     private getRating(type: string, uuid: string): number {
         return this.ratings && this.ratings[type] ? this.ratings[type][uuid] || 0 : 0;
     }
