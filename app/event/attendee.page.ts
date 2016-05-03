@@ -46,7 +46,7 @@ import {ExponentPage} from "./exponent.page";
             <img [src]="attendeeItem.avatar"><br>
             <h1>{{attendeeItem.name}}</h1>
             <h4>{{[attendeeItem.job, attendeeItem.company] | notEmpty | join:', '}}</h4>
-            <a clear small twitter *ngIf="attendeeItem.twitterUrl" [href]="attendeeItem.twitterUrl"><ion-icon name="logo-twitter"></ion-icon></a><br>
+            <a clear small twitter *ngIf="attendeeItem.twitterUrl" [href]="attendeeItem.twitterUrl" target="_blank"><ion-icon name="logo-twitter"></ion-icon></a><br>
             <rating [value]="getRating(attendeeItem)" (change)="setRating(attendeeItem, $event)"></rating>
         </div>
         <p>{{attendeeItem.description}}</p>

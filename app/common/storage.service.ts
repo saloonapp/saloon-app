@@ -24,8 +24,12 @@ export class Storage {
             .then(null, err => undefined);
     }
 
-    setEvent(event: EventFull): Promise<void> {
-        return this._storage.set('event-'+event.uuid, event);
+    setEvent(eventFull: EventFull): Promise<void> {
+        this.getEvents().then(events => {
+            const updatedEvents = events.map(event => event.uuid === eventFull.uuid ? eventFull.toItem() : event);
+            this.setEvents(updatedEvents);
+        });
+        return this._storage.set('event-'+eventFull.uuid, eventFull);
     }
 
     getUserActions(eventId: string): Promise<UserAction[]> {

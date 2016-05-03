@@ -1,6 +1,7 @@
 import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {NavController, NavParams} from "ionic-angular/index";
+import {EventItem} from "./models/Event";
 import {SessionItem, SessionFull} from "./models/Session";
 import {AttendeeItem} from "./models/Attendee";
 import {RatingComponent} from "../common/components/rating.component";
@@ -29,7 +30,7 @@ import {TwitterHandlePipe} from "../common/pipes/social.pipe";
     <div padding>
         <h1>{{sessionItem.name}}</h1>
         <div style="float: right; text-align: right; margin-top: -10px;">
-            <p><a clear small twitter href="https://twitter.com/intent/tweet?text={{sessionItem.name}}{{speakerNames(sessionFull)}} %23DevoxxFR "><ion-icon name="logo-twitter"></ion-icon></a></p>
+            <p><a clear small twitter href="https://twitter.com/intent/tweet?text={{twittText(eventItem, sessionFull)}}" target="_blank"><ion-icon name="logo-twitter"></ion-icon></a></p>
             <p><rating [value]="getRating(sessionItem)" (change)="setRating(sessionItem, $event)"></rating></p>
         </div>
         <p (click)="goToSlot(sessionItem)">{{sessionItem.start | weekDay | capitalize}}, {{sessionItem.start | timePeriod:sessionItem.end}}</p>
@@ -49,6 +50,7 @@ import {TwitterHandlePipe} from "../common/pipes/social.pipe";
 `
 })
 export class SessionPage implements OnInit {
+    eventItem: EventItem;
     sessionItem: SessionItem;
     sessionFull: SessionFull;
     constructor(private _nav: NavController,
@@ -58,6 +60,7 @@ export class SessionPage implements OnInit {
 
     ngOnInit() {
         this.sessionItem = <SessionItem> this._navParams.get('sessionItem');
+        this.eventItem = this._eventData.getCurrentEventItem();
         this._eventData.getSessionFromCurrent(this.sessionItem.uuid).then(session => this.sessionFull = session);
     }
 
@@ -77,15 +80,16 @@ export class SessionPage implements OnInit {
         this._eventData.setSessionRating(session, event.value);
     }
 
-    speakerNames(session: SessionFull) {
-        if(session && session.speakers.length > 0) {
-            return ' par ' + session.speakers.map(s => {
-                if(s.twitterUrl){
-                    return this._twitterHandlePipe.transform(s.twitterUrl);
-                } else {
-                    return s.name;
-                }
-            }).filter(name => name && name.length > 0).join(' ');
+    twittText(event: EventItem, session: SessionFull): string {
+        if(session) {
+            const speakerNames = session.speakers
+                .map(s => s.twitterUrl ? this._twitterHandlePipe.transform(s.twitterUrl) : s.name)
+                .filter(name => name && name.length > 0).join(' ');
+            const hashtag = event.twitterHashtag ? '%23'+event.twitterHashtag : '';
+            const account = event.twitterAccount ? this._twitterHandlePipe.transform(event.twitterAccount) : '';
+            const sessionRef = [session.name, speakerNames].filter(s => s.length > 0).join(' par ');
+            const eventRef = [hashtag, account].filter(s => s.length > 0).join(' ');
+            return [sessionRef, eventRef].filter(s => s.length > 0).join(' via ');
         } else {
             return '';
         }
