@@ -1,9 +1,11 @@
 import {OnInit} from "angular2/core";
 import {Page} from 'ionic-angular';
 import {NavController, NavParams} from "ionic-angular/index";
+import {EventItem} from "./models/Event";
 import {AttendeeItem, AttendeeFull} from "./models/Attendee";
 import {SessionItem} from "./models/Session";
 import {ExponentItem} from "./models/Exponent";
+import {DateHelper} from "../common/utils/date";
 import {EventData} from "./services/event.data";
 import {RatingComponent} from "../common/components/rating.component";
 import {TimePeriodPipe, WeekDayPipe} from "../common/pipes/datetime.pipe";
@@ -48,7 +50,7 @@ import {ExponentPage} from "./exponent.page";
             <h1>{{attendeeItem.name}}</h1>
             <h4 (click)="goToCompany(attendeeItem)">{{[attendeeItem.job, attendeeItem.company] | notEmpty | join:', '}}</h4>
             <a clear small twitter *ngIf="attendeeItem.twitterUrl" [href]="attendeeItem.twitterUrl" target="_blank"><ion-icon name="logo-twitter"></ion-icon></a><br>
-            <rating [value]="getRating(attendeeItem)" (change)="setRating(attendeeItem, $event)"></rating>
+            <rating *ngIf="eventItem.start < now" [value]="getRating(attendeeItem)" (change)="setRating(attendeeItem, $event)"></rating>
         </div>
         <p>{{attendeeItem.description}}</p>
     </div>
@@ -75,6 +77,8 @@ import {ExponentPage} from "./exponent.page";
 `
 })
 export class AttendeePage implements OnInit {
+    now: number = DateHelper.now();
+    eventItem: EventItem;
     attendeeItem: AttendeeItem;
     attendeeFull: AttendeeFull;
     constructor(private _nav: NavController,
@@ -83,6 +87,7 @@ export class AttendeePage implements OnInit {
 
     ngOnInit() {
         this.attendeeItem = <AttendeeItem> this._navParams.get('attendeeItem');
+        this.eventItem = this._eventData.getCurrentEventItem();
         this._eventData.getAttendeeFromCurrent(this.attendeeItem.uuid).then(attendee => this.attendeeFull = attendee);
     }
 

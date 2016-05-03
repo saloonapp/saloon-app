@@ -9,7 +9,7 @@ export class DateHelper {
     public static day: number = DateHelper.hour*24;
 
     public static now(): number {
-        //return new Date("Wed Apr 20 2016 09:00:39 GMT+0200 (CEST)").getTime();
+        //return new Date("Wed Apr 20 2016 10:00:39 GMT+0200 (CEST)").getTime();
         return Date.now();
     }
     public static format(date: string|number|Date, format: string): string {

@@ -14,7 +14,6 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 
 ### TODO
 
-- don't allow to rate future sessions
 - add scrollToNow for session-list/session-filter pages (when not filtered by slot)
 - tester l'application
 - ajouter un lien dans la version web pour télécharger l'app mobile

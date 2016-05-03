@@ -1,8 +1,10 @@
 import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {NavController, NavParams} from "ionic-angular/index";
+import {EventItem} from "./models/Event";
 import {ExponentItem, ExponentFull} from "./models/Exponent";
 import {AttendeeItem} from "./models/Attendee";
+import {DateHelper} from "../common/utils/date";
 import {EventData} from "./services/event.data";
 import {RatingComponent} from "../common/components/rating.component";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
@@ -24,7 +26,7 @@ import {AttendeePage} from "./attendee.page";
 <ion-content>
     <div padding>
         <h1>{{exponentItem.name}}</h1>
-        <p style="float: right; margin-top: 5px;"><rating [value]="getRating(exponentItem)" (change)="setRating(exponentItem, $event)"></rating></p>
+        <p *ngIf="eventItem.start < now" style="float: right; margin-top: 5px;"><rating [value]="getRating(exponentItem)" (change)="setRating(exponentItem, $event)"></rating></p>
         <p>{{exponentItem.place}}</p>
         <p style="clear: both;">{{exponentItem.description}}</p>
     </div>
@@ -40,6 +42,8 @@ import {AttendeePage} from "./attendee.page";
 `
 })
 export class ExponentPage implements OnInit {
+    now: number = DateHelper.now();
+    eventItem: EventItem;
     exponentItem: ExponentItem;
     exponentFull: ExponentFull;
     constructor(private _nav: NavController,
@@ -48,6 +52,7 @@ export class ExponentPage implements OnInit {
 
     ngOnInit() {
         this.exponentItem = <ExponentItem> this._navParams.get('exponentItem');
+        this.eventItem = this._eventData.getCurrentEventItem();
         this._eventData.getExponentFromCurrent(this.exponentItem.uuid).then(exponent => this.exponentFull = exponent);
     }
 

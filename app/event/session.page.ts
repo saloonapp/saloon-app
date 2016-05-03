@@ -4,6 +4,7 @@ import {NavController, NavParams} from "ionic-angular/index";
 import {EventItem} from "./models/Event";
 import {SessionItem, SessionFull} from "./models/Session";
 import {AttendeeItem} from "./models/Attendee";
+import {DateHelper} from "../common/utils/date";
 import {RatingComponent} from "../common/components/rating.component";
 import {WeekDayPipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
@@ -31,7 +32,7 @@ import {TwitterHandlePipe} from "../common/pipes/social.pipe";
         <h1>{{sessionItem.name}}</h1>
         <div style="float: right; text-align: right; margin-top: -10px;">
             <p><a clear small twitter href="https://twitter.com/intent/tweet?text={{twittText(eventItem, sessionFull)}}" target="_blank"><ion-icon name="logo-twitter"></ion-icon></a></p>
-            <p><rating [value]="getRating(sessionItem)" (change)="setRating(sessionItem, $event)"></rating></p>
+            <p *ngIf="sessionItem.start < now"><rating [value]="getRating(sessionItem)" (change)="setRating(sessionItem, $event)"></rating></p>
         </div>
         <p (click)="goToSlot(sessionItem)">{{sessionItem.start | weekDay | capitalize}}, {{sessionItem.start | timePeriod:sessionItem.end}}</p>
         <p (click)="goToPlace(sessionItem)">{{sessionItem.place}}</p>
@@ -50,6 +51,7 @@ import {TwitterHandlePipe} from "../common/pipes/social.pipe";
 `
 })
 export class SessionPage implements OnInit {
+    now: number = DateHelper.now();
     eventItem: EventItem;
     sessionItem: SessionItem;
     sessionFull: SessionFull;
