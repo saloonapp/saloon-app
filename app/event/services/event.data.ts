@@ -4,6 +4,7 @@ import {AttendeeItem, AttendeeFull} from "../models/Attendee";
 import {SessionItem, SessionFull} from "../models/Session";
 import {ExponentItem, ExponentFull} from "../models/Exponent";
 import {UserAction} from "../../user/models/UserAction";
+import {DateHelper} from "../../common/utils/date";
 import {Storage} from "../../common/storage.service";
 import {EventService} from "./event.service";
 
@@ -11,106 +12,72 @@ import {EventService} from "./event.service";
 export class EventData {
     private currentEventItem: EventItem;
     private currentEventFull: Promise<EventFull>;
-    private favorites: {[key: string]: {[key: string]: boolean}} = null;
-    private ratings: {[key: string]: {[key: string]: number}} = null;
+    private userActions: {[key: string]: {[key: string]: {[key: string]: any}}} = null;
     constructor(private _storage: Storage,
                 private _eventService: EventService) {}
 
-    setCurrentEvent(eventItem: EventItem): void {
-        this.setEvent(eventItem, this._eventService.getEvent(eventItem.uuid));
-    }
-    updateCurrentEvent(eventItem: EventItem, eventFull: EventFull): void {
-        this.setEvent(eventItem, Promise.resolve(eventFull));
+    setCurrentEvent(eventItem: EventItem, eventFull?: EventFull): void {
+        this.setEvent(eventItem, eventFull ? Promise.resolve(eventFull) : this._eventService.getEvent(eventItem.uuid));
     }
 
-    getCurrentEventItem(): EventItem {
-        return this.currentEventItem;
-    }
-    getCurrentEventFull(): Promise<EventFull> {
-        return this.currentEventFull;
-    }
-    getAttendeeFromCurrent(uuid: string): Promise<AttendeeFull> {
-        return this.currentEventFull.then(event => event.attendees.find(e => e.uuid === uuid));
-    }
-    getSessionFromCurrent(uuid: string): Promise<SessionFull> {
-        return this.currentEventFull.then(event => event.sessions.find(e => e.uuid === uuid));
-    }
-    getExponentFromCurrent(uuid: string): Promise<ExponentFull> {
-        return this.currentEventFull.then(event => event.exponents.find(e => e.uuid === uuid));
-    }
+    getCurrentEventItem(): EventItem          { return this.currentEventItem; }
+    getCurrentEventFull(): Promise<EventFull> { return this.currentEventFull; }
 
-    getSessionFavorite(session: SessionItem): boolean { return this.getFavorite('session', session.uuid); }
-    toggleSessionFavorite(session: SessionItem): Promise<void> { return this.toggleFavorite('session', session.uuid); }
+    getSessionFromCurrent (uuid: string): Promise<SessionFull>  { return this.currentEventFull.then(event => event.sessions. find(e => e.uuid === uuid)); }
+    getAttendeeFromCurrent(uuid: string): Promise<AttendeeFull> { return this.currentEventFull.then(event => event.attendees.find(e => e.uuid === uuid)); }
+    getExponentFromCurrent(uuid: string): Promise<ExponentFull> { return this.currentEventFull.then(event => event.exponents.find(e => e.uuid === uuid)); }
 
-    getAttendeeFavorite(attendee: AttendeeItem): boolean { return this.getFavorite('attendee', attendee.uuid); }
-    toggleAttendeeFavorite(attendee: AttendeeItem): Promise<void> { return this.toggleFavorite('attendee', attendee.uuid); }
+    getSessionFavorite (session : SessionItem )             : boolean       { return this.getUserAction<boolean>('favorite', 'session' , session.uuid , false); }
+    getAttendeeFavorite(attendee: AttendeeItem)             : boolean       { return this.getUserAction<boolean>('favorite', 'attendee', attendee.uuid, false); }
+    getExponentFavorite(exponent: ExponentItem)             : boolean       { return this.getUserAction<boolean>('favorite', 'exponent', exponent.uuid, false); }
+    toggleSessionFavorite (session : SessionItem )          : Promise<void> {       return this.toggleUserAction('favorite', 'session' , session.uuid);         }
+    toggleAttendeeFavorite(attendee: AttendeeItem)          : Promise<void> {       return this.toggleUserAction('favorite', 'attendee', attendee.uuid);        }
+    toggleExponentFavorite(exponent: ExponentItem)          : Promise<void> {       return this.toggleUserAction('favorite', 'exponent', exponent.uuid);        }
+    getSessionRating (session : SessionItem )               : number        {  return this.getUserAction<number>('rating', 'session' , session.uuid , 0);       }
+    getAttendeeRating(attendee: AttendeeItem)               : number        {  return this.getUserAction<number>('rating', 'attendee', attendee.uuid, 0);       }
+    getExponentRating(exponent: ExponentItem)               : number        {  return this.getUserAction<number>('rating', 'exponent', exponent.uuid, 0);       }
+    setSessionRating (session : SessionItem , value: number): Promise<void> {  return this.setUserAction<number>('rating', 'session' , session.uuid , value);   }
+    setAttendeeRating(attendee: AttendeeItem, value: number): Promise<void> {  return this.setUserAction<number>('rating', 'attendee', attendee.uuid, value);   }
+    setExponentRating(exponent: ExponentItem, value: number): Promise<void> {  return this.setUserAction<number>('rating', 'exponent', exponent.uuid, value);   }
 
-    getExponentFavorite(exponent: ExponentItem): boolean { return this.getFavorite('exponent', exponent.uuid); }
-    toggleExponentFavorite(exponent: ExponentItem): Promise<void> { return this.toggleFavorite('exponent', exponent.uuid); }
-
-    private getFavorite(type: string, uuid: string): boolean {
-        return this.favorites && this.favorites[type] ? this.favorites[type][uuid] || false : false;
+    private getUserAction<T>(action: string, itemType: string, itemId: string, defaultValue?: T): T {
+        return this.userActions && this.userActions[action] && this.userActions[action][itemType] ? this.userActions[action][itemType][itemId] || defaultValue : defaultValue;
     }
-    private setFavorite(type: string, uuid: string, value: boolean): Promise<void> {
+    private setUserAction<T>(action: string, itemType: string, itemId: string, value: T): Promise<void> {
         const eventId = this.currentEventItem.uuid;
         return this._storage.getUserActions(eventId).then(actions => {
-            actions.push(UserAction.favorite(eventId, type, uuid, value));
+            actions.push(new UserAction<T>(action, eventId, itemType, itemId, value, DateHelper.now()));
             return this._storage.setUserActions(eventId, actions);
         }).then(() => {
-            if(this.favorites && this.favorites[type]){ this.favorites[type][uuid] = value; }
+            if(!this.userActions[action]){ this.userActions[action] = {}; }
+            if(!this.userActions[action][itemType]){ this.userActions[action][itemType] = {}; }
+            this.userActions[action][itemType][itemId] = value;
         });
     }
-    private toggleFavorite(type: string, uuid: string): Promise<void> {
-        if(this.getFavorite(type, uuid)){
-            return this.setFavorite(type, uuid, false);
+    private toggleUserAction(action: string, itemType: string, itemId: string): Promise<void> {
+        if(this.getUserAction<boolean>(action, itemType, itemId, false)){
+            return this.setUserAction<boolean>(action, itemType, itemId, false);
         } else {
-            return this.setFavorite(type, uuid, true);
+            return this.setUserAction<boolean>(action, itemType, itemId, true);
         }
-    }
-
-    getSessionRating(session: SessionItem): number { return this.getRating('session', session.uuid); }
-    setSessionRating(session: SessionItem, value): Promise<void> { return this.setRating('session', session.uuid, value); }
-
-    getAttendeeRating(attendee: AttendeeItem): number { return this.getRating('attendee', attendee.uuid); }
-    setAttendeeRating(attendee: AttendeeItem, value): Promise<void> { return this.setRating('attendee', attendee.uuid, value); }
-
-    getExponentRating(exponent: ExponentItem): number { return this.getRating('exponent', exponent.uuid); }
-    setExponentRating(exponent: ExponentItem, value): Promise<void> { return this.setRating('exponent', exponent.uuid, value); }
-
-    private getRating(type: string, uuid: string): number {
-        return this.ratings && this.ratings[type] ? this.ratings[type][uuid] || 0 : 0;
-    }
-    private setRating(type: string, uuid: string, value: number): Promise<void> {
-        const eventId = this.currentEventItem.uuid;
-        return this._storage.getUserActions(eventId).then(actions => {
-            actions.push(UserAction.rating(eventId, type, uuid, value));
-            return this._storage.setUserActions(eventId, actions);
-        }).then(() => {
-            if(this.ratings && this.ratings[type]){ this.ratings[type][uuid] = value; }
-        });
     }
 
     private setEvent(eventItem: EventItem, eventFullPromise: Promise<EventFull>): void {
         this.currentEventItem = eventItem;
         this.currentEventFull = eventFullPromise;
-        this.favorites = null;
-        this.ratings = null;
+        this.userActions = null;
         this._storage.getUserActions(eventItem.uuid).then(actions => {
-            // all favorite types should be initialized to correctly be updated in UI (for the first time)
-            const favorites: {[key: string]: {[key: string]: boolean}} = {session: {}, attendee: {}, exponent: {}};
-            actions.filter(a => a.action === 'favorite').map(action => {
-                if(!favorites[action.itemType]){ favorites[action.itemType] = {}; }
-                favorites[action.itemType][action.itemId] = true;
+            // all types should be initialized to correctly be updated in UI (for the first time)
+            const userActions: {[key: string]: {[key: string]: {[key: string]: any}}} = {
+                favorite: {session: {}, attendee: {}, exponent: {}},
+                rating: {session: {}, attendee: {}, exponent: {}}
+            };
+            actions.map(action => {
+                if(!userActions[action.action]){ userActions[action.action] = {}; }
+                if(!userActions[action.action][action.itemType]){ userActions[action.action][action.itemType] = {}; }
+                userActions[action.action][action.itemType][action.itemId] = action.value;
             });
-            this.favorites = favorites;
-
-            // all ratings types should be initialized to correctly be updated in UI (for the first time)
-            const ratings: {[key: string]: {[key: string]: number}} = {session: {}, attendee: {}, exponent: {}};
-            actions.filter(a => a.action === 'rating').map(action => {
-                if(!ratings[action.itemType]){ ratings[action.itemType] = {}; }
-                ratings[action.itemType][action.itemId] = action.custom.value;
-            });
-            this.ratings = ratings;
+            this.userActions = userActions;
         });
     }
 }

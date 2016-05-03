@@ -69,7 +69,7 @@ export class InfosPage implements OnInit {
         this._eventService.fetchEvent(this.eventItem.uuid).then(
             eventFull => {
                 this.eventItem = eventFull.toItem();
-                this._eventData.updateCurrentEvent(this.eventItem, eventFull);
+                this._eventData.setCurrentEvent(this.eventItem, eventFull);
                 refresher.complete();
             },
             error => {
