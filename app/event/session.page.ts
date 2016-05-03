@@ -77,7 +77,7 @@ export class SessionPage implements OnInit {
     }
 
     setRating(session: SessionItem, event) {
-        this._eventData.setSessionRating(session, event.value);
+        this._eventData.setSessionRating(session, this.getRating(session) !== event.value ? event.value : 0);
     }
 
     twittText(event: EventItem, session: SessionFull): string {

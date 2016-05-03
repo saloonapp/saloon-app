@@ -98,7 +98,7 @@ export class AttendeePage implements OnInit {
     }
 
     setRating(attendee: AttendeeItem, event) {
-        this._eventData.setAttendeeRating(attendee, event.value);
+        this._eventData.setAttendeeRating(attendee, this.getRating(attendee) !== event.value ? event.value : 0);
     }
 
     goToExponent(exponentItem: ExponentItem) {

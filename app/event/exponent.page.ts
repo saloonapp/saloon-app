@@ -64,7 +64,7 @@ export class ExponentPage implements OnInit {
     }
 
     setRating(exponent: ExponentItem, event) {
-        this._eventData.setExponentRating(exponent, event.value);
+        this._eventData.setExponentRating(exponent, this.getRating(exponent) !== event.value ? event.value : 0);
     }
 
     goToAttendee(attendeeItem: AttendeeItem) {
