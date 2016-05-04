@@ -49,9 +49,7 @@ export class EventData {
             actions.push(new UserAction<T>(action, eventId, itemType, itemId, value, DateHelper.now()));
             return this._storage.setUserActions(eventId, actions);
         }).then(() => {
-            if(!this.userActions[action]){ this.userActions[action] = {}; }
-            if(!this.userActions[action][itemType]){ this.userActions[action][itemType] = {}; }
-            this.userActions[action][itemType][itemId] = value;
+            this.setUserActionCache(action, itemType, itemId, value);
         });
     }
     private toggleUserAction(action: string, itemType: string, itemId: string): Promise<void> {
@@ -65,19 +63,21 @@ export class EventData {
     private setEvent(eventItem: EventItem, eventFullPromise: Promise<EventFull>): void {
         this.currentEventItem = eventItem;
         this.currentEventFull = eventFullPromise;
-        this.userActions = null;
+        // should be initialized with all values to correctly be updated in UI (for the first time)
+        this.userActions = {
+            favorite: {session: {}, attendee: {}, exponent: {}},
+            rating: {session: {}, attendee: {}, exponent: {}}
+        };
         this._storage.getUserActions(eventItem.uuid).then(actions => {
-            // all types should be initialized to correctly be updated in UI (for the first time)
-            const userActions: {[key: string]: {[key: string]: {[key: string]: any}}} = {
-                favorite: {session: {}, attendee: {}, exponent: {}},
-                rating: {session: {}, attendee: {}, exponent: {}}
-            };
             actions.map(action => {
-                if(!userActions[action.action]){ userActions[action.action] = {}; }
-                if(!userActions[action.action][action.itemType]){ userActions[action.action][action.itemType] = {}; }
-                userActions[action.action][action.itemType][action.itemId] = action.value;
+                this.setUserActionCache(action.action, action.itemType, action.itemId, action.value);
             });
-            this.userActions = userActions;
         });
+    }
+    private setUserActionCache(action: string, itemType: string, itemId: string, value: any): void {
+        if(!this.userActions){ this.userActions = {}; }
+        if(!this.userActions[action]){ this.userActions[action] = {}; }
+        if(!this.userActions[action][itemType]){ this.userActions[action][itemType] = {}; }
+        this.userActions[action][itemType][itemId] = value;
     }
 }

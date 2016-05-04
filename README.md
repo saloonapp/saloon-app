@@ -20,7 +20,7 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 - proposer de télécharger l'app mobile au bout de "quelques" actions (favs/ratings)
 - add colors for theme / room / format
 - filter by : day, theme, room or format
-- add user notes
+- add user comments
 - add error handler
 
 ### Getting started

@@ -29,7 +29,7 @@ import {SessionPage} from "./session.page";
         <!--TODO : do not work.... :( <session-item *virtualItem="#session" [session]="session" (click)="goToSession(session)"></session-item>-->
         <ion-item *virtualItem="#session" (click)="goToSession(session)">
             <h2>{{session.name}} <rating *ngIf="getRating(session) > 0" [value]="getRating(session)"></rating></h2>
-            <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
+            <p>{{[session.place, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
             <p>{{session.speakers | map:'name' | join:', '}}</p>
             <button clear item-right (click)="toggleFav(session);$event.stopPropagation();">
                 <ion-icon name="star" [hidden]="!getFav(session)"></ion-icon>

@@ -25,7 +25,8 @@ export class EventItem extends Serializable {
                 public attendeeCount: number,
                 public sessionCount: number,
                 public exponentCount: number,
-                public updated: number) { super(); }
+                public updated: number,
+                public fetched: number) { super(); }
 
     // override Serializable.fromJS to correctly parse nested class
     public static fromJS(jsonObj: any): EventItem {
@@ -58,7 +59,8 @@ export class EventFull extends Serializable {
                 public sessions: SessionFull[],
                 public exponents: ExponentFull[],
                 public slots: Slot[],
-                public updated: number) { super(); }
+                public updated: number,
+                public fetched: number) { super(); }
     toItem(): EventItem {
         return new EventItem(
             this.uuid,
@@ -79,7 +81,8 @@ export class EventFull extends Serializable {
             this.attendees.length,
             this.sessions.length,
             this.exponents.length,
-            this.updated);
+            this.updated,
+            this.fetched);
     }
 
     // override Serializable.fromJS to correctly parse nested class

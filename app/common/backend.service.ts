@@ -12,6 +12,7 @@ import {ExponentItem, ExponentFull} from "../event/models/Exponent";
 import {Slot, SlotHelper} from "../event/models/Slot";
 import {ObjectHelper} from "./utils/object";
 import {Sort} from "./utils/array";
+import {DateHelper} from "./utils/date";
 
 @Injectable()
 export class Backend {
@@ -72,7 +73,8 @@ class BackendFormatter {
             ObjectHelper.getSafe(event, 'attendeeCount'),
             ObjectHelper.getSafe(event, 'sessionCount'),
             ObjectHelper.getSafe(event, 'exponentCount'),
-            ObjectHelper.getSafe(event, 'meta.updated')
+            ObjectHelper.getSafe(event, 'meta.updated'),
+            DateHelper.now()
         );
     }
     public static formatEventFull(event: any): EventFull {
@@ -107,7 +109,8 @@ class BackendFormatter {
             sessionFulls,
             exponentFulls,
             slots,
-            ObjectHelper.getSafe(event, 'meta.updated')
+            ObjectHelper.getSafe(event, 'meta.updated'),
+            DateHelper.now()
         );
     }
     private static eltsToEventElt(elts: string[]): EventElt[] {
