@@ -7,10 +7,11 @@ import {EventData} from "./services/event.data";
 import {Filter} from "../common/utils/array";
 import {UiHelper} from "../common/ui/utils";
 import {RatingComponent} from "../common/components/rating.component";
+import {ExponentItemComponent} from "./components/exponent-item.component";
 import {ExponentPage} from "./exponent.page";
 
 @Page({
-    directives: [RatingComponent],
+    directives: [RatingComponent, ExponentItemComponent],
     template: `
 <ion-navbar *navbar>
     <button menuToggle><ion-icon name="menu"></ion-icon></button>
@@ -24,6 +25,7 @@ import {ExponentPage} from "./exponent.page";
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas d'exposant trouvé</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0" [virtualScroll]="filtered" [headerFn]="virtualHeader">
         <ion-item-divider *virtualHeader="#letter" sticky>{{letter}}</ion-item-divider>
+        <!--TODO : do not work.... :( <exponent-item *virtualItem="#exponent" [exponent]="exponent" (click)="goToExponent(exponent)"></exponent-item>-->
         <ion-item *virtualItem="#exponent" (click)="goToExponent(exponent)">
             <ion-avatar item-left><ion-img [src]="exponent.logo"></ion-img></ion-avatar>
             <h2>{{exponent.name}} <rating *ngIf="getRating(exponent) > 0" [value]="getRating(exponent)"></rating></h2>

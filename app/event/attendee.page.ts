@@ -8,20 +8,17 @@ import {ExponentItem} from "./models/Exponent";
 import {DateHelper} from "../common/utils/date";
 import {EventData} from "./services/event.data";
 import {RatingComponent} from "../common/components/rating.component";
-import {TimePeriodPipe, WeekDayPipe} from "../common/pipes/datetime.pipe";
-import {CapitalizePipe} from "../common/pipes/text.pipe";
+import {SessionItemComponent} from "./components/session-item.component";
+import {ExponentItemComponent} from "./components/exponent-item.component";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {AttendeeFilterPage} from "./attendee-filter.page";
 import {SessionPage} from "./session.page";
 import {ExponentPage} from "./exponent.page";
 
 @Page({
-    pipes: [TimePeriodPipe, WeekDayPipe, CapitalizePipe, NotEmptyPipe, JoinPipe],
-    directives: [RatingComponent],
+    pipes: [NotEmptyPipe, JoinPipe],
+    directives: [RatingComponent, SessionItemComponent, ExponentItemComponent],
     styles: [`
-.item h2, .item p {
-    white-space: initial;
-}
 .attendee-card {
     text-align: center;
 }
@@ -56,22 +53,11 @@ import {ExponentPage} from "./exponent.page";
     </div>
     <ion-list *ngIf="attendeeFull && attendeeFull.exponents.length > 0">
         <ion-list-header>Exposants</ion-list-header>
-        <ion-item *ngFor="#exponent of attendeeFull.exponents" (click)="goToExponent(exponent)">
-            <ion-avatar item-left><img [src]="exponent.logo"></ion-avatar>
-            <h2>{{exponent.name}}</h2>
-            <p class="nowrap lines2">{{exponent.description}}</p>
-        </ion-item>
+        <exponent-item *ngFor="#exponent of attendeeFull.exponents" [exponent]="exponent" (click)="goToExponent(exponent)"></exponent-item>
     </ion-list>
     <ion-list *ngIf="attendeeFull && attendeeFull.sessions.length > 0">
         <ion-list-header>Sessions</ion-list-header>
-        <ion-item *ngFor="#session of attendeeFull.sessions" (click)="goToSession(session)">
-            <h2>{{session.name}}</h2>
-            <p>{{[session.place, session.category, (session.start|weekDay|capitalize)+' '+(session.start|timePeriod:session.end)] | notEmpty | join:' - '}}</p>
-            <button clear item-right (click)="toggleSessionFav(session);$event.stopPropagation();">
-                <ion-icon name="star" [hidden]="!getSessionFav(session)"></ion-icon>
-                <ion-icon name="star-outline" [hidden]="getSessionFav(session)"></ion-icon>
-            </button>
-        </ion-item>
+        <session-item *ngFor="#session of attendeeFull.sessions" [session]="session" (click)="goToSession(session)"></session-item>
     </ion-list>
 </ion-content>
 `
@@ -93,8 +79,6 @@ export class AttendeePage implements OnInit {
 
     getFav(attendee: AttendeeItem): boolean { return this._eventData.getAttendeeFavorite(attendee); }
     toggleFav(attendee: AttendeeItem) { this._eventData.toggleAttendeeFavorite(attendee); }
-    getSessionFav(session: SessionItem): boolean { return this._eventData.getSessionFavorite(session); }
-    toggleSessionFav(session: SessionItem) { this._eventData.toggleSessionFavorite(session); }
     getRating(attendee: AttendeeItem): number { return this._eventData.getAttendeeRating(attendee); }
     setRating(attendee: AttendeeItem, value: number) { this._eventData.setAttendeeRating(attendee, this.getRating(attendee) !== value ? value : 0); }
 

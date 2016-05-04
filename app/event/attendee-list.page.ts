@@ -7,12 +7,13 @@ import {EventData} from "./services/event.data";
 import {Filter} from "../common/utils/array";
 import {UiHelper} from "../common/ui/utils";
 import {RatingComponent} from "../common/components/rating.component";
+import {AttendeeItemComponent} from "./components/attendee-item.component";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {AttendeePage} from "./attendee.page";
 
 @Page({
     pipes: [NotEmptyPipe, JoinPipe],
-    directives: [RatingComponent],
+    directives: [RatingComponent, AttendeeItemComponent],
     template: `
 <ion-navbar *navbar>
     <button menuToggle><ion-icon name="menu"></ion-icon></button>
@@ -26,6 +27,7 @@ import {AttendeePage} from "./attendee.page";
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de participant trouvé</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0" [virtualScroll]="filtered" [headerFn]="virtualHeader">
         <ion-item-divider *virtualHeader="#letter" sticky>{{letter}}</ion-item-divider>
+        <!--TODO : do not work.... :( <attendee-item *virtualItem="#attendee" [attendee]="attendee" (click)="goToAttendee(attendee)"></attendee-item>-->
         <ion-item *virtualItem="#attendee" (click)="goToAttendee(attendee)">
             <ion-avatar item-left><ion-img [src]="attendee.avatar"></ion-img></ion-avatar>
             <h2>{{attendee.name}} <rating *ngIf="getRating(attendee) > 0" [value]="getRating(attendee)"></rating></h2>

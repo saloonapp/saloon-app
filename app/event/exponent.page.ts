@@ -7,12 +7,11 @@ import {AttendeeItem} from "./models/Attendee";
 import {DateHelper} from "../common/utils/date";
 import {EventData} from "./services/event.data";
 import {RatingComponent} from "../common/components/rating.component";
-import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
+import {AttendeeItemComponent} from "./components/attendee-item.component";
 import {AttendeePage} from "./attendee.page";
 
 @Page({
-    pipes: [NotEmptyPipe, JoinPipe],
-    directives: [RatingComponent],
+    directives: [RatingComponent, AttendeeItemComponent],
     template: `
 <ion-navbar *navbar>
     <ion-title>Exposant</ion-title>
@@ -26,17 +25,15 @@ import {AttendeePage} from "./attendee.page";
 <ion-content>
     <div padding>
         <h1>{{exponentItem.name}}</h1>
-        <p *ngIf="eventItem.start < now" style="float: right; margin-top: 5px;"><rating [value]="getRating(exponentItem)" (change)="setRating(exponentItem, $event)"></rating></p>
+        <p *ngIf="eventItem.start < now" style="float: right; margin-top: 5px;">
+            <rating [value]="getRating(exponentItem)" (change)="setRating(exponentItem, $event)"></rating>
+        </p>
         <p>{{exponentItem.place}}</p>
         <p style="clear: both;">{{exponentItem.description}}</p>
     </div>
     <ion-list *ngIf="exponentFull && exponentFull.team.length > 0">
         <ion-list-header>Speakers</ion-list-header>
-        <ion-item *ngFor="#exponent of sessionFull.team" (click)="goToAttendee(exponent)">
-            <ion-avatar item-left><img [src]="exponent.avatar"></ion-avatar>
-            <h2>{{exponent.name}}</h2>
-            <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
-        </ion-item>
+        <attendee-item *ngFor="#attendee of exponentFull.team" [attendee]="attendee" (click)="goToAttendee(attendee)"></attendee-item>
     </ion-list>
 </ion-content>
 `

@@ -9,6 +9,7 @@ import {DateHelper} from "../common/utils/date";
 import {DOMHelper} from "../common/utils/DOM";
 import {UiHelper} from "../common/ui/utils";
 import {RatingComponent} from "../common/components/rating.component";
+import {SessionItemComponent} from "./components/session-item.component";
 import {WeekDayPipe, TimePipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {MapPipe, NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
@@ -16,7 +17,7 @@ import {SessionPage} from "./session.page";
 
 @Page({
     pipes: [WeekDayPipe, TimePipe, TimePeriodPipe, CapitalizePipe, MapPipe, NotEmptyPipe, JoinPipe],
-    directives: [RatingComponent],
+    directives: [RatingComponent, SessionItemComponent],
     styles: [`
 .item h2, .item p {
     white-space: initial;
@@ -40,6 +41,7 @@ import {SessionPage} from "./session.page";
         <ion-item-divider *virtualHeader="#session" class="start-{{session.start}}" sticky>
             {{session.start | weekDay | capitalize}}, {{session.start | time}}
         </ion-item-divider>
+        <!--TODO : do not work.... :( <session-item *virtualItem="#session" [session]="session" (click)="goToSession(session)"></session-item>-->
         <ion-item *virtualItem="#session" (click)="goToSession(session)">
             <h2>{{session.name}} <rating *ngIf="getRating(session) > 0" [value]="getRating(session)"></rating></h2>
             <p>{{[session.place, session.category, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>

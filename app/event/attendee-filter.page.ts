@@ -5,13 +5,14 @@ import {AttendeeFull} from "./models/Attendee";
 import {Sort} from "../common/utils/array";
 import {EventData} from "./services/event.data";
 import {RatingComponent} from "../common/components/rating.component";
+import {AttendeeItemComponent} from "./components/attendee-item.component";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {AttendeePage} from "./attendee.page";
 
 @Page({
     pipes: [CapitalizePipe, NotEmptyPipe, JoinPipe],
-    directives: [RatingComponent],
+    directives: [RatingComponent, AttendeeItemComponent],
     template: `
 <ion-navbar *navbar>
     <ion-title>{{title | capitalize}}</ion-title>
@@ -20,6 +21,7 @@ import {AttendeePage} from "./attendee.page";
     <div *ngIf="!filtered" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="filtered && filtered.length === 0">Pas de participant trouvé</ion-list-header>
     <ion-list *ngIf="filtered && filtered.length > 0" [virtualScroll]="filtered">
+        <!--TODO : do not work.... :( <attendee-item *virtualItem="#attendee" [attendee]="attendee" (click)="goToAttendee(attendee)"></attendee-item>-->
         <ion-item *virtualItem="#attendee" (click)="goToAttendee(attendee)">
             <ion-avatar item-left><ion-img [src]="attendee.avatar"></ion-img></ion-avatar>
             <h2>{{attendee.name}} <rating *ngIf="getRating(attendee) > 0" [value]="getRating(attendee)"></rating></h2>

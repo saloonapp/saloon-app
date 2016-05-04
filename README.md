@@ -42,8 +42,10 @@ To run the app on your android device :
 - when used in navigator
     - urls are importants (deep-linking & setup navigation history)
     - browser back button not handled (navigation.push/pop does not handle browser history)
-- créer un composant avec un ion-item (style is broken)
-- scrollTo with virtual scroll (not found element if not displayed)
+- scrollTo with virtualScroll (not found element if not displayed)
+- virtualScroll doesn't work with custom component
+- pb with item border on virtualScroll when add stars
+- <img> don't work well with virtualScroll & <ion-img> don't work well with ngFor :(
 - hold event
 
 #### Ionic1 features not (yet) in Ionic2

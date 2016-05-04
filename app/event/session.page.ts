@@ -6,17 +6,17 @@ import {SessionItem, SessionFull} from "./models/Session";
 import {AttendeeItem} from "./models/Attendee";
 import {DateHelper} from "../common/utils/date";
 import {RatingComponent} from "../common/components/rating.component";
+import {AttendeeItemComponent} from "./components/attendee-item.component";
 import {WeekDayPipe, TimePeriodPipe} from "../common/pipes/datetime.pipe";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
-import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
 import {EventData} from "./services/event.data";
 import {SessionFilterPage} from "./session-filter.page";
 import {AttendeePage} from "./attendee.page";
 import {TwitterHandlePipe} from "../common/pipes/social.pipe";
 
 @Page({
-    pipes: [WeekDayPipe, CapitalizePipe, TimePeriodPipe, NotEmptyPipe, JoinPipe],
-    directives: [RatingComponent],
+    pipes: [WeekDayPipe, CapitalizePipe, TimePeriodPipe],
+    directives: [RatingComponent, AttendeeItemComponent],
     template: `
 <ion-navbar *navbar>
     <ion-title>Session</ion-title>
@@ -41,11 +41,7 @@ import {TwitterHandlePipe} from "../common/pipes/social.pipe";
     </div>
     <ion-list *ngIf="sessionFull && sessionFull.speakers.length > 0">
         <ion-list-header>Speakers</ion-list-header>
-        <ion-item *ngFor="#attendee of sessionFull.speakers" (click)="goToAttendee(attendee)">
-            <ion-avatar item-left><img [src]="attendee.avatar"></ion-avatar>
-            <h2>{{attendee.name}}</h2>
-            <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
-        </ion-item>
+        <attendee-item *ngFor="#attendee of sessionFull.speakers" [attendee]="attendee" (click)="goToAttendee(attendee)"></attendee-item>
     </ion-list>
 </ion-content>
 `
