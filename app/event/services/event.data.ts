@@ -34,10 +34,10 @@ export class EventData {
     toggleAttendeeFavorite(attendee: AttendeeItem)          : Promise<void> {       return this.toggleUserAction('favorite', 'attendee', attendee.uuid);        }
     toggleExponentFavorite(exponent: ExponentItem)          : Promise<void> {       return this.toggleUserAction('favorite', 'exponent', exponent.uuid);        }
     getSessionRating (session : SessionItem )               : number        {  return this.getUserAction<number>('rating', 'session' , session.uuid , 0);       }
-    getAttendeeRating(attendee: AttendeeItem)               : number        {  return this.getUserAction<number>('rating', 'attendee', attendee.uuid, 0);       }
+    //getAttendeeRating(attendee: AttendeeItem)               : number        {  return this.getUserAction<number>('rating', 'attendee', attendee.uuid, 0);       }
     getExponentRating(exponent: ExponentItem)               : number        {  return this.getUserAction<number>('rating', 'exponent', exponent.uuid, 0);       }
     setSessionRating (session : SessionItem , value: number): Promise<void> {  return this.setUserAction<number>('rating', 'session' , session.uuid , value);   }
-    setAttendeeRating(attendee: AttendeeItem, value: number): Promise<void> {  return this.setUserAction<number>('rating', 'attendee', attendee.uuid, value);   }
+    //setAttendeeRating(attendee: AttendeeItem, value: number): Promise<void> {  return this.setUserAction<number>('rating', 'attendee', attendee.uuid, value);   }
     setExponentRating(exponent: ExponentItem, value: number): Promise<void> {  return this.setUserAction<number>('rating', 'exponent', exponent.uuid, value);   }
 
     private getUserAction<T>(action: string, itemType: string, itemId: string, defaultValue?: T): T {

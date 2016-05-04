@@ -4,7 +4,6 @@ import {NavController, NavParams} from "ionic-angular/index";
 import {AttendeeFull} from "./models/Attendee";
 import {Sort} from "../common/utils/array";
 import {EventData} from "./services/event.data";
-import {RatingComponent} from "../common/components/rating.component";
 import {AttendeeItemComponent} from "./components/attendee-item.component";
 import {CapitalizePipe} from "../common/pipes/text.pipe";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
@@ -12,7 +11,7 @@ import {AttendeePage} from "./attendee.page";
 
 @Page({
     pipes: [CapitalizePipe, NotEmptyPipe, JoinPipe],
-    directives: [RatingComponent, AttendeeItemComponent],
+    directives: [AttendeeItemComponent],
     template: `
 <ion-navbar *navbar>
     <ion-title>{{title | capitalize}}</ion-title>
@@ -24,7 +23,7 @@ import {AttendeePage} from "./attendee.page";
         <!--TODO : do not work.... :( <attendee-item *virtualItem="#attendee" [attendee]="attendee" (click)="goToAttendee(attendee)"></attendee-item>-->
         <ion-item *virtualItem="#attendee" (click)="goToAttendee(attendee)">
             <ion-avatar item-left><ion-img [src]="attendee.avatar"></ion-img></ion-avatar>
-            <h2>{{attendee.name}} <rating *ngIf="getRating(attendee) > 0" [value]="getRating(attendee)"></rating></h2>
+            <h2>{{attendee.name}}</h2>
             <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
             <button clear item-right (click)="toggleFav(attendee);$event.stopPropagation();">
                 <ion-icon name="star" [hidden]="!getFav(attendee)"></ion-icon>
@@ -51,7 +50,6 @@ export class AttendeeFilterPage implements OnInit {
 
     getFav(attendee: AttendeeFull): boolean { return this._eventData.getAttendeeFavorite(attendee); }
     toggleFav(attendee: AttendeeFull) { this._eventData.toggleAttendeeFavorite(attendee); }
-    getRating(attendee: AttendeeFull): number { return this._eventData.getAttendeeRating(attendee); }
 
     goToAttendee(attendeeFull: AttendeeFull) {
         this._nav.push(AttendeePage, {

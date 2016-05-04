@@ -7,7 +7,6 @@ import {SessionItem} from "./models/Session";
 import {ExponentItem} from "./models/Exponent";
 import {DateHelper} from "../common/utils/date";
 import {EventData} from "./services/event.data";
-import {RatingComponent} from "../common/components/rating.component";
 import {SessionItemComponent} from "./components/session-item.component";
 import {ExponentItemComponent} from "./components/exponent-item.component";
 import {NotEmptyPipe, JoinPipe} from "../common/pipes/array.pipe";
@@ -17,7 +16,7 @@ import {ExponentPage} from "./exponent.page";
 
 @Page({
     pipes: [NotEmptyPipe, JoinPipe],
-    directives: [RatingComponent, SessionItemComponent, ExponentItemComponent],
+    directives: [SessionItemComponent, ExponentItemComponent],
     styles: [`
 .attendee-card {
     text-align: center;
@@ -47,7 +46,6 @@ import {ExponentPage} from "./exponent.page";
             <h1>{{attendeeItem.name}}</h1>
             <h4 (click)="goToCompany(attendeeItem)">{{[attendeeItem.job, attendeeItem.company] | notEmpty | join:', '}}</h4>
             <a clear small twitter *ngIf="attendeeItem.twitterUrl" [href]="attendeeItem.twitterUrl" target="_blank"><ion-icon name="logo-twitter"></ion-icon></a><br>
-            <rating *ngIf="eventItem.start < now" [value]="getRating(attendeeItem)" (change)="setRating(attendeeItem, $event)"></rating>
         </div>
         <p>{{attendeeItem.description}}</p>
     </div>
@@ -79,8 +77,6 @@ export class AttendeePage implements OnInit {
 
     getFav(attendee: AttendeeItem): boolean { return this._eventData.getAttendeeFavorite(attendee); }
     toggleFav(attendee: AttendeeItem) { this._eventData.toggleAttendeeFavorite(attendee); }
-    getRating(attendee: AttendeeItem): number { return this._eventData.getAttendeeRating(attendee); }
-    setRating(attendee: AttendeeItem, value: number) { this._eventData.setAttendeeRating(attendee, this.getRating(attendee) !== value ? value : 0); }
 
     goToCompany(attendeeItem: AttendeeItem) {
         this._nav.push(AttendeeFilterPage, {

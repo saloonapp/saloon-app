@@ -1,12 +1,10 @@
 import {Component, Input} from "angular2/core";
 import {AttendeeItem} from "../models/Attendee";
 import {EventData} from "../services/event.data";
-import {RatingComponent} from "../../common/components/rating.component";
 import {NotEmptyPipe, JoinPipe} from "../../common/pipes/array.pipe";
 
 @Component({
     selector: 'attendee-item',
-    directives: [RatingComponent],
     pipes: [NotEmptyPipe, JoinPipe],
     styles: [`
 .item h2, .item p {
@@ -17,7 +15,7 @@ import {NotEmptyPipe, JoinPipe} from "../../common/pipes/array.pipe";
 <ion-item>
     <!--<ion-avatar item-left><ion-img [src]="attendee.avatar"></ion-img></ion-avatar>-->
     <ion-avatar item-left><img [src]="attendee.avatar"></ion-avatar>
-    <h2>{{attendee.name}} <rating *ngIf="getRating(attendee) > 0" [value]="getRating(attendee)"></rating></h2>
+    <h2>{{attendee.name}}</h2>
     <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>
     <button clear item-right (click)="toggleFav(attendee);$event.stopPropagation();">
         <ion-icon name="star" [hidden]="!getFav(attendee)"></ion-icon>
@@ -33,5 +31,4 @@ export class AttendeeItemComponent {
 
     getFav(attendee: AttendeeItem): boolean { return this._eventData.getAttendeeFavorite(attendee); }
     toggleFav(attendee: AttendeeItem) { this._eventData.toggleAttendeeFavorite(attendee); }
-    getRating(attendee: AttendeeItem): number { return this._eventData.getAttendeeRating(attendee); }
 }
