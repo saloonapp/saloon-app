@@ -15,7 +15,7 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 ### TODO
 
 - add scrollToNow for session-list/session-filter pages (when not filtered by slot)
-- tester l'application
+- tester l'application ([sample](https://github.com/lathonez/clicker) + [tuto](http://lathonez.github.io/2016/ionic-2-unit-testing/))
 - ajouter un lien dans la version web pour télécharger l'app mobile
 - proposer de télécharger l'app mobile au bout de "quelques" actions (favs/ratings)
 - add colors for theme / room / format
@@ -44,6 +44,7 @@ To run the app on your android device :
     - browser back button not handled (navigation.push/pop does not handle browser history)
 - créer un composant avec un ion-item (style is broken)
 - scrollTo with virtual scroll (not found element if not displayed)
+- hold event
 
 #### Ionic1 features not (yet) in Ionic2
 

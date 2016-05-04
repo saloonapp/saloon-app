@@ -33,11 +33,17 @@ import {SessionFilterPage} from "../session-filter.page";
     font-size: 1.6rem;
     font-weight: normal;
 }
+.schedule-item.small h2 {
+    font-size: 1.2rem;
+}
 .schedule-item p, .empty-slot-item p {
     margin: 0 0 2px;
     font-size: 1.2rem;
     line-height: normal;
     color: #666;
+}
+.schedule-item.small p {
+    font-size: 0.9rem;
 }
 .empty-slot-item {
     border-style: dashed;
@@ -59,12 +65,12 @@ import {SessionFilterPage} from "../session-filter.page";
     `],
     template: `
 <div class="schedule" style="height: {{totalHeight}}px;">
-    <div class="schedule-item" *ngFor="#item of items" (click)="goToSession(item.data)" (hold)="goToPeriod(item.data)" style="{{item.position}}">
+    <div class="schedule-item" [class.small]="isSmall(item)" *ngFor="#item of items" (click)="goToSession(item.data)" (hold)="goToPeriod(item.data)" style="{{item.style()}}">
         <p>{{item.data.start | timePeriod:item.data.end}} - {{item.data.place}}</p>
         <h2>{{item.data.name}} <rating *ngIf="getRating(item.data) > 0" [value]="getRating(item.data)"></rating></h2>
         <p>{{item.data.speakers | map:'name' | join:', '}}</p>
     </div>
-    <div class="empty-slot-item" *ngFor="#item of slots" (click)="goToSlot(item.data)" style="{{item.position}}">
+    <div class="empty-slot-item" [class.small]="isSmall(item)" *ngFor="#item of slots" (click)="goToSlot(item.data)" style="{{item.style()}}">
         <p>{{item.data.start | timePeriod:item.data.end}}</p>
         <h2>
             {{item.data.sessions.length}} session{{item.data.sessions.length > 1 ? 's' : ''}}
@@ -98,6 +104,10 @@ export class ScheduleComponent implements OnChanges {
         this.compute(this.sessions);
     }
 
+    isSmall(item: ScheduleItem) {
+        return item.width < 33 || (item.width < 50 && item.data.end - item.data.start < 1000*60*30); // 30 min
+    }
+
     getRating(session: SessionFull): number {
         return this._eventData.getSessionRating(session);
     }
@@ -127,7 +137,13 @@ export class ScheduleComponent implements OnChanges {
 
 class ScheduleItem {
     constructor(public data: ISlot,
-                public position: string) {}
+                public top: number,
+                public height: number,
+                public width: number,
+                public left: number) {}
+    style(): string {
+        return 'top: '+this.top+'px; height: '+this.height+'px; width: '+this.width+'%; left: '+this.left+'%;';
+    }
 }
 
 class ScheduleBuilder {
@@ -158,7 +174,7 @@ class ScheduleBuilder {
             const height = this.toPx(slot.end - slot.start);
             const width  = 100/(inParallel.length);
             const left   = position*width;
-            return new ScheduleItem(slot, 'top: '+top+'px; height: '+height+'px; width: '+width+'%; left: '+left+'%;');
+            return new ScheduleItem(slot, top, height, width, left);
         });
     }
     private static inParallel(slot: Slot, slots: Slot[]): Slot[] {
