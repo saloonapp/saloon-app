@@ -20,7 +20,8 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 - tester l'application ([sample](https://github.com/lathonez/clicker) + [tuto](http://lathonez.github.io/2016/ionic-2-unit-testing/))
 - ajouter un lien dans la version web pour télécharger l'app mobile
 - proposer de télécharger l'app mobile au bout de "quelques" actions (favs/ratings)
-- filter by : day, theme, room or format
+- session filter by : favorites, day, theme, room or format
+- attendee & exponents filter by : favorites
 - voir les dernières mises à jour (sessions)
 - add user comments
 - add venue plan (info page & session page with right room)

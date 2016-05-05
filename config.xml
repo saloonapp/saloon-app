@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="co.saloonapp.eventexplorer.dev2" version="2.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>dev2-SalooN</name>
+<widget id="co.saloonapp.mobile.dev" version="2.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>dev-SalooN 2</name>
   <description>Une app pour vos conférences !</description>
   <author email="contact@saloonapp.co" href="http://www.saloonapp.co/">SalooN</author>
   <content src="index.html"/>
