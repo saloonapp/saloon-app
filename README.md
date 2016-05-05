@@ -14,14 +14,19 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 
 ### TODO
 
+- bug agencement programme
+- Option type for typescript
 - add scrollToNow for session-list/session-filter pages (when not filtered by slot)
 - tester l'application ([sample](https://github.com/lathonez/clicker) + [tuto](http://lathonez.github.io/2016/ionic-2-unit-testing/))
 - ajouter un lien dans la version web pour télécharger l'app mobile
 - proposer de télécharger l'app mobile au bout de "quelques" actions (favs/ratings)
-- add colors for theme / room / format
 - filter by : day, theme, room or format
+- voir les dernières mises à jour (sessions)
 - add user comments
+- add venue plan (info page & session page with right room)
+- boutons : add to calendar, take notes, add to contacts...
 - add error handler
+- backend: mandrill -> sendgrid
 
 ### Getting started
 
