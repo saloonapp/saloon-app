@@ -5,6 +5,14 @@ import {DatePeriodPipe} from "../../common/pipes/datetime.pipe";
 @Component({
     selector: 'event-item',
     pipes: [DatePeriodPipe],
+    styles: [`
+ion-card img {
+    width: initial;
+    max-width: 100%;
+    display: block;
+    margin: auto;
+}
+    `],
     template: `
 <ion-card *ngIf="format === 'card'">
     <img [src]="event.landing">

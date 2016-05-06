@@ -15,7 +15,12 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 ### TODO
 
 - bug agencement programme
-- Option type for typescript
+- EventItem[] => EventList{events: EventItem[], fetched: number}
+- page settings (app version info + storage info)
+- rating => feedback (rating+comment like PlayStore)
+- sync user actions to backend
+- double back to exit
+- Ionic services (deploy, build, analytics, push, auth?)
 - add scrollToNow for session-list/session-filter pages (when not filtered by slot)
 - tester l'application ([sample](https://github.com/lathonez/clicker) + [tuto](http://lathonez.github.io/2016/ionic-2-unit-testing/))
 - ajouter un lien dans la version web pour télécharger l'app mobile
@@ -23,7 +28,7 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 - session filter by : favorites, day, theme, room or format
 - attendee & exponents filter by : favorites
 - voir les dernières mises à jour (sessions)
-- add user comments
+- add activity feed
 - add venue plan (info page & session page with right room)
 - boutons : add to calendar, take notes, add to contacts...
 - add error handler

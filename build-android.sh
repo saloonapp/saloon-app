@@ -71,13 +71,14 @@ then
 
 
     # change app config file source and commit changes to git
-    sed -i "s/\(Config.appVersion = '\)[^']*\(';\)/\1$version~\2/" $configApp
-    sed -i "s/\(public static appVersion = '\)[^']*\(';\)/\1$version~\2/" $configAppSrc
+    sed -i "s/\(public static appVersion = '\)[^']*\(';\)/\1$version\2/" $configAppSrc
     sed -i "s/\(public static gitBranch = '\)[^']*\(';\)/\1$gitBranch\2/" $configAppSrc
     sed -i "s/\(public static gitCommit = '\)[^']*\(';\)/\1$gitCommit\2/" $configAppSrc
     sed -i "s/\(public static buildDate = '\)[^']*\(';\)/\1$buildDate\2/" $configAppSrc
     git add $configApk $configAppSrc
     git commit -m "build version $version"
+    sed -i "s/\(Config.appVersion = '\)[^']*\(';\)/\1$version~\2/" $configApp
+    sed -i "s/\(public static appVersion = '\)[^']*\(';\)/\1$version~\2/" $configAppSrc
 
     echo ""
     echo "  +----------------------------------+"

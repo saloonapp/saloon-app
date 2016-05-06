@@ -11,8 +11,10 @@ import {AddressPipe} from "../common/pipes/model.pipe";
 @Page({
     pipes: [DatePeriodPipe, AddressPipe],
     styles: [`
-.infos-page img {
-    width: 100%;
+.about-header img {
+    max-width: 100%;
+    display: block;
+    margin: auto;
 }
 .about-info p {
   color: #697072;

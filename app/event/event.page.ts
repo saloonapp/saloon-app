@@ -11,6 +11,7 @@ import {ExponentListPage} from "./exponent-list.page";
 import {ProgramPage} from "./program.page";
 import {InfosPage} from "./infos.page";
 import {EventListPage} from "./event-list.page";
+import {SettingsPage} from "../settings/settings.page";
 
 
 @Page({
@@ -32,6 +33,7 @@ import {EventListPage} from "./event-list.page";
         <ion-list>
             <ion-list-header>Autre</ion-list-header>
             <button ion-item menuClose (click)="goToEvents()"><ion-icon item-left name="list"></ion-icon> Tous les événements</button>
+            <button ion-item menuClose (click)="goToSettings()"><ion-icon item-left name="settings"></ion-icon> Paramètres</button>
         </ion-list>
     </ion-content>
 </ion-menu>
@@ -70,6 +72,7 @@ export class EventPage implements OnInit {
     goToInfos() { this.goToTab('Infos'); }
     updateEvent() { this.doRefresh(); }
     goToEvents() { this._nav.setRoot(EventListPage); }
+    goToSettings() { this._nav.push(SettingsPage); }
 
     private goToTab(title: string) {
         const tabs = this._app.getComponent('event-tabs');

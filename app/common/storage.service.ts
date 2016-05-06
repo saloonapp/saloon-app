@@ -18,8 +18,8 @@ export class Storage {
         return this._storage.set('events', events);
     }
 
-    getEvent(uuid: string): Promise<EventFull> {
-        return this._storage.get('event-'+uuid)
+    getEvent(eventId: string): Promise<EventFull> {
+        return this._storage.get('event-'+eventId)
             .then(item => item ? EventFull.fromJS(item) : item)
             .then(null, err => undefined);
     }
