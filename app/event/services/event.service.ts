@@ -1,29 +1,30 @@
 import {Injectable} from "angular2/core";
-import {EventItem, EventFull} from "../models/Event";
+import {EventList, EventFull} from "../models/Event";
 import {Storage} from "../../common/storage.service";
 import {Backend} from "../../common/backend.service";
 
 @Injectable()
 export class EventService {
-    constructor(private _storage: Storage, private _backend: Backend) {}
+    constructor(private _storage: Storage,
+                private _backend: Backend) {}
 
-    getEvents(): Promise<EventItem[]> {
-        return this._storage.getEvents().then(events => {
-            if(events.length > 0){
-                return events;
+    getEvents(): Promise<EventList> {
+        return this._storage.getEvents().then(eventList => {
+            if(eventList && eventList.events && eventList.events.length > 0){
+                return eventList;
             } else {
-                return this._backend.getEvents().then(remoteEvents => {
-                    this._storage.setEvents(remoteEvents);
-                    return remoteEvents;
+                return this._backend.getEvents().then(remoteEventList => {
+                    this._storage.setEvents(remoteEventList);
+                    return remoteEventList;
                 });
             }
         });
     }
 
-    fetchEvents(): Promise<EventItem[]> {
-        return this._backend.getEvents().then(remoteEvents => {
-            this._storage.setEvents(remoteEvents);
-            return remoteEvents;
+    fetchEvents(): Promise<EventList> {
+        return this._backend.getEvents().then(remoteEventList => {
+            this._storage.setEvents(remoteEventList);
+            return remoteEventList;
         });
     }
 

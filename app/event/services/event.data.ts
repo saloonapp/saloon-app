@@ -8,14 +8,15 @@ import {UserAction} from "../../user/models/UserAction";
 import {DateHelper} from "../../common/utils/date";
 import {Storage} from "../../common/storage.service";
 import {EventService} from "./event.service";
+import {UserService} from "../../user/services/user.service";
 
 @Injectable()
 export class EventData {
     private currentEventItem: EventItem;
     private currentEventFull: Promise<EventFull>;
     private userActions: {[key: string]: {[key: string]: {[key: string]: any}}} = null;
-    constructor(private _storage: Storage,
-                private _eventService: EventService) {}
+    constructor(private _eventService: EventService,
+                private _userService: UserService) {}
 
     setCurrentEvent(eventItem: EventItem, eventFull?: EventFull): void {
         this.setEvent(eventItem, eventFull ? Promise.resolve(eventFull) : this._eventService.getEvent(eventItem.uuid));
@@ -52,10 +53,7 @@ export class EventData {
     }
     private setUserAction<T>(action: string, itemType: string, itemId: string, value: T): Promise<void> {
         const eventId = this.currentEventItem.uuid;
-        return this._storage.getUserActions(eventId).then(actions => {
-            actions.push(new UserAction<T>(action, eventId, itemType, itemId, value, DateHelper.now()));
-            return this._storage.setUserActions(eventId, actions);
-        }).then(() => {
+        return this._userService.addUserAction<T>(eventId, action, itemType, itemId, value).then(() => {
             this.setUserActionCache(action, itemType, itemId, value);
         });
     }
@@ -75,7 +73,7 @@ export class EventData {
             favorite: {session: {}, attendee: {}, exponent: {}},
             rating: {session: {}, attendee: {}, exponent: {}}
         };
-        this._storage.getUserActions(eventItem.uuid).then(actions => {
+        this._userService.getUserActions(eventItem.uuid).then(actions => {
             actions.map(action => {
                 this.setUserActionCache(action.action, action.itemType, action.itemId, action.value);
             });

@@ -1,6 +1,6 @@
 import {Injectable} from "angular2/core";
 import {StorageUtils} from "./services/storage-utils.service";
-import {EventItem, EventFull} from "../event/models/Event";
+import {EventList, EventFull} from "../event/models/Event";
 import {UserAction} from "../user/models/UserAction";
 import {Sort} from "./utils/array";
 
@@ -8,14 +8,14 @@ import {Sort} from "./utils/array";
 export class Storage {
     constructor(private _storage: StorageUtils) {}
 
-    getEvents(): Promise<EventItem[]> {
+    getEvents(): Promise<EventList> {
         return this._storage.get('events', [])
-            .then(array => array.map(item => EventItem.fromJS(item)))
-            .then(null, err => []);
+            .then(item => item ? EventList.fromJS(item) : item)
+            .then(null, err => undefined);
     }
 
-    setEvents(events: EventItem[]): Promise<void> {
-        return this._storage.set('events', events);
+    setEvents(eventList: EventList): Promise<void> {
+        return this._storage.set('events', eventList);
     }
 
     getEvent(eventId: string): Promise<EventFull> {
@@ -25,9 +25,9 @@ export class Storage {
     }
 
     setEvent(eventFull: EventFull): Promise<void> {
-        this.getEvents().then(events => {
-            const updatedEvents = events.map(event => event.uuid === eventFull.uuid ? eventFull.toItem() : event);
-            this.setEvents(updatedEvents);
+        this.getEvents().then(eventList => {
+            eventList.events = eventList.events.map(event => event.uuid === eventFull.uuid ? eventFull.toItem() : event);
+            this.setEvents(eventList);
         });
         return this._storage.set('event-'+eventFull.uuid, eventFull);
     }

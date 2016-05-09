@@ -1,7 +1,7 @@
 import {OnInit} from "angular2/core";
 import {Page} from "ionic-angular";
 import {NavController} from "ionic-angular/index";
-import {EventItem} from "./models/Event";
+import {EventList, EventItem} from "./models/Event";
 import {EventItemComponent} from "./components/event-item.component";
 import {EventService} from "./services/event.service";
 import {DateHelper} from "../common/utils/date";
@@ -51,15 +51,15 @@ export class EventListPage implements OnInit {
 
     ngOnInit() {
         this._eventService.getEvents().then(
-            events => this.updateEvents(events),
+            eventList => this.updateEvents(eventList),
             error => this._uiHelper.alert(this._nav, 'Fail to update :(')
         );
     }
 
     doRefresh(refresher) {
         this._eventService.fetchEvents().then(
-            events => {
-                this.updateEvents(events);
+            eventList => {
+                this.updateEvents(eventList);
                 refresher.complete();
             },
             error => {
@@ -69,8 +69,8 @@ export class EventListPage implements OnInit {
         );
     }
 
-    updateEvents(events: EventItem[]) {
-        this.events = events;
+    updateEvents(eventList: EventList) {
+        this.events = eventList.events;
         this.updateSegment();
     }
 

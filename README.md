@@ -12,27 +12,31 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
 
 ## Technical
 
-### TODO
+### Roadmap
 
-- bug agencement programme
-- EventItem[] => EventList{events: EventItem[], fetched: number}
-- page settings (app version info + storage info)
-- rating => feedback (rating+comment like PlayStore)
-- sync user actions to backend
-- double back to exit
-- Ionic services (deploy, build, analytics, push, auth?)
-- add scrollToNow for session-list/session-filter pages (when not filtered by slot)
-- tester l'application ([sample](https://github.com/lathonez/clicker) + [tuto](http://lathonez.github.io/2016/ionic-2-unit-testing/))
-- ajouter un lien dans la version web pour télécharger l'app mobile
-- proposer de télécharger l'app mobile au bout de "quelques" actions (favs/ratings)
-- session filter by : favorites, day, theme, room or format
-- attendee & exponents filter by : favorites
-- voir les dernières mises à jour (sessions)
-- add activity feed
-- add venue plan (info page & session page with right room)
-- boutons : add to calendar, take notes, add to contacts...
-- add error handler
-- backend: mandrill -> sendgrid
+- v2.0.1
+    - page settings (app version info + storage info)
+    - rating => feedback (rating+comment like PlayStore)
+    - sync user actions to backend (with generated users)
+    - refresh data (event list & details) based on fetched date
+    - ajouter un lien dans la version web pour télécharger l'app mobile
+    - proposer de télécharger l'app mobile au bout de "quelques" actions (favs/ratings)
+- v2.1.0
+    - user accounts
+    - add error handler
+- not planified
+    - bug agencement programme
+    - backend: mandrill -> sendgrid
+    - double back to exit
+    - Ionic services (deploy, build, analytics, push, auth?)
+    - tester l'application ([sample](https://github.com/lathonez/clicker) + [tuto](http://lathonez.github.io/2016/ionic-2-unit-testing/))
+    - add scrollToNow for session-list/session-filter pages (when not filtered by slot)
+    - session filter by : day, theme, room, format, favorites, rating...
+    - attendee & exponents filter by : favorites
+    - voir les dernières mises à jour (sessions)
+    - add venue plan (info page & session page with right room)
+    - add activity feed
+    - boutons : add to calendar, take notes, add to contacts...
 
 ### Getting started
 

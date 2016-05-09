@@ -6,6 +6,18 @@ import {ExponentFull} from "./Exponent";
 import {Slot} from "./Slot";
 import {AttendeeItem} from "./Attendee";
 
+export class EventList extends Serializable {
+    constructor(public events: EventItem[],
+                public fetched: number) { super(); }
+
+    // override Serializable.fromJS to correctly parse nested class
+    public static fromJS(jsonObj: any): EventList {
+        const instance  = <EventList> super.fromJS(jsonObj);
+        instance.events = <EventItem[]> instance.events.map(item => EventItem.fromJS(item));
+        return instance;
+    }
+}
+
 export class EventItem extends Serializable {
     constructor(public uuid: string,
                 public name: string,

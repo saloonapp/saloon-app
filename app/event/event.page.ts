@@ -33,7 +33,7 @@ import {SettingsPage} from "../settings/settings.page";
         <ion-list>
             <ion-list-header>Autre</ion-list-header>
             <button ion-item menuClose (click)="goToEvents()"><ion-icon item-left name="list"></ion-icon> Tous les événements</button>
-            <button ion-item menuClose (click)="goToSettings()"><ion-icon item-left name="settings"></ion-icon> Paramètres</button>
+            <!--<button ion-item menuClose (click)="goToSettings()"><ion-icon item-left name="settings"></ion-icon> Paramètres</button>-->
         </ion-list>
     </ion-content>
 </ion-menu>

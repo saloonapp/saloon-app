@@ -5,7 +5,7 @@ import "rxjs/Rx";
 import * as _ from "lodash";
 import {Config} from "../config";
 import {Address} from "./models/Address";
-import {EventItem, EventFull, EventElt} from "../event/models/Event";
+import {EventList, EventItem, EventFull, EventElt} from "../event/models/Event";
 import {AttendeeItem, AttendeeFull} from "../event/models/Attendee";
 import {SessionItem, SessionFull} from "../event/models/Session";
 import {ExponentItem, ExponentFull} from "../event/models/Exponent";
@@ -18,15 +18,15 @@ import {DateHelper} from "./utils/date";
 export class Backend {
     constructor(private _http: Http) {}
 
-    getEvents(): Promise<EventItem[]> {
+    getEvents(): Promise<EventList> {
         return new Promise((resolve, reject) => {
             this._http.get(Config.backendUrl+'/events/all')
-                .map(res => res.json().map(BackendFormatter.formatEventItem))
+                .map(res => BackendFormatter.formatEventList(res.json()))
                 .do(data => console.log('Backend.getEvents', data))
                 .retryWhen(errors => errors)// TODO : should improve to not retry indefinitely...
                 .catch(this.handleError)
                 .subscribe(
-                    events => resolve(events),
+                    eventList => resolve(eventList),
                     error => reject(error)
                 );
         });
@@ -53,27 +53,9 @@ export class Backend {
 }
 
 class BackendFormatter {
-    public static formatEventItem(event: any): EventItem {
-        return new EventItem(
-            ObjectHelper.getSafe(event, 'uuid'),
-            ObjectHelper.getSafe(event, 'name'),
-            ObjectHelper.getSafe(event, 'description'),
-            ObjectHelper.getSafe(event, 'descriptionHTML'),
-            ObjectHelper.getSafe(event, 'images.logo'),
-            ObjectHelper.getSafe(event, 'images.landing'),
-            ObjectHelper.getSafe(event, 'info.website'),
-            ObjectHelper.getSafe(event, 'info.start'),
-            ObjectHelper.getSafe(event, 'info.end'),
-            ObjectHelper.getSafe(event, 'info.address'),
-            ObjectHelper.getSafe(event, 'info.price.label'),
-            ObjectHelper.getSafe(event, 'info.price.url'),
-            ObjectHelper.getSafe(event, 'info.social.twitter.hashtag'),
-            ObjectHelper.getSafe(event, 'info.social.twitter.account'),
-            ObjectHelper.getSafe(event, 'meta.categories'),
-            ObjectHelper.getSafe(event, 'attendeeCount'),
-            ObjectHelper.getSafe(event, 'sessionCount'),
-            ObjectHelper.getSafe(event, 'exponentCount'),
-            ObjectHelper.getSafe(event, 'meta.updated'),
+    public static formatEventList(events: any[]): EventList {
+        return new EventList(
+            events.map(this.formatEventItem),
             DateHelper.now()
         );
     }
@@ -113,11 +95,30 @@ class BackendFormatter {
             DateHelper.now()
         );
     }
-    private static eltsToEventElt(elts: string[]): EventElt[] {
-        return _.uniq(elts.map(e => e.trim()))
-            .filter(e => e.length > 0)
-            .sort(Sort.str)
-            .map(e => new EventElt(e));
+
+    private static formatEventItem(event: any): EventItem {
+        return new EventItem(
+            ObjectHelper.getSafe(event, 'uuid'),
+            ObjectHelper.getSafe(event, 'name'),
+            ObjectHelper.getSafe(event, 'description'),
+            ObjectHelper.getSafe(event, 'descriptionHTML'),
+            ObjectHelper.getSafe(event, 'images.logo'),
+            ObjectHelper.getSafe(event, 'images.landing'),
+            ObjectHelper.getSafe(event, 'info.website'),
+            ObjectHelper.getSafe(event, 'info.start'),
+            ObjectHelper.getSafe(event, 'info.end'),
+            ObjectHelper.getSafe(event, 'info.address'),
+            ObjectHelper.getSafe(event, 'info.price.label'),
+            ObjectHelper.getSafe(event, 'info.price.url'),
+            ObjectHelper.getSafe(event, 'info.social.twitter.hashtag'),
+            ObjectHelper.getSafe(event, 'info.social.twitter.account'),
+            ObjectHelper.getSafe(event, 'meta.categories'),
+            ObjectHelper.getSafe(event, 'attendeeCount'),
+            ObjectHelper.getSafe(event, 'sessionCount'),
+            ObjectHelper.getSafe(event, 'exponentCount'),
+            ObjectHelper.getSafe(event, 'meta.updated'),
+            DateHelper.now()
+        );
     }
     private static formatAttendeeItem(attendee: any): AttendeeItem {
         return new AttendeeItem(
@@ -219,6 +220,12 @@ class BackendFormatter {
             ObjectHelper.getSafe(exponent, 'info.team', []).map(attendeeId => attendeeItems[attendeeId]),
             ObjectHelper.getSafe(exponent, 'meta.updated')
         );
+    }
+    private static eltsToEventElt(elts: string[]): EventElt[] {
+        return _.uniq(elts.map(e => e.trim()))
+            .filter(e => e.length > 0)
+            .sort(Sort.str)
+            .map(e => new EventElt(e));
     }
 
     private static toMap<T>(arr: T[], key: (T) => string): { [key: string]: T; } {

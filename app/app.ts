@@ -9,6 +9,7 @@ import {StorageUtils} from "./common/services/storage-utils.service";
 import {Storage} from "./common/storage.service";
 import {Backend} from "./common/backend.service";
 import {EventService} from "./event/services/event.service";
+import {UserService} from "./user/services/user.service";
 import {EventData} from "./event/services/event.data";
 import {TfidfService} from "./common/tfidf.service";
 import {UiHelper} from "./common/ui/utils";
@@ -24,7 +25,7 @@ import {EventListPage} from "./event/event-list.page";
     providers: [
         PluginUtils, SQLitePlugin, SQLiteStorage, StorageUtils,
         Storage, Backend,
-        EventService, EventData, TfidfService, UiHelper,
+        UserService, EventService, EventData, TfidfService, UiHelper,
         SearchPipe, FilterPipe, SortByPipe, MapPipe, GroupByPipe, NotEmptyPipe, JoinPipe,
         DatePipe, TimePipe, DateTimePipe, WeekDayPipe, DatePeriodPipe, TimePeriodPipe, TimeDurationPipe,
         CapitalizePipe,

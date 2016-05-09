@@ -30,10 +30,10 @@ export class SettingsPage implements OnInit {
     constructor(private _storage: Storage) {}
 
     ngOnInit() {
-        this._storage.getEvents().then(events => {
-            this.storage.eventCount = events.length;
+        this._storage.getEvents().then(eventList => {
+            this.storage.eventCount = (eventList.events || []).length;
             this.storage.events = [];
-            events.map(e => {
+            (eventList.events || []).map(e => {
                 const storageEvent: any = {};
                 this._storage.getEvent(e.uuid).then(event => {
                     storageEvent.uuid = event.uuid;
