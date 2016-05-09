@@ -1,4 +1,5 @@
 import {Injectable} from "angular2/core";
+import {Feedback} from "../../common/models/Feedback";
 import {EventItem, EventFull} from "../models/Event";
 import {AttendeeItem, AttendeeFull} from "../models/Attendee";
 import {SessionItem, SessionFull} from "../models/Session";
@@ -27,18 +28,24 @@ export class EventData {
     getAttendeeFromCurrent(uuid: string): Promise<AttendeeFull> { return this.currentEventFull.then(event => event.attendees.find(e => e.uuid === uuid)); }
     getExponentFromCurrent(uuid: string): Promise<ExponentFull> { return this.currentEventFull.then(event => event.exponents.find(e => e.uuid === uuid)); }
 
-    getSessionFavorite (session : SessionItem )             : boolean       { return this.getUserAction<boolean>('favorite', 'session' , session.uuid , false); }
-    getAttendeeFavorite(attendee: AttendeeItem)             : boolean       { return this.getUserAction<boolean>('favorite', 'attendee', attendee.uuid, false); }
-    getExponentFavorite(exponent: ExponentItem)             : boolean       { return this.getUserAction<boolean>('favorite', 'exponent', exponent.uuid, false); }
-    toggleSessionFavorite (session : SessionItem )          : Promise<void> {       return this.toggleUserAction('favorite', 'session' , session.uuid);         }
-    toggleAttendeeFavorite(attendee: AttendeeItem)          : Promise<void> {       return this.toggleUserAction('favorite', 'attendee', attendee.uuid);        }
-    toggleExponentFavorite(exponent: ExponentItem)          : Promise<void> {       return this.toggleUserAction('favorite', 'exponent', exponent.uuid);        }
-    getSessionRating (session : SessionItem )               : number        {  return this.getUserAction<number>('rating', 'session' , session.uuid , 0);       }
-    //getAttendeeRating(attendee: AttendeeItem)               : number        {  return this.getUserAction<number>('rating', 'attendee', attendee.uuid, 0);       }
-    getExponentRating(exponent: ExponentItem)               : number        {  return this.getUserAction<number>('rating', 'exponent', exponent.uuid, 0);       }
-    setSessionRating (session : SessionItem , value: number): Promise<void> {  return this.setUserAction<number>('rating', 'session' , session.uuid , value);   }
-    //setAttendeeRating(attendee: AttendeeItem, value: number): Promise<void> {  return this.setUserAction<number>('rating', 'attendee', attendee.uuid, value);   }
-    setExponentRating(exponent: ExponentItem, value: number): Promise<void> {  return this.setUserAction<number>('rating', 'exponent', exponent.uuid, value);   }
+    getSessionFavorite (session : SessionItem )                 : boolean       { return this.getUserAction<boolean>('favorite', 'session' , session.uuid , false);                 }
+    getAttendeeFavorite(attendee: AttendeeItem)                 : boolean       { return this.getUserAction<boolean>('favorite', 'attendee', attendee.uuid, false);                 }
+    getExponentFavorite(exponent: ExponentItem)                 : boolean       { return this.getUserAction<boolean>('favorite', 'exponent', exponent.uuid, false);                 }
+    toggleSessionFavorite (session : SessionItem )              : Promise<void> {       return this.toggleUserAction('favorite', 'session' , session.uuid);                         }
+    toggleAttendeeFavorite(attendee: AttendeeItem)              : Promise<void> {       return this.toggleUserAction('favorite', 'attendee', attendee.uuid);                        }
+    toggleExponentFavorite(exponent: ExponentItem)              : Promise<void> {       return this.toggleUserAction('favorite', 'exponent', exponent.uuid);                        }
+    getSessionRating (session : SessionItem )                   : number        {  return this.getUserAction<number>('rating', 'session' , session.uuid , 0);                       }
+    getAttendeeRating(attendee: AttendeeItem)                   : number        {  return this.getUserAction<number>('rating', 'attendee', attendee.uuid, 0);                       }
+    getExponentRating(exponent: ExponentItem)                   : number        {  return this.getUserAction<number>('rating', 'exponent', exponent.uuid, 0);                       }
+    setSessionRating (session : SessionItem , value: number)    : Promise<void> {  return this.setUserAction<number>('rating', 'session' , session.uuid , value);                   }
+    setAttendeeRating(attendee: AttendeeItem, value: number)    : Promise<void> {  return this.setUserAction<number>('rating', 'attendee', attendee.uuid, value);                   }
+    setExponentRating(exponent: ExponentItem, value: number)    : Promise<void> {  return this.setUserAction<number>('rating', 'exponent', exponent.uuid, value);                   }
+    getSessionFeedback (session : SessionItem )                 : Feedback      {  return this.getUserAction<Feedback>('feedback', 'session' , session.uuid , new Feedback(0, '')); }
+    getAttendeeFeedback(attendee: AttendeeItem)                 : Feedback      {  return this.getUserAction<Feedback>('feedback', 'attendee', attendee.uuid, new Feedback(0, '')); }
+    getExponentFeedback(exponent: ExponentItem)                 : Feedback      {  return this.getUserAction<Feedback>('feedback', 'exponent', exponent.uuid, new Feedback(0, '')); }
+    setSessionFeedback (session : SessionItem , value: Feedback): Promise<void> {  return this.setUserAction<Feedback>('feedback', 'session' , session.uuid , value);               }
+    setAttendeeFeedback(attendee: AttendeeItem, value: Feedback): Promise<void> {  return this.setUserAction<Feedback>('feedback', 'attendee', attendee.uuid, value);               }
+    setExponentFeedback(exponent: ExponentItem, value: Feedback): Promise<void> {  return this.setUserAction<Feedback>('feedback', 'exponent', exponent.uuid, value);               }
 
     private getUserAction<T>(action: string, itemType: string, itemId: string, defaultValue?: T): T {
         return this.userActions && this.userActions[action] && this.userActions[action][itemType] ? this.userActions[action][itemType][itemId] || defaultValue : defaultValue;
