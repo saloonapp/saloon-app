@@ -14,7 +14,7 @@ import {Sort} from "../common/utils/array";
     directives: [EventItemComponent],
     template: `
 <ion-navbar *navbar>
-    <ion-title>Événements</ion-title>
+    <ion-title>{{config.debug ? '('+config.envName+') ' : ''}}Événements</ion-title>
 </ion-navbar>
 <ion-toolbar>
     <ion-segment [(ngModel)]="segmentValue" (change)="updateSegment()">
@@ -36,6 +36,7 @@ import {Sort} from "../common/utils/array";
 `
 })
 export class EventListPage implements OnInit {
+    config: any = Config;
     segmentValues = [
         {value: 'future', label: 'À venir', format: 'card', filter: (e: EventItem) => (e.end || e.start)+(1*DateHelper.day) > DateHelper.now(), sort: (e1: EventItem, e2: EventItem) => Sort.num(e1.start, e2.start)},
         {value: 'past',   label: 'Passés', format: 'item', filter: (e: EventItem) => (e.end || e.start)+(1*DateHelper.day) < DateHelper.now(), sort: (e1: EventItem, e2: EventItem) => -Sort.num(e1.start, e2.start)}

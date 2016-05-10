@@ -50,6 +50,13 @@ To run the app on your android device :
 - `ionic platform add android` : add android platform to the project
 - `ionic run android` : run your app !
 
+### Nomenclature
+
+- services
+    - *.service.ts : generic service packaging app logic
+    - *.data.ts : keep data in-memory accross navigation
+    - *.plugin.ts : cordova plugin wrapper
+
 ### Notes
 
 #### Ionic2 issues
