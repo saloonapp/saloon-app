@@ -2,13 +2,13 @@
 
 # Your next event app
 
-SalooN est une application open-source qui a pour but d'aider les participants à une conférence à planifier et suivre leur programme.
+SalooN est une application open-source qui a pour but d'aider les participants à une conférence à planifier et suivre leur programme lors d'un événement.
 
-L'application est [accessible sur le web](http://saloonapp.github.io/saloon-app/) et téléchargeable sur le [Play Store](https://play.google.com/store/apps/details?id=co.saloonapp.eventexplorer) et sur l'[App Store](https://itunes.apple.com/fr/app/saloon-events/id999897097).
+L'application est [accessible sur le web](http://saloonapp.github.io/saloon-app/) et téléchargeable sur le [Play Store](https://play.google.com/store/apps/details?id=co.saloonapp.mobile) et bientot sur l'App Store.
 
 Pour toute demande de fonctionnalité ou signalement de bug, les issues et pull-request sont à votre disposition :)
 
-Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [nous contacter](http://saloonapp.herokuapp.com/#contact). Nous ferons notre possible pour l'ajouter en temps et en heures.
+Si une conférence vous intéresse mais qu'elle n'est pas présente, n'hésitez pas à [nous contacter](http://saloonapp.herokuapp.com/#contact). Nous ferons notre possible pour l'ajouter en temps et en heures.
 
 ## Technical
 
@@ -37,6 +37,7 @@ Si une conférence vous intéresse et n'est pas présente, n'hésitez pas à [no
     - add venue plan (info page & session page with right room)
     - add activity feed
     - boutons : add to calendar, take notes, add to contacts...
+    - use http://streamdata.io/ for real-time updates
 
 ### Getting started
 
