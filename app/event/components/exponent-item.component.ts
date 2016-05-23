@@ -1,4 +1,4 @@
-import {Component, Input} from "angular2/core";
+import {Component, Input} from "@angular/core";
 import {ExponentItem} from "../models/Exponent";
 import {EventData} from "../services/event.data";
 import {RatingComponent} from "../../common/components/rating.component";

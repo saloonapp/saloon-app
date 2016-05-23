@@ -1,4 +1,4 @@
-import {OnInit} from "angular2/core";
+import {OnInit} from "@angular/core";
 import {Page} from "ionic-angular";
 import {NavController} from "ionic-angular/index";
 import {EventItem, EventFull} from "./models/Event";
@@ -24,9 +24,9 @@ import {ExponentPage} from "./exponent.page";
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas d'exposant trouvé</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0" [virtualScroll]="filtered" [headerFn]="virtualHeader">
-        <ion-item-divider *virtualHeader="#letter" sticky>{{letter}}</ion-item-divider>
-        <!--TODO : do not work.... :( <exponent-item *virtualItem="#exponent" [exponent]="exponent" (click)="goToExponent(exponent)"></exponent-item>-->
-        <ion-item *virtualItem="#exponent" (click)="goToExponent(exponent)">
+        <ion-item-divider *virtualHeader="let letter" sticky>{{letter}}</ion-item-divider>
+        <!--TODO : do not work.... :( <exponent-item *virtualItem="let exponent" [exponent]="exponent" (click)="goToExponent(exponent)"></exponent-item>-->
+        <ion-item *virtualItem="let exponent" (click)="goToExponent(exponent)">
             <ion-avatar item-left><ion-img [src]="exponent.logo"></ion-img></ion-avatar>
             <h2>{{exponent.name}} <rating *ngIf="getRating(exponent) > 0" [value]="getRating(exponent)"></rating></h2>
             <p class="nowrap lines2">{{exponent.description}}</p>

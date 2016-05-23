@@ -1,4 +1,4 @@
-import {Pipe, PipeTransform} from "angular2/core";
+import {Pipe, PipeTransform} from "@angular/core";
 import * as moment from "moment";
 import {ObjectHelper} from "../utils/object";
 import {DateHelper} from "../utils/date";
@@ -25,7 +25,7 @@ export class WeekDayPipe implements PipeTransform {
 
 @Pipe({name: 'datePeriod'})
 export class DatePeriodPipe implements PipeTransform {
-    transform(start: string, [end]: string[]): string {
+    transform(start: string, end: string): string {
         if(end){
             const separator = ' - ', mStart = moment(start), mEnd = moment(end);
             if(mStart.format('YYYY') !== mEnd.format('YYYY')){
@@ -46,12 +46,14 @@ export class DatePeriodPipe implements PipeTransform {
 
 @Pipe({name: 'timePeriod'})
 export class TimePeriodPipe implements PipeTransform {
-    transform(start:string, [end]: string[]): string {
+    transform(start: string, end: string): string {
         const separator = ' - ', startStr = DateHelper.format(start, 'LT'), endStr = DateHelper.format(end, 'LT');
-        if(startStr === endStr){
+        if(startStr === endStr) {
             return endStr;
-        } else {
+        } else if(endStr) {
             return startStr + separator + endStr;
+        } else {
+            return startStr;
         }
     }
 }

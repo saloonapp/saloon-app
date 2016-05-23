@@ -1,4 +1,4 @@
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 import {StorageUtils} from "./services/storage-utils.service";
 import {EventList, EventFull} from "../event/models/Event";
 import {UserAction} from "../user/models/UserAction";

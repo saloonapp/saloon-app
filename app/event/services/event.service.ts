@@ -1,4 +1,4 @@
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 import {EventList, EventFull} from "../models/Event";
 import {Storage} from "../../common/storage.service";
 import {Backend} from "../../common/backend.service";

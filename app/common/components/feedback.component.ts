@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, OnChanges, SimpleChange} from "angular2/core";
+import {Component, Input, Output, EventEmitter, OnChanges, SimpleChange} from "@angular/core";
 import {Feedback} from "../models/Feedback";
 
 interface IStar {
@@ -10,7 +10,7 @@ interface IStar {
     selector: 'feedback',
     template: `
 <span [title]="value" style="white-space: nowrap;">
-    <ion-icon *ngFor="#star of stars; #i=index" [name]="star.name" [style.color]="star.color" (click)="clicked(i)"></ion-icon>
+    <ion-icon *ngFor="let star of stars; let i=index" [name]="star.name" [style.color]="star.color" (click)="clicked(i)"></ion-icon>
 </span>
 `
 })

@@ -1,4 +1,4 @@
-import {OnInit} from "angular2/core";
+import {OnInit} from "@angular/core";
 import {Page} from 'ionic-angular';
 import {NavController, NavParams} from "ionic-angular/index";
 import {AttendeeFull} from "./models/Attendee";
@@ -20,8 +20,8 @@ import {AttendeePage} from "./attendee.page";
     <div *ngIf="!filtered" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="filtered && filtered.length === 0">Pas de participant trouvé</ion-list-header>
     <ion-list *ngIf="filtered && filtered.length > 0" [virtualScroll]="filtered">
-        <!--TODO : do not work.... :( <attendee-item *virtualItem="#attendee" [attendee]="attendee" (click)="goToAttendee(attendee)"></attendee-item>-->
-        <ion-item *virtualItem="#attendee" (click)="goToAttendee(attendee)">
+        <!--TODO : do not work.... :( <attendee-item *virtualItem="let attendee" [attendee]="attendee" (click)="goToAttendee(attendee)"></attendee-item>-->
+        <ion-item *virtualItem="let attendee" (click)="goToAttendee(attendee)">
             <ion-avatar item-left><ion-img [src]="attendee.avatar"></ion-img></ion-avatar>
             <h2>{{attendee.name}}</h2>
             <p>{{[attendee.job, attendee.company] | notEmpty | join:', '}}</p>

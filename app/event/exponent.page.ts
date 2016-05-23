@@ -1,4 +1,4 @@
-import {OnInit} from "angular2/core";
+import {OnInit} from "@angular/core";
 import {Page} from "ionic-angular";
 import {NavController, NavParams} from "ionic-angular/index";
 import {EventItem} from "./models/Event";
@@ -33,7 +33,7 @@ import {AttendeePage} from "./attendee.page";
     </div>
     <ion-list *ngIf="exponentFull && exponentFull.team.length > 0">
         <ion-list-header>Speakers</ion-list-header>
-        <attendee-item *ngFor="#attendee of exponentFull.team" [attendee]="attendee" (click)="goToAttendee(attendee)"></attendee-item>
+        <attendee-item *ngFor="let attendee of exponentFull.team" [attendee]="attendee" (click)="goToAttendee(attendee)"></attendee-item>
     </ion-list>
 </ion-content>
 `

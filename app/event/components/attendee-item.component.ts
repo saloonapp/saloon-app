@@ -1,4 +1,4 @@
-import {Component, Input} from "angular2/core";
+import {Component, Input} from "@angular/core";
 import {AttendeeItem} from "../models/Attendee";
 import {EventData} from "../services/event.data";
 import {NotEmptyPipe, JoinPipe} from "../../common/pipes/array.pipe";

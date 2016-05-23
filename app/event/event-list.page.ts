@@ -1,4 +1,4 @@
-import {OnInit} from "angular2/core";
+import {OnInit} from "@angular/core";
 import {Page} from "ionic-angular";
 import {NavController} from "ionic-angular/index";
 import {EventList, EventItem} from "./models/Event";
@@ -18,13 +18,13 @@ import {Sort} from "../common/utils/array";
 </ion-navbar>
 <ion-toolbar>
     <ion-segment [(ngModel)]="segmentValue" (change)="updateSegment()">
-        <ion-segment-button *ngFor="#s of segmentValues" value="{{s.value}}">{{s.label}}</ion-segment-button>
+        <ion-segment-button *ngFor="let s of segmentValues" value="{{s.value}}">{{s.label}}</ion-segment-button>
     </ion-segment>
 </ion-toolbar>
 <ion-content>
     <ion-refresher (refresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
     <div *ngIf="!events" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
-    <event-item *ngFor="#event of showedEvents" [event]="event" [format]="eventFormat" (click)="goToEvent(event)"></event-item>
+    <event-item *ngFor="let event of showedEvents" [event]="event" [format]="eventFormat" (click)="goToEvent(event)"></event-item>
     <div *ngIf="segmentValue === 'future'" padding>
         <h1 *ngIf="showedEvents && showedEvents.length === 0">Aucun événement à venir :(</h1>
         <p>

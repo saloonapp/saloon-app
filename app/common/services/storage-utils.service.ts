@@ -1,4 +1,4 @@
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 import {SQLitePlugin} from "../plugins/sqlite.plugin";
 import {ObjectHelper} from "../utils/object";
 import {IStorage} from "./IStorage";

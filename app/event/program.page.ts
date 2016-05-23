@@ -1,4 +1,4 @@
-import {OnInit, ViewChildren, QueryList} from "angular2/core";
+import {OnInit, ViewChildren, QueryList} from "@angular/core";
 import {Page} from "ionic-angular";
 import {EventFull} from "./models/Event";
 import {SessionFull} from "./models/Session";
@@ -33,7 +33,7 @@ h3 {
 <ion-content>
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <div *ngIf="eventFull">
-        <div *ngFor="#daySessions of eventFull.sessions | groupBy:sessionDay | sortBy:'key'">
+        <div *ngFor="let daySessions of eventFull.sessions | groupBy:sessionDay | sortBy:'key'">
             <h3>{{daySessions.key | weekDay | capitalize}} {{daySessions.key | date}}</h3>
             <schedule [sessions]="daySessions.values"></schedule>
         </div>

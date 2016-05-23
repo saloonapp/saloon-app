@@ -1,4 +1,4 @@
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 import {NavController, Alert, Loading, Toast} from "ionic-angular/index";
 import {ObjectHelper} from "../utils/object";
 

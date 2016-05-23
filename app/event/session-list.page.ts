@@ -1,4 +1,4 @@
-import {OnInit} from "angular2/core";
+import {OnInit} from "@angular/core";
 import {Page} from "ionic-angular";
 import {NavController} from "ionic-angular/index";
 import {EventItem, EventFull} from "./models/Event";
@@ -38,11 +38,11 @@ import {SessionPage} from "./session.page";
     <div *ngIf="!eventFull" style="text-align: center; margin-top: 100px;"><ion-spinner></ion-spinner></div>
     <ion-list-header *ngIf="eventFull && filtered.length === 0">Pas de session trouvée</ion-list-header>
     <ion-list *ngIf="eventFull && filtered.length > 0" [virtualScroll]="filtered" [headerFn]="virtualHeader">
-        <ion-item-divider *virtualHeader="#session" class="start-{{session.start}}" sticky>
+        <ion-item-divider *virtualHeader="let session" class="start-{{session.start}}" sticky>
             {{session.start | weekDay | capitalize}}, {{session.start | time}}
         </ion-item-divider>
-        <!--TODO : do not work.... :( <session-item *virtualItem="#session" [session]="session" (click)="goToSession(session)"></session-item>-->
-        <ion-item *virtualItem="#session" (click)="goToSession(session)">
+        <!--TODO : do not work.... :( <session-item *virtualItem="let session" [session]="session" (click)="goToSession(session)"></session-item>-->
+        <ion-item *virtualItem="let session" (click)="goToSession(session)">
             <h2>{{session.name}} <rating *ngIf="getRating(session) > 0" [value]="getRating(session)"></rating></h2>
             <p>{{[session.place, session.start | timePeriod:session.end] | notEmpty | join:' - '}}</p>
             <p>{{session.speakers | map:'name' | join:', '}}</p>

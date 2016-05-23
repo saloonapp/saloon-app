@@ -1,6 +1,6 @@
-import {OnInit} from "angular2/core";
+import {OnInit, ViewChild} from "@angular/core";
 import {Page} from "ionic-angular";
-import {IonicApp, NavController, NavParams} from "ionic-angular/index";
+import {IonicApp, NavController, NavParams, Tabs} from "ionic-angular/index";
 import {EventItem, EventFull} from "./models/Event";
 import {EventData} from "./services/event.data";
 import {EventService} from "./services/event.service";
@@ -13,10 +13,9 @@ import {InfosPage} from "./infos.page";
 import {EventListPage} from "./event-list.page";
 import {SettingsPage} from "../settings/settings.page";
 
-
 @Page({
     template: `
-<ion-menu [content]="content">
+<ion-menu [content]="eventTabs">
     <ion-toolbar>
         <ion-title>Menu</ion-title>
     </ion-toolbar>
@@ -37,7 +36,7 @@ import {SettingsPage} from "../settings/settings.page";
         </ion-list>
     </ion-content>
 </ion-menu>
-<ion-tabs id="event-tabs" #content>
+<ion-tabs #eventTabs>
     <ion-tab [root]="tab1Root" tabTitle="Sessions" tabIcon="calendar" *ngIf="eventItem.sessionCount > 0"></ion-tab>
     <ion-tab [root]="tab2Root" tabTitle="Participants" tabIcon="people" *ngIf="eventItem.attendeeCount > 0"></ion-tab>
     <ion-tab [root]="tab3Root" tabTitle="Exposants" tabIcon="briefcase" *ngIf="eventItem.exponentCount > 0"></ion-tab>
@@ -47,6 +46,7 @@ import {SettingsPage} from "../settings/settings.page";
 `
 })
 export class EventPage implements OnInit {
+    @ViewChild('eventTabs') tabs: Tabs;
     eventItem: EventItem;
     tab1Root: any = SessionListPage;
     tab2Root: any = AttendeeListPage;
@@ -75,15 +75,14 @@ export class EventPage implements OnInit {
     goToSettings() { this._nav.push(SettingsPage); }
 
     private goToTab(title: string) {
-        const tabs = this._app.getComponent('event-tabs');
         let tabIndex = 0;
-        let tab = tabs.getByIndex(tabIndex);
+        let tab = this.tabs.getByIndex(tabIndex);
         while(tab) {
             if(tab.tabTitle === title){
-                tabs.select(tabIndex);
+                this.tabs.select(tabIndex);
                 break;
             }
-            tab = tabs.getByIndex(++tabIndex);
+            tab = this.tabs.getByIndex(++tabIndex);
         }
         if(tab === null){ console.warn('Tab <'+title+'> not found !'); }
     }

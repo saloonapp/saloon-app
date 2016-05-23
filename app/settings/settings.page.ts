@@ -1,4 +1,4 @@
-import {OnInit} from "angular2/core";
+import {OnInit} from "@angular/core";
 import {Page} from 'ionic-angular';
 import {NavController} from "ionic-angular/index";
 import {Config} from "../config";
@@ -16,7 +16,7 @@ import {Storage} from "../common/storage.service";
     </ion-list>
     <ion-list>
         <ion-item>{{storage.eventCount}} événements listés</ion-item>
-        <ion-item *ngFor="#event of storage.events">
+        <ion-item *ngFor="let event of storage.events">
             <h2>{{event.name}}</h2>
             <p>{{event.sessionCount}} sessions, {{event.attendeeCount}} participants, {{event.exponentCount}} exposants, {{event.actionCount}} actions</p>
         </ion-item>

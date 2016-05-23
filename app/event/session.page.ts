@@ -1,4 +1,4 @@
-import {OnInit} from "angular2/core";
+import {OnInit} from "@angular/core";
 import {Page} from "ionic-angular";
 import {NavController, NavParams} from "ionic-angular/index";
 import {EventItem} from "./models/Event";
@@ -41,7 +41,7 @@ import {TwitterHandlePipe} from "../common/pipes/social.pipe";
     </div>
     <ion-list *ngIf="sessionFull && sessionFull.speakers.length > 0">
         <ion-list-header>Speakers</ion-list-header>
-        <attendee-item *ngFor="#attendee of sessionFull.speakers" [attendee]="attendee" (click)="goToAttendee(attendee)"></attendee-item>
+        <attendee-item *ngFor="let attendee of sessionFull.speakers" [attendee]="attendee" (click)="goToAttendee(attendee)"></attendee-item>
     </ion-list>
 </ion-content>
 `

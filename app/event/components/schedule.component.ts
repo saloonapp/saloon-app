@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChange} from "angular2/core";
+import {Component, Input, OnChanges, SimpleChange} from "@angular/core";
 import {NavController} from "ionic-angular/index";
 import * as _ from "lodash";
 import {SessionFull} from "../models/Session";
@@ -64,13 +64,13 @@ import {SessionFilterPage} from "../session-filter.page";
 }
     `],
     template: `
-<div class="schedule" style="height: {{totalHeight}}px;">
-    <div class="schedule-item" [class.small]="isSmall(item)" *ngFor="#item of items" (click)="goToSession(item.data)" (hold)="goToPeriod(item.data)" style="{{item.style()}}">
+<div class="schedule" [ngStyle]="{'height': totalHeight+'px'}">
+    <div class="schedule-item" [class.small]="isSmall(item)" *ngFor="let item of items" (click)="goToSession(item.data)" (hold)="goToPeriod(item.data)" [ngStyle]="item.style()">
         <p>{{item.data.start | timePeriod:item.data.end}} - {{item.data.place}}</p>
         <h2>{{item.data.name}} <rating *ngIf="getRating(item.data) > 0" [value]="getRating(item.data)"></rating></h2>
         <p>{{item.data.speakers | map:'name' | join:', '}}</p>
     </div>
-    <div class="empty-slot-item" [class.small]="isSmall(item)" *ngFor="#item of slots" (click)="goToSlot(item.data)" style="{{item.style()}}">
+    <div class="empty-slot-item" [class.small]="isSmall(item)" *ngFor="let item of slots" (click)="goToSlot(item.data)" [ngStyle]="item.style()">
         <p>{{item.data.start | timePeriod:item.data.end}}</p>
         <h2>
             {{item.data.sessions.length}} session{{item.data.sessions.length > 1 ? 's' : ''}}
@@ -141,8 +141,13 @@ class ScheduleItem {
                 public height: number,
                 public width: number,
                 public left: number) {}
-    style(): string {
-        return 'top: '+this.top+'px; height: '+this.height+'px; width: '+this.width+'%; left: '+this.left+'%;';
+    style(): any {
+        return {
+            top: this.top+'px',
+            height: this.height+'px',
+            width: this.width+'%',
+            left: this.left+'%'
+        };
     }
 }
 

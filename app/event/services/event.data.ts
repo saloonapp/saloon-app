@@ -1,4 +1,4 @@
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 import {Feedback} from "../../common/models/Feedback";
 import {EventItem, EventFull} from "../models/Event";
 import {AttendeeItem, AttendeeFull} from "../models/Attendee";

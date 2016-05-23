@@ -1,4 +1,4 @@
-import {OnInit} from "angular2/core";
+import {OnInit} from "@angular/core";
 import {Page} from 'ionic-angular';
 import {NavController, NavParams} from "ionic-angular/index";
 import {EventItem} from "./models/Event";
@@ -51,11 +51,11 @@ import {ExponentPage} from "./exponent.page";
     </div>
     <ion-list *ngIf="attendeeFull && attendeeFull.exponents.length > 0">
         <ion-list-header>Exposants</ion-list-header>
-        <exponent-item *ngFor="#exponent of attendeeFull.exponents" [exponent]="exponent" (click)="goToExponent(exponent)"></exponent-item>
+        <exponent-item *ngFor="let exponent of attendeeFull.exponents" [exponent]="exponent" (click)="goToExponent(exponent)"></exponent-item>
     </ion-list>
     <ion-list *ngIf="attendeeFull && attendeeFull.sessions.length > 0">
         <ion-list-header>Sessions</ion-list-header>
-        <session-item *ngFor="#session of attendeeFull.sessions" [session]="session" (click)="goToSession(session)"></session-item>
+        <session-item *ngFor="let session of attendeeFull.sessions" [session]="session" (click)="goToSession(session)"></session-item>
     </ion-list>
 </ion-content>
 `
