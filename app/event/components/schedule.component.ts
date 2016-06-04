@@ -151,43 +151,80 @@ class ScheduleItem {
     }
 }
 
+
 class ScheduleBuilder {
     private static pxPerMin = 3;
-    private static msPerMin = 1000*60;
+    private static msPerMin = 1000 * 60;
 
-    public static compute(favorites: SessionFull[], slots: SlotWithSessions[]): any[] {
+    public static compute(favorites:SessionFull[], slots:SlotWithSessions[]): any[] {
         const now = DateHelper.now();
         const globalStart  : number             = _.min(_.map(slots, s => s.start));
         const globalEnd    : number             = _.max(_.map(slots, s => s.end));
         const totalHeight  : number             = this.toPx(globalEnd - globalStart);
         const nowOffset    : number             = globalStart < now && now < globalEnd ? this.toPx(now - globalStart) : -1;
-        const emptySlots   : SlotWithSessions[] = slots.filter(slot => favorites.find(s => this.isDuring(slot, s)) === undefined);
+        const emptySlots   : SlotWithSessions[] = slots.filter(slot => favorites.find(s => this.hasConflicts(slot, s)) === undefined);
         const scheduleItems: ScheduleItem[]     = this.computePosition(favorites, globalStart);
         const scheduleSlots: ScheduleItem[]     = this.computePosition(emptySlots, globalStart);
         return [totalHeight, scheduleItems, scheduleSlots, nowOffset];
     }
 
     private static computePosition(slots: ISlot[], globalStart: number): ScheduleItem[] {
-        const slotPositions = {};
-        return slots.map(slot => {
-            const inParallel       : Slot[]   = this.inParallel(slot, slots);
-            const possiblePositions: number[] = _.range(inParallel.length);
-            const takenPositions   : number[] = inParallel.map(s => slotPositions[s.uuid]).filter(p => typeof p === 'number');
-            const position         : number   = possiblePositions.find(p => takenPositions.indexOf(p) === -1);
-            slotPositions[slot.uuid] = position;
-            const top    = this.toPx(slot.start - globalStart);
-            const height = this.toPx(slot.end - slot.start);
-            const width  = 100/(inParallel.length);
-            const left   = position*width;
-            return new ScheduleItem(slot, top, height, width, left);
+        // create a cache to store slot calculated data
+        const slotData = {};
+        slots.forEach(s => {
+            slotData[s.uuid] = {
+                conflicts: this.getConflicts(s, slots),
+                width: null,
+                left: null
+            };
+        });
+
+        // get all time intervals and get their mean time value
+        const intervals = _.uniq(_.flatten(slots.map(s => [s.start, s.end]))).sort((e1, e2) => e2-e1).map((elt, i, arr) => {
+            if(i+1 < arr.length) {
+                return Math.round((elt + arr[i+1]) / 2);
+            } else {
+                return elt;
+            }
+        });
+
+        // attach related slots sorted by number of conflicts (desc) to intervals and sort them by number of slots (desc)
+        const intervalsWithSlots = intervals.map(t => {
+            return {
+                time: t,
+                slots: slots.filter(s => s.start < t && t < s.end).sort((e1, e2) => slotData[e2.uuid].conflicts.length - slotData[e1.uuid].conflicts.length)
+            };
+        }).sort((e1, e2) => e2.slots.length - e1.slots.length);
+
+        // calcul width & left params :
+        //  - width : not used width (if slot is part of other intervals...) divided equally
+        //  - left : cumulated width of previous slots (they are already ordered)
+        intervalsWithSlots.map(t => {
+            const slotsWithWidth = t.slots.filter(s => slotData[s.uuid].width !== null);
+            const usedWidth = _.sum(slotsWithWidth.map(s => slotData[s.uuid].width));
+            let curWidth = 0;
+            t.slots.forEach(s => {
+                if(slotData[s.uuid].width === null){ slotData[s.uuid].width = (100-usedWidth)/(t.slots.length - slotsWithWidth.length); }
+                if(slotData[s.uuid].left === null){ slotData[s.uuid].left = curWidth; }
+                curWidth = curWidth + slotData[s.uuid].width;
+            });
+        });
+
+        // return formated data
+        return slots.map(s => {
+            const top    = this.toPx(s.start - globalStart);
+            const height = this.toPx(s.end - s.start);
+            const width  = slotData[s.uuid].width;
+            const left   = slotData[s.uuid].left;
+            return new ScheduleItem(s, top, height, width, left);
         });
     }
-    private static inParallel(slot: Slot, slots: Slot[]): Slot[] {
+    private static getConflicts(slot: Slot, slots: Slot[]): Slot[] {
         return slots.filter(s => {
-            return this.isDuring(slot, s);
+            return this.hasConflicts(slot, s);
         });
     }
-    private static isDuring(s1: Slot, s2: Slot): boolean {
+    private static hasConflicts(s1: Slot, s2: Slot): boolean {
         const startBetween = s1.start < s2.start && s2.start < s1.end;
         const endBetween   = s1.start < s2.end && s2.end < s1.end;
         const isIncluded   = s2.start <= s1.start && s1.end <= s2.end;
@@ -196,15 +233,4 @@ class ScheduleBuilder {
     private static toPx(msTime: number): number {
         return msTime * this.pxPerMin / this.msPerMin;
     }
-
-    /*private static computePosition2(slots: Slot[], globalStart: number): ScheduleItem[] {
-        const slotsByCollision = _.groupBy(slots, slot => {
-            const inParallel: Slot[] = this.inParallel(slot, slots);
-            return _.min(inParallel.map(s => s.start));
-        });
-        _.map(slotsByCollision, collisionSlots => {
-
-        });
-        return [];
-    }*/
 }

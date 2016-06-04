@@ -42,12 +42,12 @@ import {AddressPipe} from "../common/pipes/model.pipe";
         <h4>{{eventItem.name}}</h4>
         <div *ngIf="eventItem.start"><ion-icon name="calendar"></ion-icon> {{eventItem.start | datePeriod:eventItem.end}}</div>
         <div *ngIf="eventItem.address">
-            <a href="http://maps.google.com/?q={{eventItem.address | address}}">
+            <a href="http://maps.google.com/?q={{eventItem.address | address}}" target="_blank">
                 <ion-icon name="pin"></ion-icon> {{eventItem.address | address}}
             </a>
         </div>
         <div *ngIf="eventItem.price">
-            <a href="{{eventItem.priceUrl}}">
+            <a href="{{eventItem.priceUrl}}" target="_blank">
                 <ion-icon name="pricetag"></ion-icon> {{eventItem.price}}
             </a>
         </div>

@@ -1,7 +1,7 @@
 import {App, Platform} from "ionic-angular";
 import {StatusBar} from "ionic-native";
 import * as moment from "moment";
-import * as fr from "moment/locale/fr"
+import * as fr from "moment/locale/fr";
 import {PluginUtils} from "./common/plugins/utils";
 import {SQLitePlugin} from "./common/plugins/sqlite.plugin";
 import {SQLiteStorage} from "./common/services/storage-sqlite.service";
